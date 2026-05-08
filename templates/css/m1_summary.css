@@ -1,0 +1,1011 @@
+/*
+ * ============================================================================
+ * 模块 1: 诊断摘要 (Diagnostic Summary)
+ * 文件: 1_summary.css
+ * 版本: 1.0.0
+ * 更新日期: 2025-01-15
+ * ============================================================================
+ */
+
+/* ============================================================================
+ * 1. CSS 变量定义 (Design Tokens)
+ * ============================================================================ */
+
+:root {
+  /* --------------------------------------------------------------------------
+   * 1.1 页面与打印设置
+   * -------------------------------------------------------------------------- */
+  --page-width: 210mm;
+  --page-min-height: 297mm;
+  --page-padding-x: 20mm;
+  --page-padding-y: 20mm;
+
+  /* --------------------------------------------------------------------------
+   * 1.2 基础背景色
+   * -------------------------------------------------------------------------- */
+  --color-page-bg: var(--pm-bg-page, #f8f5ef);           /* 页面底色 */
+  --color-card-bg: var(--pm-bg-card, #ffffff);            /* 卡片白底 */
+  --color-section-bar: var(--pm-bg-muted, #f3f0ea);       /* 分区标题条背景 */
+  --color-banner-bg: var(--pm-bg-section, #f0ede6);       /* 摘要条/建议条灰底 */
+  --color-row-bg: var(--pm-bg-muted, #f3f0ea);            /* KPI行/小卡片底色 */
+
+  /* --------------------------------------------------------------------------
+   * 1.3 主色系 (青蓝)
+   * -------------------------------------------------------------------------- */
+  --color-primary-teal: var(--pm-teal, #1f6f78);      /* 圆环主段、列表方块、强调色 */
+  --color-primary-teal-2: var(--pm-teal-light, #2a8f8f);    /* 章节标题下划线 */
+  --color-teal-light: var(--pm-teal-soft, #d0e8e8);        /* 圆环浅段/未达标色 */
+  --color-track-blue: var(--pm-bg-muted, #f3f0ea);        /* 进度条轨道浅蓝 */
+  --color-fill-teal-soft: var(--pm-teal-soft, #d0e8e8);    /* 目标线填充条 */
+
+  /* --------------------------------------------------------------------------
+   * 1.4 信息胶囊色
+   * -------------------------------------------------------------------------- */
+  --color-pill-bg: var(--pm-teal-soft, #d0e8e8);           /* 指标值胶囊底色 */
+  --color-pill-text: var(--pm-navy, #12344d);              /* 指标值文字蓝色 */
+
+  /* --------------------------------------------------------------------------
+   * 1.5 紫色强调 (P0/突破项)
+   * -------------------------------------------------------------------------- */
+  --color-purple: var(--pm-sand-dark, #b27a37);            /* P0标题: warm gold */
+  --color-purple-bar: var(--pm-teal, #1f6f78);        /* 当前水平条: teal */
+  --color-purple-arrow: var(--pm-status-success, #2d8a6e);      /* 趋势箭头上升色: green */
+
+  /* --------------------------------------------------------------------------
+   * 1.6 状态色
+   * -------------------------------------------------------------------------- */
+  --color-success: var(--pm-status-success, #2d8a6e);           /* 达标/成功 */
+  --color-warning: var(--pm-status-attention, #d4943a);           /* 警告/注意 */
+  --color-danger: var(--pm-status-danger, #c44040);            /* 危险/需改进 */
+  --color-muted: var(--pm-status-nodata, #9ca3af);             /* 无数据/禁用 */
+
+  /* --------------------------------------------------------------------------
+   * 1.7 分割线/边框
+   * -------------------------------------------------------------------------- */
+  --color-divider: var(--pm-border-light, #e4e8ec);           /* 页眉横线 */
+  --color-line: var(--pm-border-divider, #e0ddd6);              /* 目标线竖线 */
+  --color-border-light: var(--pm-border-card, #d8e2e8);      /* 浅边框 */
+
+  /* --------------------------------------------------------------------------
+   * 1.8 文本色
+   * -------------------------------------------------------------------------- */
+  --color-text-primary: var(--pm-text-primary, #1a2332);      /* 主标题/正文 */
+  --color-text-secondary: var(--pm-text-secondary, #4a5568);    /* 次级正文/说明 */
+  --color-text-muted: var(--pm-text-muted, #8896a7);        /* 页眉小字/弱化信息 */
+  --color-text-white: #FFFFFF;        /* 白色文字 */
+
+  /* --------------------------------------------------------------------------
+   * 1.9 字体系统
+   * -------------------------------------------------------------------------- */
+  --font-family: "SimHei", "Heiti SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+  
+  --font-size-h1: 28px;               /* 章节主标题 */
+  --font-size-h2: 22px;               /* 分区标题 */
+  --font-size-h3: 18px;               /* 卡片小标题/强调语句 */
+  --font-size-body: 16px;             /* 正文 */
+  --font-size-sm: 14px;               /* 辅助说明/标签 */
+  --font-size-xs: 12px;               /* 页眉信息 */
+  --font-size-donut: 42px;            /* 圆环中心数字 */
+  --font-size-kpi-value: 24px;        /* KPI数值 */
+
+  --font-weight-bold: 700;
+  --font-weight-medium: 600;
+  --font-weight-regular: 400;
+
+  --line-height-tight: 1.3;
+  --line-height-normal: 1.6;
+
+  /* --------------------------------------------------------------------------
+   * 1.10 间距系统 (8px基准)
+   * -------------------------------------------------------------------------- */
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+
+  /* --------------------------------------------------------------------------
+   * 1.11 圆角系统
+   * -------------------------------------------------------------------------- */
+  --radius-sm: var(--pm-radius-badge, 12px);                   /* 进度条/小圆角 */
+  --radius-md: var(--pm-radius-card-sm, 16px);                  /* 卡片容器 */
+  --radius-lg: var(--pm-radius-card, 24px);                  /* 胶囊/信息块 */
+  --radius-xl: var(--pm-radius-card-lg, 28px);                  /* KPI卡片 */
+  --radius-full: 9999px;              /* 完全圆角 */
+
+  /* --------------------------------------------------------------------------
+   * 1.12 阴影系统
+   * -------------------------------------------------------------------------- */
+  --shadow-card: var(--pm-shadow-card, 0 4px 20px rgba(18, 52, 77, 0.08));
+  --shadow-none: none;
+
+  /* --------------------------------------------------------------------------
+   * 1.13 圆环图配置
+   * -------------------------------------------------------------------------- */
+  --donut-size: 180px;
+  --donut-stroke-width: 24px;
+}
+
+/* ============================================================================
+ * 2. 打印与页面设置
+ * ============================================================================ */
+
+/* @page 已统一在 base.css 管理 (T14 running header) */
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* ============================================================================
+ * 3. 基础重置与页面容器
+ * ============================================================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background: var(--color-page-bg);
+}
+
+.m1-report-page {
+  width: var(--page-width);
+  margin: 0 auto;
+  background: var(--color-page-bg);
+  padding: var(--page-padding-y) 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================================
+ * 4. 章节标题组件 (Section Title)
+ * ============================================================================ */
+
+.m1-section-title {
+  padding: var(--spacing-16) var(--page-padding-x) var(--spacing-12);
+}
+
+.m1-section-title__text {
+  display: inline-block;
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.m1-section-title__text::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin-top: var(--spacing-8);
+  background: var(--color-primary-teal-2);
+  border-radius: 2px;
+}
+
+.m1-section-title__underline {
+  display: none;
+}
+
+/* ============================================================================
+ * 6. 摘要主卡片 (Summary Card)
+ * ============================================================================ */
+
+.m1-summary-card {
+  margin: 0 var(--page-padding-x);
+  background: var(--color-card-bg);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+/* --------------------------------------------------------------------------
+ * 6.1 摘要横幅 (Summary Banner)
+ * -------------------------------------------------------------------------- */
+
+.m1-summary-banner {
+  background: var(--color-banner-bg);
+  padding: var(--spacing-12) var(--spacing-16);
+  font-size: 16px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+}
+
+/* --------------------------------------------------------------------------
+ * 6.2 摘要内容区 (Summary Content)
+ * -------------------------------------------------------------------------- */
+
+.m1-summary-content {
+  display: flex;
+  gap: var(--spacing-20);
+  padding: var(--spacing-18, 18px) var(--spacing-16);
+  background: var(--color-card-bg);
+}
+
+.m1-summary-left {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-10, 10px);
+}
+
+.m1-summary-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-10, 10px);
+}
+
+/* ============================================================================
+ * 7. 圆环图组件 (Donut Chart)
+ * ============================================================================ */
+
+.m1-donut-container {
+  position: relative;
+  width: var(--donut-size);
+  height: var(--donut-size);
+}
+
+.m1-donut-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.m1-donut-track {
+  fill: none;
+  stroke: var(--color-teal-light);
+  stroke-width: var(--donut-stroke-width);
+}
+
+.m1-donut-progress {
+  fill: none;
+  stroke: var(--color-primary-teal);
+  stroke-width: var(--donut-stroke-width);
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+
+.m1-donut-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--font-size-donut);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+ * 7.1 圆环图例 (Donut Legend)
+ * -------------------------------------------------------------------------- */
+
+.m1-donut-caption {
+  text-align: center;
+  font-size: 13px;
+  color: #475467;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+.m1-donut-legend {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-16);
+}
+
+.m1-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.m1-legend-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+}
+
+.m1-legend-icon--pass {
+  background: var(--color-primary-teal);
+  color: var(--color-text-white);
+}
+
+.m1-legend-icon--fail {
+  background: var(--color-teal-light);
+  color: var(--color-text-secondary);
+}
+
+.m1-legend-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================================================
+ * 8. KPI 行卡片组件 (KPI Row)
+ * ============================================================================ */
+
+.m1-kpi-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-12) var(--spacing-14, 14px);
+  background: var(--color-row-bg);
+  border-radius: var(--radius-xl);
+}
+
+.m1-kpi-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+}
+
+.m1-kpi-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--color-primary-teal);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.m1-kpi-label {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.m1-kpi-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+  min-height: 40px;
+  padding: var(--spacing-6, 6px) var(--spacing-14, 14px);
+  background: var(--color-pill-bg);
+  border-radius: var(--radius-lg);
+}
+
+.m1-kpi-value {
+  font-size: var(--font-size-kpi-value);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-pill-text);
+}
+
+.m1-kpi-delta {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+ * 8.1 趋势箭头 (Trend Arrow)
+ * -------------------------------------------------------------------------- */
+
+.m1-kpi-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+}
+
+.m1-kpi-arrow--up {
+  color: var(--color-purple-arrow);
+}
+
+.m1-kpi-arrow--down {
+  color: var(--color-warning);
+}
+
+.m1-kpi-arrow--stable {
+  color: var(--color-muted);
+}
+
+/* ============================================================================
+ * 9. 分区标题条组件 (Section Bar)
+ * ============================================================================ */
+
+.m1-section-bar {
+  margin: var(--spacing-20, 20px) var(--page-padding-x) var(--spacing-8);
+  padding: var(--spacing-10, 10px) var(--spacing-14, 14px);
+  background: var(--color-section-bar);
+  border-radius: var(--radius-md);
+  font-size: 20px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+/* --------------------------------------------------------------------------
+ * 9.1 简化分区标题条 (Subtle Section Bar)
+ * -------------------------------------------------------------------------- */
+.m1-section-bar--subtle {
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+  border-bottom: 1px solid var(--color-divider);
+  border-radius: 0;
+  font-size: 18px;
+}
+
+/* ============================================================================
+ * 10. 要点列表组件 (Bullet List)
+ * ============================================================================ */
+
+.m1-bullet-list {
+  list-style: none;
+  margin: 0 var(--page-padding-x);
+  padding: 0;
+}
+
+.m1-bullet-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-12);
+  padding: 6px 0;
+  font-size: 15px;
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+}
+
+.m1-bullet-square {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  margin-top: 6px;
+  background: var(--color-primary-teal);
+  border-radius: 2px;
+}
+
+/* 关键发现（内联在学情总结卡片内） */
+.m1-findings-inline {
+  margin-top: 10px;
+  padding: 0 var(--spacing-16);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.m1-finding-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-12);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+/* ============================================================================
+ * 11. 突破项网格组件 (Breakthrough Grid)
+ * ============================================================================ */
+
+.m1-breakthrough-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-12);
+  margin: 0 var(--page-padding-x);
+}
+
+/* --------------------------------------------------------------------------
+ * 11.1 突破项卡片 (Breakthrough Card)
+ * -------------------------------------------------------------------------- */
+
+.m1-breakthrough-card {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-12);
+  box-shadow: var(--shadow-card);
+  break-inside: avoid;
+}
+
+.m1-bt-title {
+  font-size: 14px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-8);
+}
+
+/* --------------------------------------------------------------------------
+ * 11.2 双层进度条 (Breakthrough Progress)
+ * -------------------------------------------------------------------------- */
+
+.m1-breakthrough-progress {
+  position: relative;
+  padding-top: var(--spacing-16);
+  margin-bottom: var(--spacing-8);
+}
+
+.m1-breakthrough-target-label {
+  position: absolute;
+  top: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.m1-breakthrough-target-line {
+  position: absolute;
+  top: var(--spacing-16);
+  width: 1px;
+  height: 48px;
+  background: var(--color-line);
+}
+
+.m1-progress-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  margin-bottom: 6px;
+}
+
+.m1-progress-row:last-child {
+  margin-bottom: 0;
+}
+
+.m1-progress-track {
+  flex: 1;
+  height: 18px;
+  background: var(--color-track-blue);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.m1-progress-fill {
+  height: 100%;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+}
+
+.m1-progress-fill--target {
+  background: var(--color-fill-teal-soft);
+}
+
+.m1-progress-fill--current {
+  background: var(--color-purple-bar);
+}
+
+.m1-progress-fill--p1 {
+  background: var(--color-primary-teal);
+}
+
+.m1-progress-fill--p2 {
+  background: var(--color-muted);
+}
+
+.m1-progress-text {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-white);
+  white-space: nowrap;
+}
+
+.m1-progress-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+ * 11.3 标签组 (Tags)
+ * -------------------------------------------------------------------------- */
+
+.m1-bt-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.m1-bt-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-full);
+  background: var(--color-teal-light);
+  color: var(--color-primary-teal);
+}
+
+.m1-bt-tag--strong {
+  background: rgba(178, 122, 55, 0.15);
+  color: var(--color-purple);
+  font-weight: var(--font-weight-medium);
+}
+
+/* V3-1: 提升空间标签 (sand-dark 主题, 与 delta 颜色一致) */
+.m1-bt-tag--improve {
+  background: rgba(178, 122, 55, 0.10);
+  color: var(--color-purple);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ============================================================================
+ * 12. 建议提示条组件 (Suggestion Callout)
+ * ============================================================================ */
+
+.m1-suggestion-callout {
+  margin: var(--spacing-14, 14px) var(--page-padding-x) 0;
+  padding: var(--spacing-12) var(--spacing-16);
+  background: var(--color-banner-bg);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+}
+
+.m1-suggestion-callout strong {
+  font-weight: var(--font-weight-bold);
+}
+
+/* ============================================================================
+ * 13. 状态修饰类 (Status Modifiers)
+ * ============================================================================ */
+
+/* 达标状态 */
+.m1-status--achieved .m1-kpi-dot,
+.m1-status--achieved .m1-bullet-square {
+  background: var(--color-success);
+}
+
+.m1-status--achieved .m1-kpi-value {
+  color: var(--color-success);
+}
+
+/* 需关注状态 */
+.m1-status--attention .m1-kpi-dot,
+.m1-status--attention .m1-bullet-square {
+  background: var(--color-warning);
+}
+
+.m1-status--attention .m1-kpi-value {
+  color: var(--color-warning);
+}
+
+/* 需改进状态 */
+.m1-status--improve .m1-kpi-dot,
+.m1-status--improve .m1-bullet-square {
+  background: var(--color-danger);
+}
+
+.m1-status--improve .m1-kpi-value {
+  color: var(--color-danger);
+}
+
+/* 无数据状态 */
+.m1-status--nodata .m1-kpi-dot,
+.m1-status--nodata .m1-bullet-square {
+  background: var(--color-muted);
+}
+
+.m1-status--nodata .m1-kpi-value {
+  color: var(--color-muted);
+}
+
+.m1-status--nodata .m1-kpi-pill {
+  background: var(--pm-status-nodata-bg, #f3f4f6);
+}
+
+/* ============================================================================
+ * 14. 空值占位组件 (Empty State)
+ * ============================================================================ */
+
+.m1-empty-placeholder {
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.m1-data-unavailable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-20);
+  background: var(--color-row-bg);
+  border-radius: var(--radius-md);
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================================================
+ * 15. 工具类 (Utilities)
+ * ============================================================================ */
+
+.m1-text-center {
+  text-align: center;
+}
+
+.m1-text-right {
+  text-align: right;
+}
+
+.m1-text-primary {
+  color: var(--color-text-primary);
+}
+
+.m1-text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.m1-text-muted {
+  color: var(--color-text-muted);
+}
+
+.m1-text-teal {
+  color: var(--color-primary-teal);
+}
+
+.m1-text-purple {
+  color: var(--color-purple);
+}
+
+.m1-font-bold {
+  font-weight: var(--font-weight-bold);
+}
+
+.m1-font-medium {
+  font-weight: var(--font-weight-medium);
+}
+
+.m1-mt-8 { margin-top: var(--spacing-8); }
+.m1-mt-16 { margin-top: var(--spacing-16); }
+.m1-mt-24 { margin-top: var(--spacing-24); }
+.m1-mb-8 { margin-bottom: var(--spacing-8); }
+.m1-mb-16 { margin-bottom: var(--spacing-16); }
+.m1-mb-24 { margin-bottom: var(--spacing-24); }
+
+/* 圆环图例动态说明 */
+.m1-chart-note {
+  font-size: 3.5mm;
+  color: var(--pm-text-muted, #8896a7);
+  text-align: center;
+  margin: 4px 0 0;
+  line-height: 1.4;
+}
+
+/* ============================================================================
+ * 15. 打印优化 (Print Optimization)
+ * ============================================================================ */
+@media print {
+  /* [T15] 统一 L/R 边距: left=18mm(装订), right=15mm */
+  .m1-report-page {
+    width: auto;
+    display: block;
+    flex: none;
+    min-height: auto;
+    padding: 0 15mm 0 18mm;
+    --page-padding-x: 0;  /* 子元素边距归零, 由容器 padding 统一提供 */
+    box-shadow: none;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .m1-report-page--dense {
+    font-size: 12px;
+    line-height: 1.34;
+  }
+
+  .m1-report-page--dense .m1-section-title {
+    padding: 12px 0 9px;
+  }
+
+  .m1-report-page--dense .m1-section-title__text {
+    font-size: 26px;
+  }
+
+  .m1-report-page--dense .m1-section-title__text::after {
+    height: 3px;
+    margin-top: 6px;
+  }
+
+  .m1-report-page--dense .m1-summary-card {
+    margin: 0;
+    border-radius: 10px;
+    box-shadow: none;
+  }
+
+  .m1-report-page--dense .m1-summary-banner {
+    padding: 9px 12px;
+    font-size: 13.5px;
+    line-height: 1.4;
+  }
+
+  .m1-report-page--dense .m1-summary-content {
+    gap: 14px;
+    padding: 11px 12px;
+  }
+
+  .m1-report-page--dense .m1-summary-left {
+    gap: 6px;
+  }
+
+  .m1-report-page--dense .m1-donut-container {
+    width: 148px !important;
+    height: 148px !important;
+  }
+
+  .m1-report-page--dense .m1-donut-center {
+    font-size: 34px;
+  }
+
+  .m1-report-page--dense .m1-donut-caption {
+    margin: 3px 0;
+    font-size: 11px;
+  }
+
+  .m1-report-page--dense .m1-donut-legend {
+    gap: 10px;
+  }
+
+  .m1-report-page--dense .m1-legend-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+
+  .m1-report-page--dense .m1-legend-text {
+    font-size: 11px;
+  }
+
+  .m1-report-page--dense .m1-summary-right {
+    gap: 7px;
+  }
+
+  .m1-report-page--dense .m1-kpi-row {
+    padding: 8px 10px;
+    border-radius: 12px;
+  }
+
+  .m1-report-page--dense .m1-kpi-left {
+    gap: 8px;
+  }
+
+  .m1-report-page--dense .m1-kpi-dot {
+    width: 9px;
+    height: 9px;
+  }
+
+  .m1-report-page--dense .m1-kpi-label {
+    font-size: 13px;
+  }
+
+  .m1-report-page--dense .m1-kpi-pill {
+    min-height: 30px;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 14px;
+  }
+
+  .m1-report-page--dense .m1-kpi-value {
+    font-size: 20px;
+  }
+
+  .m1-report-page--dense .m1-kpi-delta,
+  .m1-report-page--dense .m1-kpi-arrow {
+    font-size: 12px;
+  }
+
+  .m1-report-page--dense .m1-chart-note {
+    margin: 3px 0 0;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .m1-report-page--dense .m1-section-bar {
+    margin: 10px 0 6px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+
+  .m1-report-page--dense .m1-bullet-list {
+    margin: 0;
+  }
+
+  .m1-report-page--dense .m1-bullet-list li {
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .m1-report-page--dense .m1-bullet-square {
+    width: 8px;
+    height: 8px;
+    margin-top: 5px;
+  }
+
+  .m1-report-page--dense .m1-breakthrough-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+  }
+
+  .m1-report-page--dense .m1-breakthrough-card {
+    padding: 9px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  .m1-report-page--dense .m1-bt-title {
+    margin-bottom: 5px;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .m1-report-page--dense .m1-breakthrough-progress {
+    padding-top: 14px;
+    margin-bottom: 6px;
+  }
+
+  .m1-report-page--dense .m1-breakthrough-target-label {
+    font-size: 9px;
+  }
+
+  .m1-report-page--dense .m1-breakthrough-target-line {
+    top: 14px;
+    height: 39px;
+  }
+
+  .m1-report-page--dense .m1-progress-row {
+    gap: 5px;
+    margin-bottom: 4px;
+  }
+
+  .m1-report-page--dense .m1-progress-track {
+    height: 15px;
+    border-radius: 6px;
+  }
+
+  .m1-report-page--dense .m1-progress-fill {
+    padding: 0 4px;
+    border-radius: 6px;
+  }
+
+  .m1-report-page--dense .m1-progress-text {
+    font-size: 9px;
+  }
+
+  .m1-report-page--dense .m1-bt-tags {
+    gap: 4px;
+  }
+
+  .m1-report-page--dense .m1-bt-tag {
+    padding: 2px 5px;
+    font-size: 9px;
+  }
+
+  .m1-report-page--dense .m1-suggestion-callout {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+}
+
+/* ============================================================================
+ * END OF FILE
+ * ============================================================================ */

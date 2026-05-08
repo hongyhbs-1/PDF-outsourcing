@@ -1,0 +1,1781 @@
+/**
+ * ==========================================================================
+ * 模块 7: 数据可信度说明 (Data Reliability)
+ * ==========================================================================
+ * 文件名: 7_data_reliability.css
+ * 版本: 1.0.0
+ * 描述: 展示诊断数据可信程度与覆盖完整性
+ * 依赖: 无外部依赖
+ * ==========================================================================
+ */
+
+/* ==========================================================================
+   Section 1: CSS Variables (Design Tokens)
+   ========================================================================== */
+:root {
+  /* ----- 1.1 Base Colors (Premium Navy/Teal/Sand tokens) ----- */
+  --color-bg: var(--pm-bg-page, #f8f5ef);                    /* 页面主背景色 */
+  --color-text-primary: var(--pm-text-primary, #1a2332);          /* 主文字颜色 */
+  --color-text-secondary: var(--pm-text-secondary, #4a5568);        /* 次级文字颜色 */
+  --color-card: var(--pm-bg-card-alt, #faf8f4);                  /* 卡片背景色 */
+  --color-accent: var(--pm-teal, #1f6f78);                /* 强调色 */
+
+  /* ----- 1.2 Label Colors (标注色) ----- */
+  --color-label-purple: var(--pm-sand-dark, #b27a37);          /* 紫色→沙棕标注 */
+  --color-label-orange: var(--pm-status-attention, #d4943a);          /* 橙色标注 */
+  --color-label-blue: var(--pm-teal, #1f6f78);            /* 蓝色→青色标注 */
+  --color-label-red: var(--pm-status-danger, #c44040);             /* 红色标注 */
+
+  /* ----- 1.3 Module-Specific Colors (本模块专用) ----- */
+  --color-progress-cyan: var(--pm-teal, #1f6f78);         /* 进度条填充/标题下划线 */
+  --color-title-blue: var(--pm-navy, #12344d);            /* 蓝色→藏蓝标题文字 */
+  --color-border-blue: var(--pm-teal-soft, #d0e8e8);           /* 数据概览外框线 */
+  --color-border-purple: var(--pm-status-improve-bg, #f4eaf0);         /* 表格/综合盒子外框线 */
+  --color-surface: var(--pm-bg-card, #ffffff);               /* 白色卡片底 */
+  --color-surface-muted: var(--pm-bg-muted, #f3f0ea);         /* 模块浅底 */
+  --color-table-head: var(--pm-bg-muted, #f3f0ea);            /* 表头底色 */
+  --color-divider: var(--pm-border-light, #e4e8ec);               /* 行分割线 */
+  --color-bar-track: var(--pm-bg-muted, #f3f0ea);             /* 条形图轨道底 */
+  --color-tag-bg: var(--pm-teal-soft, #d0e8e8);                /* 标签底色 */
+  --color-icon-muted: var(--pm-border-card, #d8e2e8);            /* 概览卡片图标色 */
+
+  /* ----- 1.4 Section Backgrounds (三段彩底) ----- */
+  --color-section-blue-bg: var(--pm-status-achieved-bg, #e6f3f3);       /* 整体数据质量评估背景 */
+  --color-section-yellow-bg: var(--pm-status-attention-bg, #fef3e2);     /* 数据不足提示背景 */
+  --color-section-purple-bg: var(--pm-status-improve-bg, #f4eaf0);     /* 未覆盖的核心考点背景 */
+
+  /* ----- 1.5 Bar Gradient Colors ----- */
+  --color-bar-orange-from: var(--pm-status-attention, #d4943a);       /* 中置信度条渐变起始 */
+  --color-bar-orange-to: var(--pm-status-attention, #d4943a);         /* 中置信度条渐变结束 */
+  --color-badge-purple-bg: var(--pm-sand-dark, #b27a37);       /* 核心考点徽章底色 */
+  
+  /* ----- 1.6 Typography ----- */
+  --font-family-base: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --font-size-h1: 28px;                   /* 页面主标题 */
+  --font-size-h2: 24px;                   /* 分区标题 */
+  --font-size-card-title: 20px;           /* 概览卡片标题 */
+  --font-size-card-value: 56px;           /* 概览卡片核心数字 */
+  --font-size-body: 16px;                 /* 表格正文/段落 */
+  --font-size-small: 14px;                /* 辅助说明 */
+  --font-size-mini: 12px;                 /* 更小注释 */
+  --font-weight-bold: 700;
+  --font-weight-medium: 600;
+  --font-weight-regular: 400;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.6;
+  
+  /* ----- 1.7 Spacing ----- */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 40px;
+  --spacing-3xl: 60px;
+  
+  /* ----- 1.8 Radius ----- */
+  --radius-sm: 4px;                       /* 标签/徽章 */
+  --radius-md: 12px;                      /* 白色内容卡片 */
+  --radius-lg: 16px;                      /* 概览信息卡 */
+  --radius-pill: 999px;                   /* 进度条/条形图 */
+  
+  /* ----- 1.9 Shadows ----- */
+  --shadow-card: var(--pm-shadow-card, 0 4px 20px rgba(18, 52, 77, 0.08));
+}
+
+/* ==========================================================================
+   Section 2: Page & Print Setup
+   ========================================================================== */
+/* @page 已统一在 base.css 管理 (T14 running header) */
+
+.m7-data-reliability {
+  width: 210mm;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-xxl);
+  background: var(--color-bg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+  box-sizing: border-box;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.m7-data-reliability--sparse .m7-overview-cards {
+  gap: var(--spacing-lg);
+}
+
+.m7-data-reliability--sparse .m7-overview-card {
+  min-height: 220px;
+}
+
+.m7-data-reliability--dense .m7-overview-cards {
+  gap: var(--spacing-lg);
+}
+
+.m7-data-reliability--dense .m7-overview-card {
+  min-height: 168px;
+  padding: var(--spacing-md) var(--spacing-sm);
+}
+
+.m7-data-reliability--dense .m7-quality-block {
+  padding: var(--spacing-md) var(--spacing-xl);
+}
+
+/* 告警/图例区域推至底部 */
+.m7-warnings-section {
+  margin-top: auto;
+}
+
+/* ==========================================================================
+   Section 3: Page Title Component
+   ========================================================================== */
+.m7-data-reliability__title {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  margin: 0 0 var(--spacing-lg) 0;
+  display: inline-block;
+  position: relative;
+}
+
+.m7-data-reliability__title::after {
+  content: "";
+  display: block;
+  height: 4px;
+  margin-top: var(--spacing-sm);
+  background: var(--color-progress-cyan);
+  border-radius: 2px;
+  width: 100%;
+}
+
+/* ==========================================================================
+   Section 5: Report Box (通用容器)
+   ========================================================================== */
+.m7-report-box {
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--color-border-blue);
+  background: var(--color-surface-muted);
+  border-radius: 2px;
+}
+
+.m7-report-box--purple {
+  border-color: var(--color-border-purple);
+}
+
+.m7-report-box--usage {
+  margin-top: var(--spacing-lg);
+}
+
+.m7-report-box__inner {
+  padding: var(--spacing-lg) var(--spacing-xxl);
+}
+
+/* V3-5: 首标题与页眉保持 20px 间距 (原 0) */
+.m7-section-title {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 20px 0 var(--spacing-md) 0;
+}
+
+/* ==========================================================================
+   Section 6: Overview Cards Component
+   ========================================================================== */
+.m7-overview-cards {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-3xl);
+  margin-top: var(--spacing-md);
+}
+
+.m7-overview-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  min-height: 200px;
+}
+
+.m7-overview-card__icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: var(--spacing-md);
+  opacity: 0.9;
+  color: var(--color-icon-muted);
+}
+
+.m7-overview-card__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.m7-overview-card__title {
+  font-size: var(--font-size-card-title);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.m7-overview-card__value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.m7-overview-card__num {
+  font-size: var(--font-size-card-value);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-title-blue);
+  line-height: 1;
+}
+
+.m7-overview-card__unit {
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-title-blue);
+}
+
+.m7-overview-card__sub {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-xxs);
+}
+
+/* ==========================================================================
+   Section 6b: KP Count Card Component (知识点数量卡片)
+   ========================================================================== */
+.m7-overview-card--kp-count {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.m7-overview-card--kp-count .m7-overview-card__title {
+  align-self: center;
+  text-align: center;
+  width: 100%;
+  margin-bottom: var(--spacing-md);
+}
+
+.m7-overview-card--kp-count .m7-overview-card__icon {
+  align-self: center;
+}
+
+.m7-overview-card__kp-levels {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+}
+
+.m7-kp-level-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-sm);
+}
+
+.m7-kp-level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-mini);
+  font-weight: var(--font-weight-bold);
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+
+.m7-kp-level-badge--l1 {
+  background: var(--pm-navy, #12344d);
+}
+
+.m7-kp-level-badge--l2 {
+  background: var(--pm-teal, #1f6f78);
+}
+
+.m7-kp-level-badge--l3 {
+  background: var(--pm-sand-dark, #b27a37);
+}
+
+.m7-kp-level-badge--l4 {
+  background: var(--pm-status-attention, #d4943a);
+}
+
+.m7-kp-level-label {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  flex: 1;
+}
+
+.m7-kp-level-num {
+  font-size: 22px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-title-blue);
+  line-height: 1;
+}
+
+.m7-kp-level-unit {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  margin-left: 2px;
+}
+
+/* ==========================================================================
+   Section 7: Tag Component
+   ========================================================================== */
+.m7-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  background: var(--color-tag-bg);
+  color: var(--color-title-blue);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  margin-top: var(--spacing-sm);
+}
+
+.m7-tag__check {
+  color: var(--color-progress-cyan);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Tag Status Variants */
+.m7-tag--sufficient {
+  background: var(--color-tag-bg);
+  color: var(--color-title-blue);
+}
+
+.m7-tag--warning {
+  background: rgba(212, 148, 58, 0.15);
+  color: var(--color-label-orange);
+}
+
+.m7-tag--error {
+  background: rgba(196, 64, 64, 0.15);
+  color: var(--color-label-red);
+}
+
+/* ==========================================================================
+   Section 8: Coverage Table Component
+   ========================================================================== */
+.m7-coverage-note {
+  font-size: var(--font-size-small, 12px);
+  color: var(--color-text-secondary);
+  margin: 4px 0 0 0;
+}
+
+.m7-coverage-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--spacing-sm);
+  background: var(--color-surface);
+}
+
+.m7-coverage-table th {
+  background: var(--color-table-head);
+  text-align: left;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  padding: 14px var(--spacing-md);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.m7-coverage-table th:nth-child(2),
+.m7-coverage-table th:nth-child(3) {
+  text-align: center;
+  width: 100px;
+}
+
+.m7-coverage-table th:nth-child(4) {
+  width: 35%;
+}
+
+.m7-coverage-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-divider);
+  font-size: var(--font-size-body);
+  vertical-align: middle;
+}
+
+.m7-coverage-table td:nth-child(1) {
+  width: 200px;
+  font-weight: var(--font-weight-medium);
+}
+
+.m7-coverage-table td:nth-child(2),
+.m7-coverage-table td:nth-child(3) {
+  text-align: center;
+  width: 100px;
+}
+
+.m7-coverage-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   Section 9: Progress Bar Component
+   ========================================================================== */
+.m7-progress {
+  height: 20px;
+  background: var(--color-bar-track);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.m7-progress__fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width 0.6s ease;
+}
+
+/* Progress Bar Variants (based on confidence level) */
+.m7-progress__fill--green,
+.m7-progress__fill--high {
+  background: var(--color-progress-cyan);
+}
+
+.m7-progress__fill--warning,
+.m7-progress__fill--mid {
+  background: linear-gradient(90deg, var(--color-bar-orange-from), var(--color-bar-orange-to));
+}
+
+.m7-progress__fill--gray,
+.m7-progress__fill--low {
+  background: var(--color-label-purple);
+}
+
+/* ==========================================================================
+   Section 10: Confidence Badge Component
+   ========================================================================== */
+.m7-confidence-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 24px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
+}
+
+.m7-confidence-badge--green,
+.m7-confidence-badge--high {
+  background: rgba(31, 111, 120, 0.15);
+  color: var(--color-progress-cyan);
+}
+
+.m7-confidence-badge--warning,
+.m7-confidence-badge--mid {
+  background: rgba(212, 148, 58, 0.15);
+  color: var(--color-label-orange);
+}
+
+.m7-confidence-badge--gray,
+.m7-confidence-badge--low {
+  background: rgba(178, 122, 55, 0.15);
+  color: var(--color-label-purple);
+}
+
+/* ==========================================================================
+   Section 11: Note Component
+   ========================================================================== */
+.m7-note {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-muted);
+  border-left: 3px solid var(--color-border-blue);
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+/* ==========================================================================
+   Section 12: Quality Box Component (综合说明外框)
+   ========================================================================== */
+.m7-quality-box {
+  margin-top: var(--spacing-lg);
+  border: 1px solid var(--color-border-purple);
+  background: var(--color-surface);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Section 13: Quality Block Component (三段彩底区块)
+   ========================================================================== */
+.m7-quality-block {
+  padding: var(--spacing-lg) var(--spacing-xxl);
+}
+
+.m7-quality-block + .m7-quality-block {
+  border-top: 1px solid var(--color-divider);
+  margin-top: var(--spacing-lg);
+}
+
+/* Block Background Variants - 统一色调 */
+.m7-quality-block--blue,
+.m7-quality-block--yellow,
+.m7-quality-block--purple {
+  background: var(--color-section-blue-bg);
+}
+
+/* Block Title */
+.m7-block-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.m7-block-title__bullet {
+  width: 10px;
+  height: 10px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* Block Color - 统一为蓝色 */
+.m7-quality-block--blue .m7-block-title,
+.m7-quality-block--yellow .m7-block-title,
+.m7-quality-block--purple .m7-block-title {
+  color: var(--color-title-blue);
+}
+
+/* Block Description */
+.m7-block-desc {
+  font-size: var(--font-size-body);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+  line-height: var(--line-height-normal);
+}
+
+/* ==========================================================================
+   Section 14: Metric Card Component (蓝底进度条内卡)
+   ========================================================================== */
+.m7-metric-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.m7-metric-item + .m7-metric-item {
+  margin-top: var(--spacing-lg);
+}
+
+.m7-metric-item__head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.m7-metric-item__label {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.m7-metric-item__value {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-progress-cyan);
+}
+
+.m7-metric-item__sub {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   Section 15: List Card Component (黄底列表内卡)
+   ========================================================================== */
+.m7-list-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.m7-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+}
+
+.m7-list-item + .m7-list-item {
+  border-top: 1px solid var(--color-divider);
+  padding-top: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.m7-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.m7-dot--warning {
+  background: var(--color-label-orange);
+}
+
+.m7-dot--info {
+  background: var(--color-label-blue);
+}
+
+.m7-dot--error {
+  background: var(--color-label-red);
+}
+
+.m7-list-item__text {
+  font-size: var(--font-size-body);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+}
+
+.m7-list-item__count {
+  color: var(--color-label-orange);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ==========================================================================
+   Section 16: Badge List Component (紫底核心考点徽章)
+   ========================================================================== */
+.m7-badge-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.m7-badge-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+}
+
+.m7-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  background: var(--color-badge-improve-bg);
+  color: var(--color-badge-improve-text);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+}
+
+.m7-usage-grid {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.m7-usage-item {
+  flex: 1;
+  min-width: 0;
+  padding: var(--spacing-md);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+}
+
+.m7-usage-item__title {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-title-blue);
+  margin-bottom: var(--spacing-xs);
+}
+
+.m7-usage-item__text {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   Section 17: Empty State & No Data
+   ========================================================================== */
+.m7-empty-state {
+  text-align: center;
+  padding: var(--spacing-xxl);
+  color: var(--color-text-secondary);
+}
+
+.m7-empty-state__icon {
+  font-size: 48px;
+  margin-bottom: var(--spacing-md);
+  opacity: 0.5;
+}
+
+.m7-empty-state__text {
+  font-size: var(--font-size-body);
+}
+
+/* No Data Text */
+.m7-no-data {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* ==========================================================================
+   Section 18: Status Classes (状态类)
+   ========================================================================== */
+/* achieved: 已达标/高置信度 */
+.m7-status--achieved {
+  color: var(--color-progress-cyan);
+}
+
+/* attention: 需关注/中置信度 */
+.m7-status--attention {
+  color: var(--color-label-orange);
+}
+
+/* improve: 需加强/低置信度 */
+.m7-status--improve {
+  color: var(--color-label-purple);
+}
+
+/* nodata: 无数据 */
+.m7-status--nodata {
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   Section 19: Utility Classes
+   ========================================================================== */
+.m7-text-center {
+  text-align: center;
+}
+
+.m7-text-right {
+  text-align: right;
+}
+
+.m7-text-muted {
+  color: var(--color-text-secondary);
+}
+
+.m7-text-bold {
+  font-weight: var(--font-weight-bold);
+}
+
+.m7-mt-sm {
+  margin-top: var(--spacing-sm);
+}
+
+.m7-mt-md {
+  margin-top: var(--spacing-md);
+}
+
+.m7-mt-lg {
+  margin-top: var(--spacing-lg);
+}
+
+.m7-hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Section 20: Warnings Detail Component (数据告警明细)
+   ========================================================================== */
+
+/* ----- 20.1 区块容器 ----- */
+.m7-warnings-section {
+  margin-top: var(--spacing-lg);
+}
+
+.m7-warnings-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.m7-warnings-section-title {
+  margin: 0;
+  color: var(--color-title-blue);
+}
+
+.m7-warnings-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.m7-warnings-total-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  background: rgba(196, 64, 64, 0.1);
+  color: var(--color-label-red);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-sm);
+}
+
+.m7-warnings-summary {
+  margin: 0 0 var(--spacing-md) 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-muted);
+  border-left: 3px solid var(--color-border-purple);
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+/* ----- 20.2 严重程度小标签 ----- */
+.m7-severity-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 22px;
+  padding: 0 var(--spacing-xs);
+  font-size: var(--font-size-mini);
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--radius-sm);
+}
+
+.m7-severity-pill--high {
+  background: rgba(196, 64, 64, 0.15);
+  color: var(--color-label-red);
+}
+
+.m7-severity-pill--medium {
+  background: rgba(212, 148, 58, 0.15);
+  color: var(--color-label-orange);
+}
+
+.m7-severity-pill--low {
+  background: rgba(31, 111, 120, 0.15);
+  color: var(--color-label-blue);
+}
+
+/* ----- 20.3 严重程度圆点 ----- */
+.m7-severity-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: var(--spacing-xxs);
+  flex-shrink: 0;
+}
+
+.m7-severity-dot--high {
+  background: var(--color-label-red);
+}
+
+.m7-severity-dot--medium {
+  background: var(--color-label-orange);
+}
+
+.m7-severity-dot--low {
+  background: var(--color-label-blue);
+}
+
+/* ----- 20.4 告警分组容器 ----- */
+.m7-warnings-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+/* ----- 20.5 单个告警分组 ----- */
+.m7-warning-group {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-divider);
+}
+
+.m7-warning-group--high {
+  border-left: 4px solid var(--color-label-red);
+}
+
+.m7-warning-group--medium {
+  border-left: 4px solid var(--color-label-orange);
+}
+
+.m7-warning-group--low {
+  border-left: 4px solid var(--color-label-blue);
+}
+
+/* ----- 20.6 分组头部 ----- */
+.m7-warning-group__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-muted);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.m7-warning-group__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.m7-warning-group__icon-wrap--high {
+  background: rgba(196, 64, 64, 0.1);
+  color: var(--color-label-red);
+}
+
+.m7-warning-group__icon-wrap--medium {
+  background: rgba(212, 148, 58, 0.1);
+  color: var(--color-label-orange);
+}
+
+.m7-warning-group__icon-wrap--low {
+  background: rgba(31, 111, 120, 0.1);
+  color: var(--color-label-blue);
+}
+
+.m7-warning-group__icon-wrap svg {
+  width: 18px;
+  height: 18px;
+}
+
+.m7-warning-group__title-area {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.m7-warning-group__type {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.m7-warning-group__badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 var(--spacing-xs);
+  font-size: var(--font-size-mini);
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--radius-sm);
+}
+
+.m7-warning-group__badge--high {
+  background: var(--color-label-red);
+  color: #FFFFFF;
+}
+
+.m7-warning-group__badge--medium {
+  background: var(--color-label-orange);
+  color: #FFFFFF;
+}
+
+.m7-warning-group__badge--low {
+  background: var(--color-label-blue);
+  color: #FFFFFF;
+}
+
+.m7-warning-group__count-badge {
+  display: inline-flex;
+  align-items: baseline;
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: var(--font-weight-bold);
+}
+
+.m7-warning-group__count-badge--high {
+  background: rgba(196, 64, 64, 0.1);
+  color: var(--color-label-red);
+}
+
+.m7-warning-group__count-badge--medium {
+  background: rgba(212, 148, 58, 0.1);
+  color: var(--color-label-orange);
+}
+
+.m7-warning-group__count-badge--low {
+  background: rgba(31, 111, 120, 0.1);
+  color: var(--color-label-blue);
+}
+
+.m7-warning-group__count-unit {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-regular);
+  margin-left: 2px;
+}
+
+/* ----- 20.7 告警项列表容器 ----- */
+.m7-warning-group__items {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ----- 20.8 单条告警 ----- */
+.m7-warning-item {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.m7-warning-item:last-child {
+  border-bottom: none;
+}
+
+.m7-warning-item--high {
+  background: rgba(196, 64, 64, 0.02);
+}
+
+.m7-warning-item--medium {
+  background: rgba(212, 148, 58, 0.02);
+}
+
+.m7-warning-item--low {
+  background: rgba(31, 111, 120, 0.02);
+}
+
+/* ----- 20.9 左侧颜色指示条 ----- */
+.m7-warning-item__stripe {
+  width: 4px;
+  flex-shrink: 0;
+}
+
+.m7-warning-item--high .m7-warning-item__stripe {
+  background: var(--color-label-red);
+}
+
+.m7-warning-item--medium .m7-warning-item__stripe {
+  background: var(--color-label-orange);
+}
+
+.m7-warning-item--low .m7-warning-item__stripe {
+  background: var(--color-label-blue);
+}
+
+/* ----- 20.10 告警内容主体 ----- */
+.m7-warning-item__body {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  min-width: 0;
+}
+
+/* ----- 20.11 告警条目头部 ----- */
+.m7-warning-item__header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xxs);
+}
+
+.m7-warning-item__name {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.m7-warning-item__level {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 var(--spacing-xs);
+  background: var(--color-tag-bg);
+  color: var(--color-title-blue);
+  font-size: var(--font-size-mini);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-sm);
+}
+
+.m7-warning-item__code {
+  font-size: var(--font-size-mini);
+  color: var(--color-text-secondary);
+  font-family: monospace;
+}
+
+/* ----- 20.12 告警消息文本 ----- */
+.m7-warning-item__message {
+  font-size: var(--font-size-small);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+  margin: 0;
+}
+
+/* ----- 20.13 告警详情区域 ----- */
+.m7-warning-item__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+}
+
+/* ----- 20.14 详情标签 ----- */
+.m7-detail-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  height: 24px;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-mini);
+}
+
+.m7-detail-tag__label {
+  font-weight: var(--font-weight-regular);
+  opacity: 0.8;
+}
+
+.m7-detail-tag__value {
+  font-weight: var(--font-weight-bold);
+}
+
+.m7-detail-tag--current {
+  background: rgba(196, 64, 64, 0.1);
+  color: var(--color-label-red);
+}
+
+.m7-detail-tag--suggest {
+  background: rgba(31, 111, 120, 0.1);
+  color: var(--color-progress-cyan);
+}
+
+.m7-detail-tag--ci {
+  background: rgba(178, 122, 55, 0.1);
+  color: var(--color-label-purple);
+}
+
+/* ----- 20.15 图例说明 ----- */
+.m7-warnings-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-mini);
+  color: var(--color-text-secondary);
+}
+
+.m7-warnings-legend__label {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.m7-warnings-legend__item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.m7-warnings-legend__sep {
+  color: var(--color-divider);
+  margin: 0 var(--spacing-xxs);
+}
+
+/* ----- 20.16 无告警状态 ----- */
+.m7-no-warnings {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: rgba(31, 111, 120, 0.05);
+  border-radius: var(--radius-md);
+}
+
+.m7-no-warnings__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(31, 111, 120, 0.15);
+  border-radius: 50%;
+  color: var(--color-progress-cyan);
+  flex-shrink: 0;
+}
+
+.m7-no-warnings__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.m7-no-warnings__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.m7-no-warnings__text strong {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.m7-no-warnings__text span {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   Section 21: Print Styles
+   ========================================================================== */
+@media print {
+  .m7-data-reliability {
+    width: auto;
+    display: block;
+    flex: none;
+    min-height: auto;
+    padding: 0 15mm 0 18mm;  /* [T15] 统一 L/R 边距 (原值 0 15mm) */
+    background: var(--color-bg);
+    box-shadow: none;
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .m7-data-reliability__title {
+    font-size: 22px;
+    margin: 8px 0 7px;
+  }
+
+  .m7-data-reliability__title::after {
+    height: 3px;
+    margin-top: 6px;
+  }
+
+  .m7-report-box {
+    margin-bottom: 6px;
+  }
+
+  .m7-report-box__inner {
+    padding: 8px 10px;
+  }
+
+  .m7-section-title {
+    font-size: 13px;
+    margin: 4px 0 5px;
+  }
+
+  .m7-overview-cards {
+    gap: 8px;
+    margin-top: 5px;
+  }
+  
+  .m7-overview-card {
+    min-height: 80px;
+    padding: 7px 6px;
+    border-radius: 6px;
+    box-shadow: none;
+    border: 1px solid var(--color-divider);
+  }
+
+  .m7-overview-card__icon {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 3px;
+  }
+
+  .m7-overview-card__title {
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  .m7-overview-card__value {
+    margin-bottom: 2px;
+  }
+
+  .m7-overview-card__num {
+    font-size: 28px;
+  }
+
+  .m7-overview-card__unit {
+    font-size: 12px;
+  }
+
+  .m7-overview-card__sub,
+  .m7-kp-level-label,
+  .m7-kp-level-unit,
+  .m7-coverage-note {
+    font-size: 8px;
+  }
+
+  .m7-overview-card__kp-levels {
+    gap: 2px;
+    margin-top: 2px;
+  }
+
+  .m7-kp-level-row {
+    gap: 3px;
+    padding: 2px 4px;
+  }
+
+  .m7-kp-level-badge {
+    width: 20px;
+    height: 14px;
+    font-size: 8px;
+  }
+
+  .m7-kp-level-num {
+    font-size: 12px;
+  }
+  
+  .m7-quality-box {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 6px;
+    margin-top: 6px;
+    border: 0;
+    background: var(--color-bg);
+    overflow: visible;
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+  
+  .m7-quality-block {
+    padding: 8px 10px;
+    border: 1px solid var(--color-divider);
+    border-radius: 6px;
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
+  .m7-quality-block + .m7-quality-block {
+    border-top: 1px solid var(--color-divider);
+  }
+
+  .m7-quality-block--blue {
+    grid-column: 1 / -1;
+  }
+
+  .m7-block-title {
+    gap: 5px;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .m7-block-title__bullet {
+    width: 7px;
+    height: 7px;
+  }
+
+  .m7-block-desc {
+    margin-bottom: 5px;
+    font-size: 9px;
+    line-height: 1.25;
+  }
+  
+  /* P1修复: 表格断页处理 */
+  .m7-coverage-table {
+    margin-top: 4px;
+    font-size: 9px;
+    page-break-inside: auto;
+  }
+
+  .m7-coverage-table th,
+  .m7-coverage-table td {
+    padding: 4px 5px;
+    font-size: 9px;
+  }
+
+  .m7-progress {
+    height: 8px;
+  }
+
+  .m7-confidence-badge {
+    min-width: 28px;
+    height: 18px;
+    font-size: 9px;
+  }
+
+  .m7-note {
+    margin-top: 5px;
+    padding: 5px 7px;
+    font-size: 8px;
+    line-height: 1.25;
+  }
+
+  .m7-metric-card,
+  .m7-list-card,
+  .m7-badge-card {
+    padding: 5px 6px;
+    margin-top: 4px;
+    border-radius: 6px;
+  }
+
+  .m7-metric-item + .m7-metric-item {
+    margin-top: 5px;
+  }
+
+  .m7-metric-item__head {
+    margin-bottom: 3px;
+  }
+
+  .m7-metric-item__label,
+  .m7-metric-item__value {
+    font-size: 9px;
+  }
+
+  .m7-metric-item__sub {
+    margin-top: 2px;
+    font-size: 8px;
+  }
+
+  .m7-list-item {
+    gap: 5px;
+    padding: 3px 0;
+  }
+
+  .m7-list-item + .m7-list-item {
+    padding-top: 4px;
+    margin-top: 3px;
+  }
+
+  .m7-list-item__text {
+    font-size: 9px;
+    line-height: 1.25;
+  }
+
+  .m7-dot {
+    width: 6px;
+    height: 6px;
+    margin-top: 4px;
+  }
+
+  .m7-badge-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .m7-list-card {
+    column-count: 2;
+    column-gap: 8px;
+  }
+
+  .m7-list-item {
+    break-inside: avoid;
+  }
+
+  .m7-badge {
+    min-height: 20px;
+    padding: 2px 5px;
+    font-size: 8px;
+  }
+  
+  .m7-coverage-table thead {
+    display: table-header-group;  /* 分页时重复表头 */
+  }
+  
+  .m7-coverage-table tr {
+    break-inside: avoid;  /* 避免单行跨页 */
+    page-break-inside: avoid;
+  }
+  
+  .m7-coverage-table tbody {
+    page-break-inside: auto;
+  }
+  
+  /* 告警区块打印处理 */
+  .m7-warnings-section {
+    margin-top: 6px;
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+  
+  .m7-warning-group {
+    page-break-inside: avoid;
+  }
+  
+  .m7-warning-item {
+    page-break-inside: avoid;
+  }
+  
+  .m7-warnings-legend {
+    page-break-inside: avoid;
+  }
+}
+
+/* ==========================================================================
+   Section 22: 长文本换行处理 (P1修复)
+   ========================================================================== */
+/* 表格单元格长文本 */
+.m7-coverage-table td,
+.m7-coverage-table th {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 知识点名称列 - 允许更宽 */
+.m7-coverage-table td:nth-child(1) {
+  max-width: 220px;
+  overflow-wrap: anywhere;
+}
+
+/* 列表项文本 */
+.m7-list-item__text {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 徽章文本 - 2列网格自适应，允许换行 */
+.m7-badge {
+  max-width: 100%;
+  min-height: 36px;
+  height: auto;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-align: center;
+}
+
+/* 指标描述 */
+.m7-metric-item__sub {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ==========================================================================
+   Section 23: Dense Print Tail Overrides
+   ========================================================================== */
+@media print {
+  .m7-data-reliability--dense {
+    font-size: 9px;
+    line-height: 1.18;
+  }
+
+  .m7-data-reliability--dense .m7-data-reliability__title {
+    font-size: 20px;
+    margin: 6px 0 5px;
+  }
+
+  .m7-data-reliability--dense .m7-data-reliability__title::after {
+    height: 2px;
+    margin-top: 5px;
+  }
+
+  .m7-data-reliability--dense .m7-report-box {
+    margin-bottom: 4px;
+  }
+
+  .m7-data-reliability--dense .m7-report-box__inner {
+    padding: 6px 8px;
+  }
+
+  .m7-data-reliability--dense .m7-section-title {
+    font-size: 12px;
+    margin: 3px 0 4px;
+  }
+
+  .m7-data-reliability--dense .m7-overview-cards {
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .m7-data-reliability--dense .m7-overview-card {
+    min-height: 64px;
+    padding: 5px;
+  }
+
+  .m7-data-reliability--dense .m7-overview-card__icon {
+    width: 16px;
+    height: 16px;
+    margin-bottom: 2px;
+  }
+
+  .m7-data-reliability--dense .m7-overview-card__title {
+    font-size: 9px;
+    margin-bottom: 1px;
+  }
+
+  .m7-data-reliability--dense .m7-overview-card__num {
+    font-size: 24px;
+  }
+
+  .m7-data-reliability--dense .m7-overview-card__unit,
+  .m7-data-reliability--dense .m7-kp-level-num {
+    font-size: 10px;
+  }
+
+  .m7-data-reliability--dense .m7-kp-level-row {
+    gap: 2px;
+    padding: 1px 3px;
+  }
+
+  .m7-data-reliability--dense .m7-kp-level-badge {
+    width: 18px;
+    height: 12px;
+    font-size: 7px;
+  }
+
+  .m7-data-reliability--dense .m7-coverage-table {
+    margin-top: 2px;
+    font-size: 8px;
+  }
+
+  .m7-data-reliability--dense .m7-coverage-table th,
+  .m7-data-reliability--dense .m7-coverage-table td {
+    padding: 2px 4px;
+    font-size: 8px;
+    line-height: 1.15;
+  }
+
+  .m7-data-reliability--dense .m7-progress {
+    height: 6px;
+  }
+
+  .m7-data-reliability--dense .m7-confidence-badge {
+    min-width: 22px;
+    height: 14px;
+    font-size: 7px;
+  }
+
+  .m7-data-reliability--dense .m7-note {
+    margin-top: 3px;
+    padding: 3px 5px;
+    font-size: 7px;
+    line-height: 1.18;
+  }
+
+  .m7-data-reliability--dense .m7-quality-box {
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .m7-data-reliability--dense .m7-quality-block {
+    padding: 5px 6px;
+    border-radius: 5px;
+  }
+
+  .m7-data-reliability--dense .m7-quality-block--blue {
+    padding: 6px 8px;
+  }
+
+  .m7-data-reliability--dense .m7-quality-block--yellow,
+  .m7-data-reliability--dense .m7-quality-block--purple {
+    padding: 4px 5px;
+  }
+
+  .m7-data-reliability--dense .m7-block-title {
+    gap: 4px;
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+
+  .m7-data-reliability--dense .m7-block-title__bullet {
+    width: 5px;
+    height: 5px;
+  }
+
+  .m7-data-reliability--dense .m7-block-desc {
+    margin-bottom: 3px;
+    font-size: 7.5px;
+    line-height: 1.15;
+  }
+
+  .m7-data-reliability--dense .m7-metric-card,
+  .m7-data-reliability--dense .m7-list-card,
+  .m7-data-reliability--dense .m7-badge-card {
+    padding: 3px 4px;
+    margin-top: 2px;
+    border-radius: 4px;
+  }
+
+  .m7-data-reliability--dense .m7-metric-item + .m7-metric-item {
+    margin-top: 3px;
+  }
+
+  .m7-data-reliability--dense .m7-metric-item__head {
+    margin-bottom: 2px;
+  }
+
+  .m7-data-reliability--dense .m7-metric-item__label,
+  .m7-data-reliability--dense .m7-metric-item__value {
+    font-size: 8px;
+  }
+
+  .m7-data-reliability--dense .m7-metric-item__sub {
+    margin-top: 1px;
+    font-size: 7px;
+    line-height: 1.15;
+  }
+
+  .m7-data-reliability--dense .m7-list-card {
+    column-count: 2;
+    column-gap: 6px;
+  }
+
+  .m7-data-reliability--dense .m7-list-item {
+    gap: 3px;
+    padding: 1px 0;
+  }
+
+  .m7-data-reliability--dense .m7-list-item + .m7-list-item {
+    padding-top: 1px;
+    margin-top: 1px;
+  }
+
+  .m7-data-reliability--dense .m7-list-item__text {
+    font-size: 7.5px;
+    line-height: 1.12;
+  }
+
+  .m7-data-reliability--dense .m7-dot {
+    width: 4px;
+    height: 4px;
+    margin-top: 3px;
+  }
+
+  .m7-data-reliability--dense .m7-badge-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .m7-data-reliability--dense .m7-badge {
+    min-height: 16px;
+    padding: 1px 3px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    font-size: 7px;
+    line-height: 1.1;
+    border-radius: 3px;
+  }
+}
+
+/* ==========================================================================
+   End of 7_data_reliability.css
+   ========================================================================== */

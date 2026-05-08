@@ -1,0 +1,130 @@
+{#
+================================================================================
+report_master.jinja2 — 报告主入口模板 (v2)
+自动生成 by scaffold_templates.py
+生成时间: 2026-02-26 19:42
+
+用法:
+  template.render(**render_payload)
+  render_payload = {meta: {...}, cover: {...}, summary: {...}, ...}
+
+分页策略:
+  每个 .module-page 从新页开始 (break-before: page)
+  模块内容超过1页时自然溢出，下一模块仍从新页开始
+================================================================================
+#}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+  {{ combined_css | safe }}
+  </style>
+</head>
+<body>
+
+  {# ---- 页眉页脚已迁移至 Playwright headerTemplate/footerTemplate (T14 Phase 6) ---- #}
+
+  {# ---- M0: cover ---- #}
+  <div class="module-page">
+    {% include 'pages/m0_cover.jinja2' %}
+  </div>
+  {# ---- 场景1漫画 (第 2 页: 学习困境→寻求帮助, 全屏) ---- #}
+  <div class="module-page comic-module">
+    {% include 'pages/m2_comic_scene1.jinja2' %}
+  </div>
+  {# ---- 场景2漫画 (第 3 页: 学习成长→成绩突破, 全屏) ---- #}
+  <div class="module-page comic-module">
+    {% include 'pages/m3_comic_scene2.jinja2' %}
+  </div>
+  {# ---- 学生画像分析 (第 4 页: 三档分类 + 劣势 + 机构帮助) ---- #}
+  <div class="module-page">
+    {% include 'pages/student_profile.jinja2' %}
+  </div>
+  {# ---- 提升预期 (第 5 页: 提升路径 + 里程碑 + 关键提升点) ---- #}
+  <div class="module-page">
+    {% include 'pages/improvement_preview.jinja2' %}
+  </div>
+  {# ---- 数据分析概览 (封面后, 正文前, 无序号) ---- #}
+  <div class="module-page">
+    {% include 'pages/m_overview.jinja2' %}
+  </div>
+  {# ---- 目录 (框架页, 无序号) ---- #}
+  <div class="module-page">
+    {% include 'pages/m_toc.jinja2' %}
+  </div>
+  {# ---- M1: summary ---- #}
+  <div class="module-page" id="toc-m1">
+    {% include 'pages/m1_summary.jinja2' %}
+  </div>
+  {# ---- M4: domains ---- #}
+  <div class="module-page" id="toc-m4">
+    {% include 'pages/m4_domains.jinja2' %}
+  </div>
+  {# ---- M2: core_weakness ---- #}
+  <div class="module-page" id="toc-m2">
+    {% include 'pages/m2_core_weakness.jinja2' %}
+  </div>
+  {# ---- M3: kp_drill ---- #}
+  <div class="module-page" id="toc-m3">
+    {% include 'pages/m3_kp_drill.jinja2' %}
+  </div>
+
+  {# ---- M5: city_compare (page_visibility 控制) ---- #}
+  {% set pv = page_visibility | default({}, true) %}
+  {% if pv.m5_city_compare | default(true) %}
+  <div class="module-page" id="toc-m5">
+    {% include 'pages/m5_city_compare.jinja2' %}
+  </div>
+  {% endif %}
+  {# ---- M6: tiered_learning ---- #}
+  <div class="module-page" id="toc-m6">
+    {% include 'pages/m6_tiered_learning.jinja2' %}
+  </div>
+  {# ---- M9: question_detail ---- #}
+  <div class="module-page" id="toc-m9">
+    {% include 'pages/m9_question_detail.jinja2' %}
+  </div>
+  {# ---- M7: data_reliability ---- #}
+  <div class="module-page" id="toc-m7">
+    {% include 'pages/m7_data_reliability.jinja2' %}
+  </div>
+  {# ---- M8: appendix ---- #}
+  {% set appendix_data = appendix | default({}, true) %}
+  <div class="module-page" id="toc-m8">
+    {% with
+        meta=(meta | default({}, true)),
+        analysis_scope=(appendix_data.analysis_scope | default({}, true)),
+        difficulty=(appendix_data.difficulty | default({}, true)),
+        papers=(appendix_data.papers | default({}, true)),
+        metric_definitions=(appendix_data.metric_definitions | default([], true))
+    %}
+      {% include 'pages/m8_appendix.jinja2' %}
+    {% endwith %}
+  </div>
+
+  {# ---- teacher_supplement: 只在教师版渲染 ---- #}
+  {% if pv.show_teacher_supplement | default(false) %}
+  <div class="module-page" id="toc-teacher-supplement">
+    {% include 'pages/m_teacher_supplement.jinja2' %}
+  </div>
+  {% endif %}
+
+  {# ---- M10: composition (英语专属, 默认 false) ---- #}
+  {% if pv.m10_composition | default(false) %}
+  <div class="module-page" id="toc-m10">
+    {% include 'pages/m10_composition.jinja2' %}
+  </div>
+  {% endif %}
+
+  {# ---- M11: reading_deep (英语专属, 默认 false) ---- #}
+  {% if pv.m11_reading_deep | default(false) %}
+  <div class="module-page" id="toc-m11">
+    {% include 'pages/m11_reading_deep.jinja2' %}
+  </div>
+  {% endif %}
+
+</body>
+</html>

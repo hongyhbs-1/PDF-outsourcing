@@ -1,0 +1,621 @@
+/* =============================================================================
+   模块9：附录-分析依据 (Appendix: Analysis Basis)
+   文件：9_appendix.css
+   版本：1.1.0
+   更新：2025-01-15
+   说明：报告附录页样式，包含分析范围、难度分布、试卷清单、指标释义
+   
+   【v1.1.0 修订】
+   - 将 :root 变量下沉到 .appendix-page 作用域，避免全局污染
+   - 打印分页由全局 base.css 统一管理
+   - 增强打印分页控制
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   1. 打印与页面设置
+   ----------------------------------------------------------------------------- */
+@media print {
+  .m8-appendix-page {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 表格分页优化 */
+  .m8-appendix-table thead {
+    display: table-header-group;
+  }
+  
+  .m8-appendix-table tr {
+    break-inside: avoid;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   2. CSS 变量定义（作用域限定在 .m8-appendix-page）
+   
+   【重要】所有变量都使用 --appendix- 前缀并限定在 .m8-appendix-page 作用域内，
+   避免与其他模块的同名变量冲突
+   ----------------------------------------------------------------------------- */
+.m8-appendix-page {
+  /* 2.1 基础色（Premium Navy/Teal/Sand） */
+  --appendix-color-bg: var(--pm-bg-page, #f8f5ef);
+  --appendix-color-text-primary: var(--pm-text-primary, #1a2332);
+  --appendix-color-text-secondary: var(--pm-text-secondary, #4a5568);
+  --appendix-color-card: var(--pm-bg-card-alt, #faf8f4);
+
+  /* 2.2 标注色 */
+  --appendix-color-label-purple: var(--pm-sand-dark, #b27a37);
+  --appendix-color-label-orange: var(--pm-status-attention, #d4943a);
+  --appendix-color-label-blue: var(--pm-teal, #1f6f78);
+  --appendix-color-label-red: var(--pm-status-danger, #c44040);
+
+  /* 2.3 强调色 */
+  --appendix-color-accent: var(--pm-teal, #1f6f78);
+
+  /* 2.4 本页专用扩展色 */
+  --appendix-color-page: var(--pm-bg-card, #ffffff);
+  --appendix-color-surface-muted: var(--pm-bg-section, #f0ede6);
+  --appendix-color-surface-subtle: var(--pm-bg-muted, #f3f0ea);
+  --appendix-color-border-table: var(--pm-border-light, #e4e8ec);
+  --appendix-color-panel-border: var(--pm-border-card, #d8e2e8);
+
+  /* 2.5 本页强调色与进度条填充色 */
+  --appendix-color-accent-cyan: var(--pm-teal, #1f6f78);
+  --appendix-color-bar-orange: var(--pm-status-attention, #d4943a);
+  --appendix-color-bar-purple: var(--pm-sand-dark, #b27a37);
+
+  /* 2.6 状态色 */
+  --appendix-color-status-blue: var(--pm-status-achieved, #1f6f78);
+  --appendix-color-status-orange: var(--pm-status-attention, #d4943a);
+  --appendix-color-status-purple: var(--pm-status-improve, #8b4c6a);
+  
+  /* 2.7 字体 */
+  --appendix-font-family-base: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+  
+  /* 2.8 字号 */
+  --appendix-font-size-page-meta: 12px;
+  --appendix-font-size-page-title: 28px;
+  --appendix-font-size-panel-title: 16px;
+  --appendix-font-size-table-head: 14px;
+  --appendix-font-size-table-body: 14px;
+  --appendix-font-size-footnote: 12px;
+  
+  /* 2.9 字重 */
+  --appendix-font-weight-bold: 700;
+  --appendix-font-weight-medium: 600;
+  --appendix-font-weight-regular: 400;
+  
+  /* 2.10 行高 */
+  --appendix-line-height-tight: 1.4;
+  --appendix-line-height-normal: 1.6;
+  
+  /* 2.11 间距 */
+  --appendix-spacing-xxs: 4px;
+  --appendix-spacing-xs: 8px;
+  --appendix-spacing-sm: 12px;
+  --appendix-spacing-md: 16px;
+  --appendix-spacing-lg: 24px;
+  --appendix-spacing-xl: 32px;
+  --appendix-spacing-2xl: 48px;
+  
+  /* 2.12 圆角 */
+  --appendix-radius-none: 0px;
+  --appendix-radius-bar: 6px;
+  
+  /* 2.13 阴影 */
+  --appendix-shadow-none: none;
+}
+
+/* -----------------------------------------------------------------------------
+   3. 页面容器
+   ----------------------------------------------------------------------------- */
+.m8-appendix-page {
+  width: 210mm;
+  margin: 0 auto;
+  padding: 52px 46px 24px;
+  background: var(--appendix-color-bg);
+  font-family: var(--appendix-font-family-base);
+  color: var(--appendix-color-text-primary);
+  box-sizing: border-box;
+  line-height: var(--appendix-line-height-normal);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.m8-appendix-page--sparse .m8-appendix-panel + .m8-appendix-panel {
+  margin-top: 12px;
+}
+
+.m8-appendix-page--dense {
+  font-size: 13px;
+}
+
+.m8-appendix-page--dense .m8-appendix-panel + .m8-appendix-panel {
+  margin-top: 12px;
+}
+
+.m8-appendix-page--dense .m8-appendix-table th,
+.m8-appendix-page--dense .m8-appendix-table td {
+  padding: 8px 10px;
+}
+
+.m8-appendix-page--dense .m8-metrics-grid {
+  gap: 8px;
+}
+
+/* 4-5. 页眉/分割线已删除 (T14-Phase4: running header/footer 统一接管) */
+
+/* -----------------------------------------------------------------------------
+   6. 页面主体
+   ----------------------------------------------------------------------------- */
+.m8-appendix-body {
+  margin-left: 7px;
+}
+
+/* -----------------------------------------------------------------------------
+   7. 页面标题
+   ----------------------------------------------------------------------------- */
+/* V3-5: 首标题与页眉保持 20px 间距 (原 16px) */
+.m8-appendix-title {
+  margin: 20px 0 var(--appendix-spacing-md);
+}
+
+.m8-appendix-title__text {
+  display: inline-block;
+  font-size: var(--appendix-font-size-page-title);
+  font-weight: var(--appendix-font-weight-bold);
+  color: var(--appendix-color-text-primary);
+  margin: 0;
+}
+.m8-appendix-title__text::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin-top: var(--appendix-spacing-xs);
+  background: var(--appendix-color-accent-cyan);
+}
+
+.m8-appendix-title__underline {
+  display: none;
+}
+
+/* -----------------------------------------------------------------------------
+   8. 模块容器 Panel
+   ----------------------------------------------------------------------------- */
+.m8-appendix-panel {
+  border: 1px solid var(--appendix-color-panel-border);
+  background: var(--appendix-color-page);
+  box-shadow: var(--appendix-shadow-none);
+  border-radius: var(--appendix-radius-none);
+}
+
+.m8-appendix-panel + .m8-appendix-panel {
+  margin-top: var(--appendix-spacing-md);
+}
+
+/* 8.1 模块标题条（灰底） */
+.m8-appendix-panel__titlebar {
+  background: var(--appendix-color-surface-muted);
+  height: 40px;
+  line-height: 40px;
+  padding-left: 19px;
+  font-size: var(--appendix-font-size-panel-title);
+  font-weight: var(--appendix-font-weight-bold);
+  color: var(--appendix-color-text-primary);
+  border-bottom: 1px solid var(--appendix-color-border-table);
+}
+
+/* 8.2 模块标题（白底文字型） */
+.m8-appendix-panel__section-title {
+  padding: 14px 0 12px 19px;
+  font-size: var(--appendix-font-size-panel-title);
+  font-weight: var(--appendix-font-weight-bold);
+  color: var(--appendix-color-text-primary);
+  background: var(--appendix-color-page);
+}
+
+/* -----------------------------------------------------------------------------
+   9. 通用表格样式
+   ----------------------------------------------------------------------------- */
+.m8-appendix-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: var(--appendix-font-size-table-body);
+  line-height: var(--appendix-line-height-tight);
+}
+
+.m8-appendix-table th,
+.m8-appendix-table td {
+  border: 1px solid var(--appendix-color-border-table);
+  padding: 10px 12px;
+  vertical-align: middle;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.m8-appendix-table thead th {
+  background: var(--appendix-color-surface-muted);
+  font-weight: var(--appendix-font-weight-medium);
+  text-align: center;
+  font-size: var(--appendix-font-size-table-head);
+}
+
+.m8-appendix-table tbody td {
+  text-align: center;
+}
+
+/* 移除首行顶部边框（与标题条合并） */
+.m8-appendix-table thead th {
+  border-top: none;
+}
+
+/* -----------------------------------------------------------------------------
+   10. Key-Value 表格（分析范围、指标释义）
+   ----------------------------------------------------------------------------- */
+.m8-appendix-kv-table th {
+  width: 127px;
+  background: var(--appendix-color-surface-subtle);
+  text-align: left;
+  padding-left: 19px;
+  font-weight: var(--appendix-font-weight-regular);
+  color: var(--appendix-color-text-primary);
+}
+
+.m8-appendix-kv-table td {
+  text-align: left;
+  padding-left: 15px;
+  color: var(--appendix-color-text-secondary);
+  background: var(--appendix-color-page);
+}
+
+/* KV表格首行无顶部边框 */
+.m8-appendix-kv-table tbody tr:first-child th,
+.m8-appendix-kv-table tbody tr:first-child td {
+  border-top: none;
+}
+
+/* -----------------------------------------------------------------------------
+   11. 难度统计表格列宽
+   ----------------------------------------------------------------------------- */
+.m8-appendix-difficulty-table thead th:nth-child(1) { width: 80px; }  /* 难度 */
+.m8-appendix-difficulty-table thead th:nth-child(2) { width: 80px; }  /* 题量 */
+.m8-appendix-difficulty-table thead th:nth-child(3) { width: 80px; }  /* 占比 */
+.m8-appendix-difficulty-table thead th:nth-child(4) { width: 80px; }  /* 正确率 */
+.m8-appendix-difficulty-table thead th:nth-child(5) { width: auto; }  /* 状态 */
+
+/* -----------------------------------------------------------------------------
+   12. 状态文字样式
+   ----------------------------------------------------------------------------- */
+.m8-appendix-status {
+  font-weight: var(--appendix-font-weight-medium);
+}
+
+/* 掌握良好 - 简单 */
+.m8-appendix-status--good {
+  color: var(--appendix-color-status-blue);
+}
+
+/* 基本掌握 - 中等 */
+.m8-appendix-status--ok {
+  color: var(--appendix-color-status-orange);
+}
+
+/* 需要加强 - 困难 */
+.m8-appendix-status--need {
+  color: var(--appendix-color-status-purple);
+}
+
+/* 无数据 */
+.m8-appendix-status--nodata {
+  color: var(--appendix-color-text-secondary);
+}
+
+/* -----------------------------------------------------------------------------
+   13. 进度条组件
+   ----------------------------------------------------------------------------- */
+.m8-appendix-bar-list {
+  padding: 14px 19px 18px;
+}
+
+.m8-appendix-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.m8-appendix-bar-row + .m8-appendix-bar-row {
+  margin-top: 14px;
+}
+
+/* 左侧标签 */
+.m8-appendix-bar-label {
+  width: 52px;
+  flex-shrink: 0;
+  font-size: var(--appendix-font-size-table-body);
+  color: var(--appendix-color-text-secondary);
+}
+
+/* 进度条轨道 */
+.m8-appendix-bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--appendix-color-surface-muted);
+  border-radius: var(--appendix-radius-bar);
+  overflow: hidden;
+}
+
+/* 进度条填充 */
+.m8-appendix-bar-fill {
+  height: 100%;
+  border-radius: var(--appendix-radius-bar);
+  transition: width 0.3s ease;
+}
+
+/* 简单 - 青蓝色 */
+.m8-appendix-bar-fill--easy {
+  background: var(--appendix-color-accent-cyan);
+}
+
+/* 中等 - 橙色 */
+.m8-appendix-bar-fill--medium {
+  background: var(--appendix-color-bar-orange);
+}
+
+/* 困难 - 紫色 */
+.m8-appendix-bar-fill--hard {
+  background: var(--appendix-color-bar-purple);
+}
+
+/* 右侧百分比数值 */
+.m8-appendix-bar-value {
+  width: 44px;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: var(--appendix-font-size-table-body);
+  color: var(--appendix-color-text-secondary);
+}
+
+/* -----------------------------------------------------------------------------
+   14. 试卷清单表格列宽
+   ----------------------------------------------------------------------------- */
+.m8-appendix-papers-table thead th:nth-child(1) { width: 53px; }   /* # */
+.m8-appendix-papers-table thead th:nth-child(2) { width: auto; }   /* 试卷名称 */
+.m8-appendix-papers-table thead th:nth-child(3) { width: 64px; }   /* 题量 */
+.m8-appendix-papers-table thead th:nth-child(4) { width: 176px; }  /* 来源文件 */
+
+/* -----------------------------------------------------------------------------
+   15. 表格合计行
+   ----------------------------------------------------------------------------- */
+.m8-appendix-table-summary {
+  padding: 10px 19px 14px;
+  text-align: right;
+  font-size: var(--appendix-font-size-footnote);
+  color: var(--appendix-color-text-secondary);
+  background: var(--appendix-color-page);
+}
+
+/* -----------------------------------------------------------------------------
+   16. 空数据状态
+   ----------------------------------------------------------------------------- */
+.m8-appendix-empty {
+  padding: var(--appendix-spacing-lg) var(--appendix-spacing-md);
+  text-align: center;
+  color: var(--appendix-color-text-secondary);
+  font-size: var(--appendix-font-size-table-body);
+}
+
+.m8-appendix-empty--hidden {
+  display: none;
+}
+
+/* -----------------------------------------------------------------------------
+   17. 响应式断点（可选，打印时可忽略）
+   ----------------------------------------------------------------------------- */
+@media screen and (max-width: 900px) {
+  .m8-appendix-page {
+    width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .m8-appendix-panel {
+    overflow-x: auto;
+  }
+  
+  .m8-appendix-table {
+    min-width: 500px;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .m8-appendix-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--appendix-spacing-xs);
+  }
+  
+  .m8-appendix-title__text {
+    font-size: 18px;
+  }
+  
+  .m8-appendix-panel__titlebar {
+    font-size: 14px;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   17.5 指标释义双栏紧凑布局
+   ----------------------------------------------------------------------------- */
+.m8-metrics-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.m8-metric-item {
+  flex: 1 1 45%;
+  min-width: 200px;
+  background: var(--appendix-bg-muted, #F6F7F9);
+  border: 1px solid var(--appendix-border-card, #C4D4E0);
+  border-radius: 6px;
+  padding: 10px 14px;
+  break-inside: avoid;
+}
+
+.m8-metric-item__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--appendix-text-primary, #333);
+  margin-bottom: 4px;
+}
+
+.m8-metric-item__desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--appendix-text-secondary, #666);
+}
+
+.m8-appendix-usage {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: var(--appendix-color-surface-muted);
+  border-left: 3px solid var(--appendix-color-accent-cyan);
+  color: var(--appendix-color-text-secondary);
+}
+
+.m8-appendix-usage__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--appendix-color-text-primary);
+  margin-bottom: 6px;
+}
+
+.m8-appendix-usage__text {
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+/* -----------------------------------------------------------------------------
+   18. 打印优化补充 — padding-top 对齐
+   ----------------------------------------------------------------------------- */
+@media print {
+  /* [T15] 统一 L/R 边距: left=18mm(装订), right=15mm */
+  .m8-appendix-page {
+    width: auto;
+    display: block;
+    flex: none;
+    padding: 0 15mm 0 18mm;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+
+  /* [T15] body 内边距归零 — 由容器 padding 统一提供 */
+  .m8-appendix-body {
+    margin-left: 0;
+  }
+
+  .m8-appendix-title {
+    margin: 12px 0 10px;
+  }
+
+  .m8-appendix-title__text {
+    font-size: 24px;
+  }
+
+  .m8-appendix-panel + .m8-appendix-panel,
+  .m8-appendix-page--dense .m8-appendix-panel + .m8-appendix-panel {
+    margin-top: 8px;
+  }
+
+  .m8-appendix-panel__titlebar {
+    height: 28px;
+    line-height: 28px;
+    padding-left: 10px;
+    font-size: 13px;
+  }
+
+  .m8-appendix-panel__section-title {
+    padding: 8px 0 6px 10px;
+    font-size: 13px;
+  }
+
+  .m8-appendix-table {
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .m8-appendix-table th,
+  .m8-appendix-table td,
+  .m8-appendix-page--dense .m8-appendix-table th,
+  .m8-appendix-page--dense .m8-appendix-table td {
+    padding: 4px 6px;
+  }
+
+  .m8-appendix-kv-table th {
+    width: 90px;
+    padding-left: 8px;
+  }
+
+  .m8-appendix-kv-table td {
+    padding-left: 8px;
+  }
+
+  .m8-appendix-bar-list {
+    padding: 8px 10px 9px;
+  }
+
+  .m8-appendix-bar-row {
+    gap: 8px;
+  }
+
+  .m8-appendix-bar-row + .m8-appendix-bar-row {
+    margin-top: 7px;
+  }
+
+  .m8-appendix-bar-track {
+    height: 6px;
+  }
+
+  .m8-appendix-table-summary {
+    padding: 6px 10px 8px;
+    font-size: 10px;
+  }
+
+  .m8-appendix-table-notes {
+    margin-top: 5px !important;
+    padding-left: 8px !important;
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+  }
+
+  .m8-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .m8-metric-item {
+    min-width: 0;
+    padding: 6px 8px;
+    border-radius: 4px;
+  }
+
+  .m8-metric-item__name {
+    margin-bottom: 2px;
+    font-size: 10px;
+  }
+
+  .m8-metric-item__desc {
+    font-size: 9px;
+    line-height: 1.3;
+  }
+}
+
+/* =============================================================================
+   END OF FILE: 9_appendix.css
+   ============================================================================= */

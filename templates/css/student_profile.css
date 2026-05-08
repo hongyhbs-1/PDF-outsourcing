@@ -1,0 +1,671 @@
+/* ==========================================================================
+   student_profile.css — 第 4 页: 学生画像分析
+   双区结构：整体情况 / 整体分析
+   目标：单页容纳，并尽量铺满一页
+   ========================================================================== */
+
+/* --- 页面容器 --- */
+.sp-page {
+  /* 采用轻微整体缩放，而不是强行拉伸某个分区来铺满页面 */
+  --sp-natural-scale: 1.03;
+  width: calc(var(--page-width) / var(--sp-natural-scale));
+  /* 外层 .module-page::before 会占 5px，高度需扣除，避免溢出生成空白页 */
+  min-height: calc((var(--page-print-height) - 6px) / var(--sp-natural-scale));
+  margin: 0 auto;
+  background: var(--pm-bg-page);
+  font-family: var(--font-family-base);
+  color: var(--pm-text-primary);
+  padding: 10px 18mm 8px;
+  box-sizing: border-box;
+  zoom: var(--sp-natural-scale);
+}
+
+.sp-page--sparse .sp-section {
+  margin-bottom: 12px;
+}
+
+.sp-page--dense .sp-section {
+  margin-bottom: 8px;
+}
+
+.sp-page--dense .sp-hero,
+.sp-page--dense .sp-analysis-grid {
+  gap: 8px;
+}
+
+.sp-page--dense .sp-progress-panel,
+.sp-page--dense .sp-profile-card,
+.sp-page--dense .sp-hero-main,
+.sp-page--dense .sp-conclusion-card,
+.sp-page--dense .sp-analysis-card,
+.sp-page--dense .sp-metric-card {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* --- 页面标题 --- */
+.sp-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--pm-teal);
+  border-bottom: 2px solid var(--pm-gradient-accent-bar);
+  border-image: var(--pm-gradient-accent-bar) 1;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+/* --- 三大分区 --- */
+.sp-section {
+  margin-bottom: 8px;
+}
+
+.sp-section:last-child {
+  margin-bottom: 0;
+}
+
+.sp-section--analysis {
+  display: block;
+}
+
+.sp-group-head {
+  margin-bottom: 4px;
+}
+
+.sp-group-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin: 0;
+}
+
+.sp-group-desc {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--pm-text-muted);
+  margin: 0;
+}
+
+.sp-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin-bottom: 5px;
+  padding-left: 7px;
+  border-left: 3px solid var(--pm-teal);
+}
+
+/* ======================================================================
+   1. 整体情况
+   ====================================================================== */
+.sp-hero {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.sp-profile-card,
+.sp-hero-main,
+.sp-conclusion-card,
+.sp-progress-panel,
+.sp-metric-card,
+.sp-analysis-card {
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: 8px;
+  box-shadow: var(--pm-shadow-card);
+}
+
+.sp-profile-card {
+  flex: 5;
+  min-width: 0;
+  padding: 9px 10px;
+}
+
+.sp-hero-main {
+  flex: 7;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 10px;
+}
+
+.sp-hero-kicker {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--pm-teal-soft, #d0e8e8);
+  color: var(--pm-teal);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sp-hero-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  line-height: 1.26;
+  margin: 0;
+}
+
+.sp-hero-text {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--pm-text-secondary);
+  margin: 0;
+}
+
+.sp-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.sp-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.sp-chip--soft {
+  background: var(--pm-bg-muted);
+  color: var(--pm-text-muted);
+}
+
+.sp-chip--tier {
+  font-weight: 700;
+}
+
+.sp-chip--need_major {
+  background: #fde8eb;
+  color: #da2828;
+}
+
+.sp-chip--room_grow {
+  background: #fef8ea;
+  color: #e18c16;
+}
+
+.sp-chip--excellent {
+  background: #e8f8ee;
+  color: #10b981;
+}
+
+.sp-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin: 0 0 6px;
+}
+
+.sp-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px 6px;
+}
+
+.sp-profile-item {
+  padding: 5px 6px;
+  background: var(--pm-bg-muted);
+  border-radius: 7px;
+}
+
+.sp-profile-item__k {
+  font-size: 10px;
+  color: var(--pm-text-muted);
+  margin-bottom: 1px;
+}
+
+.sp-profile-item__v {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+}
+
+.sp-overview-conclusion {
+  break-inside: avoid;
+}
+
+.sp-conclusion-card {
+  padding: 10px 12px;
+  break-inside: avoid;
+}
+
+.sp-conclusion-card--warn {
+  background: var(--pm-bg-muted);
+  border-color: var(--pm-border-light);
+}
+
+.sp-conclusion-card--good {
+  background: var(--pm-status-success-bg, #e8f5f0);
+  border-color: rgba(45, 138, 110, 0.2);
+}
+
+.sp-conclusion-card__tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  background: var(--pm-bg-muted);
+  color: var(--pm-text-muted);
+}
+
+.sp-conclusion-card__tag--need_major {
+  background: #fde8eb;
+  color: #da2828;
+}
+
+.sp-conclusion-card__tag--room_grow {
+  background: #fef8ea;
+  color: #e18c16;
+}
+
+.sp-conclusion-card__tag--excellent {
+  background: #e8f8ee;
+  color: #10b981;
+}
+
+.sp-conclusion-card__text {
+  font-size: 12px;
+  line-height: 1.42;
+  color: var(--pm-text-secondary);
+  margin: 0;
+}
+
+.sp-conclusion-card__text + .sp-conclusion-card__text {
+  margin-top: 3px;
+}
+
+.sp-conclusion-card__text strong {
+  color: var(--pm-text-primary);
+}
+
+/* ======================================================================
+   2. 整体分析
+   ====================================================================== */
+.sp-progress-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-color: rgba(31, 111, 120, 0.18);
+  background: linear-gradient(180deg, rgba(31, 111, 120, 0.04), rgba(31, 111, 120, 0.01));
+}
+
+.sp-progress-panel__meta {
+  flex: 5;
+  min-width: 0;
+}
+
+.sp-progress-panel__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--pm-teal-soft, #d0e8e8);
+  color: var(--pm-teal);
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.sp-progress-panel__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  line-height: 1.28;
+  margin-bottom: 3px;
+}
+
+.sp-progress-panel__text {
+  font-size: 11px;
+  line-height: 1.32;
+  color: var(--pm-text-secondary);
+  margin: 0;
+}
+
+.sp-progress--panel {
+  flex: 6;
+  min-width: 0;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.sp-progress {
+  margin-bottom: 0;
+  padding: 0 2px;
+}
+
+.sp-progress-track {
+  height: 9px;
+  background: var(--pm-bg-muted);
+  border-radius: 999px;
+  position: relative;
+  overflow: visible;
+}
+
+.sp-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--pm-sand), var(--pm-teal));
+  transition: width 0.3s;
+  max-width: 100%;
+}
+
+.sp-progress-target {
+  position: absolute;
+  top: -3px;
+  width: 3px;
+  height: 15px;
+  background: var(--pm-status-success, #2d8a6e);
+  border-radius: 2px;
+}
+
+.sp-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--pm-text-muted);
+  margin-top: 3px;
+}
+
+.sp-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.sp-metric-card {
+  min-width: 0;
+  padding: 8px;
+}
+
+.sp-metric-card__tag {
+  display: inline-flex;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--pm-bg-muted);
+  color: var(--pm-text-secondary);
+  font-size: 9px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.sp-metric-card__value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+
+.sp-metric-card__value--current {
+  color: var(--pm-teal);
+}
+
+.sp-metric-card__value--neg {
+  color: var(--pm-status-danger, #c44040);
+}
+
+.sp-metric-card__value--pos {
+  color: var(--pm-status-success, #2d8a6e);
+}
+
+.sp-metric-card__label {
+  font-size: 10px;
+  color: var(--pm-text-secondary);
+  font-weight: 600;
+}
+
+.sp-metric-card__hint {
+  font-size: 10px;
+  color: var(--pm-text-muted);
+  margin-top: 3px;
+  line-height: 1.2;
+}
+
+.sp-analysis-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.sp-analysis-card {
+  min-width: 0;
+  padding: 10px 12px;
+  break-inside: avoid;
+}
+
+.sp-analysis-card--weakness {
+  flex: 6;
+}
+
+.sp-analysis-card--interpretation {
+  flex: 5;
+}
+
+.sp-weak-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sp-weak-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 8px;
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: var(--pm-radius-badge, 12px);
+  break-inside: avoid;
+}
+
+.sp-weak-item__indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pm-status-attention, #d4943a);
+  flex-shrink: 0;
+}
+
+.sp-weak-item__indicator--danger {
+  background: var(--pm-status-danger, #c44040);
+}
+
+.sp-weak-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.sp-weak-item__name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pm-text-primary);
+  margin-bottom: 1px;
+}
+
+.sp-weak-item__detail {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.sp-weak-item__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sp-weak-item__acc {
+  color: var(--pm-text-secondary);
+  font-weight: 600;
+}
+
+.sp-weak-item__delta {
+  color: var(--pm-text-muted);
+}
+
+.sp-weak-item__status-text {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.sp-weak-item__status-text--danger {
+  background: #fde8eb;
+  color: #da2828;
+}
+
+.sp-weak-item__status-text--attention {
+  background: #fef8ea;
+  color: #e18c16;
+}
+
+.sp-empty-card {
+  background: var(--pm-bg-muted);
+  border-radius: 8px;
+  padding: 12px 14px;
+  break-inside: avoid;
+}
+
+.sp-empty-card--good {
+  background: var(--pm-status-success-bg, #e8f5f0);
+}
+
+.sp-empty-card__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin-bottom: 5px;
+}
+
+.sp-empty-card__text {
+  font-size: 12px;
+  line-height: 1.42;
+  color: var(--pm-text-secondary);
+  margin: 0 0 6px;
+}
+
+.sp-empty-card__action {
+  font-size: 11px;
+  color: var(--pm-teal);
+  padding: 6px 8px;
+  background: var(--pm-teal-soft, #d0e8e8);
+  border-radius: 6px;
+  line-height: 1.35;
+}
+
+.sp-analysis-points {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.sp-analysis-point {
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: var(--pm-bg-muted);
+}
+
+.sp-analysis-point__label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin-bottom: 2px;
+}
+
+.sp-analysis-point__text {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--pm-text-secondary);
+  margin: 0;
+}
+
+/* ======================================================================
+   3. 分隔线 & 第三部分：本阶段介入重点
+   ====================================================================== */
+.sp-section-divider {
+  height: 1px;
+  background: var(--pm-border-light, #e4e8ec);
+  margin: 16px 0;
+}
+
+.sp-intervention-card {
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: 8px;
+  box-shadow: var(--pm-shadow-card);
+  padding: 10px 12px;
+}
+
+.sp-intervention-step {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 0;
+}
+
+.sp-intervention-step + .sp-intervention-step {
+  border-top: 1px solid var(--pm-border-light, #e4e8ec);
+  padding-top: 8px;
+}
+
+.sp-intervention-step__num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--pm-teal);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sp-intervention-step__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.sp-intervention-step__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin-bottom: 2px;
+}
+
+.sp-intervention-step__text {
+  font-size: 12px;
+  line-height: 1.42;
+  color: var(--pm-text-secondary);
+  margin: 0;
+}
+
+/* --- 打印优化 --- */
+@media print {
+  .sp-page {
+    width: auto;
+    padding: 0 15mm 0 18mm;
+    box-shadow: none;
+  }
+}

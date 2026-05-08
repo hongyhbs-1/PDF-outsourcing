@@ -1,0 +1,622 @@
+{#
+================================================================================
+模块 7: 数据可信度说明 (Data Reliability) - 扩展版 v1.1
+================================================================================
+文件名: 7_data_reliability.jinja2
+版本: 1.1.0
+更新: 新增告警明细区块 (warnings_detail)
+依赖CSS: 7_data_reliability.css
+================================================================================
+
+数据结构示例 (render_payload.data_reliability.section_4_coverage):
+--------------------------------------------------------------------------------
+{
+  "meta": {
+    "report_id": "RPT-2025-001234-X8Y9Z0",
+    "report_date": "2025-06-05",
+    "student_display_name": "张同学"
+  },
+  "data_reliability": {
+    "section_4_coverage": {
+      "title": "数据可信度说明",
+      "stats": {
+        "total_questions": 188,
+        "total_questions_text": "188题",
+        "test_period": "2025.03.01 - 2025.06.01",
+        "test_period_days": 96,
+        "l2_covered": 12,
+        "l2_total": 14,
+        "l2_covered_text": "12/14"
+      },
+      "summary_text": "本次诊断基于188道题目，覆盖12个L3知识点，数据充足，结论可信度较高。",
+      "coverage_table": {
+        "rows": [
+          {
+            "code": "1.01",
+            "name_cn": "数与代数",
+            "count": 45,
+            "count_text": "45题",
+            "bar": {
+              "width_pct": 80,
+              "style_width": "80%",
+              "class": "green"
+            },
+            "confidence": "高",
+            "confidence_text": "高",
+            "confidence_badge_class": "green"
+          }
+        ]
+      },
+      "data_insufficient": {
+        "low_sample": {
+          "title": "数据不足提示",
+          "items": [
+            {
+              "code": "1.03",
+              "name_cn": "三角形",
+              "count": 8,
+              "display": "三角形（仅8题，建议补充15题以上）"
+            }
+          ]
+        },
+        "uncovered_core": {
+          "title": "未覆盖的核心考点",
+          "items": [
+            {
+              "code": "2.05",
+              "name_cn": "圆的性质",
+              "display": "圆的性质"
+            }
+          ]
+        }
+      },
+      "quality_assessment": {
+        "metrics": [
+          {
+            "label": "数据充分度",
+            "value_pct": 85,
+            "subtext": "188题中有效题目169题，达到诊断要求"
+          }
+        ]
+      },
+      
+      // ========== 新增: 告警明细 (v1.1) ==========
+      "warnings_detail": {
+        "has_warnings": true,
+        "total_count": 5,
+        "summary_text": "本次诊断存在5条数据告警，请关注以下问题以提升诊断准确性。",
+        "groups": [
+          {
+            "type": "low_sample",
+            "type_label": "样本不足",
+            "severity": "high",
+            "severity_label": "高优先级",
+            "severity_class": "high",
+            "icon": "warning",
+            "count": 2,
+            "items": [
+              {
+                "code": "1.03",
+                "name_cn": "三角形",
+                "target_level": "L2",
+                "message": "三角形知识点仅8题，低于15题阈值",
+                "user_friendly_message": "三角形相关题目较少，建议补充更多练习",
+                "details": {
+                  "current_count": 8,
+                  "threshold": 15
+                },
+                "display_class": "warning--high"
+              }
+            ]
+          },
+          {
+            "type": "insufficient_coverage",
+            "type_label": "覆盖不足",
+            "severity": "medium",
+            "severity_label": "中优先级",
+            "severity_class": "medium",
+            "icon": "info",
+            "count": 2,
+            "items": [
+              {
+                "code": "2.05",
+                "name_cn": "圆的性质",
+                "target_level": "L3",
+                "message": "核心考点未覆盖",
+                "user_friendly_message": "圆的性质是重要考点，但本次诊断未涉及",
+                "display_class": "warning--medium"
+              }
+            ]
+          },
+          {
+            "type": "unstable_estimate",
+            "type_label": "估计不稳定",
+            "severity": "low",
+            "severity_label": "低优先级",
+            "severity_class": "low",
+            "icon": "info-circle",
+            "count": 1,
+            "items": [
+              {
+                "code": "3.01",
+                "name_cn": "概率基础",
+                "target_level": "L3",
+                "message": "正确率波动较大，置信区间宽",
+                "user_friendly_message": "该知识点的诊断结果存在一定不确定性",
+                "display_class": "warning--low"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+================================================================================
+#}
+
+{# ========================================================================
+   宏定义: Macro Definitions
+   ======================================================================== #}
+
+{#- 安全获取嵌套值 -#}
+{% macro safe_get(obj, key, default='') %}
+  {{- obj[key] if obj and key in obj and obj[key] is not none else default -}}
+{% endmacro %}
+
+{#- 概览卡片图标 SVG -#}
+{% macro icon_questions() %}
+<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="6" y="8" width="32" height="28" rx="3" stroke="currentColor" stroke-width="2"/>
+  <path d="M12 16H32M12 22H28M12 28H24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</svg>
+{% endmacro %}
+
+{% macro icon_knowledge() %}
+<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="22" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+  <circle cx="10" cy="28" r="4" stroke="currentColor" stroke-width="2"/>
+  <circle cx="22" cy="28" r="4" stroke="currentColor" stroke-width="2"/>
+  <circle cx="34" cy="28" r="4" stroke="currentColor" stroke-width="2"/>
+  <path d="M22 14V24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M22 24L10 24M22 24L34 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+{% endmacro %}
+
+{% macro icon_coverage() %}
+<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="22" cy="22" r="16" stroke="currentColor" stroke-width="2"/>
+  <path d="M22 10V22L30 30" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="22" cy="22" r="3" fill="currentColor"/>
+</svg>
+{% endmacro %}
+
+{#- 告警图标 SVG -#}
+{% macro icon_warning() %}
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10 2L18 17H2L10 2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+  <path d="M10 8V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="10" cy="14" r="1" fill="currentColor"/>
+</svg>
+{% endmacro %}
+
+{% macro icon_info() %}
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+  <path d="M10 9V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="10" cy="6" r="1" fill="currentColor"/>
+</svg>
+{% endmacro %}
+
+{% macro icon_check() %}
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+  <path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+{% endmacro %}
+
+{#- 根据告警类型获取图标 -#}
+{% macro get_warning_icon(icon_type) -%}
+  {%- if icon_type == 'warning' -%}
+    {{- icon_warning() -}}
+  {%- elif icon_type == 'check' -%}
+    {{- icon_check() -}}
+  {%- else -%}
+    {{- icon_info() -}}
+  {%- endif -%}
+{%- endmacro %}
+
+{# ========================================================================
+   主模板开始
+   ======================================================================== #}
+
+{#- 获取section数据 -#}
+{# 根据schema，数据路径为: data_reliability.section_4_coverage #}
+{# meta 变量定义 - 确保兼容性 #}
+{% set meta = meta | default({}) %}
+{% set section = data_reliability.section_4_coverage if data_reliability and data_reliability.section_4_coverage else {} %}
+{% set stats = section.stats if section.stats else {} %}
+{% set coverage_table = section.coverage_table if section.coverage_table else {} %}
+{% set data_insufficient = section.data_insufficient if section.data_insufficient else {} %}
+{% set quality_assessment = section.quality_assessment if section.quality_assessment else {} %}
+{% set warnings_detail = section.warnings_detail if section.warnings_detail else {} %}
+{% set low_sample = data_insufficient.low_sample if data_insufficient.low_sample else {} %}
+{% set low_sample_items = low_sample['items'] if low_sample and 'items' in low_sample else [] %}
+{% set uncovered_core = data_insufficient.uncovered_core if data_insufficient.uncovered_core else {} %}
+{% set uncovered_items = uncovered_core['items'] if uncovered_core and 'items' in uncovered_core else [] %}
+{% set coverage_count = coverage_table.rows | default([], true) | length %}
+{% if coverage_count >= 8 or low_sample_items | length >= 4 or uncovered_items | length >= 4 %}
+  {% set m7_density = 'dense' %}
+{% elif coverage_count <= 1 and low_sample_items | length == 0 and uncovered_items | length <= 1 %}
+  {% set m7_density = 'sparse' %}
+{% else %}
+  {% set m7_density = 'standard' %}
+{% endif %}
+
+<div class="m7-data-reliability m7-data-reliability--{{ m7_density }}">
+
+  {# ====================================================================
+     Title: 页面主标题
+     ==================================================================== #}
+  <h1 class="m7-data-reliability__title">
+    八、{{ section.title | default('数据可信度说明', true) }}
+  </h1>
+
+  <div class="module-content-card">
+
+  {# ====================================================================
+     Section 1: 数据概览
+     ==================================================================== #}
+  <section class="m7-report-box">
+    <div class="m7-report-box__inner">
+      <h2 class="m7-section-title">数据概览</h2>
+
+      <div class="m7-overview-cards">
+        {# --- 卡片1: 分析题量 --- #}
+        <div class="m7-overview-card">
+          <div class="m7-overview-card__icon">
+            {{ icon_questions() }}
+          </div>
+          <div class="m7-overview-card__title">分析题量</div>
+          <div class="m7-overview-card__value">
+            <span class="m7-overview-card__num">
+              {{ stats.total_questions | default('--', true) }}
+            </span>
+            <span class="m7-overview-card__unit">题</span>
+          </div>
+          {% if stats.question_tag_text %}
+          <span class="m7-tag m7-tag--{{ stats.question_tag_class | default('warning') }}">
+            <span>{{ stats.question_tag_text }}</span>
+            {% if stats.question_tag_class == 'sufficient' %}
+            <span class="m7-tag__check">✓</span>
+            {% endif %}
+          </span>
+          {% endif %}
+        </div>
+
+        {# --- 卡片2: 知识点数量 --- #}
+        <div class="m7-overview-card m7-overview-card--kp-count">
+          <div class="m7-overview-card__icon">
+            {{ icon_knowledge() }}
+          </div>
+          <div class="m7-overview-card__title">知识点数量</div>
+          <div class="m7-overview-card__kp-levels">
+            {# L1: 固定6个领域 #}
+            <div class="m7-kp-level-row">
+              <span class="m7-kp-level-badge m7-kp-level-badge--l1">L1</span>
+              <span class="m7-kp-level-label">领域</span>
+              <span class="m7-kp-level-num">6</span>
+              <span class="m7-kp-level-unit">个</span>
+            </div>
+            {# L2: 使用 stats.l2_total #}
+            <div class="m7-kp-level-row">
+              <span class="m7-kp-level-badge m7-kp-level-badge--l2">L2</span>
+              <span class="m7-kp-level-label">模块</span>
+              {% if stats.l2_total %}
+              <span class="m7-kp-level-num">{{ stats.l2_total }}</span>
+              {% else %}
+              <span class="m7-kp-level-num m7-no-data">--</span>
+              {% endif %}
+              <span class="m7-kp-level-unit">个</span>
+            </div>
+            {# L3: 使用 stats.l3_total #}
+            <div class="m7-kp-level-row">
+              <span class="m7-kp-level-badge m7-kp-level-badge--l3">L3</span>
+              <span class="m7-kp-level-label">知识点</span>
+              {% if stats.l3_total %}
+              <span class="m7-kp-level-num">{{ stats.l3_total }}</span>
+              {% else %}
+              <span class="m7-kp-level-num m7-no-data">--</span>
+              {% endif %}
+              <span class="m7-kp-level-unit">个</span>
+            </div>
+            {# L4: 使用 stats.l4_total #}
+            <div class="m7-kp-level-row">
+              <span class="m7-kp-level-badge m7-kp-level-badge--l4">L4</span>
+              <span class="m7-kp-level-label">技能点</span>
+              {% if stats.l4_total %}
+              <span class="m7-kp-level-num">{{ stats.l4_total }}</span>
+              {% else %}
+              <span class="m7-kp-level-num m7-no-data">--</span>
+              {% endif %}
+              <span class="m7-kp-level-unit">个</span>
+            </div>
+          </div>
+        </div>
+
+        {# --- 卡片3: L2知识点覆盖 --- #}
+        <div class="m7-overview-card">
+          <div class="m7-overview-card__icon">
+            {{ icon_coverage() }}
+          </div>
+          <div class="m7-overview-card__title">L3知识点覆盖</div>
+          <div class="m7-overview-card__value">
+            {% if stats.l3_covered is not none and stats.l3_total %}
+            <span class="m7-overview-card__num">{{ stats.l3_covered }}/{{ stats.l3_total }}</span>
+            {% else %}
+            <span class="m7-overview-card__num m7-no-data">--</span>
+            {% endif %}
+          </div>
+          {% if stats.l3_covered is not none and stats.l3_total %}
+            {% set coverage_rate = (stats.l3_covered / stats.l3_total * 100) | round(1) %}
+            <div class="m7-overview-card__sub">
+              覆盖率 {{ coverage_rate }}%
+            </div>
+            {% if coverage_rate >= 80 %}
+            <span class="m7-tag m7-tag--sufficient">
+              <span>知识点覆盖良好</span>
+              <span class="m7-tag__check">✓</span>
+            </span>
+            {% else %}
+            <span class="m7-tag m7-tag--error">
+              <span>知识点偏少</span>
+            </span>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ====================================================================
+     Section 2: 知识点覆盖详情表格
+     ==================================================================== #}
+  {% if coverage_table.rows and coverage_table.rows | length > 0 %}
+  <section class="m7-report-box m7-report-box--purple">
+    <div class="m7-report-box__inner">
+      <h2 class="m7-section-title">L2模块覆盖详情</h2>
+      <p class="m7-coverage-note">按知识点统计，1题可覆盖多个知识点，因此各模块题量之和可能大于总题数。</p>
+
+      <table class="m7-coverage-table">
+        <thead>
+          <tr>
+            <th>L2模块</th>
+            <th>题量</th>
+            <th>置信度</th>
+            <th>题量分布</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in coverage_table.rows %}
+          <tr>
+            <td>{{ row.name_cn | default('--', true) }}</td>
+            <td>{{ row.count_text | default(row.count ~ '题' if row.count else '--', true) }}</td>
+            <td>
+              {% if row.confidence %}
+              <span class="m7-confidence-badge m7-confidence-badge--{{ row.confidence_badge_class | default('gray', true) }}">
+                {{ row.confidence_text | default(row.confidence, true) }}
+              </span>
+              {% else %}
+              <span class="m7-no-data">--</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if row.bar %}
+              <div class="m7-progress" 
+                   role="progressbar" 
+                   aria-valuemin="0" 
+                   aria-valuemax="100" 
+                   aria-valuenow="{{ row.bar.width_pct | default(0) }}"
+                   aria-label="题量分布：{{ row.bar.width_pct | default(0) }}%">
+                <div class="m7-progress__fill m7-progress__fill--{{ row.bar.class | default('gray', true) }}"
+                     style="width: {{ row.bar.style_width | default('0%', true) }};"></div>
+              </div>
+              {% else %}
+              <div class="m7-progress">
+                <div class="m7-progress__fill m7-progress__fill--gray" style="width: 0%;"></div>
+              </div>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="m7-note">
+        <strong>置信度说明：</strong>
+          可信度说明：题量越多，结论越稳定。
+          高：题量充足，结论更可靠
+          中：题量一般，建议继续积累
+          低：题量偏少，暂作参考
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {# ====================================================================
+     Section 3: 综合说明盒子
+     ==================================================================== #}
+  <section class="m7-quality-box">
+    
+    {# --- 区块1: 整体数据质量评估 (蓝底) --- #}
+    <div class="m7-quality-block m7-quality-block--blue">
+      <h2 class="m7-block-title">
+        <span class="m7-block-title__bullet"></span>
+        <span>整体数据质量评估</span>
+      </h2>
+      
+      <p class="m7-block-desc">
+        {{ section.summary_text | default('本次诊断数据综合评估如下，请参考各指标了解数据可信程度。', true) }}
+      </p>
+
+      {% if quality_assessment.metrics and quality_assessment.metrics | length > 0 %}
+      <div class="m7-metric-card">
+        {% for metric in quality_assessment.metrics %}
+        <div class="m7-metric-item">
+          <div class="m7-metric-item__head">
+            <div class="m7-metric-item__label">{{ metric.label | default('指标', true) }}</div>
+            <div class="m7-metric-item__value">{{ metric.value_pct | default(0) }}%</div>
+          </div>
+          <div class="m7-progress" 
+               role="progressbar"
+               aria-valuemin="0" 
+               aria-valuemax="100" 
+               aria-valuenow="{{ metric.value_pct | default(0) }}">
+            <div class="m7-progress__fill m7-progress__fill--green"
+                 style="width: {{ metric.value_pct | default(0) }}%;"></div>
+          </div>
+          {% if metric.subtext %}
+          <div class="m7-metric-item__sub">{{ metric.subtext }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      {# 默认指标卡片 #}
+      <div class="m7-metric-card">
+        <div class="m7-metric-item">
+          <div class="m7-metric-item__head">
+            <div class="m7-metric-item__label">数据充分度</div>
+            <div class="m7-metric-item__value">
+              {% if stats.total_questions and stats.total_questions >= 100 %}85%
+              {% elif stats.total_questions and stats.total_questions >= 50 %}60%
+              {% else %}--{% endif %}
+            </div>
+          </div>
+          <div class="m7-progress">
+            <div class="m7-progress__fill m7-progress__fill--green"
+                 style="width: {% if stats.total_questions and stats.total_questions >= 100 %}85%{% elif stats.total_questions and stats.total_questions >= 50 %}60%{% else %}0%{% endif %};"></div>
+          </div>
+          <div class="m7-metric-item__sub">
+            {% if stats.total_questions %}
+            共{{ stats.total_questions }}题，
+            {% if stats.total_questions >= 100 %}数据充足，诊断结论可信度高
+            {% elif stats.total_questions >= 50 %}数据基本充足
+            {% else %}数据较少，建议补充更多题目{% endif %}
+            {% else %}暂无数据{% endif %}
+          </div>
+        </div>
+        
+        {% if stats.l2_covered is not none and stats.l2_total %}
+        <div class="m7-metric-item">
+          <div class="m7-metric-item__head">
+            <div class="m7-metric-item__label">知识点覆盖率</div>
+            <div class="m7-metric-item__value">{{ (stats.l2_covered / stats.l2_total * 100) | round(1) }}%</div>
+          </div>
+          <div class="m7-progress">
+            <div class="m7-progress__fill m7-progress__fill--green"
+                 style="width: {{ (stats.l2_covered / stats.l2_total * 100) | round(1) }}%;"></div>
+          </div>
+          <div class="m7-metric-item__sub">
+            覆盖{{ stats.l2_covered }}个L2知识点，占全部{{ stats.l2_total }}个的{{ (stats.l2_covered / stats.l2_total * 100) | round(1) }}%
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    {# --- 区块2: 数据不足提示 (黄底) --- #}
+    <div class="m7-quality-block m7-quality-block--yellow">
+      <h2 class="m7-block-title">
+        <span class="m7-block-title__bullet"></span>
+        <span>{{ low_sample.title | default('数据不足提示', true) }}</span>
+      </h2>
+      
+      <p class="m7-block-desc">
+        以下知识点的题目数量较少，诊断结论置信度较低，建议补充相关练习后重新评估。
+      </p>
+
+      <div class="m7-list-card">
+        {% if low_sample_items | length > 0 %}
+          {% for item in low_sample_items %}
+          <div class="m7-list-item">
+            <span class="m7-dot m7-dot--warning"></span>
+            <span class="m7-list-item__text">
+              <strong>{{ item.name_cn | default('未知知识点', true) }}</strong>
+              {% if item.count is not none %}
+              （仅<span class="m7-list-item__count">{{ item.count }}题</span>，建议补充至{{ item.threshold | default(15, true) }}题以上）
+              {% endif %}
+            </span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="m7-list-item">
+            <span class="m7-dot m7-dot--info"></span>
+            <span class="m7-list-item__text m7-text-muted">
+              所有知识点数据均已充足，无需额外补充。
+            </span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# --- 区块3: 未覆盖的核心考点 (紫底) --- #}
+    <div class="m7-quality-block m7-quality-block--purple">
+      <h2 class="m7-block-title">
+        <span class="m7-block-title__bullet"></span>
+        <span>{{ uncovered_core.title | default('未覆盖的核心考点', true) }}</span>
+      </h2>
+      
+      <p class="m7-block-desc">
+        以下核心考点在本次诊断中未涉及，暂无法形成评估结论。建议针对性补充相关练习。
+      </p>
+
+      <div class="m7-badge-card">
+        {% if uncovered_items | length > 0 %}
+        <div class="m7-badge-list">
+          {% for item in uncovered_items %}
+          <span class="m7-badge">{{ item.display | default(item.name_cn, true) }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="m7-empty-state">
+          <div class="m7-empty-state__text m7-text-muted">
+            ✓ 所有核心考点均已覆盖
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </section>
+
+  {% if m7_density == 'sparse' %}
+  <section class="m7-report-box m7-report-box--usage">
+    <div class="m7-report-box__inner">
+      <h2 class="m7-section-title">如何使用当前诊断</h2>
+      <div class="m7-usage-grid">
+        <div class="m7-usage-item">
+          <div class="m7-usage-item__title">先看趋势</div>
+          <div class="m7-usage-item__text">当前样本较少时，优先把结论理解为趋势提示，而不是最终定论。</div>
+        </div>
+        <div class="m7-usage-item">
+          <div class="m7-usage-item__title">优先补样本</div>
+          <div class="m7-usage-item__text">建议先补齐低样本知识点与未覆盖考点，再回看领域和逐题分析。</div>
+        </div>
+        <div class="m7-usage-item">
+          <div class="m7-usage-item__title">结合正文阅读</div>
+          <div class="m7-usage-item__text">先看摘要与核心短板，再用本页判断哪些结论可信、哪些结论仍需继续观察。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+
+</div>
+  </div><!-- /.module-content-card -->
+
+{# ========================================================================
+   End of Template
+   ======================================================================== #}

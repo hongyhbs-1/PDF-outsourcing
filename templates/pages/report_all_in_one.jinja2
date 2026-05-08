@@ -1,0 +1,167 @@
+{#
+================================================================================
+报告整合模板：report_all_in_one.jinja2
+
+目标：
+- 将 0/1/2/3/4/5/6/7/9 模块在一个 HTML 中顺序拼接输出
+- 第 8 页预留为“错题整理”占位页
+- 使用统一的 combined_css（由构建器生成并注入）
+
+关键注意：
+- 为避免各模块 CSS 类名/变量冲突，建议 combined_css 已做「按模块作用域」的 CSS Scope
+- 本模板作为“唯一入口模板”，内部使用 include 引入既有模块模板，便于继续独立迭代各模块
+- Jinja2 的 include 语法不支持 `include ... with x=...` 形式；本模板使用 `{% with %}...{% endwith %}`
+================================================================================
+#}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+  {{ combined_css | safe }}
+  </style>
+</head>
+<body>
+
+  {# ====================================================================== #}
+  {# 模块0：封面 #}
+  {# ====================================================================== #}
+  {% with cover=(render_payload.cover | default({}, true)), meta=(render_payload.meta | default({}, true)) %}
+    {% include 'm0_cover.jinja2' %}
+  {% endwith %}
+
+  <div class="page-break"></div>
+
+  {# ====================================================================== #}
+  {# 模块1：诊断摘要 #}
+  {# ====================================================================== #}
+  {% with module_1_summary=(render_payload.module_1_summary | default({}, true)), meta=(render_payload.meta | default({}, true)) %}
+    {% include 'm1_summary.jinja2' %}
+  {% endwith %}
+
+  <div class="page-break"></div>
+
+  {# ====================================================================== #}
+  {# 模块2：核心弱点 #}
+  {# ====================================================================== #}
+  {% set m2 = render_payload.module_2_core_weakness | default({}, true) %}
+  {% with meta=(render_payload.meta | default({}, true)), section_core_weakness=(m2.section_core_weakness | default({}, true)) %}
+    {% include 'm2_core_weakness.jinja2' %}
+  {% endwith %}
+
+  <div class="page-break"></div>
+
+  {# ====================================================================== #}
+  {# 模块3：知识点短板钻取 #}
+  {# ====================================================================== #}
+  {% set m3 = render_payload.module_3_kp_drill | default({}, true) %}
+  {% with section_3_kp_drill=m3, meta=(render_payload.meta | default({}, true)) %}
+    {% include 'm3_kp_drill.jinja2' %}
+  {% endwith %}
+
+  <div class="page-break"></div>
+
+  {# ====================================================================== #}
+  {# 模块4：六大领域达标分析 #}
+  {# 说明：CSS 中存在 .module-domains 的 A4 容器定义，但模板顶层只有 .section-domains；
+     为保证页面尺寸/内边距一致，这里外包一层 .module-domains。 #}
+  {# ====================================================================== #}
+  {% set m4 = render_payload.module_4_domains | default({}, true) %}
+  <div class="m4-module-domains">
+    {% with section_2_domains=(m4.section_2_domains | default({}, true)), sections=(m4.sections | default({}, true)), meta=(render_payload.meta | default({}, true)) %}
+      {% include 'm4_domains.jinja2' %}
+    {% endwith %}
+  </div>
+
+  <div class="page-break"></div>
+
+  {# ====================================================================== #}
+  {# 模块5：城市考情对照 #}
+  {# ====================================================================== #}
+  {% set m5 = render_payload.module_5_city_compare | default({}, true) %}
+  {% with data=m5, city_compare=m5, meta=(render_payload.meta | default({}, true)) %}
+    {% include 'm5_city_compare.jinja2' %}
+  {% endwith %}
+
+  <div class="page-break"></div>
+
+  {# ====================================================================== #}
+  {# 模块6：分层学习建议 #}
+  {# 说明：该模块模板顶层 class 为 .page，易与其它页面冲突；这里外包一层 .m6-tiered
+     并在 CSS 构建时以其作为 scope 前缀。 #}
+  {# ====================================================================== #}
+  {% set m6 = render_payload.module_6_tiered_learning | default({}, true) %}
+  <div class="m6-tiered">
+    {% with page_header=(m6.page_header | default({}, true)), module=(m6.module | default({}, true)), meta=(render_payload.meta | default({}, true)) %}
+      {% include 'm6_tiered_learning.jinja2' %}
+    {% endwith %}
+  </div>
+
+  <div class="page-break"></div>
+
+  {# ====================================================================== #}
+  {# 模块7：数据可信度说明 #}
+  {# ====================================================================== #}
+  {% set m7 = render_payload.module_7_data_reliability | default({}, true) %}
+  {% with data_reliability=m7, meta=(render_payload.meta | default({}, true)) %}
+    {% include 'm7_data_reliability.jinja2' %}
+  {% endwith %}
+
+  <div class="page-break"></div>
+
+  {# ====================================================================== #}
+  {# 模块8：错题整理（预留占位页） #}
+  {# ====================================================================== #}
+  {# <section class="wrongbook-placeholder">
+    <header class="wrongbook-placeholder__header">
+      <div class="wrongbook-placeholder__header-left">基线定位分析报告（数学）</div>
+      <div class="wrongbook-placeholder__header-right">
+        报告日期：{{ render_payload.meta.report_date | default('--', true) }}
+      </div>
+    </header>
+
+    <h1 class="wrongbook-placeholder__title">错题整理</h1>
+    <div class="wrongbook-placeholder__subtitle">
+      （预留页：后续用于自动归集“高频错题 / 典型错误原因 / 二次训练建议”）
+    </div>
+
+    <div class="wrongbook-placeholder__body">
+      <div class="wrongbook-placeholder__card">
+        <div class="wrongbook-placeholder__card-title">规划建议</div>
+        <ul class="wrongbook-placeholder__list">
+          <li>按知识点（L3/L4）归类错题，标注题型与错误原因。</li>
+          <li>每个知识点保留 1-3 道“代表性错题”，配套“正确解法 + 易错点提示”。</li>
+          <li>按“再练间隔（1天/3天/7天）”生成复习节奏，形成可闭环的错题本。</li>
+        </ul>
+      </div>
+
+      <div class="wrongbook-placeholder__card">
+        <div class="wrongbook-placeholder__card-title">占位说明</div>
+        <div class="wrongbook-placeholder__text">
+          当前版本先输出占位页；待接入错题明细数据后，可将此页替换为：错题清单（带二维码/链接）、
+          错误类型分布、再练计划、错因分析与针对性训练建议等。
+        </div>
+      </div>
+    </div>
+  </section> #}
+
+  {# 注：M8 已注释，不需要额外 page-break #}
+
+  {# ====================================================================== #}
+  {# 模块9：附录 - 分析依据 #}
+  {# ====================================================================== #}
+  {% set m9 = render_payload.module_9_appendix | default({}, true) %}
+  {% with
+      meta=(render_payload.meta | default({}, true)),
+      analysis_scope=(m9.analysis_scope | default({}, true)),
+      difficulty=(m9.difficulty | default({}, true)),
+      papers=(m9.papers | default({}, true)),
+      metric_definitions=(m9.metric_definitions | default([], true))
+  %}
+    {% include 'm8_appendix.jinja2' %}
+  {% endwith %}
+
+</body>
+</html>

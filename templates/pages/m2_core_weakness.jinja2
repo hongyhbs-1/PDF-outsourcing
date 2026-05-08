@@ -1,0 +1,291 @@
+{#
+================================================================================
+模块 2：核心短板清单 (Core Weakness List)
+文件：2_core_weakness.jinja2
+版本：v1.2 (修复 dict.items 方法冲突)
+描述：展示学生数学薄弱知识点清单，按P0/P1/P2优先级分组排序
+
+数据来源：
+--------------------------------------------------------------------------------
+- 适配层输入：report_output.meta + report_output.core_data.top_risks[]
+- 适配层输出：meta + section_core_weakness（本模板直接消费）
+
+数据结构示例 (render_payload 对齐):
+--------------------------------------------------------------------------------
+{
+  "meta": {
+    "left_title": "基线定位分析报告（数学）",
+    "report_date": "2025.06.05"
+  },
+  "section_core_weakness": {
+    "module_title": "核心短板清单",
+    "intro_text": "以下知识点按"提分优先级"排序，综合考虑：差距大小、考试频率、是否核心考点等因素。建议按优先级顺序逐个突破。",
+    "legend": [
+      {"level": "P0", "text": "紧急突破", "class": "p0"},
+      {"level": "P1", "text": "重点关注", "class": "p1"},
+      {"level": "P2", "text": "适时巩固", "class": "p2"}
+    ],
+    "table_columns": ["优先级", "知识点", "所属领域", "正确率", "距目标线", "城市排名", "标签"],
+    "items": [
+      {
+        "priority_level": "P0",
+        "priority_class": "p0",
+        "rank_index": 1,
+        "name": "相似三角形判定-AA",
+        "domain": "几何",
+        "accuracy_text": "53%",
+        "distance_text": "-22%",
+        "distance_class": "strong",
+        "has_city_rank": true,
+        "city_rank_text": "第1",
+        "tag": "核心",
+        "tag_class": "core"
+      }
+    ],
+    "reasoning": {
+      "title": "排序依据说明",
+      "subtitle_prefix": "排名第1的",
+      "highlight_kp": "相似三角形",
+      "subtitle_suffix": "综合得分最高的原因",
+      "cards": [
+        {"label": "差距较大", "value": "-17%", "value_class": "purple", "weight_text": "权重40%", "is_icon": false},
+        {"label": "城市高频", "value": "Top1", "value_class": "green", "weight_text": "权重35%", "is_icon": false},
+        {"label": "核心考点", "value": null, "value_class": null, "weight_text": "权重25%", "is_icon": true, "icon_color": "#3984AC"}
+      ],
+      "summary_text": "该知识点在上海历年中考真题统计中排名第1，属于常考方向，且当前正确率距目标线差距17个百分点，提升空间大，收益稳定。"
+    },
+    "tips": [
+      "第6项"概率计算"无城市排名数据，优先级判定基于正确率差距。",
+      "共识别8个薄弱点，其中P0级3个为紧急突破项。"
+    ],
+    "has_data": true
+  }
+}
+--------------------------------------------------------------------------------
+
+字段对齐说明 (report_output → 适配层 → 模板):
+- report_output.core_data.top_risks[].priority_level → items[].priority_level
+- report_output.core_data.top_risks[].name_cn → items[].name
+- report_output.core_data.top_risks[].parent_l1_name → items[].domain
+- report_output.core_data.top_risks[].accuracy → 适配层格式化 → items[].accuracy_text
+- report_output.core_data.top_risks[].gap_to_target → 适配层格式化 → items[].distance_text
+- report_output.core_data.top_risks[].city_rank → items[].city_rank_text + has_city_rank
+- report_output.core_data.top_risks[].tags[] → 适配层挑选 → items[].tag + tag_class
+
+条件渲染规则:
+- priority_class: p0 | p1 | p2 → 徽章颜色和行背景
+- distance_class: strong (|delta|>=12) | mild (|delta|<12) → 距目标线颜色
+- tag_class: core | exam | highfreq | neutral → 标签颜色
+- has_city_rank: true | false → 城市排名显示或"--"
+================================================================================
+#}
+
+{# ===== 顶层取数入口与默认值 ===== #}
+{# meta 变量定义 - 确保兼容性 #}
+{% set meta = meta | default({}) %}
+{% set s = section_core_weakness | default(core_weakness, true) | default({}) %}
+{# [v1.2 fix] 使用 .get() 避免与 dict.items() 方法冲突 #}
+{% set items = s.get('items', []) %}
+{% set has_data = s.get('has_data', (items | length) > 0) %}
+
+{# ===== 空值防护宏定义 ===== #}
+{% macro safe(value, default='') -%}
+  {{ value if value is not none and value != '' else default }}
+{%- endmacro %}
+
+<div class="m2-core-weakness-module">
+
+  {# ===== 模块标题 ===== #}
+  <h1 class="m2-cw-module-title">三、{{ safe(s.module_title, '核心短板清单') }}</h1>
+  <div class="m2-cw-module-title-underline"></div>
+
+  <div class="module-content-card">
+
+  {# ===== 3. 导语说明条（仅在有内容时渲染） ===== #}
+  {% if s.intro_text %}
+  <div class="m2-cw-note-bar">{{ s.intro_text }}</div>
+  {% endif %}
+
+  {# ===== 4. 表格卡片 ===== #}
+  <div class="m2-cw-weakness-card">
+
+    {# ----- 4.1 优先级图例 ----- #}
+    {% set legend = s.legend | default([
+      {"level": "P0", "text": "紧急突破", "class": "p0"},
+      {"level": "P1", "text": "重点关注", "class": "p1"},
+      {"level": "P2", "text": "适时巩固", "class": "p2"}
+    ]) %}
+    <div class="m2-cw-legend-row">
+      <span class="m2-cw-legend-title">优先级说明</span>
+      {% for lg in legend %}
+      <div class="m2-cw-legend-item">
+        <div class="m2-cw-legend-badge m2-cw-legend-badge--{{ lg.class | default('p0') }}">
+          {{ lg.level | default('P0') }}
+        </div>
+        <span>{{ lg.text | default('') }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    {# ----- 4.2 表头（支持自定义列名覆盖） ----- #}
+    {% set cols = s.table_columns | default(['优先级', '知识点', '所属领域', '正确率', '距目标线', '城市排名', '标签']) %}
+    <div class="m2-cw-table-header">
+      {% for col in cols %}
+      <div class="m2-cw-table-header__cell">{{ col }}</div>
+      {% endfor %}
+    </div>
+
+    {# ----- 4.3 数据行 ----- #}
+    {% if has_data %}
+      {% for it in items %}
+      {# 斑马纹：按循环索引奇偶 #}
+      {% set row_parity = 'odd' if loop.index is odd else 'even' %}
+      {% set p_class = it.priority_class | default(it.priority_level | default('P0') | lower) %}
+      <div class="m2-cw-table-row m2-cw-table-row--{{ p_class }} m2-cw-table-row--{{ row_parity }}"
+           aria-label="优先级{{ it.priority_level | default('') }}，知识点{{ it.name | default('') }}">
+
+        {# 列1：优先级徽章 #}
+        <div class="m2-cw-cell m2-cw-priority-cell">
+          <div class="m2-cw-priority-badge m2-cw-priority-badge--{{ p_class }}">
+            <span class="m2-cw-priority-badge__level">{{ it.priority_level | default('P0') }}</span>
+            <span class="m2-cw-priority-badge__rank">{{ it.rank_index | default(loop.index) }}</span>
+          </div>
+        </div>
+
+        {# 列2：知识点名称 #}
+        <div class="m2-cw-cell m2-cw-cell--left m2-cw-cell--name" title="{{ it.name | default('') }}">
+          {{ safe(it.name, '-') }}
+        </div>
+
+        {# 列3：所属领域 #}
+        <div class="m2-cw-cell m2-cw-cell--domain">{{ safe(it.domain, '-') }}</div>
+
+        {# 列4：正确率 #}
+        <div class="m2-cw-cell">{{ safe(it.accuracy_text, '-') }}</div>
+
+        {# 列5：距目标线 #}
+        {% set dist_class = it.distance_class | default('strong') %}
+        <div class="m2-cw-cell m2-cw-gap--{{ dist_class }}"
+             aria-label="距目标线：{{ it.distance_text | default('-') }}">
+          {{ safe(it.distance_text, '-') }}
+        </div>
+
+        {# 列6：城市排名（无数据显示 --） #}
+        {% if it.has_city_rank %}
+        <div class="m2-cw-cell">{{ it.city_rank_text | default('-') }}</div>
+        {% else %}
+        <div class="m2-cw-cell m2-cw-cell--muted">--</div>
+        {% endif %}
+
+        {# 列7：标签（无标签显示 -） #}
+        {% set t_class = it.tag_class | default('neutral') %}
+        {% if it.tag %}
+        <span class="m2-cw-cell m2-cw-tag m2-cw-tag--{{ t_class }}">{{ it.tag }}</span>
+        {% else %}
+        <span class="m2-cw-cell m2-cw-cell--muted">-</span>
+        {% endif %}
+
+      </div>
+      {% endfor %}
+    {% else %}
+      {# P6-T10: 空状态智能引导 — 根据 empty_reason 显示不同引导 #}
+      {% if s.get('empty_reason') %}
+      <div class="m2-cw-empty-guidance">
+        {% if s.get('empty_reason') == 'easy_heavy' %}
+          <div class="m2-cw-empty-guidance__icon">🎯</div>
+          <div class="m2-cw-empty-guidance__title">基础扎实，准备突破</div>
+        {% elif s.get('empty_reason') == 'low_volume' %}
+          <div class="m2-cw-empty-guidance__icon">📝</div>
+          <div class="m2-cw-empty-guidance__title">数据积累中</div>
+        {% else %}
+          <div class="m2-cw-empty-guidance__icon">🌟</div>
+          <div class="m2-cw-empty-guidance__title">全面达标</div>
+        {% endif %}
+
+        {% if s.get('reason_text') %}
+        <div class="m2-cw-empty-guidance__reason">{{ s.reason_text }}</div>
+        {% endif %}
+        {% if s.get('action_text') %}
+        <div class="m2-cw-empty-guidance__action">{{ s.action_text }}</div>
+        {% endif %}
+
+        {% if s.get('empty_context') %}
+        <div class="m2-cw-empty-guidance__stats">
+          本次分析: {{ s.empty_context.total_questions }} 题
+          {% if s.empty_reason == 'easy_heavy' %}
+            · 简单题占比 {{ s.empty_context.easy_ratio_text }}
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% else %}
+      {# 兜底: 无 empty_reason 时显示原始空态 #}
+      <div class="m2-cw-empty-state">
+        <div class="m2-cw-empty-state__icon">📊</div>
+        <div class="m2-cw-empty-state__text">暂无薄弱知识点数据</div>
+      </div>
+      {% endif %}
+    {% endif %}
+
+  </div>
+
+  {# ===== 5. 排序依据说明（可选，条件渲染） ===== #}
+  {% set reasoning = s.reasoning | default(None) %}
+  {% if reasoning and reasoning.cards %}
+  <div class="m2-cw-reason-section">
+
+    {# ----- 5.1 标题行 ----- #}
+    <div class="m2-cw-reason-header">
+      <span class="m2-cw-reason-header__title">{{ safe(reasoning.title, '排序依据说明') }}</span>
+      <span class="m2-cw-reason-header__subtitle">
+        {{ safe(reasoning.subtitle_prefix, '') }}"<span class="m2-cw-reason-header__highlight">{{ safe(reasoning.highlight_kp, '') }}</span>"{{ safe(reasoning.subtitle_suffix, '') }}
+      </span>
+    </div>
+
+    {# ----- 5.2 原因卡片 ----- #}
+    <div class="m2-cw-reason-cards">
+      {% for card in reasoning.cards %}
+      <div class="m2-cw-reason-card">
+        <div class="m2-cw-reason-card__label">{{ safe(card.label, '') }}</div>
+
+        {% if card.is_icon %}
+          {# 图标模式（如：核心考点的勾选图标） #}
+          <div class="m2-cw-reason-card__icon">
+            <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+              <circle cx="22" cy="22" r="16" fill="none" stroke="{{ card.icon_color | default('#3984AC') }}" stroke-width="3"/>
+              <path d="M14 22 L20 28 L30 16" fill="none" stroke="{{ card.icon_color | default('#3984AC') }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        {% else %}
+          {# 数值模式 #}
+          <div class="m2-cw-reason-card__value m2-cw-reason-card__value--{{ card.value_class | default('purple') }}">
+            {{ safe(card.value, '-') }}
+          </div>
+        {% endif %}
+
+        <span class="m2-cw-reason-card__weight">{{ safe(card.weight_text, '') }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    {# ----- 5.3 总结说明 ----- #}
+    {% if reasoning.summary_text %}
+    <div class="m2-cw-summary-bar">{{ reasoning.summary_text }}</div>
+    {% endif %}
+
+  </div>
+  {% endif %}
+
+  {# ===== 6. 数据提示（可选，条件渲染） ===== #}
+  {% set tips = s.tips | default([]) %}
+  {% if tips | length > 0 %}
+  <div class="m2-cw-tips-box">
+    <div class="m2-cw-tips-title">数据提示</div>
+    {% for tip in tips %}
+    <div class="m2-cw-tips-item">* {{ tip }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  </div><!-- /.module-content-card -->
+
+</div>

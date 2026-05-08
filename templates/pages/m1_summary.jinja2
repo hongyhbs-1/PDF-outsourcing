@@ -1,0 +1,401 @@
+{#
+================================================================================
+模块 1: 诊断摘要 (Diagnostic Summary)
+文件: 1_summary.jinja2
+版本: 1.1.1
+更新日期: 2025-01-15
+
+变更记录:
+- v1.1.1: [P0修复] 将 breakthrough.items 改为 breakthrough['items']，避免与 dict.items() 方法冲突
+- v1.1.0: 增加 module_1_summary 兼容层解包，支持两种传参方式
+
+⚠️ 重要规范：模板中遇到 items/keys/values/get 等与 dict 方法同名的字段时，
+   必须使用 ['xxx'] 取值，禁止使用点号访问！
+
+数据来源映射 (report_output → render_payload.module_1_summary):
+--------------------------------------------------------------------------------
+report_output.meta.report_date              → meta.report_date
+report_output.core_data.benchmark_summary   → summary.* (数值字段)
+report_output.brief_texts.key_findings      → key_findings[]
+report_output.core_data.top_risks           → breakthrough['items'][]
+report_output.standard_texts.*              → summary.banner_text, suggestion.text
+--------------------------------------------------------------------------------
+
+render_payload.module_1_summary 结构示例:
+--------------------------------------------------------------------------------
+{
+  "meta": {
+    "report_title": "基线定位分析报告（数学）",
+    "report_date": "2025.06.05"
+  },
+  "summary": {
+    "banner_text": "整体达标率66.7%，已接近75%目标线，但几何与应用题需重点补强。",
+    "target_score_text": "冲刺 120+",
+    "target_accuracy": 75,
+    "target_accuracy_text": "正确率 ≥ 75%",
+    "current_accuracy": 77,
+    "current_accuracy_text": "77%",
+    "current_delta": 2,
+    "current_delta_text": "+2.0%",
+    "current_trend": "up",
+    "pass_rate": 66.7,
+    "pass_rate_text": "66.7%",
+    "pass_segments": [
+      {"name": "未达标", "value": 6, "display_text": "6题", "color_hex": "#E0F3F7", "icon": "minus"},
+      {"name": "已达标", "value": 12, "display_text": "12题", "color_hex": "#23ACCC", "icon": "check"}
+    ]
+  },
+  "key_findings": [
+    "代数与函数板块稳定，基础题正确率较高，可冲刺更高分段。",
+    "几何板块薄弱，三角形与圆是拉分关键，需重点突破。",
+    "应用题与统计题需加强审题与建模，避免低级失分。"
+  ],
+  "breakthrough": {
+    "title": "优先突破项（P0级）",
+    "target_line_pct": 75,
+    "target_line_text": "目标线75%",
+    "items": [
+      {
+        "name_cn": "相似三角形",
+        "priority_level": "P0",
+        "accuracy": 58,
+        "accuracy_text": "58%",
+        "gap_to_target": -17,
+        "gap_to_target_text": "距目标线 -17%",
+        "city_tag_left": "城市top1",
+        "city_tag_right": "每年必考"
+      }
+    ]
+  },
+  "suggestion": {
+    "text": "建议：优先攻克以上2个短板，配合针对性训练提升得分稳定性。"
+  }
+}
+--------------------------------------------------------------------------------
+#}
+
+{# ============================================================================
+   兼容层：支持两种传参方式
+   方式1: template.render(**render_payload.module_1_summary)  -- 顶层变量直传
+   方式2: template.render(module_1_summary=...)              -- 包一层传入
+   ============================================================================ #}
+
+{% set _data = module_1_summary | default({}) %}
+{% set meta = _data.meta | default(meta | default({})) %}
+{% set summary = _data.summary | default(summary | default({})) %}
+{% set key_findings = _data.key_findings | default(key_findings | default([])) %}
+{% set breakthrough = _data.breakthrough | default(breakthrough | default({})) %}
+{% set suggestion = _data.suggestion | default(suggestion | default({})) %}
+{% set bt_items = breakthrough['items'] | default([]) %}
+{% if bt_items | length >= 6 %}
+  {% set m1_density = 'dense' %}
+{% else %}
+  {% set m1_density = 'standard' %}
+{% endif %}
+
+
+{# ============================================================================
+   宏定义区域 (Macros)
+   ============================================================================ #}
+
+{#- 空值安全输出宏 -#}
+{% macro safe(value, default='--') -%}
+  {{ value if value is defined and value is not none and value != '' else default }}
+{%- endmacro %}
+
+{#- 数值安全输出宏（保证返回数值用于计算） -#}
+{% macro safe_num(value, default=0) -%}
+  {{ value if value is defined and value is not none else default }}
+{%- endmacro %}
+
+{#- 百分比安全输出宏 -#}
+{% macro safe_pct(value, default='0%') -%}
+  {{ value if value is defined and value is not none and value != '' else default }}
+{%- endmacro %}
+
+{#- 趋势箭头宏 -#}
+{% macro trend_arrow(trend) -%}
+  {% if trend == 'up' %}
+    <span class="m1-kpi-arrow m1-kpi-arrow--up">↑</span>
+  {% elif trend == 'down' %}
+    <span class="m1-kpi-arrow m1-kpi-arrow--down">↓</span>
+  {% elif trend == 'stable' %}
+    <span class="m1-kpi-arrow m1-kpi-arrow--stable">→</span>
+  {% endif %}
+{%- endmacro %}
+
+{#- 获取状态类宏（基于数值比较，要求传入 number 类型） -#}
+{% macro get_status_class(accuracy, target) -%}
+  {% if accuracy is not defined or accuracy is none %}
+    m1-status--nodata
+  {% elif accuracy >= target %}
+    m1-status--achieved
+  {% elif accuracy >= target - 10 %}
+    m1-status--attention
+  {% else %}
+    m1-status--improve
+  {% endif %}
+{%- endmacro %}
+
+{#- 圆环图SVG宏（pass_rate 必须为 number 0-100） -#}
+{% macro donut_chart(pass_rate, size=158, stroke_width=20) %}
+  {% set radius = (size - stroke_width) / 2 %}
+  {% set circumference = 2 * 3.14159 * radius %}
+  {% set safe_rate = pass_rate if pass_rate is defined and pass_rate is not none else 0 %}
+  {% set dash_length = (safe_rate / 100) * circumference %}
+  {% set dash_gap = circumference - dash_length %}
+  
+  <div class="m1-donut-container" style="width: {{ size }}px; height: {{ size }}px;">
+    <svg class="m1-donut-svg" viewBox="0 0 {{ size }} {{ size }}">
+      {# 背景轨道 #}
+      <circle 
+        class="m1-donut-track"
+        cx="{{ size / 2 }}"
+        cy="{{ size / 2 }}"
+        r="{{ radius }}"
+      />
+      {# 进度弧 #}
+      <circle 
+        class="m1-donut-progress"
+        cx="{{ size / 2 }}"
+        cy="{{ size / 2 }}"
+        r="{{ radius }}"
+        stroke-dasharray="{{ dash_length }} {{ dash_gap }}"
+      />
+    </svg>
+    <div class="m1-donut-center">{{ safe_rate | round(1) }}%</div>
+  </div>
+{% endmacro %}
+
+
+{# ============================================================================
+   HTML 主体结构
+   ============================================================================ #}
+
+<div class="m1-report-page{% if m1_density == 'dense' %} m1-report-page--dense{% endif %}">
+  
+  {# --------------------------------------------------------------------------
+     章节标题 (Section Title)
+     -------------------------------------------------------------------------- #}
+  <section class="m1-section-title">
+    <h1 class="m1-section-title__text">一、诊断摘要</h1>
+    <div class="m1-section-title__underline"></div>
+  </section>
+
+  <div class="module-content-card">
+
+  {# --------------------------------------------------------------------------
+     整体学情总结（原摘要主卡片 + 原关键发现合并）
+     -------------------------------------------------------------------------- #}
+  <div class="m1-section-bar">一、整体学情总结</div>
+
+  <div class="m1-summary-card">
+    
+    {# 摘要横幅 #}
+    <div class="m1-summary-banner">
+      {{ safe(summary.banner_text, '暂无摘要信息') }}
+    </div>
+
+    {# 摘要内容区 #}
+    <div class="m1-summary-content">
+      
+      {# 左侧: 圆环图 + 说明 + 图例 #}
+      <div class="m1-summary-left">
+        {# 圆环图 - pass_rate 必须为 number #}
+        {% if summary.pass_rate is defined and summary.pass_rate is not none %}
+          {{ donut_chart(summary.pass_rate) }}
+        {% else %}
+          <div class="m1-data-unavailable">达标率数据暂无</div>
+        {% endif %}
+
+        {# 圆环图说明 #}
+        <div class="m1-donut-caption">L3 知识点达标率</div>
+
+        {# 图例 #}
+        {% if summary.pass_segments is defined and summary.pass_segments %}
+          <div class="m1-donut-legend">
+            {% for seg in summary.pass_segments %}
+              <div class="m1-legend-item">
+                <div class="m1-legend-icon {% if seg.icon == 'check' %}m1-legend-icon--pass{% else %}m1-legend-icon--fail{% endif %}"
+                     {% if seg.color_hex is defined %}style="background: {{ seg.color_hex }};"{% endif %}>
+                  {% if seg.icon == 'check' %}✓{% else %}—{% endif %}
+                </div>
+                <span class="m1-legend-text">
+                  {{ safe_num(seg.value, 0) }}个知识点
+                </span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          {# 默认图例 #}
+          <div class="m1-donut-legend">
+            <div class="m1-legend-item">
+              <div class="m1-legend-icon m1-legend-icon--fail">—</div>
+              <span class="m1-legend-text">未达标</span>
+            </div>
+            <div class="m1-legend-item">
+              <div class="m1-legend-icon m1-legend-icon--pass">✓</div>
+              <span class="m1-legend-text">已达标</span>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      {# 右侧: KPI 三行 #}
+      <div class="m1-summary-right">
+        
+        {# KPI 行 1: 目标分数 #}
+        <div class="m1-kpi-row">
+          <div class="m1-kpi-left">
+            <span class="m1-kpi-dot"></span>
+            <span class="m1-kpi-label">目标分数</span>
+          </div>
+          <div class="m1-kpi-pill">
+            <span class="m1-kpi-value">{{ safe(summary.target_score_text, '--') }}</span>
+          </div>
+        </div>
+
+        {# KPI 行 2: 目标线 #}
+        <div class="m1-kpi-row">
+          <div class="m1-kpi-left">
+            <span class="m1-kpi-dot"></span>
+            <span class="m1-kpi-label">目标线</span>
+          </div>
+          <div class="m1-kpi-pill">
+            <span class="m1-kpi-value">{{ safe(summary.target_accuracy_text, '--') }}</span>
+          </div>
+        </div>
+
+        {# KPI 行 3: 当前正确率 #}
+        {% set _current_acc = summary.current_accuracy | default(0) %}
+        {% set _target_acc = summary.target_accuracy | default(75) %}
+        <div class="m1-kpi-row {{ get_status_class(_current_acc, _target_acc) }}">
+          <div class="m1-kpi-left">
+            <span class="m1-kpi-dot"></span>
+            <span class="m1-kpi-label">总体知识点正确率</span>
+          </div>
+          <div class="m1-kpi-pill">
+            <span class="m1-kpi-value">{{ safe(summary.current_accuracy_text, '--') }}</span>
+            {% if summary.current_delta_text is defined and summary.current_delta_text %}
+              <span class="m1-kpi-delta">{{ summary.current_delta_text }}</span>
+            {% endif %}
+            {% if summary.current_trend is defined %}
+              {{ trend_arrow(summary.current_trend) }}
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {# 关键发现（并入整体学情总结） #}
+    {% if key_findings is defined and key_findings and key_findings|length > 0 %}
+    <div class="m1-findings-inline">
+      {% for finding in key_findings %}
+      <div class="m1-finding-item">
+        <span class="m1-bullet-square"></span>
+        <span>{{ safe(finding, '暂无发现') }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  {% if summary.high_freq_kp_total is defined and summary.pass_segments is defined and summary.pass_segments | length >= 2 %}
+  <p class="m1-chart-note">
+    上传试卷包含L3级知识点{{ summary.high_freq_kp_total }}个，其中{{ summary.pass_segments[0].value }}个超过目标正确率，{{ summary.pass_segments[1].value }}个暂时未达到
+  </p>
+  {% endif %}
+
+  {# 关键发现已合并到整体学情总结中 #}
+
+  {# --------------------------------------------------------------------------
+     优先突破项 (Breakthrough P0)
+     
+     ⚠️ P0修复：使用 ['items'] 取值，避免与 dict.items() 方法冲突
+     -------------------------------------------------------------------------- #}
+  <div class="m1-section-bar m1-section-bar--subtle">
+    二、优先突破
+  </div>
+  
+  {% if bt_items | length > 0 %}
+    <div class="m1-breakthrough-grid">
+      {% for item in bt_items %}
+        <div class="m1-breakthrough-card">
+          {# 知识点名称 #}
+          <div class="m1-bt-title">{{ safe(item.name_cn, '未知知识点') }}</div>
+          
+          {# 双层进度条 #}
+          <div class="m1-breakthrough-progress">
+            {# 目标线标签 - 动态定位，target_line_pct 必须为 number 0-100 #}
+            {% set target_pct = breakthrough.target_line_pct | default(75) %}
+            {% set target_pct_clamped = [0, [target_pct, 100] | min] | max %}
+            <span class="m1-breakthrough-target-label" style="left: {{ target_pct_clamped }}%; transform: translateX(-50%);">
+              {{ safe(breakthrough.target_line_text, '目标线' ~ target_pct_clamped ~ '%') }}
+            </span>
+            
+            {# 目标线竖线 #}
+            <div class="m1-breakthrough-target-line" style="left: {{ target_pct_clamped }}%;"></div>
+            
+            {# 上层: 目标线填充条 #}
+            <div class="m1-progress-row">
+              <div class="m1-progress-track">
+                <div class="m1-progress-fill m1-progress-fill--target" style="width: {{ target_pct_clamped }}%;">
+                  {# delta_vs_target_text 建议控制长度，避免溢出 #}
+                  <span class="m1-progress-text">{{ safe(item.delta_vs_target_text | default(item.gap_to_target_text), '--') }}</span>
+                </div>
+              </div>
+            </div>
+            
+            {# 下层: 当前水平条 - accuracy 必须为 number #}
+            <div class="m1-progress-row">
+              <div class="m1-progress-track">
+                {% set current_pct = item.accuracy | default(0) %}
+                {% set current_pct_clamped = [0, [current_pct, 100] | min] | max %}
+                {% set priority = item.priority_level | default('P0') %}
+                <div class="m1-progress-fill
+                  {% if priority == 'P0' %}m1-progress-fill--current
+                  {% elif priority == 'P1' %}m1-progress-fill--p1
+                  {% else %}m1-progress-fill--p2
+                  {% endif %}"
+                  style="width: {{ current_pct_clamped }}%;">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# 标签组 + 提升空间 (V3-1: 学生正确率从条内移到标签行) #}
+          <div class="m1-bt-tags">
+            {% if item.city_tag_left is defined and item.city_tag_left %}
+              <span class="m1-bt-tag m1-bt-tag--strong">{{ item.city_tag_left }}</span>
+            {% endif %}
+            {% if item.city_tag_right is defined and item.city_tag_right %}
+              <span class="m1-bt-tag">{{ item.city_tag_right }}</span>
+            {% endif %}
+            <span class="m1-bt-tag m1-bt-tag--improve">提升空间 {{ safe(item.accuracy_text, '0%') }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="m1-data-unavailable" style="margin: 0 var(--page-padding-x);">
+      暂无突破项数据
+    </div>
+  {% endif %}
+
+  {# --------------------------------------------------------------------------
+     建议提示条 (Suggestion Callout)
+     -------------------------------------------------------------------------- #}
+  {% if suggestion.text is defined and suggestion.text %}
+    <div class="m1-suggestion-callout">
+      {{ suggestion.text }}
+    </div>
+  {% endif %}
+
+  </div><!-- /.module-content-card -->
+
+</div>
+
+{# ============================================================================
+   END OF TEMPLATE
+   ============================================================================ #}

@@ -1,0 +1,166 @@
+/* ==========================================================================
+   目录页 (m_toc)
+   位置: 封面(M0) + 概览(overview)之后、诊断摘要(M1)之前
+   ========================================================================== */
+
+/* --- 页面容器 --- */
+.mtoc-page {
+  padding: 20mm 40px 16px;
+  font-family: var(--font-family-base);
+  color: var(--pm-text-primary);
+  background: var(--pm-bg-page);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  zoom: 1.04;
+}
+
+/* 目录项自动扩展间距 */
+.mtoc-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+/* --- 标题 --- */
+.mtoc-title-section {
+  margin-bottom: 32px;
+  text-align: center;
+}
+.mtoc-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin: 0 0 6px;
+  letter-spacing: 0.5em;
+  display: inline-block;
+  border-bottom: 3px solid var(--pm-teal);
+  padding-bottom: 6px;
+}
+
+/* --- 目录列表 --- */
+.mtoc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* P7-1: 放大字、加行距 */
+.mtoc-item {
+  display: flex;
+  align-items: baseline;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--pm-border-light);
+}
+.mtoc-item:last-child {
+  border-bottom: none;
+}
+
+/* 序号 */
+/* P7-1: 放大序号 */
+.mtoc-item__number {
+  flex: 0 0 42px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--pm-teal);
+}
+
+/* 标题文字 */
+/* P7-1: 放大标题文字 */
+.mtoc-item__title {
+  flex: 1;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--pm-text-primary);
+}
+
+/* 页码占位 */
+.mtoc-item__page {
+  flex: 0 0 52px;
+  text-align: right;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--pm-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 引导点 (标题与页码之间) */
+.mtoc-item__dots {
+  flex: 1;
+  border-bottom: 1px dotted var(--pm-border-light);
+  margin: 0 8px;
+  min-width: 20px;
+  align-self: baseline;
+  position: relative;
+  top: -4px;
+}
+
+/* 无序号的框架页 (概览/附录) 缩进对齐 */
+.mtoc-item--framepage .mtoc-item__number {
+  visibility: hidden;
+}
+
+/* --- 阅读建议 --- */
+.mtoc-reading-guide {
+  margin-top: 32px;
+  padding: 16px 20px;
+  background: rgba(31, 111, 120, 0.04);
+  border: 1px solid rgba(31, 111, 120, 0.12);
+  border-radius: var(--pm-radius-badge, 12px);
+}
+
+/* P7-2: 阅读建议标题弱化 — 不加粗、更淡颜色 */
+.mtoc-reading-guide__title {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--pm-text-muted);
+  margin-bottom: 10px;
+}
+
+.mtoc-reading-guide__items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mtoc-reading-guide__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--pm-text-muted);
+}
+
+/* P7-2: 阅读建议正文弱化 */
+.mtoc-reading-guide__item strong {
+  color: var(--pm-text-muted);
+  font-weight: 400;
+}
+
+/* P7-2: 阅读建议序号 — 空心圆，弱化 */
+.mtoc-reading-guide__num {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--pm-text-light);
+  color: var(--pm-text-light);
+  font-size: 10px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+/* --- 打印优化 --- */
+@media print {
+  /* [T15] 统一 L/R 边距: left=18mm(装订), right=15mm */
+  .mtoc-page {
+    width: auto;
+    padding: 0 15mm 0 18mm;
+  }
+}

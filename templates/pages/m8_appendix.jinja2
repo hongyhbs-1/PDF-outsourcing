@@ -1,0 +1,339 @@
+{# =============================================================================
+   模块9：附录-分析依据 (Appendix: Analysis Basis)
+   文件：9_appendix.jinja2
+   版本：1.1.0
+   更新：2025-01-15
+   说明：报告附录页模板，包含分析范围、难度分布、试卷清单、指标释义
+   
+   【v1.1.0 修订】
+   - 适配 report_output_v5.1 数据结构
+   - 配合 9_appendix_adapter.py 使用
+   - CSS 变量已改用 --appendix- 前缀
+   ============================================================================= #}
+
+{# -----------------------------------------------------------------------------
+   数据结构示例 (JSON Schema Example)
+   -----------------------------------------------------------------------------
+   输入数据由 9_appendix_adapter.py 从 report_output 和 report_input 转换而来：
+   
+   {
+     "meta": {
+       "report_name": "基线定位分析报告（数学）",
+       "report_date": "2025.06.05",
+       "page_title": "附录：分析依据"
+     },
+     "analysis_scope": {
+       "rows": [
+         { "label": "报告编号", "value": "RPT-2025-001234" },
+         { "label": "生成日期", "value": "2025年06月05日" },
+         { "label": "分析题量", "value": "188题" },
+         { "label": "测评周期", "value": "2025-03-01 ~ 2025-06-05（96天）" },
+         { "label": "数据来源", "value": "学生练习记录、模拟测试" },
+         { "label": "知识点体系", "value": "中考数学知识图谱 v2.0（67个L3知识点）" }
+       ]
+     },
+     "difficulty": {
+       "items": [
+         {
+           "level": "easy",
+           "name_cn": "简单",
+           "count": 62,
+           "ratio": 33,
+           "accuracy": 89,
+           "status_text": "掌握良好"
+         },
+         {
+           "level": "medium",
+           "name_cn": "中等",
+           "count": 78,
+           "ratio": 41,
+           "accuracy": 72,
+           "status_text": "基本掌握"
+         },
+         {
+           "level": "hard",
+           "name_cn": "困难",
+           "count": 48,
+           "ratio": 26,
+           "accuracy": 58,
+           "status_text": "需要加强"
+         }
+       ]
+     },
+     "papers": {
+       "items": [
+         { "index": 1, "paper_name": "2024年浦东新区一模卷", "question_count": 25, "source_file": "浦东一模.pdf" },
+         { "index": 2, "paper_name": "2024年徐汇区一模卷", "question_count": 25, "source_file": "徐汇一模.pdf" }
+       ],
+       "total_questions": 188,
+       "total_papers": 6
+     },
+     "metric_definitions": [
+       { "name": "正确率", "desc": "该知识点下答对题目数 / 总题目数 × 100%" },
+       { "name": "目标线", "desc": "目标分数对应的正确率要求（如120分→75%）" },
+       { "name": "距目标线", "desc": "正确率 - 目标线，正数为已达标，负数为未达标" },
+       { "name": "置信度", "desc": "基于题量判定：≥20题[高]、10-19题[中]、<10题[低]" },
+       { "name": "优先级", "desc": "P0(紧急)/P1(重点)/P2(适时)，综合差距与考频" },
+       { "name": "城市排名", "desc": "基于历年真题统计的知识点重要性排序" },
+       { "name": "年份覆盖率", "desc": "该知识点出现的年份数/统计总年份数" }
+     ]
+   }
+   ----------------------------------------------------------------------------- #}
+
+{# -----------------------------------------------------------------------------
+   辅助宏定义 (Helper Macros)
+   ----------------------------------------------------------------------------- #}
+
+{# 空值防护：返回值或默认占位符 #}
+{% macro safe_value(val, default='--') %}
+  {{- val if val is not none and val != '' else default -}}
+{% endmacro %}
+
+{# 状态类名映射：根据难度级别返回对应CSS类 #}
+{% macro status_class(level) %}
+  {%- if level == 'easy' -%}m8-appendix-status--good
+  {%- elif level == 'medium' -%}m8-appendix-status--ok
+  {%- elif level == 'hard' -%}m8-appendix-status--need
+  {%- else -%}m8-appendix-status--nodata
+  {%- endif -%}
+{% endmacro %}
+
+{# 进度条填充类名映射 #}
+{% macro bar_fill_class(level) %}
+  {%- if level == 'easy' -%}m8-appendix-bar-fill--easy
+  {%- elif level == 'medium' -%}m8-appendix-bar-fill--medium
+  {%- elif level == 'hard' -%}m8-appendix-bar-fill--hard
+  {%- else -%}
+  {%- endif -%}
+{% endmacro %}
+
+{# 安全百分比：限制在0-100范围内 #}
+{% macro safe_ratio(ratio) %}
+  {%- if ratio is not none -%}
+    {{- [0, [ratio, 100] | min] | max -}}
+  {%- else -%}
+    0
+  {%- endif -%}
+{% endmacro %}
+
+
+{# =============================================================================
+   模板主体开始
+   ============================================================================= #}
+
+{# meta 变量定义 - 确保兼容性 #}
+{% set meta = meta | default({}) %}
+{% set raw_analysis_rows = analysis_scope.rows if analysis_scope and analysis_scope.rows else [] %}
+{% if raw_analysis_rows is mapping %}
+  {% set analysis_label_map = {
+    'report_id': '报告编号',
+    'generated_date': '生成日期',
+    'question_count_text': '分析题量',
+    'data_source_desc': '数据来源',
+    'knowledge_system': '知识点体系'
+  } %}
+  {% set analysis_rows = [] %}
+  {% for key, value in raw_analysis_rows.items() %}
+    {% set _ = analysis_rows.append({
+      'label': analysis_label_map.get(key, key),
+      'value': value
+    }) %}
+  {% endfor %}
+{% else %}
+  {% set analysis_rows = raw_analysis_rows %}
+{% endif %}
+{% set paper_items = papers.get('items', []) if papers else [] %}
+{% set metric_count = metric_definitions | length if metric_definitions else 0 %}
+{% if paper_items | length <= 1 and metric_count <= 2 %}
+  {% set m8_density = 'sparse' %}
+{% elif paper_items | length >= 2 or metric_count >= 6 %}
+  {% set m8_density = 'dense' %}
+{% else %}
+  {% set m8_density = 'standard' %}
+{% endif %}
+
+<div class="m8-appendix-page m8-appendix-page--{{ m8_density }}">
+
+  {# ---------------------------------------------------------------------------
+     页面主体 (页眉已由 running header/footer 统一, T14-Phase4 删除内置页眉)
+     --------------------------------------------------------------------------- #}
+  <div class="m8-appendix-body">
+
+    {# -------------------------------------------------------------------------
+       3.1 页面标题
+       ------------------------------------------------------------------------- #}
+    <div class="m8-appendix-title">
+      <h1 class="m8-appendix-title__text">
+        {{ safe_value(meta.page_title, '附录：分析依据') }}
+      </h1>
+      <div class="m8-appendix-title__underline"></div>
+    </div>
+
+    <div class="module-content-card">
+
+    {# -------------------------------------------------------------------------
+       3.2 模块一：分析范围
+       ------------------------------------------------------------------------- #}
+    <section class="m8-appendix-panel">
+      <div class="m8-appendix-panel__titlebar">分析范围</div>
+      
+      {% if analysis_rows | length > 0 %}
+      <table class="m8-appendix-table m8-appendix-kv-table">
+        <tbody>
+          {% for row in analysis_rows %}
+          <tr>
+            <th>{{ safe_value(row.label) }}</th>
+            <td>{{ safe_value(row.value) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      {# 空数据兜底 #}
+      <div class="m8-appendix-empty">暂无分析范围数据</div>
+      {% endif %}
+    </section>
+
+    {# -------------------------------------------------------------------------
+       3.3 模块二：难度分布统计
+       ------------------------------------------------------------------------- #}
+    {% if difficulty and difficulty.get('items', []) | length > 0 %}
+    <section class="m8-appendix-panel">
+      <div class="m8-appendix-panel__titlebar">难度分布统计</div>
+
+      {# 3.3.1 统计表格 #}
+      <table class="m8-appendix-table m8-appendix-difficulty-table">
+        <thead>
+          <tr>
+            <th>难度</th>
+            <th>题量</th>
+            <th>占比</th>
+            <th>正确率</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in difficulty.get('items', []) %}
+          <tr>
+            <td>{{ safe_value(item.name_cn) }}</td>
+            <td>{{ safe_value(item.count) }}{% if item.count is not none %}题{% endif %}</td>
+            <td>{{ safe_value(item.ratio) }}{% if item.ratio is not none %}%{% endif %}</td>
+            <td>{{ safe_value(item.accuracy) }}{% if item.accuracy is not none %}%{% endif %}</td>
+            <td>
+              <span class="m8-appendix-status {{ status_class(item.level) }}">
+                {{ safe_value(item.status_text) }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {# 3.3.2 占比条形进度条 #}
+      <div class="m8-appendix-bar-list">
+        {% for item in difficulty.get('items', []) %}
+        <div class="m8-appendix-bar-row">
+          <div class="m8-appendix-bar-label">{{ safe_value(item.name_cn) }}</div>
+          <div class="m8-appendix-bar-track">
+            <div class="m8-appendix-bar-fill {{ bar_fill_class(item.level) }}"
+                 style="width: {{ safe_ratio(item.ratio) }}%;"></div>
+          </div>
+          <div class="m8-appendix-bar-value">
+            {% if item.ratio is not none %}{{ item.ratio }}%{% else %}--{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% else %}
+    {# 难度分布无数据时的占位（可选择隐藏或显示提示） #}
+    {#
+    <section class="m8-appendix-panel">
+      <div class="m8-appendix-panel__titlebar">难度分布统计</div>
+      <div class="m8-appendix-empty">暂无难度分布数据</div>
+    </section>
+    #}
+    {% endif %}
+
+    {# -------------------------------------------------------------------------
+       3.4 模块三：试卷/批次清单
+       ------------------------------------------------------------------------- #}
+    <section class="m8-appendix-panel">
+      <div class="m8-appendix-panel__section-title">试卷/批次清单</div>
+      
+      {% if papers and papers.get('items', []) | length > 0 %}
+      <table class="m8-appendix-table m8-appendix-papers-table">
+        <thead>
+          <tr>
+            <th>序号</th>
+            <th>试卷名称</th>
+            <th>题量</th>
+            <th>来源文件</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for paper in papers.get('items', []) %}
+          <tr>
+            <td>{{ safe_value(paper.index, loop.index) }}</td>
+            <td>{{ safe_value(paper.paper_name) }}</td>
+            <td>{{ safe_value(paper.question_count) }}{% if paper.question_count is not none %}题{% endif %}</td>
+            <td>{{ safe_value(paper.source_file) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+      {# 合计行 #}
+      <div class="m8-appendix-table-summary">
+        合计：{{ safe_value(papers.total_questions, 0) }}题 / {{ safe_value(papers.total_papers, 0) }}份试卷
+      </div>
+
+      {# 说明注释 #}
+      {# V3-3: 脚注左竖线 + 序号对齐 (与 m_overview 一致) #}
+      <div class="m8-appendix-table-notes" style="margin-top: 8px; font-size: 12px; color: #888; line-height: 1.6; border-left: 3px solid #D9D9D9; padding-left: 10px;">
+        <p style="margin: 2px 0;">注：1. 学生未解答的题目不计入分析数据，实际分析题量以合计数为准；</p>
+        <p style="margin: 2px 0; padding-left: 2.5em;">2. 试卷名称缺失时，相关题目统一归入"用户上传试卷"中。</p>
+      </div>
+      {% else %}
+      {# 空数据兜底 #}
+      <div class="m8-appendix-empty">暂无试卷数据</div>
+      {% endif %}
+    </section>
+
+    {# -------------------------------------------------------------------------
+       3.5 模块四：指标释义 (双栏紧凑布局)
+       ------------------------------------------------------------------------- #}
+    {% if metric_definitions and metric_definitions | length > 0 %}
+    <section class="m8-appendix-panel">
+      <div class="m8-appendix-panel__titlebar">指标释义</div>
+
+      <div class="m8-metrics-grid">
+        {% for metric in metric_definitions %}
+        <div class="m8-metric-item">
+          <div class="m8-metric-item__name">{{ safe_value(metric.name) }}</div>
+          <div class="m8-metric-item__desc">{{ safe_value(metric.desc) }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% else %}
+    {# 指标释义无数据时可选择隐藏 #}
+    {% endif %}
+
+    {% if m8_density != 'dense' %}
+    <div class="m8-appendix-usage">
+      <div class="m8-appendix-usage__title">附录使用说明</div>
+      <div class="m8-appendix-usage__text">
+        本附录用于说明分析范围、样本来源和指标口径。阅读正文时，可结合试卷清单确认样本覆盖，再结合指标释义理解各模块中的正确率、目标线和优先级等结论。
+      </div>
+    </div>
+    {% endif %}
+
+  </div>{# end .m8-appendix-body #}
+
+    </div><!-- /.module-content-card -->
+</div>{# end .m8-appendix-page #}
+
+{# =============================================================================
+   模板主体结束
+   ============================================================================= #}

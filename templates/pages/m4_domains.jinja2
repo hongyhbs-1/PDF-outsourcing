@@ -1,0 +1,592 @@
+{#
+================================================================================
+模块4：六大领域达标分析 (Six Major Domains Achievement Analysis)
+文件：4_domains.jinja2
+版本：v1.1.0
+更新：2025-01-15
+
+数据契约：render_payload.v1 → sections.section_2_domains (扩展版)
+依赖CSS：4_domains.css
+适配层：adapter_4_domains.py
+
+================================================================================
+适配层说明 (Adapter Notes)
+================================================================================
+
+本模板不直接消费 report_output，需要通过适配层转换：
+
+输入来源：
+  - report_output.core_data.domain_stats[]      → domain_items
+  - report_output.core_data.benchmark_summary   → target_accuracy
+  - report_output.standard_texts.domain_analyses[] → summary (可选)
+
+适配层职责：
+  1. 保证6个领域完整性（缺失则补空，has_data=false）
+  2. 生成展示友好字段：accuracy_text, delta_text, count_text, progress_*
+  3. 状态映射：status → progress_class/delta_class
+  4. 生成 summary 摘要
+
+关键转换：
+  - delta_vs_target = accuracy - target_accuracy（优先取原值，否则计算）
+  - progress_class: 已达标→achieved, 需关注→attention, 需加强→improve, 无数据→nodata
+  - delta_class: 正数→green, 负数→red, 无数据→gray
+
+CSS变量说明：
+  - 目标线位置通过 --target-pct CSS变量动态控制，支持非75%的目标线
+  - 在 .m4-chart-box 上设置 style="--target-pct: {{ target_accuracy }}%;"
+
+================================================================================
+数据结构JSON示例 (Expected Data Structure)
+================================================================================
+
+{
+  "section_2_domains": {
+    "title": "六大领域达标分析",
+    "target_accuracy": 75,
+    "target_accuracy_text": "目标线：正确率≥75%",
+
+    "legend": [
+      { "key": "attention", "label": "需关注" },
+      { "key": "achieved", "label": "已达标" },
+      { "key": "improve", "label": "需加强" }
+    ],
+
+    "domain_items": [
+      {
+        "code": "1.00",
+        "name_cn": "数与代数",
+        "status": "已达标",
+        "status_icon_url": null,
+        "accuracy": 82,
+        "accuracy_text": "82%",
+        "progress_pct": 82,
+        "progress_style_width": "82%",
+        "progress_class": "achieved",
+        "delta_vs_target": 7,
+        "delta_text": "+7%",
+        "delta_class": "green",
+        "count": 45,
+        "count_text": "45题",
+        "confidence": "高",
+        "confidence_class": "high",
+        "has_data": true
+      },
+      {
+        "code": "2.00",
+        "name_cn": "方程函数",
+        "status": "已达标",
+        "accuracy": 78,
+        "accuracy_text": "78%",
+        "progress_pct": 78,
+        "progress_style_width": "78%",
+        "progress_class": "achieved",
+        "delta_vs_target": 3,
+        "delta_text": "+3%",
+        "delta_class": "green",
+        "count": 38,
+        "count_text": "38题",
+        "confidence": "高",
+        "has_data": true
+      },
+      {
+        "code": "3.00",
+        "name_cn": "图形几何",
+        "status": "需加强",
+        "accuracy": 58,
+        "accuracy_text": "58%",
+        "progress_pct": 58,
+        "progress_style_width": "58%",
+        "progress_class": "improve",
+        "delta_vs_target": -17,
+        "delta_text": "-17%",
+        "delta_class": "red",
+        "count": 52,
+        "count_text": "52题",
+        "confidence": "高",
+        "has_data": true
+      },
+      {
+        "code": "4.00",
+        "name_cn": "统计概率",
+        "status": "需关注",
+        "accuracy": 68,
+        "accuracy_text": "68%",
+        "progress_pct": 68,
+        "progress_style_width": "68%",
+        "progress_class": "attention",
+        "delta_vs_target": -7,
+        "delta_text": "-7%",
+        "delta_class": "red",
+        "count": 28,
+        "count_text": "28题",
+        "confidence": "中",
+        "has_data": true
+      },
+      {
+        "code": "5.00",
+        "name_cn": "综合应用",
+        "status": "需加强",
+        "accuracy": 55,
+        "accuracy_text": "55%",
+        "progress_pct": 55,
+        "progress_style_width": "55%",
+        "progress_class": "improve",
+        "delta_vs_target": -20,
+        "delta_text": "-20%",
+        "delta_class": "red",
+        "count": 22,
+        "count_text": "22题",
+        "confidence": "中",
+        "has_data": true
+      },
+      {
+        "code": "6.00",
+        "name_cn": "数据分析",
+        "status": "无数据",
+        "accuracy": null,
+        "accuracy_text": "--",
+        "progress_pct": 0,
+        "progress_style_width": "0%",
+        "progress_class": "nodata",
+        "delta_vs_target": null,
+        "delta_text": "--",
+        "delta_class": "gray",
+        "count": 3,
+        "count_text": "3题",
+        "confidence": "低",
+        "has_data": false
+      }
+    ],
+
+    "summary": {
+      "title": "分析小结",
+      "items": [
+        {
+          "label": "优势领域",
+          "text": "数与代数、方程函数已达标，可作为提分基础。",
+          "highlights": [
+            { "text": "数与代数", "style": "achieved" },
+            { "text": "方程函数", "style": "achieved" }
+          ]
+        },
+        {
+          "label": "薄弱领域",
+          "text": "图形几何、综合应用距目标线差距较大，最主要失分点。",
+          "highlights": [
+            { "text": "图形几何", "style": "improve" },
+            { "text": "综合应用", "style": "improve" }
+          ]
+        },
+        {
+          "label": "数据提示",
+          "text": "数据分析领域题量不足（3）题，结论置信度较低。",
+          "highlights": [
+            { "text": "数据分析", "style": "muted" }
+          ]
+        }
+      ]
+    },
+
+    "note_text": "说明：目标线基于上海中考数学冲刺120+分目标设定"
+  }
+}
+
+================================================================================
+状态映射表 (Status → Class Mapping)
+================================================================================
+
+| status   | progress_class | badge_class | row_class    | delta颜色      |
+|----------|----------------|-------------|--------------|----------------|
+| 已达标   | achieved/blue  | achieved    | tr-achieved  | achieved/green |
+| 需关注   | attention/warning | attention | tr-attention | attention/red  |
+| 需加强   | improve/danger | improve     | tr-improve   | improve/red    |
+| 无数据   | nodata/gray    | nodata      | tr-nodata    | nodata/gray    |
+
+================================================================================
+#}
+
+{# ============================================================================
+   宏定义 (Macros)
+   ============================================================================ #}
+
+{#-
+   获取领域名称，兼容 name_cn 和 name 两种字段
+   用法: {{ get_domain_name(item) }}
+-#}
+{% macro get_domain_name(item) %}
+  {{- item.name_cn if (item.name_cn is defined and item.name_cn) else (item.name if (item.name is defined and item.name) else '--') -}}
+{% endmacro %}
+
+{#-
+  空值安全取值宏
+  用法: {{ safe(item.accuracy_text, '--') }}
+-#}
+{% macro safe(value, default='--') %}
+  {{- value if value is not none and value != '' else default -}}
+{% endmacro %}
+
+{#-
+  状态中文化宏 - 将英文/中文状态统一为中文
+  用法: {{ status_cn(item.status) }}
+-#}
+{% macro status_cn(status) %}
+  {%- if status in ['已达标', 'achieved'] -%}已达标
+  {%- elif status in ['需关注', 'attention'] -%}需关注
+  {%- elif status in ['需加强', 'improve'] -%}需加强
+  {%- else -%}无数据
+  {%- endif -%}
+{% endmacro %}
+
+{#-
+  状态类名映射宏 - 将状态转换为CSS类名（兼容中英文）
+  用法: {{ status_to_class(item.status) }}
+-#}
+{%- macro status_to_class(status) -%}
+  {%- if status in ['已达标', 'achieved', 'blue'] -%}m4-achieved
+  {%- elif status in ['需关注', 'attention', 'warning'] -%}m4-attention
+  {%- elif status in ['需加强', 'improve', 'danger'] -%}m4-improve
+  {%- elif status in ['无数据', 'nodata', 'gray'] -%}m4-nodata
+  {%- else -%}m4-nodata
+  {%- endif -%}
+{%- endmacro -%}
+
+{#-
+  表格行类名映射宏
+  用法: {{ row_class(item.status) }}
+-#}
+{% macro row_class(status) %}
+  {%- if status in ['已达标', 'achieved'] -%}m4-tr-achieved
+  {%- elif status in ['需关注', 'attention'] -%}m4-tr-attention
+  {%- elif status in ['需加强', 'improve'] -%}m4-tr-improve
+  {%- else -%}m4-tr-nodata
+  {%- endif -%}
+{% endmacro %}
+
+{#-
+  获取progress_class，兼容多种命名
+  用法: {{ get_progress_class(item) }}
+-#}
+{% macro get_progress_class(item) %}
+  {%- if item.progress_class -%}
+    m4-{{- item.progress_class -}}
+  {%- elif item.status -%}
+    {{- status_to_class(item.status) -}}
+  {%- else -%}
+    m4-nodata
+  {%- endif -%}
+{% endmacro %}
+
+{#-
+  获取delta_class，兼容多种命名
+  用法: {{ get_delta_class(item) }}
+-#}
+{% macro get_delta_class(item) %}
+  {%- if item.delta_class -%}
+    m4-{{- item.delta_class -}}
+  {%- elif item.progress_class -%}
+    m4-{{- item.progress_class -}}
+  {%- elif item.status -%}
+    {{- status_to_class(item.status) -}}
+  {%- else -%}
+    m4-nodata
+  {%- endif -%}
+{% endmacro %}
+
+{#-
+  判断是否有数据
+  用法: {% if has_data(item) %}
+-#}
+{% macro has_data(item) %}
+  {{- item.has_data if item.has_data is defined else (item.accuracy is not none and item.accuracy != '') -}}
+{% endmacro %}
+
+
+{# ============================================================================
+   模块4: 六大领域达标分析
+   ============================================================================ #}
+
+{# 获取section数据，支持多种数据路径 #}
+{% set _domains_source = domains | default({}) %}
+{% set section = section_2_domains if section_2_domains is defined else 
+                 (sections.section_2_domains if sections is defined and sections.section_2_domains is defined else 
+                 (_domains_source if _domains_source.domain_items is defined else {})) %}
+
+{# 获取domain_items数组 #}
+{% set all_domains = section.domain_items if section.domain_items is defined else [] %}
+
+{# 分离有数据和无数据的领域 #}
+{% set domains = [] %}
+{% set nodata_domains = [] %}
+{% for d in all_domains %}
+  {% set d_has_data = d.has_data if d.has_data is defined else (d.accuracy is not none) %}
+  {% if d_has_data %}
+    {% set _ = domains.append(d) %}
+  {% else %}
+    {% set _ = nodata_domains.append(d) %}
+  {% endif %}
+{% endfor %}
+
+{# 获取summary数据 #}
+{% set summary = section.summary if section.summary is defined else {} %}
+
+{# 获取legend数据，设置默认值 #}
+{% set legend_items = section.legend if section.legend is defined else [
+  { "key": "attention", "label": "需关注" },
+  { "key": "achieved", "label": "已达标" },
+  { "key": "improve", "label": "需加强" }
+] %}
+
+{# 确保 meta 变量可用 — 必须在使用前 default #}
+{% set meta = meta | default({}) %}
+
+{# 目标值：section 优先 → meta 兜底 → 默认 75 #}
+{% set target_accuracy = (
+  section.target_accuracy
+    if (section.target_accuracy is defined and section.target_accuracy not in [none, ''])
+    else (
+      meta.target_accuracy
+        if (meta.target_accuracy is defined and meta.target_accuracy not in [none, ''])
+        else 75
+    )
+) | float %}
+
+<section class="m4-module-domains m4-section-domains" data-module="4" data-module-name="domains">
+  
+  {# ------------------------------------------------------------------------
+     标题组 (Section Heading)
+     ------------------------------------------------------------------------ #}
+  <div class="m4-section-heading">
+    <h2 class="m4-section-title">二、{{ section.title | default('六大领域达标分析') }}</h2>
+    <div class="m4-section-underline" aria-hidden="true"></div>
+  </div>
+
+  <div class="module-content-card">
+
+  {# ------------------------------------------------------------------------
+     图表说明条 (Chart Meta Bar)
+     ------------------------------------------------------------------------ #}
+  <div class="m4-chart-meta-bar">
+    <div class="m4-meta-text">
+      目标线：正确率 ≥ {{ section.target_accuracy_text | default(meta.target_accuracy ~ '%') }}
+    </div>
+    <div class="m4-legend" aria-label="图例">
+      {% for leg in legend_items %}
+      <div class="m4-legend-item">
+        {% set leg_class = status_to_class(leg.key | default('')) | trim %}
+        <span class="m4-swatch {{ leg_class }}" aria-hidden="true">&nbsp;</span>
+        <span>{{ leg.label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# ------------------------------------------------------------------------
+     条形图容器 (Chart Box)
+     说明：通过 --target-pct CSS变量传递目标线位置，支持非75%的目标线
+     ------------------------------------------------------------------------ #}
+  <div class="m4-chart-box" style="--target-pct: {{ target_accuracy }}%;">
+    <div class="m4-chart-rows-wrapper">
+      {# 目标线竖线 - 位置由 --target-pct 控制 #}
+      <div class="m4-target-line" aria-hidden="true"></div>
+
+      {# 遍历6大领域 #}
+      {% for item in domains %}
+      {% set item_has_data = item.has_data if item.has_data is defined else (item.accuracy is not none) %}
+      {% set pclass = get_progress_class(item) %}
+      {% set dclass = get_delta_class(item) %}
+      
+      <div class="m4-chart-row" data-domain-code="{{ item.code | default('') }}">
+        {# 领域名称 #}
+        <div class="m4-label">{{ get_domain_name(item) }}</div>
+
+        {# 进度条 #}
+        <div class="m4-progress" 
+             role="progressbar" 
+         aria-label="{{ get_domain_name(item) }} 正确率 {{ item.accuracy_text | default('--') }}"
+             aria-valuenow="{{ item.progress_pct | default(0) }}"
+             aria-valuemin="0"
+             aria-valuemax="100">
+          {% if item_has_data %}
+            <div class="m4-fill {{ pclass }}" 
+                 style="width: {{ item.progress_style_width | default((item.progress_pct | default(0)) ~ '%') }}">
+            </div>
+            <span class="m4-delta {{ dclass }}">{{ item.delta_text | default('--') }}</span>
+          {% else %}
+            <div class="m4-fill m4-nodata" style="width: 0%"></div>
+            <span class="m4-delta m4-nodata">--</span>
+          {% endif %}
+        </div>
+
+        {# 正确率数值 #}
+        <div class="m4-value {% if not item_has_data %}m4-nodata{% endif %}">
+          {{ item.accuracy_text | default('--') }}
+        </div>
+      </div>
+      {% else %}
+      {# 空数据兜底显示 #}
+      <div class="m4-chart-row">
+        <div class="m4-label m4-text-muted">暂无数据</div>
+        <div class="m4-progress">
+          <div class="m4-fill m4-nodata" style="width: 0%"></div>
+          <span class="m4-delta m4-nodata">--</span>
+        </div>
+        <div class="m4-value m4-nodata">--</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {# 刻度轴条件 class: 右拥挤 ≥85% 或 左极端 ≤8% #}
+    {% set axis_class =
+      'm4-axis--tight-right' if (target_accuracy | float) >= 85
+      else ('m4-axis--target-left' if (target_accuracy | float) <= 8 else '')
+    %}
+    <div class="m4-axis {{ axis_class }}" aria-hidden="true" style="--target-pct: {{ target_accuracy }}%;">
+      <span class="m4-tick m4-t0">0%</span>
+      <span class="m4-tick m4-t-target">{{ target_accuracy | round(0) | int }}%目标</span>
+      <span class="m4-tick m4-t100">100%</span>
+    </div>
+  </div>
+
+  {# ------------------------------------------------------------------------
+     无数据领域合并说明 (Merged No-Data Note)
+     ------------------------------------------------------------------------ #}
+  {% if nodata_domains | length > 0 %}
+  <div class="m4-nodata-merge">
+    <span class="m4-nodata-merge__label">数据不充分：</span>
+    {% for nd in nodata_domains %}
+    <span class="m4-nodata-merge__name">{{ get_domain_name(nd) }}</span>
+    {%- if not loop.last %}、{% endif %}
+    {% endfor %}
+    <span class="m4-nodata-merge__text">
+      — 以上 {{ nodata_domains | length }} 个领域答题数据不足，暂无法评估。建议补充相关领域的答题记录（每领域至少 5 题）。
+    </span>
+  </div>
+  {% endif %}
+
+  {# ------------------------------------------------------------------------
+     表格卡片：领域表现详情 (Table Card)
+     ------------------------------------------------------------------------ #}
+  {% if domains | length > 0 %}
+  <div class="m4-table-card">
+    <div class="m4-table-title">领域表现详情</div>
+    <table class="m4-table">
+      <thead>
+        <tr>
+          <th style="width: 20%;">领域</th>
+          <th style="width: 15%;">正确率</th>
+          <th style="width: 15%;">距目标线</th>
+          <th style="width: 15%;">涉及题数</th>
+          <th style="width: 15%;">置信度</th>
+          <th style="width: 20%;">状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in domains %}
+        {% set item_has_data = item.has_data if item.has_data is defined else (item.accuracy is not none) %}
+        {% set pclass = get_progress_class(item) %}
+        {% set dclass = get_delta_class(item) %}
+        {% set rclass = row_class(item.status | default('无数据')) %}
+        
+        <tr class="{{ rclass }}">
+          {# 领域名称 #}
+          <td>
+            <strong>{{ get_domain_name(item) }}</strong>
+          </td>
+          
+          {# 正确率 #}
+          <td class="{% if not item_has_data %}m4-text-muted{% endif %}">
+            {{ item.accuracy_text | default('--') }}
+          </td>
+          
+          {# 距目标线 #}
+          <td class="m4-td-delta {{ dclass }}">
+            {{ item.delta_text | default('--') }}
+          </td>
+          
+          {# 数量（题量） #}
+          <td>
+            {{ item.count_text | default((item.count | default('--')) ~ '题' if item.count is defined and item.count is not none else '--') }}
+          </td>
+          
+          {# 置信度 #}
+          <td>
+            {{ item.confidence | default('--') }}
+          </td>
+          
+          {# 状态徽章 (兼容英文 achieved/improve/attention) #}
+          <td>
+            {% set status_val = status_cn(item.status | default('无数据')) | trim %}
+            {% if status_val in ['已达标', '需关注', '需加强'] %}
+              <span class="m4-badge {{ pclass }}">{{ status_val }}</span>
+            {% else %}
+              <span class="m4-badge m4-nodata">无数据</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="m4-table-footnote">本表仅展示重点模块，领域正确率基于全部知识点统计</div>
+  </div>
+  {% endif %}
+
+  {# ------------------------------------------------------------------------
+     E1: 写作提示卡 (英语: composition_domain_code 存在时由 S3 追加)
+     ------------------------------------------------------------------------ #}
+  {% set kp_drill = kp_drill if kp_drill is defined else {} %}
+  {% set dp = kp_drill.domain_panels if kp_drill.domain_panels is defined else {} %}
+  {% set comp_notice = dp._composition_notice if dp._composition_notice is defined else none %}
+  {% if comp_notice and comp_notice.type == "notice" %}
+  <div class="m4-notice-card" style="margin-top: 16px; padding: 12px 16px; background: #f5f5f5; border-left: 3px solid #9e9e9e; border-radius: 4px;">
+    <span style="font-weight: 600; color: #616161;">{{ comp_notice.label | default("写作能力") }}</span>
+    <span style="color: #757575; margin-left: 8px;">{{ comp_notice.text | default("写作能力评估数据即将接入") }}</span>
+  </div>
+  {% endif %}
+
+  {# ------------------------------------------------------------------------
+     分析小结 (Summary Card)
+     ------------------------------------------------------------------------ #}
+  {% set summary_items = summary.get('items', []) if summary is mapping else (summary.items if summary.items is defined else []) %}
+  {% if summary_items | length > 0 %}
+  <div class="m4-summary-card">
+    <div class="m4-summary-title">{{ summary.title | default('分析小结') }}</div>
+    <ul class="m4-summary-list">
+      {% for item in summary_items %}
+      {# 根据第一个highlight的style确定区域类型 #}
+      {% set item_style = item.highlights[0].style if item.highlights is defined and item.highlights | length > 0 else 'default' %}
+      <li class="m4-summary-item m4-summary-item--{{ item_style }}">
+        <span class="m4-summary-label">{{ item.label | default('') }}：</span>
+        <span class="m4-summary-text">
+          {# 如果有highlights，渲染高亮文本 #}
+          {% if item.highlights is defined and item.highlights | length > 0 %}
+            {% set remaining_text = item.text | default('') %}
+            {% for hl in item.highlights %}
+              {% set parts = remaining_text.split(hl.text) %}
+              {% if parts | length > 1 %}
+                {{ parts[0] }}<span class="m4-hl-{{ hl.style | default('muted') }}">{{ hl.text }}</span>
+                {% set remaining_text = parts[1:] | join(hl.text) %}
+              {% endif %}
+            {% endfor %}
+            {{ remaining_text }}
+          {% else %}
+            {{ item.text | default('') }}
+          {% endif %}
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% elif section.note_text is defined and section.note_text %}
+  {# 如果没有summary但有note_text，显示备注 #}
+  <div class="m4-summary-card">
+    <div class="m4-summary-title">说明</div>
+    <p class="m4-summary-note">{{ section.note_text }}</p>
+  </div>
+  {% endif %}
+
+</section>
+  </div><!-- /.module-content-card -->
+
+{# ============================================================================
+   END OF TEMPLATE
+   ============================================================================ #}

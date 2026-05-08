@@ -1,0 +1,522 @@
+/* ==========================================================================
+   improvement_preview.css — 第 3 页: 提升预期
+   ========================================================================== */
+
+/* --- 页面容器 --- */
+.ip-page {
+  width: 210mm;
+  margin: 0 auto;
+  background: var(--pm-bg-page);
+  font-family: var(--font-family-base);
+  color: var(--pm-text-primary);
+  padding: 20px 18mm 16px;
+  box-sizing: border-box;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 底部总结条保持自然文档流，避免被单独推到下一页 */
+.ip-summary-bar {
+  margin-top: 16px;
+  break-inside: avoid;
+}
+
+.ip-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--pm-teal);
+  border-bottom: 2px solid var(--pm-gradient-accent-bar);
+  border-image: var(--pm-gradient-accent-bar) 1;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   1. 提升路径概览
+   ========================================================================== */
+.ip-roadmap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  margin-bottom: 28px;
+  position: relative;
+  padding: 0 4px;
+}
+
+/* 阶段块 */
+.ip-stage {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  padding: 0 8px;
+}
+
+.ip-stage__marker {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 auto 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.ip-stage__marker--past {
+  background: var(--pm-teal);
+}
+
+.ip-stage__marker--current {
+  background: var(--pm-teal);
+  box-shadow: 0 0 0 5px rgba(31, 111, 120, 0.2);
+}
+
+.ip-stage__marker--future {
+  background: var(--pm-text-muted);
+}
+
+/* 连接线 */
+.ip-stage:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 28px;
+  left: calc(50% + 32px);
+  width: calc(100% - 64px);
+  height: 2px;
+  background: var(--pm-border-divider);
+}
+
+.ip-stage__label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin-bottom: 3px;
+}
+
+.ip-stage__acc {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--pm-teal);
+  line-height: 1.2;
+}
+
+.ip-stage__desc {
+  font-size: 13px;
+  color: var(--pm-text-muted);
+  margin-top: 3px;
+}
+
+/* ==========================================================================
+   2. 提升路线卡片
+   ========================================================================== */
+.ip-milestones {
+  margin-bottom: 24px;
+}
+
+.ip-section-heading {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin-bottom: 14px;
+  padding-left: 12px;
+  border-left: 4px solid var(--pm-teal);
+}
+
+.ip-milestone {
+  display: flex;
+  gap: 18px;
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: var(--pm-radius-card-sm, 16px);
+  padding: 20px 22px;
+  margin-bottom: 14px;
+  box-shadow: var(--pm-shadow-card);
+  break-inside: avoid;
+}
+
+.ip-milestone__phase {
+  flex-shrink: 0;
+  width: 90px;
+  text-align: center;
+  border-right: 2px solid var(--pm-bg-muted);
+  padding-right: 14px;
+}
+
+.ip-milestone__phase-label {
+  font-size: 13px;
+  color: var(--pm-text-muted);
+  margin-bottom: 4px;
+}
+
+.ip-milestone__phase-time {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--pm-teal);
+}
+
+.ip-milestone__body {
+  flex: 1;
+}
+
+.ip-milestone__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin-bottom: 6px;
+}
+
+.ip-milestone__text {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--pm-text-secondary);
+  margin: 0;
+}
+
+.ip-milestone__highlight {
+  color: var(--pm-teal);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   3. 具体提升点
+   ========================================================================== */
+.ip-focus-section {
+  margin-bottom: 20px;
+}
+
+.ip-focus-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ip-focus-item {
+  flex: 1;
+  min-width: 150px;
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: var(--pm-radius-badge, 12px);
+  padding: 16px 16px;
+  text-align: center;
+  break-inside: avoid;
+}
+
+.ip-focus-item__name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--pm-text-primary);
+  margin-bottom: 6px;
+}
+
+.ip-focus-item__gain {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--pm-status-success, #2d8a6e);
+}
+
+.ip-focus-item__label {
+  font-size: 12px;
+  color: var(--pm-text-muted);
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   4. 阶段目标 + 验收标准 + 训练重点 (三栏)
+   ========================================================================== */
+.ip-phase-grid {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.ip-phase-card {
+  flex: 1;
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: var(--pm-radius-badge, 12px);
+  padding: 16px 18px;
+  break-inside: avoid;
+}
+
+.ip-phase-card--accent {
+  background: var(--pm-teal-soft, #d0e8e8);
+  border-color: rgba(31, 111, 120, 0.15);
+}
+
+.ip-phase-card__header {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--pm-teal);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--pm-gradient-accent-bar);
+  border-image: var(--pm-gradient-accent-bar) 1;
+}
+
+.ip-phase-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ip-phase-card__item {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--pm-text-secondary);
+  padding-left: 14px;
+  position: relative;
+}
+
+.ip-phase-card__item::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--pm-status-success, #2d8a6e);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.ip-phase-card__item strong {
+  color: var(--pm-text-primary);
+}
+
+/* --- 底部总结条 --- */
+.ip-summary-bar {
+  background: var(--pm-sand-light, #f7f0e3);
+  border-radius: var(--pm-radius-card-sm, 16px);
+  padding: 20px 24px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--pm-text-secondary);
+}
+
+.ip-summary-bar strong {
+  color: var(--pm-teal);
+}
+
+/* --- 家长行动指南 --- */
+.ip-parent-guide {
+  margin-top: 20px;
+  background: var(--pm-teal-soft, #d0e8e8);
+  border: 1px solid rgba(31, 111, 120, 0.15);
+  border-radius: var(--pm-radius-badge, 12px);
+  padding: 16px 20px;
+}
+
+.ip-parent-guide__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--pm-teal);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--pm-gradient-accent-bar);
+  border-image: var(--pm-gradient-accent-bar) 1;
+}
+
+.ip-parent-guide__content p {
+  margin: 4px 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--pm-text-secondary);
+}
+
+.ip-parent-guide__content strong {
+  color: var(--pm-teal);
+  font-weight: 700;
+}
+
+/* --- 打印优化 --- */
+@media print {
+  .ip-page {
+    width: auto;
+    display: block;
+    flex: none;
+    min-height: auto;
+    padding: 0 15mm 0 18mm;
+    box-shadow: none;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .ip-title {
+    font-size: 24px;
+    padding-bottom: 7px;
+    margin-bottom: 16px;
+  }
+
+  .ip-roadmap {
+    margin-bottom: 20px;
+    padding: 0;
+  }
+
+  .ip-stage {
+    padding: 0 4px;
+  }
+
+  .ip-stage__marker {
+    width: 52px;
+    height: 52px;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .ip-stage__marker--current {
+    box-shadow: 0 0 0 4px rgba(31, 111, 120, 0.2);
+  }
+
+  .ip-stage:not(:last-child)::after {
+    top: 26px;
+    left: calc(50% + 30px);
+    width: calc(100% - 60px);
+  }
+
+  .ip-stage__label {
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .ip-stage__acc {
+    font-size: 22px;
+  }
+
+  .ip-stage__desc {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .ip-milestones {
+    margin-bottom: 16px;
+  }
+
+  .ip-section-heading {
+    font-size: 16px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    border-left-width: 3px;
+  }
+
+  .ip-milestone {
+    gap: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: none;
+  }
+
+  .ip-milestone__phase {
+    width: 82px;
+    padding-right: 12px;
+    border-right-width: 1px;
+  }
+
+  .ip-milestone__phase-label {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+
+  .ip-milestone__phase-time {
+    font-size: 16px;
+  }
+
+  .ip-milestone__title {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .ip-milestone__text {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .ip-focus-section {
+    margin-bottom: 12px;
+  }
+
+  .ip-focus-grid {
+    gap: 8px;
+  }
+
+  .ip-focus-item {
+    padding: 11px 12px;
+    border-radius: 8px;
+  }
+
+  .ip-focus-item__name {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .ip-focus-item__gain {
+    font-size: 20px;
+    line-height: 1.1;
+  }
+
+  .ip-focus-item__label {
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .ip-phase-grid {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .ip-phase-card {
+    padding: 12px 13px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  .ip-phase-card__header {
+    font-size: 14px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom-width: 1px;
+  }
+
+  .ip-phase-card__body {
+    gap: 4px;
+  }
+
+  .ip-phase-card__item {
+    font-size: 11.5px;
+    line-height: 1.45;
+    padding-left: 12px;
+  }
+
+  .ip-phase-card__item::before {
+    font-size: 10px;
+  }
+
+  .ip-summary-bar {
+    margin-top: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+
+  .ip-parent-guide {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+  }
+
+  .ip-parent-guide__title {
+    font-size: 13px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+  }
+
+  .ip-parent-guide__content p {
+    font-size: 11px;
+    line-height: 1.4;
+    margin: 2px 0;
+  }
+}

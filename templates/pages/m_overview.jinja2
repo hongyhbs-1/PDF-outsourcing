@@ -1,0 +1,258 @@
+{#
+================================================================================
+数据分析概览 (Data Overview Page)
+文件: m_overview.jinja2
+版本: v1.0
+描述: 封面后、正文前的精简概览页，展示数据量级与可信度
+位置: M0(封面) → [本页] → M1(一、诊断摘要)
+不编序号 — 与封面、附录同级，属报告"框架页"
+关联CSS: m_overview.css
+
+数据来源 (payload 路径):
+  cover.cover_meta.paper_count         → 分析试卷套数
+  cover.cover_meta.display_question_count → 分析大题数
+  cover.cover_meta.total_questions     → 子题总数
+  summary.current_accuracy             → 整体正确率
+  data_reliability.section_4_coverage.stats.l3_covered → L3 覆盖数
+  data_reliability.section_4_coverage.stats.l3_total   → L3 总数
+  appendix.difficulty.items            → 难度分布 [{name_cn, count, ratio}]
+  appendix.papers                      → 试卷/批次清单 {items, total_questions, total_papers}
+  data_reliability.conclusion.message  → 数据结论消息
+  meta.student_display_name            → 学生姓名
+================================================================================
+#}
+
+{% from 'macros/helpers.jinja2' import safe, safe_num %}
+
+{# ========================================================================
+   变量预处理
+   ======================================================================== #}
+{% set _cover = cover | default({}) %}
+{% set _cm = _cover.cover_meta | default({}) %}
+{% set _meta = meta | default({}) %}
+{% set _summary = summary | default({}) %}
+{% set _dr = data_reliability | default({}) %}
+{% set _sec = _dr.section_4_coverage | default({}) %}
+{% set _stats = _sec.stats | default({}) %}
+{% set _diff_items = appendix['difficulty']['items'] if appendix and appendix.difficulty and appendix.difficulty['items'] else [] %}
+{% set _appendix = appendix | default({}) %}
+{% set _papers = _appendix.papers | default({}) %}
+{% set _conclusion = _dr.conclusion | default({}) %}
+{% set paper_items = _papers.get('items', []) if _papers else [] %}
+
+{% set paper_count = _cm.paper_count | default(0) %}
+{% set big_q_count = _cm.display_question_count | default(_cm.question_count | default(0)) %}
+{% set sub_q_count = _cm.total_questions | default(0) %}
+{% set accuracy = _summary.current_accuracy | default(0) %}
+{% set l3_covered = _stats.l3_covered | default(0) %}
+{% set l3_total = _stats.l3_total | default(0) %}
+{% set student_name = _meta.student_display_name | default('') %}
+{% set conclusion_msg = _conclusion.message | default('') %}
+{% set student_grade = _cm.grade | default('--') %}
+{% set city_name = _meta.city_name | default(_cm.city_name | default(_cm.city | default('--'))) %}
+{% set paper_count_display = paper_count if paper_count else (_papers.total_papers | default(paper_items | length)) %}
+{% set accuracy_display = _summary.current_accuracy_text | default((accuracy | round(1)) ~ '%', true) %}
+{% set coverage_display = l3_covered ~ '/' ~ l3_total if l3_total else '待补充' %}
+{% if l3_total %}
+  {% set coverage_rate = (l3_covered / l3_total * 100) | round(1) %}
+{% else %}
+  {% set coverage_rate = none %}
+{% endif %}
+{% if paper_count_display >= 6 or big_q_count >= 100 %}
+  {% set sample_strength = '样本充足，整体判断更稳定。' %}
+{% elif paper_count_display >= 3 or big_q_count >= 40 %}
+  {% set sample_strength = '样本基本可用，建议继续补充更多试卷。' %}
+{% else %}
+  {% set sample_strength = '当前样本偏少，结论需结合后续测评继续验证。' %}
+{% endif %}
+{% set hero_text = conclusion_msg | default(sample_strength, true) %}
+{% if paper_items | length <= 1 %}
+  {% set mov_density = 'sparse' %}
+{% elif paper_items | length >= 4 %}
+  {% set mov_density = 'dense' %}
+{% else %}
+  {% set mov_density = 'standard' %}
+{% endif %}
+
+{# ========================================================================
+   页面结构 — 阅读顺序: 样本档案 → 报告速览(含难度分布) → 试卷清单
+   ======================================================================== #}
+<div class="mov-page mov-page--{{ mov_density }}">
+
+  <section class="mov-title-section">
+    <h1 class="mov-title">数据分析概览</h1>
+    <div class="mov-title__underline"></div>
+  </section>
+
+  <div class="module-content-card">
+
+  {# ---- 第一部分：样本档案 ---- #}
+  <section class="mov-profile-top">
+    <div class="mov-profile-card">
+      <h2 class="mov-card-title">样本档案</h2>
+      <div class="mov-profile-grid">
+        <div class="mov-profile-item">
+          <div class="mov-profile-item__k">学生</div>
+          <div class="mov-profile-item__v">{{ student_name }}</div>
+        </div>
+        <div class="mov-profile-item">
+          <div class="mov-profile-item__k">年级</div>
+          <div class="mov-profile-item__v">{{ student_grade }}</div>
+        </div>
+        <div class="mov-profile-item">
+          <div class="mov-profile-item__k">城市</div>
+          <div class="mov-profile-item__v">{{ city_name }}</div>
+        </div>
+        <div class="mov-profile-item">
+          <div class="mov-profile-item__k">可信度</div>
+          <div class="mov-profile-item__v">{% if paper_count_display >= 6 or big_q_count >= 100 %}高{% elif paper_count_display >= 3 or big_q_count >= 40 %}中{% else %}待补样本{% endif %}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ---- 第二部分：报告速览 + 难度分布 ---- #}
+  <section class="mov-hero">
+    <div class="mov-hero-main">
+      <div class="mov-hero-kicker">报告速览</div>
+      <h2 class="mov-hero-title">先看样本规模，再判断结论可信度</h2>
+      <p class="mov-hero-text">
+      本报告基于<strong>{{ student_name }}</strong>的
+      <strong>{{ paper_count_display }}</strong> 份试卷、<strong>{{ big_q_count }}</strong> 道大题（展开
+      <strong>{{ sub_q_count }}</strong> 道子题）进行逐题分析，覆盖
+      <strong>{{ l3_covered }}</strong> 个 L3 知识点，整体正确率
+      <strong>{{ accuracy_display }}</strong>。
+      {{ hero_text }}
+      </p>
+      <div class="mov-chip-row">
+        <span class="mov-chip mov-chip--accent">整体正确率 {{ accuracy_display }}</span>
+        <span class="mov-chip mov-chip--soft">{{ paper_count_display }} 份样本</span>
+        <span class="mov-chip mov-chip--soft">{{ big_q_count }} 道有效大题</span>
+        <span class="mov-chip mov-chip--soft">{% if coverage_rate is not none %}L3 覆盖 {{ coverage_rate }}%{% else %}L3 覆盖待补充{% endif %}</span>
+      </div>
+      <p class="mov-hero-note">
+        <strong>数据口径说明：</strong>已剔除学生未作答的题目及缺少题干仅有解答的无效数据；一道题目涉及多个知识点时，按各知识点分别统计正确率，因此知识点分析数量可能多于题目数量。诊断结论以有效大题为口径。
+      </p>
+    </div>
+
+    {# ---- 难度分布扇形图（并入速览右侧） ---- #}
+    {% if _diff_items %}
+    <div class="mov-difficulty-aside">
+      <div class="mov-difficulty__title">难度分布</div>
+      <div class="mov-pie-wrapper">
+        {% set colors = {'easy': 'rgba(45,138,110,0.55)', 'medium': 'rgba(212,148,58,0.55)', 'hard': 'rgba(196,64,64,0.55)'} %}
+        <div class="mov-pie"
+             style="background: conic-gradient(
+               {%- for item in _diff_items -%}
+                 {{ colors[item.level | default('medium')] }} {{ (loop.previtem.ratio | default(0) if loop.previtem is defined else 0) }}% {{ (loop.previtem.ratio | default(0) + item.ratio) if loop.previtem is defined else item.ratio }}%{%- if not loop.last %},{% endif %}
+               {%- endfor -%}
+             );"></div>
+        <div class="mov-pie-legend">
+          {% for item in _diff_items %}
+          <span class="mov-pie-legend-item">
+            <span class="mov-difficulty__dot mov-difficulty__dot--{{ item.level | default('medium') }}"></span>
+            <span class="mov-pie-legend__name">{{ item.name_cn | default('') }}</span>
+            <span class="mov-pie-legend__value">{{ item.count | default(0) }}题 · {{ item.ratio | default(0) }}%</span>
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+
+
+  <div class="mov-cards">
+    <div class="mov-card">
+      <div class="mov-card__eyebrow">样本规模</div>
+      <div class="mov-card__num">{{ paper_count_display }}</div>
+      <div class="mov-card__label">分析试卷</div>
+      <div class="mov-card__hint">{{ sample_strength }}</div>
+    </div>
+    <div class="mov-card">
+      <div class="mov-card__num">{{ big_q_count }}</div>
+      <div class="mov-card__label">有效大题</div>
+      <div class="mov-card__hint">展开 {{ sub_q_count }} 道子题</div>
+    </div>
+    <div class="mov-card">
+      <div class="mov-card__num">{{ accuracy_display }}</div>
+      <div class="mov-card__label">整体正确率</div>
+      <div class="mov-card__hint">目标 {{ _summary.target_accuracy_text | default('--') }}</div>
+    </div>
+    <div class="mov-card">
+      <div class="mov-card__num">{{ coverage_display }}</div>
+      <div class="mov-card__label">L3 覆盖</div>
+      <div class="mov-card__hint">{% if coverage_rate is not none %}已覆盖 {{ coverage_rate }}%{% else %}L3 明细待补充{% endif %}</div>
+    </div>
+  </div>
+
+  {# ---- 难度分布已移入报告速览区，此处不再单独显示 ---- #}
+
+  {# ---- 试卷/批次清单 ---- #}
+  {% if _papers and _papers.get('items', []) | length > 0 %}
+  <div class="mov-papers">
+    <h2 class="mov-difficulty__title">试卷/批次清单</h2>
+    <table class="mov-papers__table">
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>试卷名称</th>
+          <th>题量</th>
+          <th>来源文件</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for paper in _papers.get('items', []) %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ paper.paper_name | default('--') }}</td>
+          <td>{{ paper.question_count | default('--') }}{% if paper.question_count is not none %}题{% endif %}</td>
+          <td>{{ paper.source_file | default('--') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="mov-papers__summary">
+      合计：{{ _papers.total_questions | default(0) }}题 / {{ _papers.total_papers | default(0) }}份试卷
+    </div>
+    <div class="mov-papers__notes">
+      <p>注：1. 学生未解答的题目不计入分析数据，实际分析题量以合计数为准；</p>
+      <p class="mov-papers__notes-indent">2. 试卷名称缺失时，相关题目统一归入"用户上传试卷"中。</p>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ---- 结论胶囊 ---- #}
+  {% if conclusion_msg %}
+  <div class="mov-conclusion">
+    <div class="mov-conclusion__badge">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/>
+      </svg>
+      <span>{{ conclusion_msg }}</span>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if mov_density != 'dense' %}
+  <div class="mov-reading-guide">
+    <div class="mov-reading-guide__title">阅读建议</div>
+    <div class="mov-reading-guide__grid">
+      <div class="mov-reading-guide__item">
+        <div class="mov-reading-guide__label">先看摘要</div>
+        <div class="mov-reading-guide__text">优先阅读诊断摘要和优先突破项，快速确认当前最值得关注的提分方向。</div>
+      </div>
+      <div class="mov-reading-guide__item">
+        <div class="mov-reading-guide__label">再看领域</div>
+        <div class="mov-reading-guide__text">结合 {{ paper_items | length }} 份试卷、{{ sub_q_count }} 题样本，重点对照领域达标分析和核心短板清单。</div>
+      </div>
+      <div class="mov-reading-guide__item">
+        <div class="mov-reading-guide__label">最后看逐题</div>
+        <div class="mov-reading-guide__text">{% if coverage_rate is not none %}当前知识点覆盖率约 {{ coverage_rate }}%，可结合逐题分析回看具体错因与补练路径。{% else %}若知识点覆盖仍不足，建议优先补齐样本后再结合逐题分析定位错因。{% endif %}</div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  </div><!-- /.module-content-card -->
+
+</div>

@@ -1,0 +1,172 @@
+/* ==========================================================================
+   m10_composition.css — M10 作文精讲 (英语专属)
+   ========================================================================== */
+
+/* --- 页面容器 --- */
+.m10-page {
+  width: 210mm;
+  margin: 0 auto;
+  background: var(--pm-bg-page);
+  font-family: var(--font-family-base);
+  color: var(--pm-text-primary);
+  padding: 24px 18mm 16px;
+  box-sizing: border-box;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- 章节标题 --- */
+.m10-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--pm-teal);
+  border-bottom: 2px solid var(--pm-teal);
+  padding-bottom: 6px;
+  margin-bottom: 16px;
+}
+
+/* --- 区块标题 --- */
+.m10-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--pm-text-primary);
+  margin-bottom: 8px;
+  padding-left: 2px;
+}
+
+/* --- 区块容器 --- */
+.m10-section {
+  margin-bottom: 16px;
+  break-inside: avoid;
+}
+
+/* --- 成绩概览 --- */
+.m10-score-overview {
+  background: var(--pm-bg-muted);
+  border-radius: var(--pm-radius-badge, 12px);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.m10-score-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.m10-score-total {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--pm-teal);
+}
+
+.m10-score-full {
+  color: var(--pm-text-muted);
+}
+
+.m10-score-label {
+  color: var(--pm-text-secondary);
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.m10-score-dim {
+  font-size: 14px;
+  color: var(--pm-text-secondary);
+}
+
+.m10-score-dim strong {
+  color: var(--pm-text-primary);
+}
+
+/* --- 提示卡片 (优先修复 / 建议) --- */
+.m10-tip-card {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  border-radius: 0 6px 6px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  break-inside: avoid;
+}
+
+.m10-tip-card--warning {
+  background: var(--pm-status-attention-bg, #fef3e2);
+  border-left: 3px solid var(--pm-status-attention, #d4943a);
+}
+
+.m10-tip-card--success {
+  background: var(--pm-status-success-bg, #e8f5f0);
+  border-left: 3px solid var(--pm-status-success, #2d8a6e);
+}
+
+/* --- 分析段落 --- */
+.m10-analysis {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--pm-text-secondary);
+  margin: 0;
+}
+
+/* --- 范文引用块 --- */
+.m10-reference {
+  background: var(--pm-bg-muted);
+  border-left: 3px solid var(--pm-border-divider);
+  padding: 12px 16px;
+  border-radius: 0 6px 6px 0;
+  font-size: 14px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  color: var(--pm-text-secondary);
+}
+
+/* --- 问题与亮点表格 --- */
+.m10-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.m10-table thead th {
+  background: var(--pm-bg-muted);
+  padding: 8px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid var(--pm-border-card);
+}
+
+.m10-table tbody td {
+  padding: 8px;
+  border-bottom: 1px solid var(--pm-border-card);
+  line-height: 1.6;
+}
+
+.m10-table tbody tr:nth-child(even) {
+  background: var(--pm-bg-muted);
+}
+
+.m10-table tr {
+  break-inside: avoid;
+}
+
+.m10-tag--highlight {
+  color: var(--pm-status-success, #2d8a6e);
+  font-weight: 600;
+}
+
+.m10-tag--issue {
+  color: var(--pm-status-danger, #c44040);
+  font-weight: 600;
+}
+
+/* --- 打印优化 --- */
+@media print {
+  .m10-page {
+    width: auto;
+    display: block;
+    flex: none;
+    padding: 0 15mm 0 18mm;
+    box-shadow: none;
+  }
+}

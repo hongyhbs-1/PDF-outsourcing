@@ -1,0 +1,387 @@
+/**
+ * ==========================================================================
+ * 模块0: 封面 (Cover Page) — Premium Navy/Teal/Sand 主题
+ * 文件: 0_cover.css
+ * 版本: v2.0 (Premium)
+ * 描述: 基线定位分析报告封面页 — 温暖专业视觉
+ * ==========================================================================
+ */
+
+/* ==========================================================================
+   1. 页面设置
+   ========================================================================== */
+
+/* @page 已统一在 base.css 管理 */
+
+/* ==========================================================================
+   2. CSS 变量 (Design Tokens)
+   ========================================================================== */
+
+:root {
+  /* ---------- 2.1 Premium 封面专用色 ---------- */
+  --cover-bg:            var(--pm-bg-page);
+  --cover-bg-end:        #ffffff;
+  --cover-text:          var(--pm-text-primary);
+  --cover-text-secondary: var(--pm-text-muted);
+  --cover-brand-blue:    var(--pm-navy);
+  --cover-divider-center: var(--pm-teal);
+  --cover-pill-bg:       var(--pm-sand-light);
+  --cover-pill-border:   rgba(226, 196, 143, 0.3);
+  --cover-accent-sand:   var(--pm-sand);
+  --cover-accent-teal:   var(--pm-teal);
+
+  /* ---------- 2.2 Logo色 ---------- */
+  --logo-blue:  #174FA2;
+  --logo-green: #8DBF20;
+
+  /* ---------- 2.3 字号 (A4适配) ---------- */
+  --fs-cover-badge: 4mm;  /* P1-2: 弱化标语，减小字号 */
+  --fs-brand-name: 3.7mm;
+  --fs-title: 7mm;  /* P1-1: 标题降为次要位置，缩小字号 */
+  --fs-subtitle: 4.5mm;
+  --fs-student-name: 16mm;  /* P1-1: 姓名放大为视觉中心 */
+  --fs-meta: 5.5mm;
+  --fs-footnote: 3.7mm;
+
+  /* ---------- 2.4 字重 ---------- */
+  --fw-bold: 700;
+  --fw-semibold: 600;
+  --fw-medium: 500;
+  --fw-regular: 400;
+
+  /* ---------- 2.5 行高 ---------- */
+  --lh-tight: 1.1;
+  --lh-normal: 1.2;
+  --lh-loose: 1.4;
+
+  /* ---------- 2.6 间距 (A4适配) ---------- */
+  --space-xxs: 0.5mm;
+  --space-xs: 1mm;
+  --space-sm: 2mm;
+  --space-md: 3.4mm;
+  --space-lg: 6.8mm;
+  --space-xl: 10mm;
+  --space-2xl: 20mm;
+
+  /* ---------- 2.7 封面垂直节奏 ---------- */
+  --cover-mt-brand: 16mm;
+  --cover-gap-brand-student: 20mm;  /* P1-1: 拉开品牌与姓名间距，推姓名向视觉中心 */
+  --cover-gap-student-meta: 6mm;
+  --cover-gap-meta-divider: 14mm;
+  --cover-gap-divider-title: 8mm;  /* P1-1: 收紧标题前间距 */
+  --cover-gap-title-sub: 8mm;
+  --cover-gap-title-badge: 10mm;  /* P1-2: 标语间距收紧 */
+
+  /* ---------- 2.8 圆角 ---------- */
+  --radius-badge: 3mm;
+  --radius-footer: 2mm;
+}
+
+/* ==========================================================================
+   3. 页面容器 — Premium 暖色渐变背景
+   ========================================================================== */
+
+.m0-cover-page {
+  width: 100%;
+  min-height: var(--page-print-height);
+  background:
+    radial-gradient(circle at top right, rgba(226, 196, 143, 0.18), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(31, 111, 120, 0.08), transparent 24%),
+    linear-gradient(180deg, var(--pm-bg-page) 0%, #ffffff 40%);
+  color: var(--cover-text);
+  font-family: var(--font-family-base);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Premium: 装饰圆元素 (右上角) */
+.m0-cover-page::after {
+  content: "";
+  position: absolute;
+  top: -40mm;
+  right: -30mm;
+  width: 80mm;
+  height: 80mm;
+  border-radius: 50%;
+  background: rgba(226, 196, 143, 0.08);
+  pointer-events: none;
+}
+
+.m0-cover-content {
+  width: 100%;
+  min-height: var(--page-print-height);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: var(--cover-mt-brand);
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   4. 标语 — 弱化存在感，轻量文字
+   ========================================================================== */
+
+/* P1-2: 标语弱化 — 更淡的颜色+更低的透明度 */
+.m0-cover-badge {
+  font-size: var(--fs-cover-badge);
+  font-weight: var(--fw-regular);
+  color: var(--pm-text-light);
+  letter-spacing: 1.5mm;
+  opacity: 0.4;
+}
+
+/* ==========================================================================
+   5. 品牌区 — 顶部小尺寸
+   ========================================================================== */
+
+.m0-cover-brand {
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.m0-cover-brand__logo {
+  width: 13mm;
+  height: 13mm;
+  display: block;
+  object-fit: contain;
+}
+
+.m0-cover-brand__logo-placeholder {
+  width: 13mm;
+  height: 13mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--logo-blue) 50%, var(--logo-green) 50%);
+  border-radius: 50%;
+  color: #FFFFFF;
+  font-size: 5mm;
+  font-weight: var(--fw-bold);
+}
+
+.m0-cover-brand__name {
+  margin-top: 3.4mm;
+  font-size: var(--fs-brand-name);
+  font-weight: var(--fw-regular);
+  line-height: 1;
+  color: var(--pm-text-muted);
+}
+
+/* ==========================================================================
+   6. 标题区 — Premium Navy 文字
+   ========================================================================== */
+
+.m0-cover-title {
+  margin-top: var(--cover-gap-divider-title);
+  text-align: center;
+}
+
+/* P1-1: 标题降为次要 — 降低字重和颜色对比 */
+.m0-cover-title__main {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+  color: var(--pm-text-secondary);
+  letter-spacing: 0.3mm;
+}
+
+.m0-cover-title__sub {
+  margin-top: var(--cover-gap-title-sub);
+  font-size: var(--fs-subtitle);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-normal);
+  color: var(--pm-navy);
+  letter-spacing: 1mm;
+}
+
+/* ==========================================================================
+   7. 分隔线 — Sand→Teal 渐变
+   ========================================================================== */
+
+.m0-cover-divider {
+  margin-top: var(--cover-gap-meta-divider);
+  width: 58mm;
+  height: 0.6mm;
+  background: var(--pm-gradient-accent-bar);
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   8. 元信息区 — 温暖色调
+   ========================================================================== */
+
+.m0-cover-meta {
+  margin-top: var(--cover-gap-student-meta);
+  width: 92mm;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 6mm;
+  row-gap: 8mm;
+  font-size: var(--fs-meta);
+  line-height: var(--lh-normal);
+}
+
+.m0-cover-meta__label {
+  text-align: left;
+  font-weight: var(--fw-regular);
+  color: var(--pm-text-secondary);
+  white-space: nowrap;
+}
+
+.m0-cover-meta__label--short {
+  text-align: justify;
+  text-align-last: justify;
+}
+
+.m0-cover-meta__label--long {
+  letter-spacing: 0;
+}
+
+.m0-cover-meta__value {
+  text-align: left;
+  font-weight: var(--fw-semibold);
+  color: var(--pm-text-primary);
+}
+
+.m0-cover-meta__value--empty {
+  color: var(--pm-status-nodata);
+}
+
+/* P1-3: 学科突出 — 体现封面差异化 */
+.m0-cover-meta__value--subject {
+  color: var(--pm-teal);
+  font-weight: var(--fw-bold);
+}
+
+/* ==========================================================================
+   9. 学生信息 — 第一视觉焦点
+   ========================================================================== */
+
+.m0-cover-exclusive {
+  margin-top: var(--cover-gap-brand-student);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5mm;
+}
+
+.m0-cover-exclusive__name {
+  font-size: var(--fs-student-name);
+  font-weight: var(--fw-bold);
+  color: var(--pm-navy-dark);
+  letter-spacing: 4mm;
+}
+
+.m0-cover-exclusive__label {
+  font-size: 4.5mm;
+  font-weight: var(--fw-medium);
+  color: var(--pm-teal);
+  letter-spacing: 1.5mm;
+  margin-top: 1mm;
+}
+
+/* P1-1: 评估时间 — 紧跟姓名下方 */
+.m0-cover-exclusive__time {
+  font-size: 5mm;
+  font-weight: var(--fw-regular);
+  color: var(--pm-text-secondary);
+  letter-spacing: 0.5mm;
+  margin-top: 1mm;
+}
+
+/* ==========================================================================
+   10. 底部备案信息
+   ========================================================================== */
+
+.m0-cover-compliance {
+  margin-top: auto;
+  padding-bottom: 8mm;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5mm;
+}
+
+.m0-cover-compliance__filing {
+  font-size: 3mm;
+  font-weight: var(--fw-medium);
+  color: var(--pm-text-muted);
+  letter-spacing: 0.2mm;
+}
+
+.m0-cover-compliance__authority {
+  font-size: 2.5mm;
+  font-weight: var(--fw-regular);
+  color: var(--pm-status-nodata);
+  line-height: 1.6;
+  max-width: 175mm;
+}
+
+.m0-cover-compliance__disclaimer {
+  font-size: 2.5mm;
+  font-weight: var(--fw-regular);
+  color: var(--pm-status-nodata);
+  margin-top: 1mm;
+}
+
+/* ==========================================================================
+   11. 状态类
+   ========================================================================== */
+
+.m0-status--achieved {
+  color: var(--pm-status-achieved);
+}
+
+.m0-status--attention {
+  color: var(--pm-status-attention);
+}
+
+.m0-status--improve {
+  color: var(--pm-status-danger);
+}
+
+.m0-status--nodata {
+  color: var(--pm-status-nodata);
+}
+
+/* ==========================================================================
+   12. 打印优化
+   ========================================================================== */
+
+@media print {
+  .m0-cover-page {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .m0-cover-divider {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ==========================================================================
+   13. 辅助类
+   ========================================================================== */
+
+.m0-text-center { text-align: center; }
+.m0-hidden { display: none; }
+
+.m0-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

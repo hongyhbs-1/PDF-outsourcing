@@ -1,0 +1,844 @@
+/**
+ * ============================================================================
+ * 模块4：六大领域达标分析 (Six Major Domains Achievement Analysis)
+ * 文件：4_domains.css
+ * 版本：v1.1 (对齐 m2_core_weakness.css 样式)
+ * 描述：展示学生六大领域达标分析，与 m2 模板保持视觉一致
+ * 
+ * 修订记录：
+ *   v1.1 - 样式对齐 m2_core_weakness.css
+ *        - 页眉/标题/间距/主题色/背景色全面对齐
+ * 
+ * 结构：
+ *   1. CSS 变量定义 (Design Tokens - 对齐 m2)
+ *   2. 页面基础与A4适配
+ *   3. 页眉组件 (对齐 m2-cw-page-meta)
+ *   4. 模块标题组件 (对齐 m2-cw-module-title)
+ *   5. 图表说明条组件
+ *   6. 条形图容器与进度条
+ *   7. 表格卡片组件
+ *   8. 徽章组件
+ *   9. 分析小结组件
+ *   10. 辅助类
+ *   11. 打印优化
+ * ============================================================================
+ */
+
+/* ============================================================================
+   1. CSS 变量定义 (Design Tokens - 对齐 m2)
+   ============================================================================ */
+:root {
+  /* ---------- 基础色 (Premium Navy/Teal/Sand) ---------- */
+  --cw-color-page-bg: var(--pm-bg-page, #f8f5ef);
+  --cw-color-text-primary: var(--pm-text-primary, #1a2332);
+  --cw-color-text-secondary: var(--pm-text-secondary, #4a5568);
+  --cw-color-text-muted: var(--pm-text-muted, #8896a7);
+  --cw-color-text-meta: var(--pm-text-muted, #8896a7);
+
+  /* ---------- 分割线/边框 ---------- */
+  --cw-color-divider-top: var(--pm-border-light, #e4e8ec);
+  --cw-color-border-card: var(--pm-border-card, #d8e2e8);
+
+  /* ---------- 强调色 (Premium Teal) ---------- */
+  --cw-color-accent-teal: var(--pm-teal, #1f6f78);
+  --cw-color-accent-primary: var(--pm-teal, #1f6f78);
+
+  /* ---------- 状态色 (Premium Status) ---------- */
+  --cw-color-status-achieved: var(--pm-status-achieved, #1f6f78);
+  --cw-color-status-attention: var(--pm-status-attention, #d4943a);
+  --cw-color-status-improve: var(--pm-status-improve, #8b4c6a);
+  --cw-color-status-nodata: var(--pm-status-nodata, #9ca3af);
+
+  /* ---------- 背景色 (Premium Surfaces) ---------- */
+  --cw-color-bg-note: var(--pm-bg-section, #f0ede6);
+  --cw-color-bg-tips: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-bg-summary: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-bg-header: var(--pm-bg-muted, #f3f0ea);  /* 表格头部背景 */
+
+  /* ---------- 表格行底色 ---------- */
+  --cw-color-row-achieved-bg: var(--pm-status-achieved-bg, #e6f3f3);
+  --cw-color-row-attention-bg: var(--pm-status-attention-bg, #fef3e2);
+  --cw-color-row-improve-bg: var(--pm-status-improve-bg, #f4eaf0);
+  --cw-color-row-nodata-bg: var(--pm-status-nodata-bg, #f3f4f6);
+
+  /* ---------- 徽章样式 ---------- */
+  --cw-color-badge-achieved-bg: var(--pm-status-achieved-bg, #e6f3f3);
+  --cw-color-badge-achieved-text: var(--pm-status-achieved, #1f6f78);
+  --cw-color-badge-attention-bg: var(--pm-status-attention-bg, #fef3e2);
+  --cw-color-badge-attention-text: var(--pm-status-attention, #d4943a);
+  --cw-color-badge-improve-bg: var(--pm-status-improve-bg, #f4eaf0);
+  --cw-color-badge-improve-text: var(--pm-status-improve, #8b4c6a);
+  --cw-color-badge-nodata-bg: var(--pm-status-nodata-bg, #f3f4f6);
+  --cw-color-badge-nodata-text: var(--pm-status-nodata, #9ca3af);
+
+  /* ---------- 进度条 ---------- */
+  --cw-color-progress-track: var(--pm-bg-muted, #f3f0ea);
+
+  /* ---------- 目标线 ---------- */
+  --cw-color-target-line: var(--pm-border-divider, #e0ddd6);
+
+  /* ---------- 字体 (对齐 m2) ---------- */
+  --cw-font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --cw-font-size-meta: 12px;
+  --cw-font-size-h1: 28px;
+  --cw-font-size-h2: 18px;
+  --cw-font-size-body: 14px;
+  --cw-font-size-table-head: 13px;
+  --cw-font-size-small: 12px;
+  --cw-font-size-badge: 11px;
+
+  --cw-font-weight-bold: 700;
+  --cw-font-weight-medium: 600;
+  --cw-font-weight-regular: 400;
+
+  --cw-line-height-tight: 1.3;
+  --cw-line-height-normal: 1.6;
+
+  /* ---------- 间距（8px 体系 - 对齐 m2） ---------- */
+  --cw-spacing-1: 4px;
+  --cw-spacing-2: 8px;
+  --cw-spacing-3: 12px;
+  --cw-spacing-4: 16px;
+  --cw-spacing-5: 20px;
+  --cw-spacing-6: 24px;
+  --cw-spacing-8: 32px;
+
+  /* ---------- 圆角 ---------- */
+  --cw-radius-0: 0px;
+  --cw-radius-xs: 4px;
+  --cw-radius-sm: 8px;
+  --cw-radius-md: 12px;
+  --cw-radius-pill: 999px;
+
+  /* ---------- 阴影 ---------- */
+  --cw-shadow-card: var(--pm-shadow-card, 0 4px 20px rgba(18, 52, 77, 0.08));
+}
+
+/* ============================================================================
+   2. 页面基础与A4适配
+   ============================================================================ */
+/* @page 已统一在 base.css 管理 (T14 running header) */
+
+.m4-module-domains {
+  width: 210mm;
+  margin: 0 auto;
+  padding: 14px 0 0;
+  background: var(--cw-color-page-bg);
+  font-family: var(--cw-font-family);
+  font-size: var(--cw-font-size-body);
+  color: var(--cw-color-text-primary);
+  line-height: var(--cw-line-height-normal);
+  box-sizing: border-box;
+  display: block;
+}
+
+.m4-module-domains *,
+.m4-module-domains *::before,
+.m4-module-domains *::after {
+  box-sizing: border-box;
+}
+
+/* ============================================================================
+   3. 模块容器
+   ============================================================================ */
+.m4-section-domains {
+  font-family: var(--cw-font-family);
+  color: var(--cw-color-text-primary);
+  line-height: var(--cw-line-height-normal);
+}
+
+/* ============================================================================
+   5. 模块标题组件 (对齐 m2-cw-module-title)
+   ============================================================================ */
+.m4-section-heading {
+  margin: 0;
+}
+
+.m4-section-title {
+  display: inline-block;
+  font-size: 24px;
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
+  padding: var(--cw-spacing-3) var(--cw-spacing-6) 0;
+  margin: 0;
+  line-height: var(--cw-line-height-tight);
+}
+
+.m4-section-title::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: var(--cw-color-accent-teal);
+  margin-top: 6px;
+  margin-bottom: 10px;
+  border-radius: 2px;
+}
+
+.m4-section-underline {
+  display: none;
+}
+
+/* ============================================================================
+   6. 图表说明条组件 (Note Bar - 对齐 m2-cw-note-bar)
+   ============================================================================ */
+.m4-chart-meta-bar {
+  background: var(--cw-color-bg-note);
+  color: var(--cw-color-text-secondary);
+  font-size: var(--cw-font-size-body);
+  line-height: var(--cw-line-height-normal);
+  padding: 8px 12px;
+  margin: 0 var(--cw-spacing-6) 10px;
+  border-radius: var(--cw-radius-0);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.m4-chart-meta-bar .m4-meta-text {
+  font-size: var(--cw-font-size-body);
+  font-weight: var(--cw-font-weight-medium);
+  color: var(--cw-color-text-primary);
+}
+
+/* ------------------------------------------------------------------------
+   6.1 图例 (Legend)
+   ------------------------------------------------------------------------ */
+.m4-legend {
+  display: flex;
+  gap: var(--cw-spacing-4);
+  align-items: center;
+}
+
+.m4-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--cw-spacing-2);
+  font-size: 12px;
+  font-weight: var(--cw-font-weight-medium);
+  color: var(--cw-color-text-primary);
+}
+
+.m4-swatch {
+  width: 52px;
+  height: 12px;
+  border-radius: var(--cw-radius-xs);
+  flex-shrink: 0;
+}
+
+/* 图例色块状态类 */
+.m4-swatch.m4-achieved { background: var(--cw-color-status-achieved); }
+.m4-swatch.m4-attention { background: var(--cw-color-status-attention); }
+.m4-swatch.m4-improve { background: var(--cw-color-status-improve); }
+.m4-swatch.m4-nodata { background: var(--cw-color-status-nodata); }
+
+/* 兼容 render_payload 的 class 命名 */
+.m4-swatch.m4-blue { background: var(--cw-color-status-achieved); }
+.m4-swatch.m4-warning { background: var(--cw-color-status-attention); }
+.m4-swatch.m4-danger { background: var(--cw-color-status-improve); }
+.m4-swatch.m4-gray { background: var(--cw-color-status-nodata); }
+
+/* ============================================================================
+   7. 条形图容器 (Chart Box - 对齐 m2-cw-weakness-card)
+   ============================================================================ */
+.m4-chart-box {
+  margin: 0 var(--cw-spacing-6) 10px;
+  border: 1px solid var(--cw-color-border-card);
+  background: var(--cw-color-page-bg);
+  border-radius: var(--cw-radius-0);
+  padding: 10px 12px;
+  overflow: hidden;
+  position: relative;
+  /* ★ 共享几何变量，所有子元素引用 */
+  --m4-label-col: 90px;
+  --m4-value-col: 48px;
+  --m4-grid-gap: 10px;
+  --m4-progress-left: calc(var(--m4-label-col) + var(--m4-grid-gap));
+  --m4-progress-right: calc(var(--m4-value-col) + var(--m4-grid-gap));
+}
+
+/* ------------------------------------------------------------------------
+   7.1 目标线竖线 (Target Line - 动态位置)
+   ------------------------------------------------------------------------ */
+.m4-chart-rows-wrapper {
+  position: relative;
+}
+
+/* 目标线：overlay 容器锁定 progress 轨道区域 */
+.m4-target-line {
+  position: absolute;
+  left: var(--m4-progress-left);
+  right: var(--m4-progress-right);
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 目标线竖线：在 overlay 内按百分比定位 */
+.m4-target-line::before {
+  content: "";
+  position: absolute;
+  left: var(--target-pct, 75%);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--cw-color-target-line);
+}
+
+/* ------------------------------------------------------------------------
+   7.2 条形行 (Chart Row)
+   ------------------------------------------------------------------------ */
+.m4-chart-row {
+  display: grid;
+  grid-template-columns: var(--m4-label-col) 1fr var(--m4-value-col);
+  column-gap: var(--m4-grid-gap);
+  align-items: center;
+  padding: 7px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.m4-chart-row:not(:last-child) {
+  border-bottom: 1px solid var(--cw-color-border-card);
+}
+
+.m4-chart-row .m4-label {
+  font-size: 12px;
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
+  white-space: nowrap;
+}
+
+.m4-chart-row .m4-value {
+  font-size: 12px;
+  font-weight: var(--cw-font-weight-bold);
+  text-align: right;
+  color: var(--cw-color-text-primary);
+}
+
+.m4-chart-row .m4-value.m4-nodata {
+  color: var(--cw-color-text-muted);
+}
+
+/* ------------------------------------------------------------------------
+   7.3 进度条 (Progress Bar)
+   ------------------------------------------------------------------------ */
+.m4-progress {
+  position: relative;
+  height: 16px;
+  background: var(--cw-color-progress-track);
+  border-radius: var(--cw-radius-pill);
+  overflow: visible;
+}
+
+.m4-progress .m4-fill {
+  height: 100%;
+  border-radius: var(--cw-radius-pill);
+  transition: width 600ms ease;
+  min-width: 0;
+}
+
+/* 进度条填充状态类 */
+.m4-fill.m4-achieved { background: var(--cw-color-status-achieved); }
+.m4-fill.m4-attention { background: var(--cw-color-status-attention); }
+.m4-fill.m4-improve { background: var(--cw-color-status-improve); }
+.m4-fill.m4-nodata { background: var(--cw-color-status-nodata); }
+
+/* 兼容 render_payload 的 class 命名 */
+.m4-fill.m4-blue { background: var(--cw-color-status-achieved); }
+.m4-fill.m4-warning { background: var(--cw-color-status-attention); }
+.m4-fill.m4-danger { background: var(--cw-color-status-improve); }
+.m4-fill.m4-gray { background: var(--cw-color-status-nodata); }
+
+/* ------------------------------------------------------------------------
+   7.4 差值文本 (Delta Text)
+   ------------------------------------------------------------------------ */
+.m4-progress .m4-delta {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: var(--cw-font-weight-bold);
+  white-space: nowrap;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+/* 差值颜色状态类 */
+.m4-delta.m4-achieved { color: var(--cw-color-status-achieved); }
+.m4-delta.m4-attention { color: var(--cw-color-status-attention); }
+.m4-delta.m4-improve { color: var(--cw-color-status-improve); }
+.m4-delta.m4-nodata { color: var(--cw-color-text-muted); }
+
+/* 兼容 render_payload 的 delta_class 命名 */
+.m4-delta.m4-green { color: var(--cw-color-status-achieved); }
+.m4-delta.m4-red { color: var(--cw-color-status-improve); }
+
+/* 兼容 render_payload 的 progress_class 命名 */
+.m4-delta.m4-blue { color: var(--cw-color-status-achieved); }
+.m4-delta.m4-warning { color: var(--cw-color-status-attention); }
+.m4-delta.m4-danger { color: var(--cw-color-status-improve); }
+.m4-delta.m4-gray { color: var(--cw-color-text-muted); }
+
+/* V3-2: Delta 可读性方案 — 3 种可切换, 默认启用方案 A
+   Owner 选定后只保留一种, 删除其余两种。
+   切换方式: 在 .m4-progress 上加 class:
+     (默认/无额外class) = 方案 A (白色描边)
+     .m4-delta-scheme-b  = 方案 B (半透明白底)
+     .m4-delta-scheme-c  = 方案 C (条件外移)
+*/
+
+/* 差值以小标签显示, 避免 PDF 文本阴影重复 */
+.m4-progress .m4-delta {
+  text-shadow: none;
+}
+
+/* 方案 B: 半透明白底 — 在 .m4-progress 上加 .m4-delta-scheme-b 激活 */
+.m4-delta-scheme-b .m4-delta {
+  text-shadow: none !important;
+  background: rgba(255, 255, 255, 0.75);
+  padding: 0 3px;
+  border-radius: 2px;
+}
+
+/* 方案 C: 条件外移 — 在 .m4-progress 上加 .m4-delta-scheme-c 激活
+   当色条宽度 > 80% 时, 手动给 .m4-delta 加 .m4-delta--outside */
+.m4-delta-scheme-c .m4-delta {
+  text-shadow: none !important;
+}
+.m4-delta-scheme-c .m4-delta--outside {
+  right: auto;
+  left: calc(100% + 6px);
+}
+
+/* ------------------------------------------------------------------------
+   7.5 底部刻度轴 (Axis)
+   ------------------------------------------------------------------------ */
+/* 刻度轴: 固定两行 — 第1行目标值, 第2行0%/100% */
+.m4-axis {
+  position: relative;
+  margin-left: var(--m4-progress-left);
+  margin-right: var(--m4-progress-right);
+  margin-top: 6px;
+  height: 24px;
+  color: var(--cw-color-text-secondary);
+  font-size: 11px;
+  font-weight: var(--cw-font-weight-medium);
+}
+
+.m4-axis .m4-tick {
+  position: absolute;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* 第2行: 0% 和 100% 固定在底部 */
+.m4-axis .m4-t0 {
+  left: 0;
+  bottom: 0;
+}
+
+.m4-axis .m4-t100 {
+  right: 0;
+  bottom: 0;
+  text-align: right;
+}
+
+/* 第1行: 目标值在顶部 */
+.m4-axis .m4-t-target {
+  left: var(--target-pct, 75%);
+  top: 0;
+  transform: translateX(-50%);
+}
+
+/* 右拥挤 (≥85%): 目标标签左偏防止溢出 */
+.m4-axis--tight-right .m4-t-target {
+  transform: translateX(-80%);
+}
+
+/* 左极端 (≤8%): 目标标签右偏防止与 0% 重叠 */
+.m4-axis--target-left .m4-t-target {
+  transform: translateX(-20%);
+}
+
+/* ============================================================================
+   8. 表格卡片组件 (Table Card - 对齐 m2-cw-weakness-card)
+   ============================================================================ */
+.m4-table-card {
+  margin: 0 var(--cw-spacing-6) 10px;
+  border: 1px solid var(--cw-color-border-card);
+  background: var(--cw-color-page-bg);
+  border-radius: var(--cw-radius-0);
+  overflow: hidden;
+}
+
+.m4-table-title {
+  padding: 8px 12px;
+  font-size: 15px;
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
+  border-bottom: 1px solid var(--cw-color-border-card);
+}
+
+/* ------------------------------------------------------------------------
+   8.1 表格基础样式 (Table Base)
+   ------------------------------------------------------------------------ */
+.m4-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.m4-table thead th {
+  background: var(--cw-color-bg-header);
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: var(--cw-font-weight-medium);
+  text-align: center;
+  color: var(--cw-color-text-secondary);
+  border-bottom: 1px solid var(--cw-color-border-card);
+}
+
+.m4-table thead th:first-child {
+  text-align: left;
+  padding-left: 12px;
+}
+
+.m4-table thead th:last-child {
+  padding-right: 12px;
+}
+
+.m4-table tbody td {
+  padding: 6px 8px;
+  border-top: 1px solid var(--cw-color-border-card);
+  font-size: 12px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.m4-table tbody td:first-child {
+  text-align: left;
+  padding-left: 12px;
+  font-weight: var(--cw-font-weight-bold);
+}
+
+.m4-table tbody td:last-child {
+  padding-right: 12px;
+}
+
+/* ------------------------------------------------------------------------
+   8.2 表格行状态背景 (Table Row Status Background)
+   ------------------------------------------------------------------------ */
+.m4-tr-achieved { background: var(--cw-color-row-achieved-bg); }
+.m4-tr-attention { background: var(--cw-color-row-attention-bg); }
+.m4-tr-improve { background: var(--cw-color-row-improve-bg); }
+.m4-tr-nodata { background: var(--cw-color-row-nodata-bg); }
+
+/* ------------------------------------------------------------------------
+   8.3 表格单元格差值颜色 (Table Cell Delta Colors)
+   ------------------------------------------------------------------------ */
+.m4-td-delta.m4-achieved { color: var(--cw-color-status-achieved); font-weight: var(--cw-font-weight-bold); }
+.m4-td-delta.m4-attention { color: var(--cw-color-status-attention); font-weight: var(--cw-font-weight-bold); }
+.m4-td-delta.m4-improve { color: var(--cw-color-status-improve); font-weight: var(--cw-font-weight-bold); }
+.m4-td-delta.m4-nodata { color: var(--cw-color-text-muted); }
+
+/* 兼容 render_payload 命名 */
+.m4-td-delta.m4-blue { color: var(--cw-color-status-achieved); font-weight: var(--cw-font-weight-bold); }
+.m4-td-delta.m4-warning { color: var(--cw-color-status-attention); font-weight: var(--cw-font-weight-bold); }
+.m4-td-delta.m4-danger { color: var(--cw-color-status-improve); font-weight: var(--cw-font-weight-bold); }
+.m4-td-delta.m4-gray { color: var(--cw-color-text-muted); }
+.m4-td-delta.m4-green { color: var(--cw-color-status-achieved); font-weight: var(--cw-font-weight-bold); }
+.m4-td-delta.m4-red { color: var(--cw-color-status-improve); font-weight: var(--cw-font-weight-bold); }
+
+/* ============================================================================
+   9. 徽章组件 (Badge)
+   ============================================================================ */
+.m4-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: var(--cw-radius-xs);
+  font-size: 12px;
+  font-weight: var(--cw-font-weight-bold);
+  white-space: nowrap;
+}
+
+/* 徽章状态类 */
+.m4-badge.m4-achieved { 
+  background: var(--cw-color-badge-achieved-bg); 
+  color: var(--cw-color-badge-achieved-text); 
+}
+
+.m4-badge.m4-attention { 
+  background: var(--cw-color-badge-attention-bg); 
+  color: var(--cw-color-badge-attention-text); 
+}
+
+.m4-badge.m4-improve { 
+  background: var(--cw-color-badge-improve-bg); 
+  color: var(--cw-color-badge-improve-text); 
+}
+
+.m4-badge.m4-nodata { 
+  background: var(--cw-color-badge-nodata-bg); 
+  color: var(--cw-color-badge-nodata-text); 
+}
+
+/* 兼容 render_payload 命名 */
+.m4-badge.m4-blue { 
+  background: var(--cw-color-badge-achieved-bg); 
+  color: var(--cw-color-badge-achieved-text); 
+}
+
+.m4-badge.m4-warning { 
+  background: var(--cw-color-badge-attention-bg); 
+  color: var(--cw-color-badge-attention-text); 
+}
+
+.m4-badge.m4-danger { 
+  background: var(--cw-color-badge-improve-bg); 
+  color: var(--cw-color-badge-improve-text); 
+}
+
+.m4-badge.m4-gray { 
+  background: var(--cw-color-badge-nodata-bg); 
+  color: var(--cw-color-badge-nodata-text); 
+}
+
+/* ============================================================================
+   10. 分析小结组件 (Summary Card)
+   ============================================================================ */
+.m4-summary-card {
+  margin: 0 var(--cw-spacing-6) 8px;
+  border: 1px solid var(--cw-color-border-card);
+  background: var(--cw-color-page-bg);
+  border-radius: var(--cw-radius-0);
+}
+
+.m4-summary-title {
+  padding: 8px 12px;
+  font-size: 15px;
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
+  border-bottom: 1px solid var(--cw-color-border-card);
+}
+
+.m4-summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.m4-summary-item {
+  position: relative;
+  padding: 8px 12px;
+  padding-left: 30px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--cw-color-text-primary);
+  border-bottom: 1px solid var(--cw-color-border-card);
+  background: var(--cw-color-page-bg);
+}
+
+.m4-summary-item:last-child {
+  border-bottom: none;
+}
+
+.m4-summary-item::before {
+  content: "*";
+  position: absolute;
+  left: 12px;
+  top: 8px;
+  color: var(--cw-color-text-secondary);
+  font-weight: var(--cw-font-weight-bold);
+}
+
+/* ------------------------------------------------------------------------
+   10.1 小结区域状态背景色 (Summary Item Status Backgrounds)
+   ------------------------------------------------------------------------ */
+/* 已达标/优势领域 - 浅青底 */
+.m4-summary-item--achieved {
+  background: var(--pm-status-achieved-bg, #e6f3f3);
+}
+
+.m4-summary-item--achieved::before {
+  color: var(--cw-color-status-achieved);
+}
+
+/* 需关注 - 浅黄底 */
+.m4-summary-item--attention {
+  background: var(--cw-color-row-attention-bg);
+}
+
+.m4-summary-item--attention::before {
+  color: var(--cw-color-status-attention);
+}
+
+/* 需加强/薄弱领域 - 浅紫底 */
+.m4-summary-item--improve {
+  background: var(--cw-color-row-improve-bg);
+}
+
+.m4-summary-item--improve::before {
+  color: var(--cw-color-status-improve);
+}
+
+/* 数据提示/默认 - 浅灰底 */
+.m4-summary-item--muted,
+.m4-summary-item--default {
+  background: var(--cw-color-bg-tips);
+}
+
+.m4-summary-label {
+  display: block;
+  color: var(--cw-color-text-secondary);
+  font-weight: var(--cw-font-weight-medium);
+  margin-bottom: 3px;
+  font-size: 12px;
+}
+
+.m4-summary-text {
+  color: var(--cw-color-text-primary);
+  display: block;
+}
+
+/* ------------------------------------------------------------------------
+   10.2 小结高亮文本 (Summary Highlights)
+   ------------------------------------------------------------------------ */
+.m4-hl-achieved {
+  color: var(--cw-color-status-achieved);
+  font-weight: var(--cw-font-weight-bold);
+}
+
+.m4-hl-attention {
+  color: var(--cw-color-status-attention);
+  font-weight: var(--cw-font-weight-bold);
+}
+
+.m4-hl-improve {
+  color: var(--cw-color-status-improve);
+  font-weight: var(--cw-font-weight-bold);
+}
+
+.m4-hl-muted {
+  color: var(--cw-color-text-muted);
+  font-weight: var(--cw-font-weight-medium);
+}
+
+/* ------------------------------------------------------------------------
+   10.3 备注说明样式 (Summary Note)
+   ------------------------------------------------------------------------ */
+.m4-summary-note {
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--cw-color-text-secondary);
+  margin: 0;
+}
+
+/* ============================================================================
+   11. 辅助类 (Utility Classes)
+   ============================================================================ */
+/* 文本对齐 */
+.m4-text-left { text-align: left; }
+.m4-text-center { text-align: center; }
+.m4-text-right { text-align: right; }
+
+/* 字重 */
+.m4-font-bold { font-weight: var(--cw-font-weight-bold); }
+.m4-font-medium { font-weight: var(--cw-font-weight-medium); }
+.m4-font-regular { font-weight: var(--cw-font-weight-regular); }
+
+/* 颜色 */
+.m4-text-primary { color: var(--cw-color-text-primary); }
+.m4-text-secondary { color: var(--cw-color-text-secondary); }
+.m4-text-muted { color: var(--cw-color-text-muted); }
+
+/* 隐藏元素 */
+.m4-hidden { display: none !important; }
+
+/* 无数据占位符 */
+.m4-placeholder {
+  color: var(--cw-color-text-muted);
+  font-style: normal;
+}
+
+/* 表格脚注 */
+.m4-table-footnote {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--cw-color-text-secondary);
+  border-top: 1px solid var(--cw-color-border-card);
+  text-align: left;
+}
+
+/* ============================================================================
+   11.5 无数据领域合并说明 (Merged No-Data Note)
+   ============================================================================ */
+.m4-nodata-merge {
+  background: var(--cw-color-bg-muted, #F6F7F9);
+  border: 1px solid var(--cw-color-border-card, #C4D4E0);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 8px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--cw-color-text-secondary, #666);
+  break-inside: avoid;
+}
+
+.m4-nodata-merge__label {
+  font-weight: 600;
+  color: var(--cw-color-text-primary, #333);
+}
+
+.m4-nodata-merge__name {
+  font-weight: 600;
+  color: var(--cw-color-text-primary, #333);
+}
+
+.m4-nodata-merge__text {
+  color: var(--cw-color-text-secondary, #666);
+}
+
+/* ============================================================================
+   12. 打印优化 (Print Optimization - 对齐 m2)
+   ============================================================================ */
+@media print {
+  /* 模板实际使用 .m4-section-domains (非 .m4-module-domains) */
+  .m4-section-domains {
+    width: auto;
+    padding: 0 15mm 0 18mm;  /* [T15] 统一 L/R 边距 */
+  }
+
+  /* [T15] 子元素边距归零 — 由容器 padding 统一提供 */
+  .m4-section-title { padding-left: 0; padding-right: 0; }
+  .m4-section-underline { margin-left: 0; }
+  .m4-chart-meta-bar { margin-left: 0; margin-right: 0; }
+  .m4-chart-box { margin-left: 0; margin-right: 0; }
+  .m4-table-card { margin-left: 0; margin-right: 0; }
+  .m4-summary-card { margin-left: 0; margin-right: 0; }
+
+  /* 大容器允许自然分页, 避免后续模块前出现空白页 */
+  .m4-chart-box,
+  .m4-table-card,
+  .m4-summary-card {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  /* 确保颜色打印 */
+  .m4-fill,
+  .m4-swatch,
+  .m4-badge {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ============================================================================
+   END OF FILE
+   ============================================================================

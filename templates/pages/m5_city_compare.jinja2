@@ -1,0 +1,443 @@
+{#
+================================================================================
+模块5：城市考情对照 (City Exam Comparison)
+文件：5_city_compare.jinja2
+版本：v1.2
+更新：2025-01-15
+
+修订记录：
+- v1.2: [B1修复] 增加 data 入口兜底，兼容 sections.city_compare 注入
+- v1.2: [B2优化] has_data 语义从"有交集"改为"有短板数据"
+- v1.1: 增加 year_coverage_rate 单位自动转换（0-1 → 0-100）
+- v1.1: 增加 tags 展示支持
+- v1.1: 完善空值防护和数据结构说明
+
+说明：
+- 将学生短板与城市历年真题高频考点(Top10)做交集对照
+- 输出交集可视化、重合知识点清单、解读与建议
+- 数据来源：report_output.core_data.top_risks + report_input.city_exam_info
+
+重要契约说明：
+--------------------------------------------------------------------------------
+1. year_coverage_rate 单位：
+   - report_input 中为 0-1（如 1.0 表示每年必考）
+   - 模板期望 0-100（如 100 表示 100%）
+   - 适配层必须做转换：若 year_coverage_rate <= 1.0，则 * 100
+   - 模板也有兜底转换逻辑
+
+2. 数据来源映射：
+   - kp_name: report_output.core_data.top_risks[].name_cn
+   - student_accuracy: report_output.core_data.top_risks[].accuracy
+   - gap_to_target: report_output.core_data.top_risks[].gap_to_target
+   - city_rank: report_output.top_risks[].city_rank 或 report_input.city_exam_info.rank
+   - year_coverage_rate: report_input.city_exam_info.year_coverage_rate（需转换）
+   - real_exam_count: report_input.city_exam_info.real_exam_count
+   - tags: report_output.core_data.top_risks[].tags
+
+3. [v1.2 新增] 入口对象兼容：
+   - 支持直接传入 data 对象
+   - 支持 sections.city_compare 注入
+   - 支持 city_compare 直接注入
+   - 模板自动做兜底映射
+
+数据结构示例 (适配层输出 → sections.city_compare):
+--------------------------------------------------------------------------------
+{
+  "meta": {
+    "report_title": "基线定位分析报告（数学）",
+    "report_date": "2025-06-05",
+    "module_title": "城市考情对照",
+    "city_name": "上海"
+  },
+  "banner": {
+    "title": "上海中学数学·历年真题考点分析",
+    "desc": "以下数据基于上海市历年中考真题统计，反映各知识点的历史出题频率与重要程度，供备考优先级参考。（不代表未来必然考察）"
+  },
+  "overlap_summary": {
+    "student_core_weak_total": 8,
+    "city_top_n": 10,
+    "overlap_count": 5,
+    "overlap_ratio": 0.625,
+    "dot_total": 8,
+    "dot_filled": 5,
+    "has_data": true
+  },
+  "overlap_items": [
+    {
+      "code": "6.02.04",
+      "city_rank": 1,
+      "rank_badge_class": "red",
+      "kp_name": "相似三角形",
+      "student_accuracy": 58,
+      "gap_to_target": -17,
+      "gap_class": "danger",
+      "year_coverage_rate": 100,
+      "year_coverage_rate_raw": 1.0,
+      "coverage_class": "normal",
+      "real_exam_count": 8,
+      "tags": ["高频考点", "每年必考", "急需提升"]
+    }
+  ],
+  "advice": [
+    {
+      "text": "排名第1的\"相似三角形\"在历年真题中年份覆盖率100%，属于常考方向，而学生当前正确率仅58%，差距显著，建议优先攻克。",
+      "highlight_kp": "相似三角形"
+    }
+  ],
+  "footnote": {
+    "title": "数据说明",
+    "text": "城市排名基于上海市历年中考真题统计，反映历史出题频率。",
+    "source": "来源：city_exam_context_v1 / shanghai_kp_importance_v2",
+    "note": "年份覆盖率=该知识点在近5年真题中出现的年份占比"
+  }
+}
+================================================================================
+#}
+
+{# ============================================================
+   宏定义：条件样式类映射
+   ============================================================ #}
+
+{#- 排名徽章颜色类 -#}
+{% macro get_rank_badge_class(rank) -%}
+  {%- if rank is none -%}
+    blue
+  {%- elif rank <= 3 -%}
+    red
+  {%- elif rank <= 7 -%}
+    orange
+  {%- else -%}
+    blue
+  {%- endif -%}
+{%- endmacro %}
+
+{#- 距目标线颜色类 -#}
+{% macro get_gap_class(gap) -%}
+  {%- if gap is none -%}
+    nodata
+  {%- elif gap >= 0 -%}
+    success
+  {%- elif gap > -15 -%}
+    warning
+  {%- else -%}
+    danger
+  {%- endif -%}
+{%- endmacro %}
+
+{#- 年份覆盖率颜色类
+    [v1.1] 支持 0-1 和 0-100 两种输入格式
+-#}
+{% macro get_coverage_class(rate) -%}
+  {%- if rate is none -%}
+    nodata
+  {%- else -%}
+    {#- 自动检测并转换：若 <= 1 视为比例，转为百分数 -#}
+    {%- set rate_pct = rate * 100 if rate <= 1 else rate -%}
+    {%- if rate_pct >= 80 -%}
+      normal
+    {%- else -%}
+      warning
+    {%- endif -%}
+  {%- endif -%}
+{%- endmacro %}
+
+{#- 安全显示数值（空值防护） -#}
+{% macro safe_value(val, suffix='', default='--') -%}
+  {%- if val is none or val == '' -%}
+    {{ default }}
+  {%- else -%}
+    {{ val }}{{ suffix }}
+  {%- endif -%}
+{%- endmacro %}
+
+{#- 安全显示带符号的数值 -#}
+{% macro safe_signed_value(val, suffix='%', default='--') -%}
+  {%- if val is none or val == '' -%}
+    {{ default }}
+  {%- elif val > 0 -%}
+    +{{ val }}{{ suffix }}
+  {%- else -%}
+    {{ val }}{{ suffix }}
+  {%- endif -%}
+{%- endmacro %}
+
+{#- [v1.1] 年份覆盖率显示（自动单位转换）
+    输入可能是 0-1（比例）或 0-100（百分数）
+    输出始终为整数百分数
+-#}
+{% macro safe_coverage_rate(rate, suffix='%', default='--') -%}
+  {%- if rate is none or rate == '' -%}
+    {{ default }}
+  {%- elif rate <= 1 -%}
+    {#- 0-1 比例转百分数 -#}
+    {{ (rate * 100) | round | int }}{{ suffix }}
+  {%- else -%}
+    {#- 已是 0-100 百分数 -#}
+    {{ rate | round | int }}{{ suffix }}
+  {%- endif -%}
+{%- endmacro %}
+
+
+{# ============================================================
+   [v1.2 B1修复] 入口对象兼容处理
+   支持三种注入方式：
+   1. 直接传入 data 对象
+   2. 通过 sections.city_compare 注入
+   3. 通过 city_compare 直接注入
+   ============================================================ #}
+{% set data = data if data is defined and data
+  else (city_compare if city_compare is defined and city_compare
+  else (sections.city_compare if sections is defined and sections.city_compare is defined
+  else {})) %}
+
+
+{# ============================================================
+   主模板开始
+   ============================================================ #}
+
+{#- 数据引用简化 -#}
+{% set meta = meta | default({}) %}
+{% set banner = data.banner | default({}) %}
+{% set summary = data.overlap_summary | default({}) %}
+{% set items = data.overlap_items | default([]) %}
+{% set advice_list = data.advice | default([]) %}
+{% set footnote = data.footnote | default({}) %}
+{% set long_item_threshold = 15 %}
+
+{#- [v1.2 B2优化] 数据有效性检查
+    has_data 语义从"有交集"改为"有短板数据"
+    这样即使没有交集，只要有短板数据就不会进入空态
+-#}
+{% set student_core_weak_total = summary.student_core_weak_total | default(0) %}
+{% set has_data = summary.has_data | default(student_core_weak_total > 0) %}
+{% set has_overlap_items = items | length > 0 %}
+{% set overlap_count = summary.overlap_count | default(0) %}
+{% set city_top_n = summary.city_top_n | default(10) %}
+{% set overlap_ratio = summary.overlap_ratio | default(none) %}
+{% if overlap_ratio is none %}
+  {% set overlap_pct = ((overlap_count / student_core_weak_total) * 100) | round | int if student_core_weak_total else 0 %}
+{% elif overlap_ratio <= 1 %}
+  {% set overlap_pct = (overlap_ratio * 100) | round | int %}
+{% else %}
+  {% set overlap_pct = overlap_ratio | round | int %}
+{% endif %}
+
+<div class="m5-city-compare{% if items | length >= long_item_threshold %} m5-city-compare--long{% endif %}">
+  
+  {# ============================================================
+     PART 1: 标题 + 一句话概述
+     ============================================================ #}
+  <section class="m5-city-compare__part m5-city-compare__part--header">
+    <h1 class="m5-city-compare__title">
+      五、{{ data.module_title | default('城市考情对照') }}
+    </h1>
+    <p class="m5-city-compare__intro">
+      {%- set city_name = meta.city_name | default('本') -%}
+      {%- if has_data and overlap_count > 0 -%}
+        以下列出你的薄弱知识点与{{ city_name }}市历年中考高频考点的重合情况，帮助你明确提分优先级。
+      {%- elif has_data -%}
+        以下是你的薄弱知识点与{{ city_name }}市历年中考高频考点的对照情况。
+      {%- else -%}
+        你的薄弱知识点与{{ city_name }}市历年中考高频考点暂无重合。
+      {%- endif -%}
+    </p>
+  </section>
+  
+  {# ============================================================
+     PART 2: 高频重合度对照（卡片+表格）
+     ============================================================ #}
+  {% if has_data %}
+  <section class="m5-city-compare__part m5-city-compare__part--data">
+    <div class="m5-city-compare__cards">
+    
+    {# ----------------------
+       左卡：核心结论
+       ---------------------- #}
+    <div class="m5-city-compare__card">
+      <div class="m5-city-compare__card-highlight">
+        {%- if overlap_count > 0 -%}
+          你的{{ overlap_count }}个薄弱知识点与城市高频考点重合，重合度{{ overlap_pct }}%。这些是提分性价比最高的突破口。
+        {%- else -%}
+          当前薄弱知识点与城市高频考点无重合，可按自身节奏逐一补强。
+        {%- endif -%}
+      </div>
+    </div>
+    
+    {# ----------------------
+       右卡：高频重合度概览
+       ---------------------- #}
+    <div class="m5-city-compare__card m5-city-compare__card--overlap">
+      <div class="m5-city-compare__card-title">高频重合度</div>
+
+      <div class="m5-city-compare__overlap-main">
+        <span class="m5-city-compare__overlap-num">{{ overlap_pct }}%</span>
+      </div>
+      <div class="m5-city-compare__overlap-subtitle">
+        当前短板与城市 top{{ city_top_n }} 的重合率
+      </div>
+
+      <div class="m5-city-compare__progress">
+        <div class="m5-city-compare__progress-track">
+          <div class="m5-city-compare__progress-fill" style="width: {{ overlap_pct }}%;"></div>
+        </div>
+      </div>
+
+      <div class="m5-city-compare__overlap-stats">
+        <div class="m5-city-compare__overlap-stat">
+          <span class="m5-city-compare__overlap-stat-label">重合知识点</span>
+          <span class="m5-city-compare__overlap-stat-value">{{ overlap_count }}</span>
+        </div>
+        <div class="m5-city-compare__overlap-stat">
+          <span class="m5-city-compare__overlap-stat-label">核心短板总数</span>
+          <span class="m5-city-compare__overlap-stat-value">{{ student_core_weak_total }}</span>
+        </div>
+        <div class="m5-city-compare__overlap-stat">
+          <span class="m5-city-compare__overlap-stat-label">城市参考范围</span>
+          <span class="m5-city-compare__overlap-stat-value">Top{{ city_top_n }}</span>
+        </div>
+      </div>
+
+      <div class="m5-city-compare__overlap-ratio">
+        {% if overlap_count > 0 %}
+        已识别 {{ overlap_count }}/{{ student_core_weak_total }} 个优先突破的考试高频短板。
+        {% else %}
+        当前未命中城市高频交集，但仍可依据下方清单安排专项补练。
+        {% endif %}
+      </div>
+    </div>
+    
+  </div><!-- /.m5-city-compare__cards -->
+
+  {# ----------------------
+     表格：重合知识点清单
+     ---------------------- #}
+  {% if has_overlap_items %}
+  <section class="m5-city-compare__table-section">
+    <div class="m5-city-compare__table-title">重合知识点清单</div>
+
+    <table class="m5-city-compare__table">
+      <thead>
+        <tr>
+          <th class="m5-city-compare__table th--center" style="width: 70px;">城市排名</th>
+          <th style="width: auto;">知识点</th>
+          <th class="m5-city-compare__table th--right" style="width: 100px;">正确率</th>
+          <th class="m5-city-compare__table th--right" style="width: 90px;">距目标</th>
+          <th class="m5-city-compare__table th--center" style="width: 90px;">重要性</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td class="m5-city-compare__table td--center">
+            {% set badge_class = item.rank_badge_class | default(get_rank_badge_class(item.city_rank)) %}
+            <span class="m5-city-compare__rank-badge m5-city-compare__rank-badge--{{ badge_class }}">
+              {{ item.city_rank | default('--') }}
+            </span>
+          </td>
+          <td>
+            <div class="m5-city-compare__kp-name">{{ item.kp_name | default('--') }}</div>
+            {% if item.tags and item.tags | length > 0 %}
+            <div class="m5-city-compare__tags">
+              {% for tag in item.tags %}
+                {% if '必考' in tag or '高频' in tag %}
+                <span class="m5-city-compare__tag m5-city-compare__tag--highlight">{{ tag }}</span>
+                {% elif '急需' in tag or '薄弱' in tag %}
+                <span class="m5-city-compare__tag m5-city-compare__tag--warning">{{ tag }}</span>
+                {% else %}
+                <span class="m5-city-compare__tag">{{ tag }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% endif %}
+          </td>
+          <td class="m5-city-compare__table td--right">
+            {{ safe_value(item.student_accuracy, '%') }}
+          </td>
+          <td class="m5-city-compare__table td--right">
+            {% set gap_val = item.delta_vs_target if item.delta_vs_target is defined else item.gap_to_target | default(0) %}
+            {% set gap_class = item.gap_class | default(get_gap_class(gap_val)) %}
+            <span class="m5-city-compare__val--{{ gap_class }}">
+              {{ safe_signed_value(gap_val) }}
+            </span>
+          </td>
+          <td class="m5-city-compare__table td--center">
+            <span class="m5-city-compare__weight-badge m5-city-compare__weight-badge--{{ item.score_weight_class | default('mid') }}">
+              {{ item.score_weight | default('中') }}
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="m5-city-compare__table-note">
+      重要性：综合历年真题出题频率、分值占比、难度评定
+    </div>
+  </section>
+  {% endif %}
+  </section><!-- /.m5-city-compare__part--data -->
+  {% endif %}
+
+  {% if not has_data %}
+  <section class="m5-city-compare__empty">
+    <div class="m5-city-compare__empty-text">暂无城市考情对照数据</div>
+  </section>
+  {% endif %}
+
+  {# ============================================================
+     PART 3: 建议（融入背景，不单独框起来）
+     ============================================================ #}
+  {% if advice_list | length > 0 %}
+  <section class="m5-city-compare__part m5-city-compare__part--advice">
+    <div class="m5-city-compare__advice-title">备考建议</div>
+    <ul class="m5-city-compare__advice-list">
+      {% for advice in advice_list %}
+      <li class="m5-city-compare__advice-item">
+        {% if advice is mapping %}
+          {% set a_title = advice.get('title') %}
+          {% set a_content = advice.get('content') %}
+          {% set a_text = advice.get('text') %}
+          {% set a_hlkp = advice.get('highlight_kp') %}
+          {% set a_hlnum = advice.get('highlight_num') %}
+          {% set a_name = advice.get('name_cn') or advice.get('name') %}
+          {% set a_comment = advice.get('comment') %}
+          {% if a_content %}
+            {% if a_title %}<strong>{{ a_title }}：</strong>{% endif %}{{ a_content }}
+          {% elif a_text %}
+            {% set text = a_text | default('') %}
+            {% if a_hlkp %}
+              {{ text | replace('"' ~ a_hlkp ~ '"', '<span class="m5-city-compare__advice-highlight">"' ~ a_hlkp ~ '"</span>') | safe }}
+            {% elif a_hlnum %}
+              {{ text | replace(a_hlnum, '<span class="m5-city-compare__advice-num">' ~ a_hlnum ~ '</span>') | safe }}
+            {% else %}
+              {{ text }}
+            {% endif %}
+          {% elif a_comment %}
+            {% if a_name %}<strong>{{ a_name }}：</strong>{% endif %}{{ a_comment }}
+          {% else %}
+            {{ advice | string }}
+          {% endif %}
+        {% else %}
+          {{ advice }}
+        {% endif %}</li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {# ============================================================
+     Footer: 数据说明
+     ============================================================ #}
+  {% if footnote.title or footnote.text or footnote.source or footnote.note %}
+  <footer class="m5-city-compare__footnote">
+    {% if footnote.text %}
+    <div class="m5-city-compare__footnote-text">
+      {{ footnote.text }}
+    </div>
+    {% endif %}
+    {% if footnote.note %}
+    <span class="m5-city-compare__footnote-line">{{ footnote.note }}</span>
+    {% endif %}
+  </footer>
+  {% endif %}
+  
+</div>

@@ -1,0 +1,97 @@
+{# ==============================================================================
+   m11_reading_deep.jinja2 — M11 阅读精讲 (英语专属)
+   条件: page_visibility.m11_reading_deep == true
+   ============================================================================== #}
+
+{% set rd = reading_deep | default({}, true) %}
+{% if rd.enabled | default(false) %}
+<div class="m11-page">
+  <h1 class="m11-title">十一、阅读精讲</h1>
+
+  {# 1. 本篇阅读概览 #}
+  {% set po = rd.passage_overview | default({}, true) %}
+  <div class="m11-overview-card">
+    <div class="m11-section-title">本篇阅读概览</div>
+    <div class="m11-overview-row">
+      <div>文章类型: <strong>{{ po.genre | default('--') }}</strong></div>
+      <div>题数: <strong>{{ po.question_count | default('--') }}</strong></div>
+      <div>正确: <strong class="m11-correct">{{ po.correct_count | default('--') }}</strong></div>
+      <div>错误: <strong class="m11-wrong">{{ po.wrong_count | default('--') }}</strong></div>
+    </div>
+    {% if po.title | default('') %}
+    <div style="margin-top:8px; font-size:14px; color:var(--color-text-muted);">{{ po.title }}</div>
+    {% endif %}
+  </div>
+
+  {# 2. 为什么选这篇 #}
+  {% if rd.selection_reason | default('') %}
+  <div class="m11-section">
+    <div class="m11-section-title">为什么选这篇</div>
+    <p style="font-size:14px; line-height:1.7; color:var(--color-text-secondary); margin:0;">{{ rd.selection_reason }}</p>
+  </div>
+  {% endif %}
+
+  {# 3. 整体问题诊断 #}
+  {% if rd.overall_diagnosis | default('') %}
+  <div class="m11-diagnosis-card">
+    <div class="m11-section-title">整体问题诊断</div>
+    <p style="font-size:14px; line-height:1.7; color:var(--color-text-secondary); margin:0;">{{ rd.overall_diagnosis }}</p>
+  </div>
+  {% endif %}
+
+  {# 4. 逐题讲解 #}
+  {% if rd.question_analyses | default([]) | length > 0 %}
+  <div class="m11-section">
+    <div class="m11-section-title">逐题讲解</div>
+    {% for qa in rd.question_analyses %}
+    {% set is_wrong = qa.is_correct | default(true) == false %}
+    <div class="m11-qa-card {{ 'm11-qa-card--wrong' if is_wrong else 'm11-qa-card--correct' }}">
+      <div class="m11-qa-card__title">
+        第{{ qa.question_no | default(loop.index) }}题
+        {% if is_wrong %}
+          <span class="m11-qa-card__wrong-mark"> (错题)</span>
+        {% else %}
+          <span class="m11-qa-card__correct-mark"> (正确)</span>
+        {% endif %}
+      </div>
+      {% if qa.analysis | default('') %}
+      <p class="m11-qa-card__analysis">{{ qa.analysis }}</p>
+      {% endif %}
+      {% if qa.error_type | default('') %}
+      <div class="m11-qa-card__error-type">错因: {{ qa.error_type }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# 5. 阅读方法 #}
+  {% if rd.reading_strategies | default([]) | length > 0 %}
+  <div class="m11-section">
+    <div class="m11-section-title">阅读方法</div>
+    {% for strategy in rd.reading_strategies %}
+    <div class="m11-strategy-card">
+      <strong>{{ strategy.name | default('策略' ~ loop.index) }}:</strong> {{ strategy.description | default('') }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# 6. 3天练习建议 #}
+  {% if rd.three_day_plan | default('') %}
+  <div class="m11-section">
+    <div class="m11-suggestion-card">
+      <div class="m11-section-title">3天练习建议</div>
+      <p class="m11-suggestion-text">{{ rd.three_day_plan }}</p>
+    </div>
+  </div>
+  {% endif %}
+
+  {# 7. 鼓励语 #}
+  {% if rd.encouragement | default('') %}
+  <div class="m11-section">
+    <div class="m11-encouragement">{{ rd.encouragement }}</div>
+  </div>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,344 @@
+/* ==========================================================================
+   m9_question_detail.css — M9 逐题分析明细
+   v2.0: 首页概述+表格连续排版, 表头跨页重复, 空数据说明, 紧凑表格
+   ========================================================================== */
+
+/* --- 页面容器 --- */
+.m9-page {
+  padding: 20px var(--cc-spacing-6, 24px) 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   0. 标题区
+   ========================================================================== */
+.m9-title-section {
+  margin-bottom: 20px;
+}
+
+.m9-title {
+  display: inline-block;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.m9-title::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin-top: 6px;
+  background: var(--pm-gradient-accent-bar);
+  border-image: var(--pm-gradient-accent-bar) 1;
+  border-radius: 2px;
+}
+
+.m9-title__underline {
+  display: none;
+}
+
+/* ==========================================================================
+   1. 首页概述区
+   ========================================================================== */
+.m9-overview {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: var(--pm-bg-muted);
+  border-radius: var(--pm-radius-badge, 12px);
+  border: 1px solid var(--pm-border-card);
+  break-inside: avoid;
+}
+
+.m9-overview__stats {
+  display: flex;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.m9-overview__stat {
+  text-align: center;
+  min-width: 56px;
+}
+
+.m9-overview__stat-num {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  line-height: 1.2;
+}
+
+.m9-overview__stat--danger .m9-overview__stat-num {
+  color: var(--pm-status-danger, #c44040);
+}
+
+.m9-overview__stat--success .m9-overview__stat-num {
+  color: var(--pm-status-success, #2d8a6e);
+}
+
+.m9-overview__stat-label {
+  font-size: 12px;
+  color: var(--pm-text-secondary);
+  margin-top: 2px;
+}
+
+.m9-overview__desc {
+  flex: 1;
+  font-size: var(--pm-font-size-body, 16px);
+  color: var(--pm-text-secondary);
+  line-height: var(--pm-line-height-normal, 1.6);
+  margin: 0;
+  padding-left: 20px;
+  border-left: 1px solid var(--pm-border-card);
+}
+
+/* ==========================================================================
+   2. 空数据状态
+   ========================================================================== */
+.m9-empty-state {
+  background: var(--pm-bg-muted);
+  border-radius: var(--pm-radius-badge, 12px);
+  padding: 24px 28px;
+  margin: 20px 0;
+  break-inside: avoid;
+}
+
+.m9-empty-state__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin-bottom: 8px;
+}
+
+.m9-empty-state__text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--pm-text-secondary);
+  margin: 0 0 12px;
+}
+
+.m9-empty-state__action {
+  font-size: 13px;
+  color: var(--pm-teal);
+  padding: 8px 12px;
+  background: rgba(31, 111, 120, 0.08);
+  border-radius: var(--pm-radius-badge, 12px);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   3. 试卷分组
+   ========================================================================== */
+.m9-paper-section {
+  margin-bottom: 24px;
+  break-inside: auto;  /* 允许大分组跨页, 由 tr break-inside 控制行级分页 */
+}
+
+.m9-paper-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--pm-text-primary);
+  background: var(--pm-bg-muted);
+  border-left: 3px solid var(--pm-teal);
+  padding: 8px 12px;
+  margin: 0 0 12px;
+  border-radius: 0 var(--pm-radius-badge, 12px) var(--pm-radius-badge, 12px) 0;
+}
+
+/* --- 表格标签 --- */
+.m9-table-label {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 12px 0 6px;
+  padding-left: 4px;
+}
+
+.m9-table-label--wrong {
+  color: var(--pm-status-danger, #c44040);
+}
+
+.m9-table-label--correct {
+  color: var(--pm-status-success, #2d8a6e);
+}
+
+/* ==========================================================================
+   4. 表格基础 + 紧凑模式
+   ========================================================================== */
+.m9-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  border: 1px solid var(--pm-border-card);
+  overflow: hidden;
+}
+
+.m9-table tr {
+  break-inside: avoid;  /* 防止题目行被截断 */
+}
+
+.m9-table th,
+.m9-table td {
+  padding: 5px 7px;
+  text-align: left;
+  border-bottom: 1px solid var(--pm-border-light);
+  vertical-align: top;
+}
+
+.m9-table thead th {
+  font-weight: 600;
+  font-size: 12px;
+  white-space: nowrap;
+  /* 表头跨页重复 — 配合 base.css 全局 thead display: table-header-group */
+}
+
+/* 隔行变色 */
+.m9-table tbody tr:nth-child(even) {
+  background: var(--pm-bg-muted);
+}
+
+/* --- 错题表头 --- */
+.m9-table--wrong thead th {
+  background: var(--pm-status-danger-bg, #fde8e8);
+  color: var(--pm-status-danger, #c44040);
+  border-bottom: 2px solid rgba(196, 64, 64, 0.2);
+}
+
+/* --- 正确题表头 --- */
+.m9-table--correct thead th {
+  background: var(--pm-status-success-bg, #e8f5f0);
+  color: var(--pm-status-success, #2d8a6e);
+  border-bottom: 2px solid rgba(45, 138, 110, 0.2);
+}
+
+/* ==========================================================================
+   5. 列宽
+   ========================================================================== */
+.m9-col-no       { width: 50px; }
+.m9-col-diff     { width: 80px; }
+.m9-col-kp       { width: 120px; }
+.m9-col-tags     { width: 140px; }
+.m9-col-analysis { width: auto; }
+.m9-col-kbp      { width: auto; }
+
+/* --- 星级 --- */
+.m9-stars {
+  color: var(--pm-sand, #e2c48f);
+  font-size: 11px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   6. 错因分析单元格
+   ========================================================================== */
+.m9-analysis-cell {
+  font-size: 11px;
+  color: var(--pm-text-secondary);
+  line-height: 1.4;
+}
+
+.m9-analysis-label {
+  font-weight: 600;
+  color: var(--pm-text-primary);
+}
+
+.m9-error-section {
+  margin-bottom: 2px;
+}
+
+.m9-breakpoint-section {
+  margin-top: 2px;
+  padding-top: 2px;
+  border-top: 0.5px solid var(--pm-border-light);
+}
+
+/* ==========================================================================
+   7. 打印优化
+   ========================================================================== */
+@media print {
+  .m9-page {
+    display: block;
+    flex: none;
+    padding: 0 15mm 0 18mm;
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .m9-title-section {
+    margin-bottom: 8px;
+  }
+
+  .m9-title {
+    font-size: 22px;
+  }
+
+  .m9-overview {
+    gap: 10px;
+    margin-bottom: 8px;
+    padding: 8px 10px;
+  }
+
+  .m9-overview__stats {
+    gap: 8px;
+  }
+
+  .m9-overview__stat {
+    min-width: 42px;
+  }
+
+  .m9-overview__stat-num {
+    font-size: 18px;
+  }
+
+  .m9-overview__desc {
+    padding-left: 10px;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .m9-paper-section {
+    margin-bottom: 10px;
+  }
+
+  .m9-paper-title {
+    padding: 5px 8px;
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+
+  .m9-table-label {
+    margin: 5px 0 3px;
+    font-size: 11px;
+  }
+
+  .m9-table {
+    margin-bottom: 4px;
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .m9-table th,
+  .m9-table td {
+    padding: 3px 5px;
+  }
+
+  .m9-analysis-cell {
+    font-size: 9px;
+    line-height: 1.25;
+  }
+
+  .m9-paper-title,
+  .m9-table {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

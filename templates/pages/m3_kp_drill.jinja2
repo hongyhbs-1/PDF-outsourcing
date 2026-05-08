@@ -1,0 +1,586 @@
+{# =============================================================================
+ # 3_kp_drill.jinja2
+ # 模块3：知识点短板钻取 (Knowledge Point Weakness Drilling)
+ #
+ # 功能说明：从六大领域逐层下钻，将学习薄弱点从 L1→L2→L3→L4 逐级定位
+ #           v2.0: 按六大领域(L1)分组，每个领域一个独立 panel，展示该领域下的 L2/L3/L4 知识点
+ # 数据来源：render_payload.section_3_kp_drill (由适配层从 report_input.top_risk_areas 生成)
+ # 作者：dida985 AI诊断报告系统
+ # 版本：v2.0 (六大领域分组版)
+ # ============================================================================= #}
+
+{# -----------------------------------------------------------------------------
+ # 数据结构示例 (JSON Schema Example) - v2.0 六大领域分组版
+ # -----------------------------------------------------------------------------
+ # 期望的输入数据结构 (section_3_kp_drill):
+ # 注意：此数据由适配层从 report_input.top_risk_areas.L2/L3/L4 生成
+ #
+ # {
+ #   "header": {
+ #     "left_text": "基线定位分析报告（数学）",
+ #     "right_text": "报告日期：2025.06.05"
+ #   },
+ #   "module_title": "知识点短板钻取",
+ #   "intro_text": "从六大领域逐层下钻，定位具体薄弱环节：",
+ #   "has_data": true,
+ #   "level_guide": [
+ #     { "level": "L1", "name": "领域", "desc": "(6项)", "theme": "l1" },
+ #     { "level": "L2", "name": "模块", "desc": "(粗粒度)", "theme": "l2" },
+ #     { "level": "L3", "name": "知识点", "desc": "(中粒度)", "theme": "l3" },
+ #     { "level": "L4", "name": "技能点", "desc": "(细粒度)", "theme": "l4" }
+ #   ],
+ #
+ #   // ===== v2.0 新增：六大领域名称映射 =====
+ #   "domain_names": {
+ #     "1": "方程与不等式",
+ #     "2": "函数",
+ #     "3": "数与代数",
+ #     "4": "统计与概率",
+ #     "5": "应用",
+ #     "6": "几何"
+ #   },
+ #
+ #   // ===== v2.0 新增：按领域分组的钻取数据 =====
+ #   // domain_panels 是一个对象，key 为领域编号 "1"~"6"
+ #   // 每个领域包含 L2/L3/L4 三个层级的 items 数组
+ #   "domain_panels": {
+ #     "1": {   // 方程与不等式
+ #       "domain_code": "1",
+ #       "domain_name": "方程与不等式",
+ #       "has_data": true,
+ #       "l2_items": [
+ #         {
+ #           "rank": 1,
+ #           "priority": "P0",
+ #           "name_cn": "一元二次方程",
+ #           "code": "1.03",
+ #           "parent_name": "方程与不等式",
+ #           "accuracy": 62,
+ #           "delta_vs_target": -13,
+ #           "count": 28
+ #         }
+ #       ],
+ #       "l3_items": [
+ #         {
+ #           "rank": 1,
+ #           "priority": "P0",
+ #           "name_cn": "韦达定理",
+ #           "code": "1.03.02",
+ #           "parent_name": "一元二次方程",
+ #           "accuracy": 50,
+ #           "delta_vs_target": -25,
+ #           "count": 12
+ #         }
+ #       ],
+ #       "l4_items": [
+ #         {
+ #           "rank": 1,
+ #           "priority": "P0",
+ #           "name_cn": "韦达定理-求系数",
+ #           "code": "1.03.02.01",
+ #           "parent_name": "韦达定理",
+ #           "accuracy": 40,
+ #           "delta_vs_target": -35,
+ #           "count": 5
+ #         }
+ #       ]
+ #     },
+ #     "2": { ... },  // 函数
+ #     "3": { ... },  // 数与代数
+ #     "4": { ... },  // 统计与概率
+ #     "5": { ... },  // 应用
+ #     "6": {         // 几何
+ #       "domain_code": "6",
+ #       "domain_name": "几何",
+ #       "has_data": true,
+ #       "l2_items": [
+ #         {
+ #           "rank": 1,
+ #           "priority": "P0",
+ #           "name_cn": "三角形",
+ #           "code": "6.02",
+ #           "parent_name": "几何",
+ #           "accuracy": 67,
+ #           "delta_vs_target": -8,
+ #           "count": 36
+ #         }
+ #       ],
+ #       "l3_items": [
+ #         {
+ #           "rank": 1,
+ #           "priority": "P0",
+ #           "name_cn": "相似三角形",
+ #           "code": "6.02.04",
+ #           "parent_name": "三角形",
+ #           "accuracy": 58,
+ #           "delta_vs_target": -17,
+ #           "count": 24
+ #         }
+ #       ],
+ #       "l4_items": [
+ #         {
+ #           "rank": 1,
+ #           "priority": "P0",
+ #           "name_cn": "相似三角形判定-AA",
+ #           "code": "6.02.04.01",
+ #           "parent_name": "相似三角形",
+ #           "accuracy": 53,
+ #           "delta_vs_target": -22,
+ #           "count": 15
+ #         }
+ #       ]
+ #     }
+ #   },
+ #
+ #   // ===== 保留：旧版 tables 字段（向后兼容，可选） =====
+ #   "tables": [ ... ],
+ #
+ #   "path_example": {
+ #     "title": "钻取路径示例",
+ #     "nodes": [
+ #       { "level": "L1", "name_cn": "几何", "delta_vs_target": -8, "theme": "l1" },
+ #       { "level": "L2", "name_cn": "三角形", "delta_vs_target": -8, "theme": "l2" },
+ #       { "level": "L3", "name_cn": "相似三角形", "delta_vs_target": -17, "theme": "l3" },
+ #       { "level": "L4", "name_cn": "AA判定", "delta_vs_target": -22, "theme": "l4" }
+ #     ],
+ #     "note_text": "从L1到L4，差距逐层放大（-8%→-22%），说明问题集中在..."
+ #   }
+ # }
+ # ----------------------------------------------------------------------------- #}
+
+{# -----------------------------------------------------------------------------
+ # 宏定义：安全输出 (Safe Output Macros)
+ # ----------------------------------------------------------------------------- #}
+
+{# 安全输出文本，空值返回默认值 #}
+{% macro safe_text(value, default="--") %}
+  {{- value if value is not none and value != "" else default -}}
+{% endmacro %}
+
+{# 安全输出百分比 #}
+{% macro safe_percent(value, default="--") %}
+  {%- if value is not none -%}
+    {{ value }}%
+  {%- else -%}
+    {{ default }}
+  {%- endif -%}
+{% endmacro %}
+
+{# [v1.1] 输出差距值（支持 gap_to_target 回退，带正负符号和样式类） #}
+{% macro render_delta(item) %}
+  {# 优先使用 delta_vs_target，回退到 gap_to_target #}
+  {%- set delta = item.delta_vs_target if item.delta_vs_target is defined else item.gap_to_target | default(none) -%}
+  {%- if delta is none -%}
+    <span class="m3-kp-delta m3-kp-delta--na">--</span>
+  {%- elif delta < 0 -%}
+    <span class="m3-kp-delta m3-kp-delta--neg">{{ delta }}%</span>
+  {%- else -%}
+    <span class="m3-kp-delta m3-kp-delta--pos">+{{ delta }}%</span>
+  {%- endif -%}
+{% endmacro %}
+
+{# 输出优先级徽章 #}
+{% macro render_priority_badge(priority) %}
+  {%- set pri = (priority | default("", true) | string | lower) -%}
+  {%- if pri == "p0" -%}
+    <span class="m3-kp-badge m3-kp-badge--p0">P0</span>
+  {%- elif pri == "p1" -%}
+    <span class="m3-kp-badge m3-kp-badge--p1">P1</span>
+  {%- elif pri == "p2" -%}
+    <span class="m3-kp-badge m3-kp-badge--p2">P2</span>
+  {%- elif pri == "p3" -%}
+    <span class="m3-kp-badge m3-kp-badge--p3">已达标</span>
+  {%- else -%}
+    <span class="m3-kp-badge m3-kp-badge--default">{{ priority | default("--", true) }}</span>
+  {%- endif -%}
+{% endmacro %}
+
+{# [v1.1] 获取上级名称（按层级规则：L2用domain_name，L3/L4用parent_name） #}
+{% macro get_parent_display(item) %}
+  {%- if item.domain_name -%}
+    {{- item.domain_name -}}
+  {%- elif item.parent_name -%}
+    {{- item.parent_name -}}
+  {%- elif item.parent_l1_name -%}
+    {{- item.parent_l1_name -}}
+  {%- elif item.parent_l2_name -%}
+    {{- item.parent_l2_name -}}
+  {%- elif item.parent_l3_name -%}
+    {{- item.parent_l3_name -}}
+  {%- elif item.parent_name_cn -%}
+    {{- item.parent_name_cn -}}
+  {%- else -%}
+    --
+  {%- endif -%}
+{% endmacro %}
+
+{# =============================================================================
+ # [v2.0] 宏定义：渲染单个层级表格 (Render Level Table Macro)
+ # 参数:
+ #   level      - 层级标识 "L2" / "L3" / "L4"
+ #   theme      - CSS主题 "l2" / "l3" / "l4"
+ #   col_name   - 第3列标题（知识模块/知识点/技能点）
+ #   col_parent - 第4列标题（所属领域/上级模块/上级知识点）
+ #   items      - 该层级的数据项数组
+ #   cta_text   - 下钻CTA文字（可选，L4通常为null）
+ # ============================================================================= #}
+{% macro render_level_table(level, theme, col_name, col_parent, items, cta_text=none) %}
+  <div class="m3-kp-drill__section">
+    {# 区块标题 #}
+    <div class="m3-kp-drill__section-title">
+      {{ level }} {{ col_name }}分析
+    </div>
+
+    {# 数据表格 #}
+    <table class="m3-kp-table m3-kp-table--{{ theme }}">
+      <thead>
+        <tr>
+          <th class="m3-kp-col-idx">#</th>
+          <th class="m3-kp-col-pri">优先级</th>
+          <th class="m3-kp-col-name">{{ col_name }}</th>
+          <th class="m3-kp-col-parent">{{ col_parent }}</th>
+          <th class="m3-kp-col-acc">正确率</th>
+          <th class="m3-kp-col-gap">距目标线</th>
+          <th class="m3-kp-col-cnt">题量</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% if items | length == 0 %}
+          {# 空数据兜底行 #}
+          <tr>
+            <td colspan="7" class="m3-kp-table__empty">
+              该领域暂无{{ level }}层级数据
+            </td>
+          </tr>
+        {% else %}
+          {% for it in items %}
+            <tr class="{{ 'm3-kp-table__row--achieved' if it.is_achieved | default(false) else '' }}">
+              {# 序号 #}
+              <td class="m3-kp-col-idx">{{ it.rank | default(loop.index, true) }}</td>
+
+              {# 优先级徽章 - 支持 priority 和 priority_level 两种字段名 #}
+              <td class="m3-kp-col-pri">
+                {{ render_priority_badge(it.priority | default(it.priority_level, true)) }}
+              </td>
+
+              {# 知识点名称（编码已隐藏）#}
+              <td class="m3-kp-col-name" title="{{ it.name_cn | default('--', true) }}">
+                {{ safe_text(it.name_cn) }}
+                {# 知识点编码已隐藏
+                {% if it.code %}
+                  <span class="m3-kp-code">({{ it.code }})</span>
+                {% endif %}
+                #}
+              </td>
+
+              {# 上级名称 #}
+              <td class="m3-kp-col-parent">{{ get_parent_display(it) }}</td>
+
+              {# 正确率 #}
+              <td class="m3-kp-col-acc">{{ safe_percent(it.accuracy) }}</td>
+
+              {# 距目标线 #}
+              <td class="m3-kp-col-gap">
+                {{ render_delta(it) }}
+              </td>
+
+              {# 题量 #}
+              <td class="m3-kp-col-cnt">{{ safe_text(it.count) }}</td>
+            </tr>
+          {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+
+    {# 下钻CTA（如果存在） #}
+    {% if cta_text %}
+      <div class="m3-kp-drill__cta">
+        <span>{{ cta_text }}</span>
+        <span class="m3-kp-drill__cta-icon"></span>
+      </div>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{# -----------------------------------------------------------------------------
+ # 主模板开始
+ # ----------------------------------------------------------------------------- #}
+
+{# meta 变量定义 - 确保兼容性 #}
+{% set meta = meta | default({}) %}
+
+{# 获取模块数据，支持多种数据路径 #}
+{% set data = section_3_kp_drill | default(kp_drill, true) | default({}, true) %}
+
+{# 提取各部分数据 #}
+{% set header = data.header | default({}, true) %}
+{% set module_title = data.module_title | default("知识点掌握情况", true) %}
+{% set intro_text = data.intro_text | default("从六大领域逐层下钻，定位具体薄弱环节：", true) %}
+{% set level_guide = data.level_guide | default([], true) %}
+{% set tables = data.tables | default([], true) %}
+{% set path_example = data.path_example | default({}, true) %}
+
+{# [v2.0] 六大领域数据 #}
+{% set domain_names = data.domain_names | default({
+  "1": "方程与不等式",
+  "2": "函数",
+  "3": "数与代数",
+  "4": "统计与概率",
+  "5": "应用",
+  "6": "几何"
+}, true) %}
+{% set domain_panels = data.domain_panels | default({}, true) %}
+
+{# [v2.0] 固定的六大领域编号列表（确保始终生成6个panel） #}
+{% set domain_keys = ["1", "2", "3", "4", "5", "6"] %}
+
+{# [v2.0] has_data 判定：优先用适配层提供的，否则根据 domain_panels 或 tables 计算 #}
+{% set has_data = data.has_data | default((domain_panels | length) > 0 or (tables | length) > 0, true) %}
+
+<section class="m3-kp-drill">
+  <div class="m3-kp-drill__container">
+
+    <h2 class="m3-kp-drill__title">四、{{ module_title }}</h2>
+
+    <div class="module-content-card">
+
+    {# =========================================================================
+     # 区块3：介绍面板 + 层级步骤条
+     # ========================================================================= #}
+    {% if intro_text %}
+    <div class="m3-kp-drill__intro-panel">
+      {# 说明文字 #}
+      <div class="m3-kp-drill__desc">{{ intro_text }}</div>
+
+      {# 层级步骤条 L1 → L2 → L3 → L4 #}
+      {% if level_guide | length > 0 %}
+      <div class="m3-kp-steps">
+        {% for step in level_guide %}
+          <div class="m3-kp-step m3-kp-step--{{ step.theme | default('l1', true) }}">
+            <div class="m3-kp-step__lvl">{{ step.level | default("L?", true) }}</div>
+            <div class="m3-kp-step__meta">
+              <div class="m3-kp-step__name">{{ step.name | default("--", true) }}</div>
+              <div class="m3-kp-step__desc">{{ step.desc | default("", true) }}</div>
+            </div>
+          </div>
+          {% if not loop.last %}
+            <div class="m3-kp-step-arrow"></div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% else %}
+      {# 层级数据为空时的兜底显示 #}
+      <div class="m3-kp-steps">
+        <div class="m3-kp-step m3-kp-step--l1">
+          <div class="m3-kp-step__lvl">L1</div>
+          <div class="m3-kp-step__meta">
+            <div class="m3-kp-step__name">领域</div>
+            <div class="m3-kp-step__desc">(6项)</div>
+          </div>
+        </div>
+        <div class="m3-kp-step-arrow"></div>
+        <div class="m3-kp-step m3-kp-step--l2">
+          <div class="m3-kp-step__lvl">L2</div>
+          <div class="m3-kp-step__meta">
+            <div class="m3-kp-step__name">模块</div>
+            <div class="m3-kp-step__desc">(粗粒度)</div>
+          </div>
+        </div>
+        <div class="m3-kp-step-arrow"></div>
+        <div class="m3-kp-step m3-kp-step--l3">
+          <div class="m3-kp-step__lvl">L3</div>
+          <div class="m3-kp-step__meta">
+            <div class="m3-kp-step__name">知识点</div>
+            <div class="m3-kp-step__desc">(中粒度)</div>
+          </div>
+        </div>
+        {% if l4_items is defined and l4_items | length > 0 %}
+        <div class="m3-kp-step-arrow"></div>
+        <div class="m3-kp-step m3-kp-step--l4">
+          <div class="m3-kp-step__lvl">L4</div>
+          <div class="m3-kp-step__meta">
+            <div class="m3-kp-step__name">技能点</div>
+            <div class="m3-kp-step__desc">(细粒度)</div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+    {# =========================================================================
+     # 区块4：钻取路径示例（可选）
+     # ========================================================================= #}
+    {% if path_example and (path_example.nodes is defined and path_example.nodes | length > 0) %}
+    <div class="m3-kp-path">
+      {# 标题 #}
+      <div class="m3-kp-drill__section-title">{{ path_example.title | default("钻取路径示例", true) }}</div>
+
+      {# 路径节点 #}
+      <div class="m3-kp-path__nodes">
+        {% for n in path_example.nodes %}
+          <div class="m3-kp-path-node m3-kp-path-node--{{ n.theme | default('l1', true) }}">
+            <div class="m3-kp-path-node__lvl">({{ n.level | default("L?", true) }})</div>
+            <div class="m3-kp-path-node__name">{{ n.name_cn | default("--", true) }}</div>
+            <div class="m3-kp-path-node__delta">
+              {# [v1.1] 支持 gap_to_target 回退 #}
+              {% set node_delta = n.delta_vs_target if n.delta_vs_target is defined else n.gap_to_target | default(none) %}
+              {% if node_delta is not none %}
+                {{ node_delta }}%
+              {% else %}
+                --
+              {% endif %}
+            </div>
+          </div>
+          {% if not loop.last %}
+            <div class="m3-kp-path-arrow">></div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {# 说明条 #}
+      {% if path_example.note_text %}
+      <div class="m3-kp-path__note">* {{ path_example.note_text }}<br>* 示例，不代表本次诊断结果</div>
+      {% endif %}
+    </div>
+    {% endif %}
+    
+
+
+    </div>
+    {% endif %}
+
+    {# =========================================================================
+     # 区块5：钻取表格区域 - v2.0 六大领域分组版
+     # 强制创建6个 <div class="m3-kp-drill__panel">，每个对应一个L1领域
+     # 每个 panel 内部包含该领域的 L2/L3/L4 三个层级表格
+     # ========================================================================= #}
+    {% if has_data %}
+
+      {# -----------------------------------------------------------------------
+       # 遍历六大领域（固定6个panel，即使某领域无数据也会创建空panel）
+       # domain_keys = ["1", "2", "3", "4", "5", "6"]
+       # ----------------------------------------------------------------------- #}
+      {% set ns = namespace(first_panel_done=false) %}
+      {# 收集无数据领域名称 #}
+      {% set nodata_names = [] %}
+      {% for dk in domain_keys %}
+        {% set panel = domain_panels[dk] | default({}, true) %}
+        {% set l2_items = panel.l2_items | default([], true) %}
+        {% set l3_items = panel.l3_items | default([], true) %}
+        {% set l4_items = panel.l4_items | default([], true) %}
+        {% set any_items = (l2_items | length > 0) or (l3_items | length > 0) or (l4_items | length > 0) %}
+        {% set panel_has_data = panel.has_data | default(false, true) %}
+        {% if not any_items and not panel_has_data %}
+          {% set d_name = panel.domain_name | default(domain_names[dk] | default("领域" ~ dk, true), true) %}
+          {% set _ = nodata_names.append(d_name) %}
+        {% endif %}
+      {% endfor %}
+
+      {% for dk in domain_keys %}
+        {# 获取当前领域的数据（如果存在） #}
+        {% set panel = domain_panels[dk] | default({}, true) %}
+        {% set d_name = panel.domain_name | default(domain_names[dk] | default("领域" ~ dk, true), true) %}
+        {% set d_code = panel.domain_code | default(dk, true) %}
+        {% set panel_has_data = panel.has_data | default(false, true) %}
+
+        {# 获取各层级数据 #}
+        {% set l2_items = panel.l2_items | default([], true) %}
+        {% set l3_items = panel.l3_items | default([], true) %}
+        {% set l4_items = panel.l4_items | default([], true) %}
+
+        {# 判断该领域是否有任何层级的数据 #}
+        {% set any_items = (l2_items | length > 0) or (l3_items | length > 0) or (l4_items | length > 0) %}
+
+        {# 跳过无数据领域 — 统一在末尾合并展示 #}
+        {% if not any_items and not panel_has_data and not panel.all_achieved | default(false) %}
+          {# 跳过，不在循环中渲染空 panel #}
+        {% else %}
+        {# === 领域 Panel 开始 === #}
+        <div class="m3-kp-drill__panel" data-domain-code="{{ d_code }}" data-domain-name="{{ d_name }}">
+
+          {# 领域标题栏 #}
+          <div class="m3-kp-drill__domain-header">
+            <span class="m3-kp-drill__domain-badge m3-kp-drill__domain-badge--l1">L1</span>
+            <span class="m3-kp-drill__domain-name">{{ d_name }}</span>
+          </div>
+
+          {% if panel.all_achieved | default(false) %}
+            {# 状态1: 全达标 — 显示鼓励文案 + 展示达标数据 #}
+            <div class="m3-kp-drill__achieved-state">
+              <div class="m3-kp-drill__achieved-icon">&#10003;</div>
+              <p class="m3-kp-drill__achieved-text">{{ panel.encourage_text | default("「" ~ d_name ~ "」当前掌握得非常好，可以迈向下个难度，争取更高分数") }}</p>
+            </div>
+            {# 全达标时仍展示表格 (管理员决策: 全量展示+达标标记) #}
+            {{ render_level_table(
+                level="L2", theme="l2", col_name="知识点",
+                col_parent="所属领域", items=l2_items
+            ) }}
+            {{ render_level_table(
+                level="L3", theme="l3", col_name="知识点",
+                col_parent="上级模块", items=l3_items
+            ) }}
+            {% if l4_items | length > 0 %}
+            {{ render_level_table(
+                level="L4", theme="l4", col_name="知识点",
+                col_parent="上级知识点", items=l4_items
+            ) }}
+            {% endif %}
+          {% elif any_items or panel_has_data %}
+            {# 状态2: 有数据 (含达标+未达标混合) — 渲染表格 #}
+            {{ render_level_table(
+                level="L2", theme="l2", col_name="知识点",
+                col_parent="所属领域", items=l2_items,
+                cta_text="下钻至L3查看具体知识点"
+            ) }}
+            {{ render_level_table(
+                level="L3", theme="l3", col_name="知识点",
+                col_parent="上级模块", items=l3_items,
+                cta_text=("下钻至L4查看最细粒度技能点" if l4_items | length > 0 else none)
+            ) }}
+            {% if l4_items | length > 0 %}
+            {{ render_level_table(
+                level="L4", theme="l4", col_name="知识点",
+                col_parent="上级知识点", items=l4_items
+            ) }}
+            {% endif %}
+          {% endif %}
+
+        </div>
+        {# === 领域 Panel 结束 === #}
+        {% set ns.first_panel_done = true %}
+        {% endif %}
+      {% endfor %}
+
+      {# --- 无数据领域合并汇总块 --- #}
+      {% if nodata_names | length > 0 %}
+      <div class="m3-kp-drill__nodata-merge">
+        <span class="m3-kp-drill__nodata-merge__label">数据不充分的领域：</span>
+        {% for name in nodata_names %}
+        <span class="m3-kp-drill__nodata-merge__name">{{ name }}</span>
+        {%- if not loop.last %}、{% endif %}
+        {% endfor %}
+        <span class="m3-kp-drill__nodata-merge__text">
+          — 以上 {{ nodata_names | length }} 个领域答题数据不足，暂未识别到具体的知识点薄弱点。建议补充相关领域的答题记录后再次诊断。
+        </span>
+      </div>
+      {% endif %}
+
+    {% else %}
+    {# 整体无数据时的兜底显示 #}
+    <div class="m3-kp-drill__panel">
+      <div class="m3-kp-drill__empty-state">
+        暂无短板数据，无法进行知识点钻取分析
+      </div>
+    </div>
+    {% endif %}
+
+
+
+  </div>
+    </div><!-- /.module-content-card -->
+</section>
+
+{# =============================================================================
+ # END OF TEMPLATE
+ # ============================================================================= #}

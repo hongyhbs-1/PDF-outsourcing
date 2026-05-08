@@ -1,0 +1,248 @@
+{#
+================================================================================
+模块0: 封面 (Cover Page)
+文件: 0_cover.jinja2
+版本: v1.2
+描述: 基线定位分析报告封面页模板
+关联CSS: 0_cover.css
+
+================================================================================
+更新日志:
+================================================================================
+v1.2 - 2026-02-26
+  - 变量名对齐 Schema 定义：data.meta → data.cover_meta，meta_raw → cover_meta_raw，meta → cover_meta
+  - 更新默认值：default_badge_text "智慧诊学" → "方向比速度重要"
+  - 更新默认值：default_footer 更新为 Schema 中定义的格式化字符串
+  - 同步更新注释中的字段引用（cover.meta.* → cover.cover_meta.*）
+
+v1.1 - 2026-01-15
+  - 增加兼容层，支持 render_payload.cover 或直接 cover 两种传参方式
+  - 增加 report_output.cover_meta 字段名映射兼容（city_name→city, total_questions→question_count）
+
+================================================================================
+数据结构 (Data Structure Example):
+================================================================================
+
+方式1: 适配层构造后的标准结构（推荐）
+{
+  "cover": {
+    "badge_text": "方向比速度重要",
+    "brand": {
+      "logo_url": "assets/logo_dida985.png",
+      "brand_name": "dida985"
+    },
+    "title": "基线定位分析报告",
+    "subject": "数学",
+    "cover_meta": {
+      "city": "上海",
+      "grade": "九年级",
+      "report_generated_at": "2026-02-26",
+      "question_count": 188,
+      "report_date": "2025-01-15"
+    },
+    "footer_tagline": "{student_display_name}专属分析\n基于"历年真题考点"大数据"
+  }
+}
+
+方式2: report_output.cover_meta 原始结构（模板内部兼容）
+{
+  "cover": {
+    "cover_meta": {
+      "city_name": "上海",
+      "grade": "九年级",
+      "report_generated_at": "2026-02-26",
+      "total_questions": 188,
+      "report_date": "2025-01-15"
+    }
+  }
+}
+
+================================================================================
+字段说明:
+================================================================================
+| 模板字段                           | 原始字段(report_output)     | 类型          | 必填 | 说明                           |
+|-----------------------------------|----------------------------|--------------|------|-------------------------------|
+| cover.badge_text                  | -                          | string       | 否   | 顶部徽标文字，默认"方向比速度重要" |
+| cover.brand.logo_url              | -                          | string       | 否   | Logo图片URL                    |
+| cover.brand.brand_name            | -                          | string       | 否   | 品牌名，默认"dida985"           |
+| cover.title                       | -                          | string       | 否   | 报告主标题，默认"基线定位分析报告" |
+| cover.subject                     | -                          | string       | 否   | 学科名称，默认"数学"             |
+| cover.cover_meta.city             | cover_meta.city_name       | string|null  | 否   | 城市名称                        |
+| cover.cover_meta.grade            | cover_meta.grade           | string|null  | 否   | 年级                           |
+| cover.cover_meta.report_generated_at | cover_meta.report_generated_at | string|null  | 否   | 报告生成时间                    |
+| cover.cover_meta.question_count   | cover_meta.total_questions | number|null  | 否   | 分析题量                        |
+| cover.cover_meta.report_date      | cover_meta.report_date     | string|null  | 否   | 报告日期（预留）                 |
+| cover.footer_tagline              | -                          | string       | 否   | 底部标语文字                     |
+
+================================================================================
+空值处理规则:
+================================================================================
+- badge_text: 空值时显示 "方向比速度重要"
+- brand.logo_url: 空值时显示Logo占位符
+- brand.brand_name: 空值时显示 "dida985"
+- title: 空值时显示 "基线定位分析报告"
+- subject: 空值时显示 "数学"
+- cover_meta.city / city_name: 空值时显示 "--"
+- cover_meta.grade: 空值时显示 "--"
+- cover_meta.report_generated_at: 空值时显示 "--"
+- cover_meta.question_count / total_questions: 空值时显示 "--题"
+- footer_tagline: 空值时显示默认标语
+
+================================================================================
+状态类说明（封面模块不使用，但保持一致性定义）:
+================================================================================
+- .m0-status--achieved  : 达标/良好状态（绿色）
+- .m0-status--attention : 需关注状态（橙色）
+- .m0-status--improve   : 待提升状态（红色）
+- .m0-status--nodata    : 无数据状态（灰色）
+
+================================================================================
+#}
+
+{# ========================================================================
+   兼容层 - 支持多种传参方式
+   ======================================================================== #}
+
+{# 方式1: render(**render_payload) 直接摊平，cover 在顶层 #}
+{# 方式2: render(cover=...) 直接传入 cover #}
+{# 方式3: render(render_payload=...) 包装传入 #}
+{% set _cover_raw = cover | default(render_payload.cover | default({})) %}
+
+{# ========================================================================
+   变量预处理 - 设置默认值 & 字段名映射
+   ======================================================================== #}
+{% set data = _cover_raw %}
+{% set brand = data.brand | default({}) %}
+{% set cover_meta_raw = data.cover_meta | default({}) %}
+
+{# 字段名映射兼容：支持 report_output 原始字段名 #}
+{% set cover_meta = {
+    'city': cover_meta_raw.city | default(cover_meta_raw.city_name | default(none)),
+    'grade': cover_meta_raw.grade | default(none),
+    'report_generated_at': cover_meta_raw.report_generated_at | default(none),
+    'question_count': cover_meta_raw.question_count | default(cover_meta_raw.total_questions | default(none)),
+    'report_date': cover_meta_raw.report_date | default(none)
+} %}
+
+{# 默认值定义 #}
+{% set default_badge_text = "方向比速度重要" %}
+{% set default_brand_name = "dida985" %}
+{% set default_title = "基线定位分析报告" %}
+{% set default_subject = "数学" %}
+{% set default_footer = '{student_display_name}专属分析\n逐题透析·逐点拆解·对标历年真题考点' %}
+{% set empty_placeholder = "--" %}
+
+{# ========================================================================
+   封面页主容器
+   ======================================================================== #}
+<div class="m0-cover-page">
+  <div class="m0-cover-content">
+
+    {# ====================================================================
+       1. 品牌区 - Logo + 品牌名（顶部小尺寸）
+       ==================================================================== #}
+    <div class="m0-cover-brand">
+      {# Logo图片 - 带空值防护 #}
+      {% if brand.logo_url %}
+        <img
+          class="m0-cover-brand__logo"
+          src="{{ brand.logo_url }}"
+          alt="{{ brand.brand_name | default(default_brand_name) }} logo"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        {# Logo占位符（图片加载失败时显示） #}
+        <div class="m0-cover-brand__logo-placeholder" style="display: none;">
+          D
+        </div>
+      {% else %}
+        {# 无Logo URL时显示占位符 #}
+        <div class="m0-cover-brand__logo-placeholder">
+          D
+        </div>
+      {% endif %}
+
+      {# 品牌名 #}
+      <div class="m0-cover-brand__name">
+        {{- brand.brand_name | default(default_brand_name) -}}
+      </div>
+    </div>
+
+    {# ====================================================================
+       2. 学生信息 — 第一视觉焦点
+       ==================================================================== #}
+    {% set _student = meta.student_display_name | default('') %}
+    <div class="m0-cover-exclusive">
+      <div class="m0-cover-exclusive__name">{{ _student }}</div>
+      {# 评估时间紧跟姓名，形成"姓名+时间"视觉焦点 #}
+      {% if cover_meta.report_generated_at %}
+      <div class="m0-cover-exclusive__time">{{ cover_meta.report_generated_at }}</div>
+      {% endif %}
+      <div class="m0-cover-exclusive__label">专属分析</div>
+    </div>
+
+    {# ====================================================================
+       3. 元信息区 - 城市/年级/报告生成时间/分析题量
+       ==================================================================== #}
+    <div class="m0-cover-meta">
+      {# 城市 #}
+      <div class="m0-cover-meta__label m0-cover-meta__label--short">城市</div>
+      <div class="m0-cover-meta__value{% if not cover_meta.city %} m0-cover-meta__value--empty{% endif %}">
+        {{- cover_meta.city | default(empty_placeholder) -}}
+      </div>
+
+      {# 年级 #}
+      <div class="m0-cover-meta__label m0-cover-meta__label--short">年级</div>
+      <div class="m0-cover-meta__value{% if not cover_meta.grade %} m0-cover-meta__value--empty{% endif %}">
+        {{- cover_meta.grade | default(empty_placeholder) -}}
+      </div>
+
+      {# 学科 — 突出显示，体现封面差异化 #}
+      <div class="m0-cover-meta__label m0-cover-meta__label--short">学科</div>
+      <div class="m0-cover-meta__value m0-cover-meta__value--subject">
+        {{- data.subject | default(default_subject) -}}
+      </div>
+
+      {# 分析试卷 #}
+      <div class="m0-cover-meta__label m0-cover-meta__label--long">分析试卷</div>
+      <div class="m0-cover-meta__value{% if not cover_meta_raw.paper_count %} m0-cover-meta__value--empty{% endif %}">
+        {%- if cover_meta_raw.paper_count -%}
+          {{ cover_meta_raw.paper_count }} 套
+        {%- else -%}
+          {{ empty_placeholder }}套
+        {%- endif -%}
+      </div>
+    </div>
+
+    {# ====================================================================
+       4. 分隔线
+       ==================================================================== #}
+    <div class="m0-cover-divider"></div>
+
+    {# ====================================================================
+       5. 标题区 - 报告名称（学生信息之后）
+       ==================================================================== #}
+    <div class="m0-cover-title">
+      <div class="m0-cover-title__main">
+        {{- data.title | default(default_title) -}}
+      </div>
+      {# 学科已移至元信息区突出显示，此处不再重复 #}
+    </div>
+
+    {# ====================================================================
+       6. 标语 — 弱化存在感
+       ==================================================================== #}
+    <div class="m0-cover-badge">
+      {{- data.badge_text | default(default_badge_text) -}}
+    </div>
+
+    {# ====================================================================
+       7. 底部备案信息 (margin-top:auto 推到页面最底部)
+       ==================================================================== #}
+    <div class="m0-cover-compliance">
+      <div class="m0-cover-compliance__filing">网信算备310112946964101260015号</div>
+      <div class="m0-cover-compliance__authority">依据《国家互联网信息办公室》《中华人民共和国工业和信息化部》《中华人民共和国公安部》要求，本算法已通过审查完成备案。</div>
+      <div class="m0-cover-compliance__disclaimer">本报告由AI人工智能生成，请结合实际情况使用</div>
+    </div>
+
+  </div>
+</div>

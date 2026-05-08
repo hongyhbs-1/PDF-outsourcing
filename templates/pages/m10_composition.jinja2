@@ -1,0 +1,120 @@
+{# ==============================================================================
+   m10_composition.jinja2 — M10 作文精讲 (英语专属)
+   条件: page_visibility.m10_composition == true
+   ============================================================================== #}
+
+{% set comp = composition_deep | default({}, true) %}
+{% if comp.enabled | default(false) %}
+<div class="m10-page">
+  <h1 class="m10-title">十、作文精讲</h1>
+
+  {# 1. 成绩概览 #}
+  {% set so = comp.score_overview | default({}, true) %}
+  <div class="m10-score-overview">
+    <div class="m10-section-title">成绩概览</div>
+    <div class="m10-score-row">
+      <div>
+        <span class="m10-score-total">{{ so.total_score | default('--') }}</span>
+        <span class="m10-score-full">/{{ so.full_score | default('20') }}</span>
+        <span class="m10-score-label">总分</span>
+      </div>
+      <div class="m10-score-dim">内容 <strong>{{ so.content_score | default('--') }}</strong>/{{ so.content_full | default('8') }}</div>
+      <div class="m10-score-dim">语言 <strong>{{ so.language_score | default('--') }}</strong>/{{ so.language_full | default('8') }}</div>
+      <div class="m10-score-dim">组织 <strong>{{ so.organization_score | default('--') }}</strong>/{{ so.organization_full | default('4') }}</div>
+    </div>
+  </div>
+
+  {# 2. 最该先改的两点 #}
+  {% if comp.priority_fixes | default([]) | length > 0 %}
+  <div class="m10-section">
+    <div class="m10-section-title">本次最该先改的两点</div>
+    {% for fix in comp.priority_fixes %}
+    <div class="m10-tip-card m10-tip-card--warning">
+      <strong>{{ fix.area | default('') }}:</strong> {{ fix.description | default('') }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# 3. 题目分析 #}
+  {% if comp.topic_analysis | default('') %}
+  <div class="m10-section">
+    <div class="m10-section-title">题目分析</div>
+    <p class="m10-analysis">{{ comp.topic_analysis }}</p>
+  </div>
+  {% endif %}
+
+  {# 4. 内容分析 #}
+  {% if comp.content_analysis | default('') %}
+  <div class="m10-section">
+    <div class="m10-section-title">内容分析 ({{ so.content_score | default('?') }}/{{ so.content_full | default('8') }})</div>
+    <p class="m10-analysis">{{ comp.content_analysis }}</p>
+  </div>
+  {% endif %}
+
+  {# 5. 语言问题分析 #}
+  {% if comp.language_analysis | default('') %}
+  <div class="m10-section">
+    <div class="m10-section-title">语言问题分析 ({{ so.language_score | default('?') }}/{{ so.language_full | default('8') }})</div>
+    <p class="m10-analysis">{{ comp.language_analysis }}</p>
+  </div>
+  {% endif %}
+
+  {# 6. 结构与行文分析 #}
+  {% if comp.organization_analysis | default('') %}
+  <div class="m10-section">
+    <div class="m10-section-title">结构与行文分析 ({{ so.organization_score | default('?') }}/{{ so.organization_full | default('4') }})</div>
+    <p class="m10-analysis">{{ comp.organization_analysis }}</p>
+  </div>
+  {% endif %}
+
+  {# 7. 本周提升建议 #}
+  {% if comp.weekly_suggestion | default('') %}
+  <div class="m10-section">
+    <div class="m10-tip-card m10-tip-card--success">
+      <div class="m10-section-title">本周提升建议</div>
+      <p class="m10-analysis">{{ comp.weekly_suggestion }}</p>
+    </div>
+  </div>
+  {% endif %}
+
+  {# 8. 范文参考 #}
+  {% if comp.reference_essay | default('') %}
+  <div class="m10-section">
+    <div class="m10-section-title">范文参考</div>
+    <div class="m10-reference">{{ comp.reference_essay }}</div>
+  </div>
+  {% endif %}
+
+  {# 9. 问题与亮点一览 #}
+  {% if comp.highlights_and_issues | default([]) | length > 0 %}
+  <div class="m10-section">
+    <div class="m10-section-title">问题与亮点一览</div>
+    <table class="m10-table">
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th style="width:60px;">类型</th>
+          <th>内容</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in comp.highlights_and_issues %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>
+            {% if item.type | default('') == 'highlight' %}
+              <span class="m10-tag--highlight">亮点</span>
+            {% else %}
+              <span class="m10-tag--issue">问题</span>
+            {% endif %}
+          </td>
+          <td>{{ item.content | default('') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,53 @@
+{# ========================================================================
+   教师增量解读 (teacher_supplement)
+   仅在教师版报告 (report_type="teacher") 中渲染
+   ======================================================================== #}
+{% set ts = teacher_supplement | default({}, true) %}
+<div class="m-teacher-supplement">
+  <h1 class="mts-title">教师增量解读</h1>
+
+  {# 优先沟通切入点 #}
+  {% if ts.priority_cards %}
+  <section class="mts-section">
+    <h2 class="mts-section-title">优先沟通切入点</h2>
+    {% for card in ts.priority_cards %}
+    <div class="mts-priority-card">
+      <div class="mts-priority-card__point">{{ card.point | default("") }}</div>
+      <div class="mts-priority-card__impact">{{ card.impact | default("") }}</div>
+      <div class="mts-priority-card__evidence">证据：{{ card.evidence | default("") }}</div>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {# 内部教学解读 #}
+  {% if ts.internal_interpretation %}
+  {% set ii = ts.internal_interpretation %}
+  <section class="mts-section">
+    <h2 class="mts-section-title">内部教学解读</h2>
+    {% if ii.objective %}
+    <p class="mts-text"><strong>客观题：</strong>{{ ii.objective }}</p>
+    {% endif %}
+    {% if ii.composition %}
+    <p class="mts-text"><strong>作文：</strong>{{ ii.composition }}</p>
+    {% endif %}
+    {% if ii.translation %}
+    <p class="mts-text"><strong>翻译：</strong>{{ ii.translation }}</p>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {# 代表性证据 #}
+  {% if ts.representative_evidence %}
+  <section class="mts-section">
+    <h2 class="mts-section-title">代表性证据</h2>
+    {% for ev in ts.representative_evidence %}
+    <div class="mts-evidence-card">
+      <div class="mts-evidence-card__topic">{{ ev.topic | default("") }}</div>
+      <div class="mts-evidence-card__phenomenon">现象：{{ ev.phenomenon | default("") }}</div>
+      <div class="mts-evidence-card__explanation">解释：{{ ev.explanation | default("") }}</div>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+</div>

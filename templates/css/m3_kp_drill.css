@@ -1,0 +1,826 @@
+/* =============================================================================
+ * 3_kp_drill.css
+ * 模块3：知识点短板钻取 (Knowledge Point Weakness Drilling)
+ * 
+ * 设计规范：基于设计稿抽样，A4尺寸(210mm x 297mm)，WeasyPrint兼容
+ * 命名规范：BEM (Block__Element--Modifier)
+ * 作者：dida985 AI诊断报告系统
+ * 版本：v1.1 (适配层修订版)
+ * 更新：添加分页控制、表头重复、长文本换行策略
+ * ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+ * 1. CSS 变量定义 (Design Tokens)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-drill {
+  /* === 1.1 页面/容器色 === */
+  --color-page-bg: var(--pm-bg-page, #f8f5ef);           /* 页面整体底色 — 与全局统一 */
+  --color-surface: var(--pm-bg-card, #ffffff);           /* 白色内容底 */
+  --color-panel-bg: var(--pm-bg-muted, #f3f0ea);          /* 浅灰面板底（表格/容器内浅底） */
+  --color-table-body-bg: var(--pm-bg-card-alt, #faf8f4);     /* 表格内容行底（轻微暖灰） */
+  --color-note-bg: var(--pm-bg-section, #f0ede6);           /* 底部说明条背景 */
+
+  /* === 1.2 分割/边框色 === */
+  --color-border: var(--pm-border-card, #d8e2e8);            /* 外框/主边框（浅蓝灰） */
+  --color-divider: var(--pm-border-light, #e4e8ec);           /* 表格行分割线 */
+  --color-top-divider: var(--pm-teal-soft, #d0e8e8);       /* 页眉下方细分割线（浅青） */
+
+  /* === 1.3 文本色 === */
+  --color-text-primary: var(--pm-text-primary, #1a2332);      /* 标题/强调主文字（深蓝黑） */
+  --color-text-body: var(--pm-text-secondary, #4a5568);         /* 正文/表格主文字（深灰蓝） */
+  --color-text-muted: var(--pm-text-muted, #8896a7);        /* 次级提示文字 */
+  --color-text-note: var(--pm-text-secondary, #4a5568);         /* 说明条文字 */
+
+  /* === 1.4 强调/功能色 === */
+  --color-accent: var(--pm-teal, #1f6f78);            /* 标题下划线/品牌强调蓝 */
+  --color-danger: var(--pm-status-danger, #c44040);            /* 负向差距、P0 */
+  --color-info: var(--pm-teal, #1f6f78);              /* P1 标签蓝 */
+  --color-success: var(--pm-status-success, #2d8a6e);           /* 正向差距（绿色） */
+  --color-neutral: var(--pm-status-nodata, #9ca3af);           /* 中性/无数据 */
+
+  /* === 1.5 层级卡片底色 (L1~L4) === */
+  --level-l1-bg: var(--pm-sand-light, #f7f0e3);             /* L1 卡片底（米黄） */
+  --level-l2-bg: var(--pm-teal-soft, #d0e8e8);             /* L2 卡片底（浅青） */
+  --level-l3-bg: var(--pm-bg-muted, #f3f0ea);             /* L3 卡片底（暖灰） */
+  --level-l4-bg: var(--pm-status-improve-bg, #f4eaf0);             /* L4 卡片底（浅粉紫） */
+
+  /* === 1.6 层级标签文字色 === */
+  --level-l1-text: var(--pm-sand-dark, #b27a37);           /* L1 橙 */
+  --level-l2-text: var(--pm-teal, #1f6f78);           /* L2 青 */
+  --level-l3-text: var(--pm-navy, #12344d);           /* L3 蓝黑 */
+  --level-l4-text: var(--pm-status-improve, #8b4c6a);           /* L4 粉紫 */
+
+  /* === 1.7 表头底色（按区块主题） === */
+  --table-l2-head-bg: var(--pm-teal-soft, #d0e8e8);
+  --table-l3-head-bg: var(--pm-bg-muted, #f3f0ea);
+  --table-l4-head-bg: var(--pm-status-improve-bg, #f4eaf0);
+
+  /* === 1.8 表头文字色（按区块主题） === */
+  --table-l2-head-text: var(--pm-teal, #1f6f78);
+  --table-l3-head-text: var(--pm-navy, #12344d);
+  --table-l4-head-text: var(--pm-status-improve, #8b4c6a);
+
+  /* === 1.9 箭头/连接符 === */
+  --color-arrow: var(--pm-text-muted, #8896a7);             /* 钻取路径示例中的">"箭头 */
+  --color-step-arrow: var(--pm-border-light, #e4e8ec);        /* 顶部步骤条的填充箭头 */
+
+  /* === 1.10 字体 === */
+  --font-family-base: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --font-size-h1: 28px;               /* 模块主标题 */
+  --font-size-h2: 20px;               /* 区块标题 */
+  --font-size-body: 14px;             /* 表格正文、说明文字 */
+  --font-size-small: 12px;            /* 页眉、括号编码、弱提示 */
+  --font-weight-bold: 700;
+  --font-weight-medium: 600;
+  --font-weight-regular: 400;
+  --line-height-tight: 1.35;
+  --line-height-normal: 1.6;
+
+  /* === 1.11 间距 (8px基准) === */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 40px;
+
+  /* === 1.12 圆角 === */
+  --radius-badge: 2px;                /* P0/P1 标签 */
+  --radius-card: var(--pm-radius-badge, 12px);                 /* 卡片化圆角 */
+  --radius-pill: 24px;                /* 路径节点圆角（大） */
+
+  /* === 1.13 阴影 === */
+  --shadow-none: none;
+}
+
+/* -----------------------------------------------------------------------------
+ * 2. 页面基础设置 (A4 Print Layout)
+ * ----------------------------------------------------------------------------- */
+/* @page 已统一在 base.css 管理 (T14 running header) */
+
+/* [v1.2] Reset 仅作用于本模块，避免 9 板块合并时污染其它模块 */
+.m3-kp-drill,
+.m3-kp-drill *,
+.m3-kp-drill *::before,
+.m3-kp-drill *::after {
+  box-sizing: border-box;
+}
+
+.m3-kp-drill * {
+  margin: 0;
+  padding: 0;
+}
+
+/* [FIX] 恢复被上方 reset 覆盖的 module-content-card padding */
+.m3-kp-drill .module-content-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px 26px;
+  overflow: hidden;
+}
+
+/* -----------------------------------------------------------------------------
+ * 3. 模块主容器
+ * ----------------------------------------------------------------------------- */
+.m3-kp-drill {
+  font-family: var(--font-family-base);
+  color: var(--color-text-body);
+  line-height: var(--line-height-normal);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.m3-kp-drill__container {
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-xl);
+}
+
+/* -----------------------------------------------------------------------------
+ * 4. 模块标题 (Module Title)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-drill__title {
+  display: inline-block;
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  padding-bottom: 10px;
+  border-bottom: 4px solid var(--color-accent);
+  margin-bottom: var(--spacing-md);
+}
+
+/* -----------------------------------------------------------------------------
+ * 6. 介绍面板 (Intro Panel with Level Guide)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-drill__intro-panel {
+  background: var(--color-panel-bg);
+  padding: 18px var(--spacing-lg) 22px;
+  margin-bottom: var(--spacing-md);
+}
+
+.m3-kp-drill__desc {
+  font-size: var(--font-size-body);
+  color: var(--color-text-body);
+  margin-bottom: var(--spacing-md);
+  line-height: var(--line-height-normal);
+}
+
+/* -----------------------------------------------------------------------------
+ * 7. 层级步骤条 (L1 → L2 → L3 → L4 Steps)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-steps {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  flex-wrap: nowrap;
+}
+
+.m3-kp-step {
+  flex: 1;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+/* 层级卡片主题色 */
+.m3-kp-step--l1 { background: var(--level-l1-bg); }
+.m3-kp-step--l2 { background: var(--level-l2-bg); }
+.m3-kp-step--l3 { background: var(--level-l3-bg); }
+.m3-kp-step--l4 { background: var(--level-l4-bg); }
+
+.m3-kp-step__lvl {
+  font-size: 32px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+/* 层级文字主题色 */
+.m3-kp-step--l1 .m3-kp-step__lvl { color: var(--level-l1-text); }
+.m3-kp-step--l2 .m3-kp-step__lvl { color: var(--level-l2-text); }
+.m3-kp-step--l3 .m3-kp-step__lvl { color: var(--level-l3-text); }
+.m3-kp-step--l4 .m3-kp-step__lvl { color: var(--level-l4-text); }
+
+.m3-kp-step__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.m3-kp-step__name {
+  font-size: 16px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.m3-kp-step__desc {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-regular);
+}
+
+/* 步骤箭头 */
+.m3-kp-step-arrow {
+  width: 20px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.m3-kp-step-arrow::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 12px solid var(--color-step-arrow);
+}
+
+/* -----------------------------------------------------------------------------
+ * 8. 钻取表格总容器 (Drill Panel)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-drill__panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+/* [v2.0] 领域标题栏 (Domain Header) */
+.m3-kp-drill__domain-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) 0;
+  margin-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--level-l1-bg);
+}
+
+.m3-kp-drill__domain-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-badge);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
+  color: #FFFFFF;
+}
+
+.m3-kp-drill__domain-badge--l1 {
+  background: var(--level-l1-text);
+}
+
+.m3-kp-drill__domain-name {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.m3-kp-drill__domain-code {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-regular);
+}
+
+.m3-kp-drill__domain-status {
+  margin-left: auto;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  padding: 2px 8px;
+  border-radius: var(--radius-badge);
+}
+
+.m3-kp-drill__domain-status--nodata {
+  color: var(--color-neutral);
+  background: var(--color-panel-bg);
+}
+
+/* -----------------------------------------------------------------------------
+ * 9. 表格区块 (Table Section)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-drill__section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.m3-kp-drill__section:last-child {
+  margin-bottom: 0;
+}
+
+.m3-kp-drill__section-title {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: var(--spacing-md) 0 var(--spacing-sm);
+}
+
+/* V3-5: 首标题与页眉保持 20px 间距 (原 0) */
+.m3-kp-drill__section-title:first-child {
+  margin-top: 20px;
+}
+
+/* [v1.1] 区块标题副标题（可选） */
+.m3-kp-drill__section-subtitle {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+  margin-left: var(--spacing-xs);
+}
+
+/* -----------------------------------------------------------------------------
+ * 10. 表格样式 (KP Table)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-body);
+  table-layout: fixed;
+}
+
+/* [v1.1] 表头在跨页时重复（对 PDF 友好） */
+.m3-kp-table thead {
+  display: table-header-group;
+}
+
+/* 表头 */
+.m3-kp-table thead tr {
+  background: var(--color-panel-bg);
+}
+
+.m3-kp-table th {
+  padding: var(--spacing-sm) var(--spacing-xs);
+  text-align: center;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-body);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+/* 表头主题色 */
+.m3-kp-table--l2 thead tr { background: var(--table-l2-head-bg); }
+.m3-kp-table--l2 th { color: var(--table-l2-head-text); }
+
+.m3-kp-table--l3 thead tr { background: var(--table-l3-head-bg); }
+.m3-kp-table--l3 th { color: var(--table-l3-head-text); }
+
+.m3-kp-table--l4 thead tr { background: var(--table-l4-head-bg); }
+.m3-kp-table--l4 th { color: var(--table-l4-head-text); }
+
+/* 表体 */
+.m3-kp-table tbody tr {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-divider);
+  /* [v1.1] 避免表格行被分页切断 */
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.m3-kp-table tbody tr:nth-child(even) {
+  background: var(--color-table-body-bg);
+}
+
+.m3-kp-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.m3-kp-table td {
+  padding: var(--spacing-sm) var(--spacing-xs);
+  text-align: center;
+  vertical-align: middle;
+  color: var(--color-text-body);
+}
+
+/* 列宽分配 */
+.m3-kp-col-idx { width: 6%; }
+.m3-kp-col-pri { width: 12%; }
+.m3-kp-col-name { width: 28%; }
+.m3-kp-col-parent { width: 18%; }
+.m3-kp-col-acc { width: 12%; }
+.m3-kp-col-gap { width: 12%; }
+.m3-kp-col-cnt { width: 12%; }
+
+/* [v1.1] 知识点/上级列允许换行（减少省略号丢信息） */
+.m3-kp-table .m3-kp-col-name,
+.m3-kp-table .m3-kp-col-parent {
+  text-align: center;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-word;
+  line-height: var(--line-height-tight);
+}
+
+/* [v1.2] L4 层级文字较细, 缩小字号防止宽表格溢出 */
+.m3-kp-table--l4 .m3-kp-col-name,
+.m3-kp-table--l4 .m3-kp-col-parent {
+  font-size: var(--font-size-small, 14px);
+  text-align: left;
+}
+
+.m3-kp-code {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  margin-left: var(--spacing-xxs);
+}
+
+/* -----------------------------------------------------------------------------
+ * 11. 优先级徽章 (Priority Badge)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-badge);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.m3-kp-badge--p0 {
+  background: var(--color-badge-danger-bg);
+  color: var(--color-badge-danger-text);
+}
+
+.m3-kp-badge--p1 {
+  background: var(--color-badge-attention-bg);
+  color: var(--color-badge-attention-text);
+}
+
+.m3-kp-badge--p2,
+.m3-kp-badge--default {
+  background: var(--color-badge-nodata-bg);
+  color: var(--color-badge-nodata-text);
+}
+
+.m3-kp-badge--p3 {
+  background: var(--color-badge-success-bg);
+  color: var(--color-badge-success-text);
+}
+
+/* -----------------------------------------------------------------------------
+ * 12. 差距值显示 (Delta Display)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-delta {
+  font-weight: var(--font-weight-bold);
+}
+
+.m3-kp-delta--neg {
+  color: var(--color-danger);
+}
+
+.m3-kp-delta--pos {
+  color: var(--color-success);
+}
+
+.m3-kp-delta--na {
+  color: var(--color-neutral);
+}
+
+/* [v1.1] 差距值强度分级 */
+.m3-kp-delta--strong {
+  color: var(--color-danger);
+  font-weight: var(--font-weight-bold);
+}
+
+.m3-kp-delta--mild {
+  color: var(--pm-status-attention, #d4943a); /* 橙色，中等差距 */
+  font-weight: var(--font-weight-medium);
+}
+
+/* -----------------------------------------------------------------------------
+ * 13. 下钻CTA (Drill Down Call-to-Action)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-drill__cta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) 0;
+  font-size: var(--font-size-body);
+  color: var(--color-info);
+  cursor: pointer;
+}
+
+.m3-kp-drill__cta-icon {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--color-info);
+}
+
+/* -----------------------------------------------------------------------------
+ * 14. 钻取路径示例 (Path Example)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-path {
+  margin-top: var(--spacing-md);
+}
+
+.m3-kp-path__nodes {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-xs);
+  flex-wrap: nowrap;
+  margin: var(--spacing-md) 0;
+}
+
+/* 路径节点 */
+.m3-kp-path-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-card);
+  min-width: 80px;
+}
+
+/* 路径节点主题色 */
+.m3-kp-path-node--l1 { background: var(--level-l1-bg); }
+.m3-kp-path-node--l2 { background: var(--level-l2-bg); }
+.m3-kp-path-node--l3 { background: var(--level-l3-bg); }
+.m3-kp-path-node--l4 { background: var(--level-l4-bg); }
+
+.m3-kp-path-node__lvl {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+}
+
+.m3-kp-path-node--l1 .m3-kp-path-node__lvl { color: var(--level-l1-text); }
+.m3-kp-path-node--l2 .m3-kp-path-node__lvl { color: var(--level-l2-text); }
+.m3-kp-path-node--l3 .m3-kp-path-node__lvl { color: var(--level-l3-text); }
+.m3-kp-path-node--l4 .m3-kp-path-node__lvl { color: var(--level-l4-text); }
+
+.m3-kp-path-node__name {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: var(--spacing-xxs) 0;
+}
+
+.m3-kp-path-node__delta {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-danger);
+}
+
+/* 路径箭头 */
+.m3-kp-path-arrow {
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-arrow);
+  line-height: 1;
+}
+
+/* 路径说明条 */
+.m3-kp-path__note {
+  background: var(--color-note-bg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-body);
+  color: var(--color-text-note);
+  line-height: var(--line-height-normal);
+  border-radius: var(--radius-badge);
+}
+
+/* -----------------------------------------------------------------------------
+ * 15. 空数据状态 (Empty State)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-table__empty {
+  text-align: center;
+  color: var(--color-neutral);
+  padding: var(--spacing-lg) !important;
+  font-style: italic;
+}
+
+/* [v1.1] 整体无数据状态 */
+.m3-kp-drill__empty-state {
+  text-align: center;
+  padding: var(--spacing-xxl) var(--spacing-lg);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+  background: var(--color-panel-bg);
+  border-radius: var(--radius-card);
+}
+
+/* [v2.1] 全达标鼓励面板 */
+.m3-kp-drill__achieved-state {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  background: var(--pm-status-achieved-bg, #e6f3f3);
+  border: 1px solid rgba(45, 138, 110, 0.3);
+  border-radius: var(--radius-card);
+}
+
+.m3-kp-drill__achieved-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-success);
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
+}
+
+.m3-kp-drill__achieved-text {
+  font-size: var(--font-size-body);
+  color: var(--color-success);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+}
+
+/* [v2.1] 达标行视觉标记 (浅绿底 + 左侧绿色条) */
+.m3-kp-table__row--achieved {
+  background: var(--pm-status-achieved-bg, #e6f3f3) !important;
+  border-left: 3px solid var(--color-success);
+}
+
+.m3-kp-table__row--achieved td {
+  color: var(--color-text-muted);
+}
+
+/* -----------------------------------------------------------------------------
+ * 16. 状态类 (Status Classes)
+ * ----------------------------------------------------------------------------- */
+/* 达标状态 */
+.m3-status--achieved {
+  color: var(--color-success);
+}
+
+/* 需关注状态 */
+.m3-status--attention {
+  color: var(--color-info);
+}
+
+/* 需提高状态 */
+.m3-status--improve {
+  color: var(--color-danger);
+}
+
+/* 无数据状态 */
+.m3-status--nodata {
+  color: var(--color-neutral);
+}
+
+/* -----------------------------------------------------------------------------
+ * 17. 打印优化 (Print Optimization)
+ * ----------------------------------------------------------------------------- */
+
+/* --- 16.5 无数据领域合并汇总块 --- */
+.m3-kp-drill__nodata-merge {
+  background: var(--m3-bg-muted, #F6F7F9);
+  border: 1px solid var(--m3-border-card, #C4D4E0);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--m3-text-secondary, #666);
+  break-inside: avoid;
+}
+
+.m3-kp-drill__nodata-merge__label {
+  font-weight: 600;
+  color: var(--m3-text-primary, #333);
+}
+
+.m3-kp-drill__nodata-merge__name {
+  font-weight: 600;
+  color: var(--m3-text-primary, #333);
+}
+
+.m3-kp-drill__nodata-merge__text {
+  color: var(--m3-text-secondary, #666);
+}
+
+@media print {
+  .m3-kp-drill {
+    width: auto;
+    display: block;
+    flex: none;
+    padding: 0;
+    font-size: 10px;
+    line-height: 1.22;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* [FIX] 恢复 module-content-card 在打印模式下的 padding */
+  .m3-kp-drill .module-content-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  /* [T15] 内部容器边距归零 — 由外层容器 padding 统一提供 */
+  .m3-kp-drill__container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .m3-kp-drill__title {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    font-size: 22px;
+  }
+
+  .m3-kp-drill__intro-panel {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+
+  .m3-kp-drill__desc {
+    margin-bottom: 8px;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .m3-kp-step {
+    height: 42px;
+    padding: 5px 8px;
+    gap: 5px;
+  }
+
+  .m3-kp-drill__panel {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+
+  .m3-kp-drill__domain-header {
+    padding: 5px 0;
+    margin-bottom: 6px;
+  }
+
+  .m3-kp-drill__domain-name,
+  .m3-kp-drill__section-title {
+    font-size: 13px;
+  }
+
+  .m3-kp-drill__section {
+    margin-bottom: 8px;
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .m3-kp-drill__section-title,
+  .m3-kp-drill__section-title:first-child {
+    margin: 8px 0 5px;
+  }
+
+  .m3-kp-table {
+    font-size: 9px;
+    line-height: 1.18;
+  }
+
+  .m3-kp-table th,
+  .m3-kp-table td {
+    padding: 3px 4px;
+  }
+
+  .m3-kp-badge {
+    padding: 1px 5px;
+    font-size: 8px;
+  }
+
+  .m3-kp-drill__note,
+  .m3-kp-path__note {
+    padding: 5px 7px;
+    font-size: 9px;
+    line-height: 1.25;
+  }
+  
+  /* [v1.1] 打印时隐藏交互元素 */
+  .m3-kp-drill__cta {
+    display: none;
+  }
+  
+  /* [v1.1] 确保表格行不被分页切断 */
+  .m3-kp-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  /* [T14-P5] 表头跨页重复 */
+  .m3-kp-table thead {
+    display: table-header-group;
+  }
+}
+
+/* =============================================================================
+ * END OF FILE
+ * ============================================================================= */

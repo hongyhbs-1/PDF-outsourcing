@@ -1,0 +1,607 @@
+/**
+ * ============================================================================
+ * 模块 2：核心短板清单 (Core Weakness List)
+ * 文件：2_core_weakness.css
+ * 版本：v1.1 (对齐适配层契约)
+ * 描述：展示学生数学薄弱知识点清单，按P0/P1/P2优先级分组排序
+ * 
+ * 修订记录：
+ *   v1.1 - 新增 .m2-cw-tag--neutral 样式
+ *        - 新增 .m2-cw-cell--name/.m2-cw-cell--domain 长文本换行支持
+ *        - 优化打印分页策略
+ * 
+ * 结构：
+ *   1. CSS 变量定义 (Design Tokens)
+ *   2. 页面基础与A4适配
+ *   3. 页眉组件
+ *   4. 模块标题组件
+ *   5. 说明条组件
+ *   6. 表格卡片组件
+ *   7. 优先级徽章组件
+ *   8. 距目标线与标签样式
+ *   9. 排序依据说明组件
+ *   10. 数据提示组件
+ *   11. 状态类与空态
+ *   12. 打印优化
+ * ============================================================================
+ */
+
+/* ============================================================================
+   1. CSS 变量定义 (Design Tokens)
+   ============================================================================ */
+:root {
+  /* ---------- 基础色 ---------- */
+  --cw-color-page-bg: var(--pm-bg-page, #f8f5ef);
+  --cw-color-text-primary: var(--pm-text-primary, #1a2332);
+  --cw-color-text-secondary: var(--pm-text-secondary, #4a5568);
+  --cw-color-text-muted: var(--pm-text-muted, #8896a7);
+  --cw-color-text-meta: var(--pm-text-muted, #8896a7);
+
+  /* ---------- 分割线/边框 ---------- */
+  --cw-color-divider-top: var(--pm-border-light, #e4e8ec);
+  --cw-color-border-card: var(--pm-border-card, #d8e2e8);
+
+  /* ---------- 强调色 ---------- */
+  --cw-color-accent-teal: var(--pm-teal, #1f6f78);
+  --cw-color-accent-primary: var(--pm-teal, #1f6f78);
+
+  /* ---------- 优先级色 ---------- */
+  --cw-color-p0: var(--pm-sand-dark, #b27a37);
+  --cw-color-p1: var(--pm-status-attention, #d4943a);
+  --cw-color-p2: var(--pm-teal-light, #2a8f8f);
+
+  /* ---------- 数值强调色 ---------- */
+  --cw-color-gap-strong: var(--pm-sand-dark, #b27a37);
+  --cw-color-gap-mild: var(--pm-status-success, #2d8a6e);
+
+  /* ---------- 标签色 ---------- */
+  --cw-color-tag-core: var(--pm-teal, #1f6f78);
+  --cw-color-tag-exam: var(--pm-navy, #12344d);
+  --cw-color-tag-highfreq: var(--pm-status-success, #2d8a6e);
+  --cw-color-tag-neutral: var(--pm-text-muted, #8896a7);  /* v1.1 新增：无标签时的中性色 */
+
+  /* ---------- 背景色 ---------- */
+  --cw-color-bg-note: var(--pm-bg-section, #f0ede6);
+  --cw-color-bg-tips: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-bg-summary: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-bg-header: var(--pm-bg-muted, #f3f0ea);
+
+  /* ---------- 表格行底色（按优先级分组 + 斑马纹） ---------- */
+  --cw-color-row-p0-a: var(--pm-sand-light, #f7f0e3);
+  --cw-color-row-p0-b: var(--pm-sand-pale, #faf6ee);
+  --cw-color-row-p1-a: var(--pm-status-attention-bg, #fef3e2);
+  --cw-color-row-p1-b: var(--pm-sand-pale, #faf6ee);
+  --cw-color-row-p2-a: var(--pm-status-achieved-bg, #e6f3f3);
+  --cw-color-row-p2-b: var(--pm-bg-muted, #f3f0ea);
+
+  /* ---------- 原因卡片色 ---------- */
+  --cw-color-card-purple: var(--pm-sand-dark, #b27a37);
+  --cw-color-card-green: var(--pm-status-success, #2d8a6e);
+  --cw-color-card-blue: var(--pm-teal, #1f6f78);
+
+  /* ---------- 字体 ---------- */
+  --cw-font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --cw-font-size-meta: 12px;
+  --cw-font-size-h1: 28px;
+  --cw-font-size-h2: 18px;
+  --cw-font-size-body: 14px;
+  --cw-font-size-table-head: 13px;
+  --cw-font-size-small: 12px;
+  --cw-font-size-badge: 11px;
+
+  --cw-font-weight-bold: 700;
+  --cw-font-weight-medium: 600;
+  --cw-font-weight-regular: 400;
+
+  --cw-line-height-tight: 1.3;
+  --cw-line-height-normal: 1.6;
+
+  /* ---------- 间距（8px 体系） ---------- */
+  --cw-spacing-1: 4px;
+  --cw-spacing-2: 8px;
+  --cw-spacing-3: 12px;
+  --cw-spacing-4: 16px;
+  --cw-spacing-5: 20px;
+  --cw-spacing-6: 24px;
+  --cw-spacing-8: 32px;
+
+  /* ---------- 圆角 ---------- */
+  --cw-radius-0: 0px;
+  --cw-radius-xs: 4px;
+  --cw-radius-sm: 8px;
+  --cw-radius-md: 12px;
+  --cw-radius-pill: 999px;
+
+  /* ---------- 阴影 ---------- */
+  --cw-shadow-card: var(--pm-shadow-card, 0 4px 20px rgba(18, 52, 77, 0.08));
+}
+
+/* ============================================================================
+   2. 页面基础与A4适配
+   ============================================================================ */
+/* @page 已统一在 base.css 管理 (T14 running header) */
+
+.m2-core-weakness-module {
+  width: 210mm;
+  margin: 0 auto;
+  padding: 24px 0 0;
+  background: var(--cw-color-page-bg);
+  font-family: var(--cw-font-family);
+  font-size: var(--cw-font-size-body);
+  color: var(--cw-color-text-primary);
+  line-height: var(--cw-line-height-normal);
+  box-sizing: border-box;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.m2-core-weakness-module *,
+.m2-core-weakness-module *::before,
+.m2-core-weakness-module *::after {
+  box-sizing: border-box;
+}
+
+/* ============================================================================
+   3. 模块标题组件 (Module Title)
+   ============================================================================ */
+.m2-cw-module-title {
+  display: inline-block;
+  font-size: var(--cw-font-size-h1);
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
+  padding: var(--cw-spacing-5) var(--cw-spacing-6) 0;
+  margin: 0;
+  line-height: var(--cw-line-height-tight);
+}
+
+.m2-cw-module-title::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: var(--cw-color-accent-teal);
+  margin-top: var(--cw-spacing-2);
+  margin-bottom: var(--cw-spacing-4);
+}
+
+.m2-cw-module-title-underline {
+  display: none;
+}
+
+/* ============================================================================
+   5. 说明条组件 (Note Bar)
+   ============================================================================ */
+.m2-cw-note-bar {
+  background: var(--cw-color-bg-note);
+  color: var(--cw-color-text-secondary);
+  font-size: var(--cw-font-size-body);
+  line-height: var(--cw-line-height-normal);
+  padding: var(--cw-spacing-3) var(--cw-spacing-4);
+  margin: 0 var(--cw-spacing-6) var(--cw-spacing-4);
+  border-radius: var(--cw-radius-0);
+}
+
+/* ============================================================================
+   6. 表格卡片组件 (Weakness Table Card)
+   ============================================================================ */
+.m2-cw-weakness-card {
+  margin: 0 var(--cw-spacing-6) var(--cw-spacing-5);
+  border: 1px solid var(--cw-color-border-card);
+  background: var(--cw-color-page-bg);
+  border-radius: var(--cw-radius-0);
+  padding: var(--cw-spacing-4);
+  overflow: hidden;
+}
+
+/* ---------- 6.1 图例行 (Legend Row) ---------- */
+.m2-cw-legend-row {
+  display: flex;
+  align-items: center;
+  gap: var(--cw-spacing-6);
+  margin-bottom: var(--cw-spacing-4);
+  flex-wrap: wrap;
+}
+
+.m2-cw-legend-title {
+  color: var(--cw-color-text-secondary);
+  font-size: var(--cw-font-size-body);
+  font-weight: var(--cw-font-weight-medium);
+  margin-right: var(--cw-spacing-2);
+}
+
+.m2-cw-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--cw-spacing-2);
+  color: var(--cw-color-text-primary);
+  font-size: var(--cw-font-size-body);
+  font-weight: var(--cw-font-weight-medium);
+}
+
+.m2-cw-legend-badge {
+  width: 32px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--cw-font-size-small);
+  font-weight: var(--cw-font-weight-bold);
+  clip-path: polygon(0 0, 78% 0, 100% 22%, 100% 100%, 0 100%);
+}
+
+.m2-cw-legend-badge--p0 { background: var(--color-badge-improve-bg); color: var(--color-badge-improve-text); }
+.m2-cw-legend-badge--p1 { background: var(--color-badge-attention-bg); color: var(--color-badge-attention-text); }
+.m2-cw-legend-badge--p2 { background: var(--color-badge-achieved-bg); color: var(--color-badge-achieved-text); }
+
+/* ---------- 6.2 表头 (Table Header) ---------- */
+.m2-cw-table-header {
+  display: grid;
+  grid-template-columns: 12% 22% 16% 12% 12% 12% 14%;
+  align-items: center;
+  background: var(--cw-color-bg-header);
+  height: 44px;
+  padding: 0 var(--cw-spacing-2);
+  border-radius: var(--cw-radius-xs);
+  margin-bottom: var(--cw-spacing-2);
+}
+
+.m2-cw-table-header__cell {
+  text-align: center;
+  font-size: var(--cw-font-size-table-head);
+  font-weight: var(--cw-font-weight-medium);
+  color: var(--cw-color-text-secondary);
+}
+
+/* ---------- 6.3 数据行 (Table Row) ---------- */
+.m2-cw-table-row {
+  display: grid;
+  grid-template-columns: 12% 22% 16% 12% 12% 12% 14%;
+  align-items: center;
+  min-height: 52px;
+  padding: var(--cw-spacing-2);
+  margin-bottom: var(--cw-spacing-2);
+  border-radius: var(--cw-radius-md);
+  transition: background-color 0.2s ease;
+}
+
+/* 行背景色 - P0 组 */
+.m2-cw-table-row--p0.m2-cw-table-row--odd { background: var(--cw-color-row-p0-a); }
+.m2-cw-table-row--p0.m2-cw-table-row--even { background: var(--cw-color-row-p0-b); }
+
+/* 行背景色 - P1 组 */
+.m2-cw-table-row--p1.m2-cw-table-row--odd { background: var(--cw-color-row-p1-a); }
+.m2-cw-table-row--p1.m2-cw-table-row--even { background: var(--cw-color-row-p1-b); }
+
+/* 行背景色 - P2 组 */
+.m2-cw-table-row--p2.m2-cw-table-row--odd { background: var(--cw-color-row-p2-a); }
+.m2-cw-table-row--p2.m2-cw-table-row--even { background: var(--cw-color-row-p2-b); }
+
+/* 通用单元格 */
+.m2-cw-cell {
+  text-align: center;
+  font-size: var(--cw-font-size-body);
+  color: var(--cw-color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m2-cw-cell--left {
+  text-align: left;
+}
+
+.m2-cw-cell--muted {
+  color: var(--cw-color-text-muted);
+}
+
+/* v1.1 新增：允许知识点和领域列换行，避免PDF截断 */
+.m2-cw-cell--name,
+.m2-cw-cell--domain {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-word;
+  line-height: var(--cw-line-height-tight);
+}
+
+/* ============================================================================
+   7. 优先级徽章组件 (Priority Badge)
+   ============================================================================ */
+.m2-cw-priority-cell {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: var(--cw-spacing-2);
+}
+
+.m2-cw-priority-badge {
+  position: relative;
+  width: 36px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(0 0, 78% 0, 100% 22%, 100% 100%, 0 100%);
+}
+
+.m2-cw-priority-badge--p0 { background: var(--color-badge-improve-bg); color: var(--color-badge-improve-text); }
+.m2-cw-priority-badge--p1 { background: var(--color-badge-attention-bg); color: var(--color-badge-attention-text); }
+.m2-cw-priority-badge--p2 { background: var(--color-badge-achieved-bg); color: var(--color-badge-achieved-text); }
+
+.m2-cw-priority-badge__level {
+  font-size: var(--cw-font-size-badge);
+  font-weight: var(--cw-font-weight-bold);
+  line-height: 1;
+}
+
+.m2-cw-priority-badge__rank {
+  font-size: 14px;
+  font-weight: var(--cw-font-weight-bold);
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* ============================================================================
+   8. 距目标线与标签样式 (Gap & Tag Styles)
+   ============================================================================ */
+/* 距目标线 - 差距大（紫色，|delta| >= 12） */
+.m2-cw-gap--strong {
+  color: var(--cw-color-gap-strong);
+  font-weight: var(--cw-font-weight-medium);
+}
+
+/* 距目标线 - 差距小（绿色，|delta| < 12） */
+.m2-cw-gap--mild {
+  color: var(--cw-color-gap-mild);
+  font-weight: var(--cw-font-weight-medium);
+}
+
+/* 标签样式 */
+.m2-cw-tag {
+  font-weight: var(--cw-font-weight-medium);
+}
+
+.m2-cw-tag--core { color: var(--cw-color-tag-core); }
+.m2-cw-tag--exam { color: var(--cw-color-tag-exam); }
+.m2-cw-tag--highfreq { color: var(--cw-color-tag-highfreq); }
+.m2-cw-tag--neutral { color: var(--cw-color-tag-neutral); }  /* v1.1 新增 */
+
+/* ============================================================================
+   9. 排序依据说明组件 (Reason Section)
+   ============================================================================ */
+.m2-cw-reason-section {
+  margin: 0 var(--cw-spacing-6) var(--cw-spacing-5);
+}
+
+/* ---------- 9.1 标题行 ---------- */
+.m2-cw-reason-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--cw-spacing-3);
+  margin-bottom: var(--cw-spacing-4);
+  flex-wrap: wrap;
+}
+
+.m2-cw-reason-header__title {
+  font-size: var(--cw-font-size-h2);
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
+}
+
+.m2-cw-reason-header__subtitle {
+  font-size: var(--cw-font-size-body);
+  color: var(--cw-color-text-secondary);
+}
+
+.m2-cw-reason-header__highlight {
+  color: var(--cw-color-p0);
+  font-weight: var(--cw-font-weight-bold);
+}
+
+/* ---------- 9.2 原因卡片容器 ---------- */
+.m2-cw-reason-cards {
+  display: flex;
+  gap: var(--cw-spacing-4);
+  margin-bottom: var(--cw-spacing-4);
+}
+
+/* ---------- 9.3 单张原因卡片 ---------- */
+.m2-cw-reason-card {
+  flex: 1;
+  background: var(--cw-color-page-bg);
+  border: 1px solid var(--cw-color-border-card);
+  border-radius: var(--cw-radius-sm);
+  padding: var(--cw-spacing-4);
+  text-align: center;
+  box-shadow: var(--cw-shadow-card);
+}
+
+.m2-cw-reason-card__label {
+  font-size: var(--cw-font-size-body);
+  color: var(--cw-color-text-secondary);
+  margin-bottom: var(--cw-spacing-2);
+}
+
+.m2-cw-reason-card__value {
+  font-size: 28px;
+  font-weight: var(--cw-font-weight-bold);
+  line-height: 1.2;
+  margin-bottom: var(--cw-spacing-2);
+}
+
+.m2-cw-reason-card__value--purple { color: var(--cw-color-card-purple); }
+.m2-cw-reason-card__value--green { color: var(--cw-color-card-green); }
+.m2-cw-reason-card__value--blue { color: var(--cw-color-card-blue); }
+
+.m2-cw-reason-card__icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto var(--cw-spacing-2);
+}
+
+.m2-cw-reason-card__weight {
+  display: inline-block;
+  background: var(--cw-color-bg-note);
+  color: var(--cw-color-text-secondary);
+  font-size: var(--cw-font-size-small);
+  padding: 2px var(--cw-spacing-3);
+  border-radius: var(--cw-radius-pill);
+}
+
+/* ---------- 9.4 总结说明条 ---------- */
+.m2-cw-summary-bar {
+  background: var(--cw-color-bg-summary);
+  color: var(--cw-color-text-secondary);
+  font-size: var(--cw-font-size-body);
+  line-height: var(--cw-line-height-normal);
+  padding: var(--cw-spacing-3) var(--cw-spacing-4);
+  border-radius: var(--cw-radius-xs);
+}
+
+/* ============================================================================
+   10. 数据提示组件 (Tips Box)
+   ============================================================================ */
+.m2-cw-tips-box {
+  margin: 0 var(--cw-spacing-6) var(--cw-spacing-6);
+  background: var(--cw-color-bg-tips);
+  padding: var(--cw-spacing-4);
+  border-radius: var(--cw-radius-xs);
+}
+
+.m2-cw-tips-title {
+  font-size: var(--cw-font-size-body);
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
+  margin-bottom: var(--cw-spacing-2);
+}
+
+.m2-cw-tips-item {
+  font-size: var(--cw-font-size-body);
+  color: var(--cw-color-text-secondary);
+  line-height: var(--cw-line-height-normal);
+  margin-bottom: var(--cw-spacing-1);
+}
+
+.m2-cw-tips-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================================================
+   11. 状态类与空态 (Status Classes & Empty State)
+   ============================================================================ */
+/* 通用状态类 - 可用于扩展 */
+.m2-cw-status--achieved { color: var(--pm-status-achieved, #1f6f78); }
+.m2-cw-status--attention { color: var(--pm-status-attention, #d4943a); }
+.m2-cw-status--improve { color: var(--pm-status-improve, #8b4c6a); }
+.m2-cw-status--nodata { color: var(--cw-color-text-muted); }
+
+/* 无数据状态 */
+.m2-cw-empty-state {
+  text-align: center;
+  padding: var(--cw-spacing-8) var(--cw-spacing-4);
+  color: var(--cw-color-text-muted);
+}
+
+.m2-cw-empty-state__icon {
+  font-size: 48px;
+  margin-bottom: var(--cw-spacing-4);
+}
+
+.m2-cw-empty-state__text {
+  font-size: var(--cw-font-size-body);
+}
+
+/* ============================================================================
+   12. 打印优化 (Print Optimization)
+   ============================================================================ */
+@media print {
+  .m2-core-weakness-module {
+    width: auto;
+    display: block;
+    flex: none;
+    padding: 0 15mm 0 18mm;  /* [T15] 统一 L/R 边距 */
+  }
+
+  /* [T15] 子元素边距归零 — 由 Playwright margin 统一提供 */
+  .m2-cw-module-title { padding: 12px 0 0; }
+  .m2-cw-module-title::after { margin-bottom: 10px; }
+  .m2-cw-module-title-underline { margin-left: 0; }
+  .m2-cw-note-bar { padding: 8px 12px; margin: 0 0 10px; }
+  .m2-cw-weakness-card { padding: 12px; margin: 0 0 12px; }
+  .m2-cw-reason-section { margin: 0 0 12px; }
+  .m2-cw-tips-box { padding: 10px 12px; margin: 0 0 12px; }
+
+  /* 避免表格行被分页切断 */
+  .m2-cw-table-row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* =====================================================================
+ * P6-T10: 空状态智能引导卡片
+ * ===================================================================== */
+
+.m2-cw-empty-guidance {
+  margin: 24px 20px;
+  padding: 32px 28px;
+  background: var(--pm-teal-soft, #d0e8e8);
+  border-radius: var(--pm-radius-card-sm, 16px);
+  text-align: center;
+  border: 1px solid rgba(31, 111, 120, 0.15);
+}
+
+.m2-cw-empty-guidance__icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.m2-cw-empty-guidance__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--pm-navy, #12344d);
+  margin-bottom: 16px;
+}
+
+.m2-cw-empty-guidance__reason {
+  font-size: 14px;
+  color: var(--pm-text-secondary, #4a5568);
+  line-height: 1.7;
+  margin-bottom: 12px;
+  text-align: left;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.m2-cw-empty-guidance__action {
+  font-size: 14px;
+  color: var(--pm-teal, #1f6f78);
+  line-height: 1.7;
+  font-weight: 500;
+  text-align: left;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 16px;
+  padding: 10px 16px;
+  background: rgba(31, 111, 120, 0.08);
+  border-radius: 8px;
+  border-left: 3px solid var(--pm-teal, #1f6f78);
+}
+
+.m2-cw-empty-guidance__stats {
+  font-size: 12px;
+  color: var(--pm-text-muted, #8896a7);
+  margin-top: 8px;
+}
+
+@media print {
+  .m2-cw-empty-guidance {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

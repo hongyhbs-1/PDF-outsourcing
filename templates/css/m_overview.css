@@ -1,0 +1,764 @@
+/* ==========================================================================
+   数据分析概览页 (m_overview)
+   位置: 封面(M0)之后、诊断摘要(M1)之前
+   ========================================================================== */
+
+/* --- 页面容器 --- */
+.mov-page {
+  padding: 18mm 34px 16px;
+  font-family: var(--font-family-base);
+  color: var(--pm-text-primary);
+  background: var(--pm-bg-page);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  zoom: 1.03;
+}
+
+.mov-page--sparse .mov-card {
+  min-height: 140px;
+}
+
+.mov-page--sparse .mov-hero {
+  margin-bottom: 20px;
+}
+
+.mov-page--dense .mov-cards {
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.mov-page--dense .mov-card {
+  padding: 12px 12px;
+}
+
+.mov-page--dense .mov-hero {
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.mov-page--dense .mov-papers__table th,
+.mov-page--dense .mov-papers__table td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.mov-page--dense .mov-title-section {
+  margin-bottom: 12px;
+}
+
+.mov-page--dense .mov-title {
+  font-size: 25px;
+  margin: 12px 0 4px;
+}
+
+.mov-page--dense .mov-hero-main,
+.mov-page--dense .mov-profile-card {
+  padding: 13px 15px;
+}
+
+.mov-page--dense .mov-hero-kicker {
+  margin-bottom: 7px;
+}
+
+.mov-page--dense .mov-hero-title {
+  font-size: 21px;
+  margin-bottom: 6px;
+}
+
+.mov-page--dense .mov-hero-text {
+  line-height: 1.55;
+}
+
+.mov-page--dense .mov-chip-row {
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.mov-page--dense .mov-chip {
+  padding: 4px 8px;
+}
+
+.mov-page--dense .mov-hero-note {
+  margin-top: 8px;
+  line-height: 1.45;
+}
+
+.mov-page--dense .mov-profile-grid {
+  gap: 8px;
+}
+
+.mov-page--dense .mov-profile-item {
+  padding: 8px 10px;
+}
+
+.mov-page--dense .mov-card__eyebrow {
+  margin-bottom: 8px;
+}
+
+.mov-page--dense .mov-card__num {
+  font-size: 28px;
+}
+
+.mov-page--dense .mov-card__hint {
+  margin-top: 5px;
+  line-height: 1.35;
+}
+
+.mov-page--dense .mov-difficulty {
+  margin-bottom: 16px;
+}
+
+.mov-page--dense .mov-difficulty__title {
+  margin-bottom: 8px;
+}
+
+.mov-page--dense .mov-difficulty__bar {
+  height: 22px;
+  margin-bottom: 6px;
+}
+
+.mov-page--dense .mov-difficulty__legend {
+  gap: 14px;
+  font-size: 11px;
+}
+
+.mov-page--dense .mov-papers {
+  margin-bottom: 0;
+}
+
+.mov-page--dense .mov-papers__table {
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.mov-page--dense .mov-papers__table th,
+.mov-page--dense .mov-papers__table td {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.mov-page--dense .mov-papers__summary {
+  padding: 4px 0;
+}
+
+.mov-page--dense .mov-papers__notes {
+  margin-top: 5px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* --- 标题 --- */
+.mov-title-section {
+  margin-bottom: 20px;
+}
+/* V3-5: 首标题与页眉保持 20px 间距 */
+.mov-title {
+  display: inline-block;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin: 20px 0 6px;
+}
+.mov-title::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin-top: 6px;
+  background: var(--pm-gradient-accent-bar);
+  border-image: var(--pm-gradient-accent-bar) 1;
+  border-radius: 2px;
+}
+.mov-title__underline {
+  display: none;
+}
+
+/* --- 样本档案顶部独立区 --- */
+.mov-profile-top {
+  margin-bottom: 28px;
+}
+
+.mov-profile-top .mov-profile-card {
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: 8px;
+  box-shadow: var(--pm-shadow-card);
+  padding: 14px 18px;
+}
+
+/* --- 导语 --- */
+.mov-hero {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.mov-hero-main,
+.mov-profile-card {
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: 8px;
+  box-shadow: var(--pm-shadow-card);
+}
+
+.mov-hero-main {
+  flex: 7;
+  min-width: 0;
+  padding: 18px 20px;
+}
+
+.mov-profile-card {
+  flex: 4;
+  min-width: 0;
+  padding: 16px 18px;
+}
+
+.mov-hero-kicker {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--pm-teal-soft, #d0e8e8);
+  color: var(--pm-teal);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.mov-hero-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  line-height: 1.35;
+  margin: 0 0 10px;
+}
+
+.mov-hero-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--pm-text-secondary);
+}
+
+.mov-hero-text strong {
+  color: var(--pm-teal);
+  font-weight: 600;
+}
+
+.mov-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mov-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mov-chip--accent {
+  background: rgba(31, 111, 120, 0.12);
+  color: var(--pm-teal);
+}
+
+.mov-chip--soft {
+  background: var(--pm-bg-muted);
+  color: var(--pm-text-secondary);
+}
+
+.mov-hero-note {
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--pm-text-muted);
+}
+
+.mov-hero-note strong {
+  color: var(--pm-text-secondary);
+  font-weight: 600;
+}
+
+.mov-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin: 0 0 12px;
+}
+
+.mov-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.mov-profile-item {
+  padding: 10px 12px;
+  background: var(--pm-bg-muted);
+  border-radius: 8px;
+}
+
+.mov-profile-item__k {
+  font-size: 12px;
+  color: var(--pm-text-muted);
+  margin-bottom: 4px;
+}
+
+.mov-profile-item__v {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+}
+
+/* --- 三卡片 --- */
+.mov-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.mov-card {
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: 8px;
+  padding: 16px 14px;
+  box-shadow: var(--pm-shadow-card);
+}
+
+.mov-card__eyebrow {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--pm-bg-muted);
+  color: var(--pm-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.mov-card__num {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--pm-teal);
+  line-height: 1.1;
+  margin-bottom: 4px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.mov-card__label {
+  font-size: 13px;
+  color: var(--pm-text-secondary);
+  font-weight: 600;
+}
+
+.mov-card__hint {
+  font-size: 12px;
+  color: var(--pm-text-muted);
+  line-height: 1.55;
+  margin-top: 8px;
+}
+
+/* --- 难度分布扇形图（并入速览右侧） --- */
+.mov-difficulty-aside {
+  flex: 4;
+  min-width: 0;
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: 8px;
+  box-shadow: var(--pm-shadow-card);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0.85;
+}
+.mov-difficulty__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pm-text-muted);
+  margin: 0 0 8px;
+}
+
+/* 扇形图 */
+.mov-pie-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+.mov-pie {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  opacity: 0.75;
+}
+.mov-pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+.mov-pie-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--pm-text-muted);
+}
+.mov-pie-legend__name {
+  font-weight: 500;
+}
+.mov-pie-legend__value {
+  color: var(--pm-text-muted);
+  font-size: 10px;
+}
+.mov-difficulty__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.mov-difficulty__dot--easy {
+  background: var(--pm-status-success, #2d8a6e);
+  opacity: 0.6;
+}
+.mov-difficulty__dot--medium {
+  background: var(--pm-status-attention, #d4943a);
+  opacity: 0.6;
+}
+.mov-difficulty__dot--hard {
+  background: var(--pm-status-danger, #c44040);
+  opacity: 0.6;
+}
+
+/* --- 试卷/批次清单 --- */
+.mov-papers {
+  margin-bottom: 28px;
+  padding-top: 16px;
+}
+.mov-papers__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.mov-papers__table th {
+  background: var(--pm-bg-muted);
+  color: var(--pm-text-secondary);
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--pm-border-card);
+}
+.mov-papers__table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--pm-border-light);
+  color: var(--pm-text-primary);
+}
+.mov-papers__table tr:last-child td {
+  border-bottom: none;
+}
+.mov-papers__summary {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pm-text-secondary);
+  padding: 6px 0;
+}
+/* V3-3: 脚注左竖线 + 序号对齐 */
+.mov-papers__notes {
+  font-size: 12px;
+  color: var(--pm-text-muted);
+  line-height: 1.6;
+  border-left: 3px solid var(--pm-border-divider);
+  padding-left: 10px;
+  margin-top: 8px;
+}
+.mov-papers__notes p {
+  margin: 2px 0;
+}
+.mov-papers__notes-indent {
+  padding-left: 2.5em;
+}
+
+/* --- 结论胶囊 --- */
+.mov-conclusion {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+.mov-conclusion__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--pm-teal-soft, #d0e8e8);
+  border: 1px solid rgba(31, 111, 120, 0.15);
+  border-radius: var(--pm-radius-pill, 999px);
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pm-teal);
+}
+.mov-conclusion__badge svg {
+  flex-shrink: 0;
+  color: var(--pm-status-success, #2d8a6e);
+}
+
+.mov-reading-guide {
+  margin-top: 18px;
+  padding: 16px 18px;
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: var(--pm-radius-card-sm, 16px);
+  box-shadow: var(--pm-shadow-card);
+}
+
+.mov-reading-guide__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  margin-bottom: 10px;
+}
+
+.mov-reading-guide__grid {
+  display: flex;
+  gap: 14px;
+}
+
+.mov-reading-guide__item {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--pm-bg-muted);
+  border-radius: var(--pm-radius-badge, 12px);
+}
+
+.mov-reading-guide__label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pm-teal);
+  margin-bottom: 4px;
+}
+
+.mov-reading-guide__text {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--pm-text-secondary);
+}
+
+/* --- 打印优化 --- */
+@media print {
+  /* [T15] 统一 L/R 边距: left=18mm(装订), right=15mm */
+  .mov-page {
+    width: auto;
+    display: block;
+    flex: none;
+    padding: 0 15mm 0 18mm;
+    box-shadow: none;
+    font-size: 11px;
+    line-height: 1.28;
+  }
+
+  .mov-title-section {
+    margin-bottom: 8px;
+  }
+
+  .mov-title {
+    font-size: 22px;
+    margin: 8px 0 4px;
+  }
+
+  .mov-title::after {
+    height: 2px;
+    margin-top: 5px;
+  }
+
+  .mov-hero,
+  .mov-page--sparse .mov-hero,
+  .mov-page--dense .mov-hero {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .mov-hero-main,
+  .mov-profile-card,
+  .mov-page--dense .mov-hero-main,
+  .mov-page--dense .mov-profile-card {
+    padding: 8px 10px;
+    border-radius: 6px;
+    box-shadow: none;
+  }
+
+  .mov-hero-kicker,
+  .mov-page--dense .mov-hero-kicker {
+    margin-bottom: 4px;
+    padding: 2px 7px;
+    font-size: 9px;
+  }
+
+  .mov-hero-title,
+  .mov-page--dense .mov-hero-title {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .mov-hero-text {
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .mov-chip-row,
+  .mov-page--dense .mov-chip-row {
+    gap: 4px;
+    margin-top: 5px;
+  }
+
+  .mov-chip {
+    padding: 2px 6px;
+    font-size: 9px;
+  }
+
+  .mov-hero-note,
+  .mov-page--dense .mov-hero-note {
+    margin-top: 5px;
+    font-size: 9px;
+    line-height: 1.3;
+  }
+
+  .mov-card-title {
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+
+  .mov-profile-grid,
+  .mov-page--dense .mov-profile-grid {
+    gap: 5px;
+  }
+
+  .mov-profile-item,
+  .mov-page--dense .mov-profile-item {
+    padding: 5px 6px;
+    border-radius: 5px;
+  }
+
+  .mov-profile-item__k,
+  .mov-profile-item__v {
+    font-size: 9px;
+  }
+
+  .mov-cards,
+  .mov-page--dense .mov-cards {
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .mov-card,
+  .mov-page--dense .mov-card,
+  .mov-page--sparse .mov-card {
+    min-height: auto;
+    padding: 7px 8px;
+    border-radius: 6px;
+    box-shadow: none;
+  }
+
+  .mov-card__eyebrow,
+  .mov-page--dense .mov-card__eyebrow {
+    margin-bottom: 4px;
+    padding: 2px 6px;
+    font-size: 8px;
+  }
+
+  .mov-card__num,
+  .mov-page--dense .mov-card__num {
+    font-size: 22px;
+  }
+
+  .mov-card__label,
+  .mov-card__hint {
+    font-size: 9px;
+    line-height: 1.3;
+  }
+
+  .mov-card__hint,
+  .mov-page--dense .mov-card__hint {
+    margin-top: 4px;
+  }
+
+  .mov-difficulty,
+  .mov-page--dense .mov-difficulty,
+  .mov-papers,
+  .mov-page--dense .mov-papers {
+    margin-bottom: 8px;
+  }
+
+  .mov-difficulty__title {
+    margin-bottom: 5px;
+    font-size: 11px;
+  }
+
+  .mov-difficulty__bar,
+  .mov-page--dense .mov-difficulty__bar {
+    height: 16px;
+    margin-bottom: 4px;
+  }
+
+  .mov-difficulty__legend,
+  .mov-page--dense .mov-difficulty__legend {
+    gap: 9px;
+    font-size: 9px;
+  }
+
+  .mov-papers__table,
+  .mov-page--dense .mov-papers__table {
+    margin-bottom: 3px;
+    font-size: 9px;
+  }
+
+  .mov-papers__table th,
+  .mov-papers__table td,
+  .mov-page--dense .mov-papers__table th,
+  .mov-page--dense .mov-papers__table td {
+    padding: 3px 5px;
+  }
+
+  .mov-papers__summary,
+  .mov-page--dense .mov-papers__summary,
+  .mov-papers__notes,
+  .mov-page--dense .mov-papers__notes {
+    margin-top: 3px;
+    padding: 2px 0;
+    font-size: 9px;
+    line-height: 1.25;
+  }
+
+  .mov-reading-guide {
+    margin-top: 6px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    box-shadow: none;
+  }
+
+  .mov-reading-guide__title {
+    margin-bottom: 5px;
+    font-size: 11px;
+  }
+
+  .mov-reading-guide__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .mov-reading-guide__item {
+    padding: 5px 6px;
+    border-radius: 5px;
+  }
+
+  .mov-reading-guide__label,
+  .mov-reading-guide__text {
+    font-size: 9px;
+    line-height: 1.3;
+  }
+}

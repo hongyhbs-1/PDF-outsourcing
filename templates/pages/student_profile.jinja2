@@ -1,0 +1,364 @@
+{# ==============================================================================
+   student_profile.jinja2 — 第 4 页: 学生画像分析
+   双区结构：整体情况 / 整体分析
+   ============================================================================== #}
+
+{% set acc = summary.current_accuracy | default(0) | float %}
+{% set target_acc = summary.target_accuracy | default(85) | float %}
+{% set delta = summary.current_delta | default(0) | float %}
+{% set trend = summary.current_trend | default('stable') %}
+{% set student_name = meta.student_display_name | default('同学') %}
+{% set subject = meta.subject_name | default('') %}
+{% set cover_meta = cover.cover_meta | default({}) %}
+{% set student_grade = cover_meta.grade | default('--') %}
+{% set student_city = meta.city_name | default(cover_meta.city_name | default(cover_meta.city | default('--'))) %}
+{% set trend_map = {'up': '上升', 'down': '下降', 'stable': '稳定'} %}
+{% set trend_label = trend_map[trend] if trend in trend_map else '稳定' %}
+
+{# --- 三档分类 --- #}
+{% if acc < 60 %}
+  {% set tier = 'need_major' %}
+  {% set tier_label = '需大幅提升' %}
+{% elif acc < 85 %}
+  {% set tier = 'room_grow' %}
+  {% set tier_label = '有提升空间' %}
+{% else %}
+  {% set tier = 'excellent' %}
+  {% set tier_label = '表现优秀' %}
+{% endif %}
+
+{# --- 数据完整性判断 --- #}
+{% set has_real_data = acc > 0 %}
+
+{# --- 提取薄弱领域 --- #}
+{% set weak_domains = [] %}
+{% if domains is defined and domains.domain_items is defined %}
+  {% for item in domains.domain_items %}
+    {% if item.status | default('') in ['需加强', '需关注'] and item.has_data | default(true) %}
+      {% set _ = weak_domains.append(item) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% set weak_count = weak_domains | length %}
+{% if weak_count >= 4 %}
+  {% set sp_density = 'dense' %}
+{% elif not has_real_data or weak_count <= 1 %}
+  {% set sp_density = 'sparse' %}
+{% else %}
+  {% set sp_density = 'standard' %}
+{% endif %}
+
+{# --- 判断空数据原因 --- #}
+{% set domain_count = domains.domain_items | default([]) | length %}
+{% if not has_real_data and domain_count == 0 %}
+  {% set empty_reason = 'no_data' %}
+  {% set empty_message = '当前未采集到有效的答题数据，暂时无法生成稳定的学生画像。可能原因：尚未完成测评、答题记录未同步、或数据仍在处理中。' %}
+  {% set empty_action = '建议先完成至少一套完整测评，确保有效答题记录达到一定数量后，再回到本页查看综合诊断。' %}
+{% elif not has_real_data and domain_count > 0 %}
+  {% set empty_reason = 'insufficient' %}
+  {% set empty_message = '当前已有部分领域数据，但样本量仍不足以支撑完整的正确率分析和稳定结论。' %}
+  {% set empty_action = '建议补充更多有效答题记录（建议每领域至少 5 题），再进行综合分析。' %}
+{% else %}
+  {% set empty_reason = 'ok' %}
+{% endif %}
+
+{% set gap_to_target = (target_acc - acc) | abs | int %}
+{% set lead_focus = weak_domains[0].name_cn | default('核心领域') if weak_domains | length > 0 else '整体稳定性' %}
+{% set secondary_focus = weak_domains[1].name_cn | default('次重点领域') if weak_domains | length > 1 else lead_focus %}
+{% set focus_names = [] %}
+{% for item in weak_domains %}
+  {% if loop.index <= 3 %}
+    {% set _ = focus_names.append(item.name_cn | default('领域' ~ loop.index)) %}
+  {% endif %}
+{% endfor %}
+{% set focus_path = focus_names | join(' → ') if focus_names | length > 0 else '整体稳定性' %}
+{% if weak_domains | length > 1 %}
+  {% set focus_summary = lead_focus ~ '、' ~ secondary_focus %}
+{% else %}
+  {% set focus_summary = lead_focus %}
+{% endif %}
+
+{% if not has_real_data %}
+  {% set hero_title = '当前还不能输出稳定的学生画像' %}
+  {% set hero_text = empty_message %}
+  {% set status_text = '数据待补充' %}
+  {% set analysis_level_text = '样本不足，暂不能稳定判断整体水平。' %}
+  {% set analysis_state_text = '已有记录，但状态结论仍不够可靠。' %}
+  {% set analysis_gap_text = '数据补足前，不建议直接对照目标做差距判断。' %}
+  {% set analysis_breakthrough_text = '先补足数据，再进入专项分析与提分动作。' %}
+{% elif tier == 'need_major' %}
+  {% set hero_title = '先补基础，再做结构性提升' %}
+  {% set hero_text = summary.banner_text | default('当前多个关键模块仍低于目标线，建议先补最影响得分的基础环节。', true) %}
+  {% set status_text = tier_label %}
+  {% set analysis_level_text = '整体正确率离目标较远，当前应先打牢基础盘。' %}
+  {% set analysis_state_text = '达标率偏低，多个模块尚未形成稳定得分。' %}
+  {% set analysis_gap_text = '与目标仍有明显差距，先抓影响总分最大的短板。' %}
+  {% set analysis_breakthrough_text = '优先从 ' ~ lead_focus ~ ' 入手，把最弱项先拉回基础线。' %}
+{% elif tier == 'room_grow' %}
+  {% set hero_title = '不是整体薄弱，而是少数模块在拉低结果' %}
+  {% set hero_text = summary.banner_text | default('当前基础盘已经具备提分条件，下一步关键在于把最弱的几个领域补齐。', true) %}
+  {% set status_text = tier_label %}
+  {% set analysis_level_text = '当前已具备继续提分的基础，不需要从头重学。' %}
+  {% set analysis_state_text = '整体在向上，但稳定性仍会被个别领域拖住。' %}
+  {% set analysis_gap_text = '离目标还有 ' ~ gap_to_target ~ '% 差距，可通过专项补齐追赶。' %}
+  {% set analysis_breakthrough_text = '优先处理 ' ~ focus_summary ~ '，提分效率会高于平均用力。' %}
+{% else %}
+  {% set hero_title = '整体已达标，下一步是稳住优势并继续冲高' %}
+  {% set hero_text = summary.banner_text | default('当前结果已经达到目标线，后续更适合保持强项并验证高难度题的稳定性。', true) %}
+  {% set status_text = tier_label %}
+  {% set analysis_level_text = '当前整体已接近或达到目标线，基础盘较稳。' %}
+  {% set analysis_state_text = '当前状态较好，重点在于减少偶发失误。' %}
+  {% set analysis_gap_text = '当前重点不是大面积补短板，而是扩大高分稳定性。' %}
+  {% set analysis_breakthrough_text = '突破口在高难题验证、细节控制和优势巩固。' %}
+{% endif %}
+
+<div class="sp-page sp-page--{{ sp_density }}">
+  <h1 class="sp-title">学生画像分析</h1>
+
+  <div class="module-content-card">
+    <div class="sp-group-head">
+      <h2 class="sp-group-title">一、整体情况</h2>
+    </div>
+
+    <div class="sp-hero sp-overview-top">
+      <div class="sp-profile-card">
+        <h2 class="sp-card-title">学生档案</h2>
+        <div class="sp-profile-grid">
+          <div class="sp-profile-item">
+            <div class="sp-profile-item__k">学生</div>
+            <div class="sp-profile-item__v">{{ student_name }}</div>
+          </div>
+          <div class="sp-profile-item">
+            <div class="sp-profile-item__k">年级</div>
+            <div class="sp-profile-item__v">{{ student_grade }}</div>
+          </div>
+          <div class="sp-profile-item">
+            <div class="sp-profile-item__k">城市</div>
+            <div class="sp-profile-item__v">{{ student_city }}</div>
+          </div>
+          <div class="sp-profile-item">
+            <div class="sp-profile-item__k">科目</div>
+            <div class="sp-profile-item__v">{{ subject }}</div>
+          </div>
+          <div class="sp-profile-item">
+            <div class="sp-profile-item__k">考试</div>
+            <div class="sp-profile-item__v">{{ meta.exam_name | default('综合测评') }}</div>
+          </div>
+          <div class="sp-profile-item">
+            <div class="sp-profile-item__k">趋势</div>
+            <div class="sp-profile-item__v">{{ trend_label }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sp-hero-main">
+        <div class="sp-hero-kicker">学习画像速览</div>
+        <h2 class="sp-hero-title">{{ hero_title }}</h2>
+        <p class="sp-hero-text">{{ hero_text }}</p>
+        <div class="sp-chip-row">
+          {% if has_real_data %}
+          <span class="sp-chip sp-chip--tier sp-chip--{{ tier }}">{{ status_text }}</span>
+          <span class="sp-chip sp-chip--soft">重点：{{ lead_focus }}</span>
+          <span class="sp-chip sp-chip--soft">达标 {{ summary.pass_rate_text | default('--') }}</span>
+          {% else %}
+          <span class="sp-chip sp-chip--soft">{{ status_text }}</span>
+          <span class="sp-chip sp-chip--soft">已采集 {{ domain_count }} 个领域</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="sp-overview-conclusion">
+      <div class="sp-section-title">学习画像结论</div>
+
+      {% if not has_real_data %}
+      <div class="sp-conclusion-card sp-conclusion-card--warn">
+        <div class="sp-conclusion-card__tag">数据待补充</div>
+        <p class="sp-conclusion-card__text">当前答题数据不足以支撑完整画像。已完成领域分析数 <strong>{{ domain_count }}</strong>，建议每领域有效答题不少于 <strong>5 题</strong> 后再看综合诊断。</p>
+      </div>
+      {% elif tier == 'need_major' %}
+      <div class="sp-conclusion-card">
+        <div class="sp-conclusion-card__tag sp-conclusion-card__tag--need_major">需大幅提升</div>
+        <p class="sp-conclusion-card__text">当前正确率 <strong>{{ acc | int }}%</strong>，距离目标 <strong>{{ target_acc | int }}%</strong> 还有较大差距。建议先围绕 <strong>{{ lead_focus }}</strong> 建立稳定得分，再逐步扩展到其他薄弱领域。</p>
+      </div>
+      {% elif tier == 'room_grow' %}
+      <div class="sp-conclusion-card">
+        <div class="sp-conclusion-card__tag sp-conclusion-card__tag--room_grow">有提升空间</div>
+        <p class="sp-conclusion-card__text">当前已具备提分基础，主要问题不是整体偏弱，而是少数领域在持续拖分。建议优先补齐 <strong>{{ focus_summary }}</strong>{% if weak_domains | length > 2 %} 等关键短板{% endif %}，比平均用力更高效。</p>
+      </div>
+      {% else %}
+      <div class="sp-conclusion-card sp-conclusion-card--good">
+        <div class="sp-conclusion-card__tag sp-conclusion-card__tag--excellent">表现优秀</div>
+        <p class="sp-conclusion-card__text">整体正确率 <strong>{{ acc | int }}%</strong> 已达到或超过 <strong>{{ target_acc | int }}%</strong> 的目标线。下一步更适合保持优势输出，并针对偶发失误做精细化控制。</p>
+      </div>
+      {% endif %}
+    </div>
+  <div class="sp-section-divider"></div>
+
+  <section class="sp-section sp-section--analysis">
+    <div class="sp-group-head">
+      <h2 class="sp-group-title">二、整体分析</h2>
+    </div>
+
+    <div class="sp-progress-panel">
+      <div class="sp-progress-panel__meta">
+        <div class="sp-progress-panel__eyebrow">学习情况分析</div>
+        {% if has_real_data %}
+        <div class="sp-progress-panel__title">当前 {{ acc | int }}%，目标 {{ target_acc | int }}%，先抓 {{ lead_focus }}</div>
+        <p class="sp-progress-panel__text">先看位置，再看后面的分析重点。</p>
+        {% else %}
+        <div class="sp-progress-panel__title">当前数据还不足以判断稳定位置</div>
+        <p class="sp-progress-panel__text">先补足样本，再判断位置与差距。</p>
+        {% endif %}
+      </div>
+
+      <div class="sp-progress sp-progress--panel">
+        <div class="sp-progress-track">
+          <div class="sp-progress-fill" style="width:{{ acc }}%;"></div>
+          <div class="sp-progress-target" style="left:{{ target_acc }}%;"></div>
+        </div>
+        <div class="sp-progress-labels">
+          <span>0%</span>
+          <span>当前 {{ acc | int }}%</span>
+          <span>目标 {{ target_acc | int }}%</span>
+          <span>100%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sp-metric-grid">
+      <div class="sp-metric-card">
+        <div class="sp-metric-card__tag">当前水平</div>
+        <div class="sp-metric-card__value sp-metric-card__value--current">{{ acc | int }}%</div>
+        <div class="sp-metric-card__label">整体正确率</div>
+        <div class="sp-metric-card__hint">目标 {{ target_acc | int }}%</div>
+      </div>
+      <div class="sp-metric-card">
+        <div class="sp-metric-card__tag">当前状态</div>
+        <div class="sp-metric-card__value">{{ summary.pass_rate_text | default('--') }}</div>
+        <div class="sp-metric-card__label">达标率</div>
+        <div class="sp-metric-card__hint">趋势 {{ trend_label }}</div>
+      </div>
+      <div class="sp-metric-card">
+        <div class="sp-metric-card__tag">目标差距</div>
+        <div class="sp-metric-card__value {{ 'sp-metric-card__value--neg' if delta < 0 else 'sp-metric-card__value--pos' }}">{{ gap_to_target }}%</div>
+        <div class="sp-metric-card__label">距目标线</div>
+        <div class="sp-metric-card__hint">先看 {{ lead_focus }}</div>
+      </div>
+      <div class="sp-metric-card">
+        <div class="sp-metric-card__tag">突破口</div>
+        <div class="sp-metric-card__value">{{ weak_count if has_real_data else domain_count }}</div>
+        <div class="sp-metric-card__label">{{ '待突破领域' if has_real_data else '已采集领域' }}</div>
+        <div class="sp-metric-card__hint">{{ '先补最弱项' if has_real_data else '继续补样本' }}</div>
+      </div>
+    </div>
+
+    <div class="sp-analysis-grid">
+      <div class="sp-analysis-card sp-analysis-card--weakness">
+        <div class="sp-section-title">薄弱环节分析</div>
+
+        {% if not has_real_data %}
+        <div class="sp-empty-card">
+          <div class="sp-empty-card__title">{{ '答题数据不足' if empty_reason == 'insufficient' else '暂无有效数据' }}</div>
+          <p class="sp-empty-card__text">{{ empty_message }}</p>
+          <div class="sp-empty-card__action">{{ empty_action }}</div>
+        </div>
+        {% elif weak_domains | length == 0 %}
+        <div class="sp-empty-card sp-empty-card--good">
+          <div class="sp-empty-card__title">未识别到明显薄弱领域</div>
+          <p class="sp-empty-card__text">当前各领域表现均在目标线附近或以上，暂未检测到突出的薄弱环节，整体较为均衡。</p>
+          <div class="sp-empty-card__action">可继续关注 M4 中的“需关注”项目，作为下一步巩固方向。</div>
+        </div>
+        {% else %}
+        <div class="sp-weak-list">
+          {% for item in weak_domains %}
+          <div class="sp-weak-item">
+            <div class="sp-weak-item__indicator {{ 'sp-weak-item__indicator--danger' if item.status == '需加强' else '' }}"></div>
+            <div class="sp-weak-item__body">
+              <div class="sp-weak-item__name">{{ item.name_cn | default('领域' ~ loop.index) }}</div>
+              <div class="sp-weak-item__detail">
+                <div class="sp-weak-item__meta">
+                  <span class="sp-weak-item__acc">{{ item.accuracy_text | default('--') }}</span>
+                  <span class="sp-weak-item__delta">{{ item.delta_text | default('') }}</span>
+                </div>
+                <span class="sp-weak-item__status-text {{ 'sp-weak-item__status-text--danger' if item.status == '需加强' else 'sp-weak-item__status-text--attention' }}">{{ item.status }}</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="sp-analysis-card sp-analysis-card--interpretation">
+        <div class="sp-section-title">读数重点</div>
+        <div class="sp-analysis-points">
+          <div class="sp-analysis-point">
+            <div class="sp-analysis-point__label">1. 当前水平</div>
+            <p class="sp-analysis-point__text">{{ analysis_level_text }}</p>
+          </div>
+          <div class="sp-analysis-point">
+            <div class="sp-analysis-point__label">2. 当前状态</div>
+            <p class="sp-analysis-point__text">{{ analysis_state_text }}</p>
+          </div>
+          <div class="sp-analysis-point">
+            <div class="sp-analysis-point__label">3. 目标差距</div>
+            <p class="sp-analysis-point__text">{{ analysis_gap_text }}</p>
+          </div>
+          <div class="sp-analysis-point">
+            <div class="sp-analysis-point__label">4. 突破口</div>
+            <p class="sp-analysis-point__text">{{ analysis_breakthrough_text }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sp-section-divider"></div>
+
+  <div class="sp-section sp-section--intervention">
+    <div class="sp-group-head">
+      <h2 class="sp-group-title">三、本阶段介入重点</h2>
+    </div>
+
+    <div class="sp-intervention-card">
+      {% if not has_real_data %}
+      <div class="sp-intervention-step">
+        <div class="sp-intervention-step__num">1</div>
+        <div class="sp-intervention-step__body">
+          <div class="sp-intervention-step__title">补足数据基础</div>
+          <p class="sp-intervention-step__text">先完成至少一套完整测评，确保有效答题记录达到一定数量后，再查看综合诊断与介入建议。</p>
+        </div>
+      </div>
+      {% else %}
+      <div class="sp-intervention-step">
+        <div class="sp-intervention-step__num">1</div>
+        <div class="sp-intervention-step__body">
+          <div class="sp-intervention-step__title">主攻 {{ lead_focus }}</div>
+          <p class="sp-intervention-step__text">优先从 {{ lead_focus }} 入手建立稳定得分{% if weak_domains | length > 1 %}，再逐步扩展到 {{ secondary_focus }}{% endif %}。</p>
+        </div>
+      </div>
+      {% if weak_domains | length > 1 %}
+      <div class="sp-intervention-step">
+        <div class="sp-intervention-step__num">2</div>
+        <div class="sp-intervention-step__body">
+          <div class="sp-intervention-step__title">跟进 {{ secondary_focus }}</div>
+          <p class="sp-intervention-step__text">在主攻方向取得进展后，及时跟进 {{ secondary_focus }} 等次重点领域，避免短板反复。</p>
+        </div>
+      </div>
+      {% endif %}
+      <div class="sp-intervention-step">
+        <div class="sp-intervention-step__num">{{ 3 if weak_domains | length > 1 else 2 }}</div>
+        <div class="sp-intervention-step__body">
+          <div class="sp-intervention-step__title">巩固优势领域</div>
+          <p class="sp-intervention-step__text">在补短板的同时，保持优势领域的稳定性，避免顾此失彼。{% if tier == 'excellent' %}当前整体已达标，重点在精细化控制与偶发失误的消除。{% endif %}</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  </div><!-- /.module-content-card -->
+
+</div>

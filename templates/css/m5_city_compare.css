@@ -1,0 +1,1106 @@
+/**
+ * ============================================================
+ * 模块5：城市考情对照 (City Exam Comparison)
+ * 文件：5_city_compare.css
+ * 版本：v1.1
+ * 更新：2025-01-15
+ * 
+ * 修订记录：
+ * - v1.1: 增加表格固定布局、中文长文本换行控制、tags flex-wrap
+ * 
+ * 说明：
+ * - 将学生短板与城市历年真题高频考点(Top10)做交集对照
+ * - 输出交集可视化、重合知识点清单、解读与建议
+ * ============================================================
+ */
+
+/* ============================================================
+   SECTION 1: CSS Variables (Design Tokens)
+   ============================================================ */
+:root {
+  /* ----------------------
+     1.1 Page & Background
+     ---------------------- */
+  --cc-page-bg: var(--pm-bg-page, #f8f5ef);
+  --cc-bg-muted: var(--pm-bg-muted, #f3f0ea);
+  
+  /* ----------------------
+     1.2 Accent & Brand
+     ---------------------- */
+  --cc-accent-teal: var(--pm-teal-light, #2a8f8f);          /* 主标题下划线 */
+  --cc-accent-line: var(--pm-border-light, #e4e8ec);          /* 页眉分割线 */
+  --cc-accent-primary: var(--pm-teal, #1f6f78);       /* 强调色（来自用色说明） */
+  
+  /* ----------------------
+     1.3 Card & Border
+     ---------------------- */
+  --cc-card-border: var(--pm-border-card, #d8e2e8);          /* 卡片/表格边框 */
+  --cc-card-bg: var(--pm-bg-card, #ffffff);
+  
+  /* ----------------------
+     1.4 Functional Colors
+     ---------------------- */
+  --cc-info-blue: var(--pm-navy, #12344d);            /* 关键数字、进度点、蓝色徽章 */
+  --cc-danger-red: var(--pm-status-danger, #c44040);           /* 红色等级块/强负值 */
+  --cc-danger-red-strong: var(--pm-status-danger, #c44040);    /* 红色标记块 */
+  --cc-warning-orange: var(--pm-status-attention, #d4943a);       /* 橙色等级块/中等提示 */
+  --cc-dot-gray: var(--pm-text-muted, #8896a7);             /* 未填充点 */
+  --cc-success-green: var(--pm-status-success, #2d8a6e);        /* 正值（可选） */
+  
+  /* ----------------------
+     1.5 Text Colors
+     ---------------------- */
+  --cc-text-primary: var(--pm-text-primary, #1a2332);
+  --cc-text-secondary: var(--pm-text-secondary, #4a5568);
+  --cc-text-muted: var(--pm-text-muted, #8896a7);
+  --cc-text-light: var(--pm-text-light, #a0aec0);
+  
+  /* ----------------------
+     1.6 Table Colors
+     ---------------------- */
+  --cc-table-head: var(--pm-bg-muted, #f3f0ea);
+  --cc-table-row-alt: var(--pm-bg-card-alt, #faf8f4);
+  --cc-table-border: var(--pm-border-light, #e4e8ec);
+  
+  /* ----------------------
+     1.7 Typography
+     ---------------------- */
+  --cc-font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --cc-font-size-h1: 28px;
+  --cc-font-size-h2: 22px;
+  --cc-font-size-h3: 20px;
+  --cc-font-size-body: 14px;
+  --cc-font-size-small: 12px;
+  --cc-font-size-large-num: 48px;     /* 大数字 */
+  
+  --cc-font-weight-bold: 700;
+  --cc-font-weight-medium: 600;
+  --cc-font-weight-regular: 400;
+  
+  --cc-line-height-tight: 1.35;
+  --cc-line-height-normal: 1.6;
+  --cc-line-height-relaxed: 1.75;
+  
+  /* ----------------------
+     1.8 Spacing (8px grid)
+     ---------------------- */
+  --cc-spacing-2: 8px;
+  --cc-spacing-3: 12px;
+  --cc-spacing-4: 16px;
+  --cc-spacing-5: 20px;
+  --cc-spacing-6: 24px;
+  --cc-spacing-8: 32px;
+  --cc-spacing-10: 40px;
+  --cc-spacing-12: 48px;
+  
+  /* ----------------------
+     1.9 Border Radius
+     ---------------------- */
+  --cc-radius-none: 0px;
+  --cc-radius-sm: 4px;
+  --cc-radius-full: 999px;
+  
+  /* ----------------------
+     1.10 Shadows
+     ---------------------- */
+  --cc-shadow-none: none;
+}
+
+
+/* ============================================================
+   SECTION 2: Page Layout & Print Settings
+   ============================================================ */
+/* @page 已统一在 base.css 管理 (T14 running header) */
+
+.m5-city-compare {
+  width: 210mm;
+  margin: 0 auto;
+  padding: 24px 48px 32px;
+  box-sizing: border-box;
+  font-family: var(--cc-font-family);
+  font-size: var(--cc-font-size-body);
+  line-height: var(--cc-line-height-normal);
+  color: var(--cc-text-primary);
+  background: var(--cc-page-bg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 脚注推至底部 */
+/* ============================================================
+   SECTION 3: Module Title Component
+   ============================================================ */
+.m5-city-compare__title {
+  display: inline-block;
+  position: relative;
+  margin: var(--cc-spacing-6) 0;
+  padding-bottom: var(--cc-spacing-3);
+  font-size: var(--cc-font-size-h1);
+  font-weight: var(--cc-font-weight-bold);
+  line-height: var(--cc-line-height-tight);
+  color: var(--cc-text-primary);
+}
+
+.m5-city-compare__title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--cc-accent-teal);
+}
+
+/* ============================================================
+   SECTION 3b: Part Sections & Intro
+   ============================================================ */
+.m5-city-compare__part {
+  margin-bottom: var(--cc-spacing-8);
+}
+
+.m5-city-compare__part--header {
+  margin-bottom: var(--cc-spacing-6);
+}
+
+.m5-city-compare__part--advice {
+  margin-bottom: var(--cc-spacing-6);
+}
+
+.m5-city-compare__intro {
+  margin: var(--cc-spacing-2) 0 0;
+  font-size: var(--cc-font-size-body);
+  line-height: var(--cc-line-height-relaxed);
+  color: var(--cc-text-secondary);
+}
+
+
+/* ============================================================
+   SECTION 5: (Banner removed — replaced by __intro)
+   ============================================================ */
+
+
+/* ============================================================
+   SECTION 6: Cards Row (双卡片布局)
+   ============================================================ */
+.m5-city-compare__cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--cc-spacing-4);
+  margin-bottom: var(--cc-spacing-8);
+}
+
+/* ----------------------
+   6.1 Card Base
+   ---------------------- */
+.m5-city-compare__card {
+  min-width: 0;
+  border: 2px solid var(--cc-card-border);
+  background: var(--cc-card-bg);
+  border-radius: 8px;
+  padding: var(--cc-spacing-5) var(--cc-spacing-6);
+  overflow: hidden;
+}
+
+/* ----------------------
+   6.2 Left Card: Analysis
+   ---------------------- */
+.m5-city-compare__card-title {
+  font-size: var(--cc-font-size-h3);
+  font-weight: var(--cc-font-weight-bold);
+  color: var(--cc-text-primary);
+  margin-bottom: var(--cc-spacing-4);
+}
+
+.m5-city-compare__card-highlight {
+  font-size: 15px;
+  font-weight: var(--font-weight-medium);
+  color: var(--cc-text-primary);
+  line-height: var(--cc-line-height-relaxed);
+}
+
+.m5-city-compare__card-note {
+  margin-top: var(--cc-spacing-4);
+  font-size: var(--cc-font-size-body);
+  color: var(--cc-text-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cc-spacing-2);
+}
+
+/* .m5-city-compare__card-note::before {
+  content: "√";
+  color: var(--cc-text-muted);
+  flex-shrink: 0;
+} */
+
+/* ----------------------
+    6.3 Right Card: Overlap Visual
+    ---------------------- */
+.m5-city-compare__card--overlap {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.m5-city-compare__overlap-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  margin-bottom: 6px;
+}
+
+.m5-city-compare__overlap-num {
+  font-size: 40px;
+  font-weight: var(--cc-font-weight-bold);
+  color: var(--cc-info-blue);
+  line-height: 1;
+}
+
+.m5-city-compare__overlap-subtitle {
+  font-size: 13px;
+  font-weight: var(--cc-font-weight-medium);
+  color: var(--cc-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--cc-spacing-4);
+}
+
+/* ----------------------
+    6.4 Progress Visualization
+    ---------------------- */
+.m5-city-compare__progress {
+  margin-bottom: var(--cc-spacing-4);
+}
+
+.m5-city-compare__progress-track {
+  width: 100%;
+  height: 10px;
+  background: var(--cc-bg-muted);
+  border-radius: var(--cc-radius-full);
+  overflow: hidden;
+}
+
+.m5-city-compare__progress-fill {
+  height: 100%;
+  max-width: 100%;
+  background: linear-gradient(90deg, var(--cc-accent-primary), var(--cc-info-blue));
+  border-radius: var(--cc-radius-full);
+}
+
+.m5-city-compare__overlap-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: var(--cc-spacing-4);
+}
+
+.m5-city-compare__overlap-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 10px;
+  background: var(--cc-bg-muted);
+  border-radius: 8px;
+}
+
+.m5-city-compare__overlap-stat-label {
+  font-size: 12px;
+  color: var(--cc-text-secondary);
+}
+
+.m5-city-compare__overlap-stat-value {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: var(--cc-font-weight-bold);
+  color: var(--cc-text-primary);
+}
+
+.m5-city-compare__overlap-ratio {
+  font-size: 12px;
+  color: var(--cc-text-muted);
+  line-height: 1.65;
+}
+
+
+/* ============================================================
+   SECTION 7: Table Card Component (容器化)
+   ============================================================ */
+.m5-city-compare__table-section {
+  border: 2px solid var(--cc-card-border);
+  background: var(--cc-card-bg);
+  border-radius: 8px;
+  padding: var(--cc-spacing-5) var(--cc-spacing-6);
+  margin-bottom: var(--cc-spacing-8);
+}
+
+.m5-city-compare__table-title {
+  font-size: var(--cc-font-size-h3);
+  font-weight: var(--cc-font-weight-bold);
+  color: var(--cc-text-primary);
+  margin-bottom: var(--cc-spacing-4);
+}
+
+.m5-city-compare__table-note {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #999;
+}
+
+/* ----------------------
+   7.1 Table Base
+   [v1.1] 增加 table-layout: fixed 防止列宽被内容撑开
+   ---------------------- */
+.m5-city-compare__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--cc-font-size-body);
+  table-layout: fixed;  /* [v1.1] 固定表格布局 */
+}
+
+.m5-city-compare__table thead {
+  background: var(--cc-table-head);
+}
+
+.m5-city-compare__table th {
+  padding: var(--cc-spacing-3) var(--cc-spacing-4);
+  font-weight: var(--cc-font-weight-bold);
+  text-align: left;
+  border-bottom: 1px solid var(--cc-table-border);
+  color: var(--cc-text-primary);
+}
+
+.m5-city-compare__table th--center {
+  text-align: center;
+}
+
+.m5-city-compare__table th--right {
+  text-align: right;
+}
+
+.m5-city-compare__table td {
+  padding: var(--cc-spacing-3) var(--cc-spacing-4);
+  border-bottom: 1px solid var(--cc-table-border);
+  color: var(--cc-text-secondary);
+  vertical-align: middle;
+  /* [v1.1] 中文长文本换行控制 */
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+.m5-city-compare__table td--center {
+  text-align: center;
+}
+
+.m5-city-compare__table td--right {
+  text-align: right;
+}
+
+/* [v1.1] 知识点名称列特殊处理 */
+.m5-city-compare__table .m5-city-compare__kp-name {
+  word-break: break-all;
+  line-height: var(--cc-line-height-normal);
+}
+
+/* 斑马纹 */
+.m5-city-compare__table tbody tr:nth-child(even) {
+  background: var(--cc-table-row-alt);
+}
+
+/* ----------------------
+   7.2 Rank Badge
+   ---------------------- */
+.m5-city-compare__rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 28px;
+  padding: 0 var(--cc-spacing-2);
+  font-size: var(--cc-font-size-body);
+  font-weight: var(--cc-font-weight-bold);
+  border-radius: var(--cc-radius-sm);
+}
+
+/* 排名1-3：红色 → 浅底深字 */
+.m5-city-compare__rank-badge--red {
+  background: var(--color-badge-danger-bg);
+  color: var(--color-badge-danger-text);
+}
+
+/* 排名4-7：橙色 → 浅底深字 */
+.m5-city-compare__rank-badge--orange {
+  background: var(--color-badge-attention-bg);
+  color: var(--color-badge-attention-text);
+}
+
+/* 排名8+：蓝色 → 浅底深字 */
+.m5-city-compare__rank-badge--blue {
+  background: var(--color-badge-achieved-bg);
+  color: var(--color-badge-achieved-text);
+}
+
+/* ----------------------
+   7.3 Score Weight Badge
+   ---------------------- */
+.m5-city-compare__weight-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: var(--cc-font-weight-bold);
+  border-radius: var(--cc-radius-sm);
+  white-space: nowrap;
+}
+
+.m5-city-compare__weight-badge--very-high {
+  background: var(--color-badge-danger-bg);
+  color: var(--color-badge-danger-text);
+}
+
+.m5-city-compare__weight-badge--high {
+  background: var(--color-badge-attention-bg);
+  color: var(--color-badge-attention-text);
+}
+
+.m5-city-compare__weight-badge--mid-high {
+  background: var(--color-badge-achieved-bg);
+  color: var(--color-badge-achieved-text);
+}
+
+.m5-city-compare__weight-badge--mid {
+  background: var(--pm-status-nodata-bg, #f3f4f6);
+  color: var(--pm-text-muted);
+}
+
+/* ----------------------
+   7.4 Value Status Classes
+   ---------------------- */
+/* 强负值（< -15%）：红色 */
+.m5-city-compare__val--danger {
+  color: var(--cc-danger-red);
+  font-weight: var(--cc-font-weight-bold);
+}
+
+/* 轻负值（-15% ~ 0）：橙色 */
+.m5-city-compare__val--warning {
+  color: var(--cc-warning-orange);
+  font-weight: var(--cc-font-weight-bold);
+}
+
+/* 正常值 */
+.m5-city-compare__val--normal {
+  color: var(--cc-text-secondary);
+}
+
+/* 正值/达标：绿色（可选） */
+.m5-city-compare__val--success {
+  color: var(--cc-success-green);
+  font-weight: var(--cc-font-weight-bold);
+}
+
+/* 无数据 */
+.m5-city-compare__val--nodata {
+  color: var(--cc-text-light);
+}
+
+/* ----------------------
+   7.4 Tags Container
+   [v1.1] 增加 flex-wrap 防止 tags 横向溢出
+   ---------------------- */
+.m5-city-compare__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.m5-city-compare__tag {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: var(--cc-font-size-small);
+  background: var(--cc-bg-muted);
+  border-radius: var(--cc-radius-sm);
+  color: var(--cc-text-muted);
+  white-space: nowrap;
+}
+
+.m5-city-compare__tag--highlight {
+  background: rgba(31, 111, 120, 0.1);
+  color: var(--cc-info-blue);
+}
+
+.m5-city-compare__tag--warning {
+  background: rgba(212, 148, 58, 0.1);
+  color: var(--cc-warning-orange);
+}
+
+
+/* ============================================================
+   SECTION 8: Advice Card Component
+   ============================================================ */
+.m5-city-compare__advice-card {
+  border: 2px solid var(--cc-card-border);
+  background: var(--cc-card-bg);
+  border-radius: 8px;
+  padding: var(--cc-spacing-5) var(--cc-spacing-6);
+  margin-bottom: var(--cc-spacing-6);
+}
+
+.m5-city-compare__advice-title {
+  font-size: var(--cc-font-size-h3);
+  font-weight: var(--cc-font-weight-bold);
+  color: var(--cc-text-primary);
+  margin-bottom: var(--cc-spacing-3);
+}
+
+.m5-city-compare__advice-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.m5-city-compare__advice-item {
+  position: relative;
+  padding-left: 18px;
+  margin: var(--cc-spacing-3) 0;
+  line-height: var(--cc-line-height-relaxed);
+  color: var(--cc-text-secondary);
+}
+
+.m5-city-compare__advice-item::before {
+  content: "*";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--cc-text-secondary);
+  font-weight: var(--cc-font-weight-bold);
+}
+
+/* 高亮知识点名称 */
+.m5-city-compare__advice-highlight {
+  color: var(--cc-danger-red);
+  font-weight: var(--cc-font-weight-bold);
+}
+
+/* 高亮数字 */
+.m5-city-compare__advice-num {
+  color: var(--cc-info-blue);
+  font-weight: var(--cc-font-weight-bold);
+}
+
+
+/* ============================================================
+   SECTION 9: Footnote Component
+   ============================================================ */
+.m5-city-compare__footnote {
+  background: var(--cc-bg-muted);
+  padding: var(--cc-spacing-6) var(--cc-spacing-12);
+  margin-top: var(--cc-spacing-8);
+}
+
+.m5-city-compare__footnote-title {
+  font-size: var(--cc-font-size-body);
+  font-weight: var(--cc-font-weight-bold);
+  color: var(--cc-text-primary);
+  margin-bottom: var(--cc-spacing-2);
+}
+
+.m5-city-compare__footnote-text {
+  font-size: var(--cc-font-size-small);
+  color: var(--cc-text-muted);
+  line-height: var(--cc-line-height-normal);
+}
+
+.m5-city-compare__footnote-text::before {
+  content: "*";
+  margin-right: 6px;
+}
+
+/* [v1.1] 多行脚注支持 */
+.m5-city-compare__footnote-line {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--cc-font-size-small);
+  color: var(--cc-text-muted);
+}
+
+.m5-city-compare__footnote-line::before {
+  content: "*";
+  margin-right: 6px;
+}
+
+
+/* ============================================================
+   SECTION 10: Empty / NoData State
+   ============================================================ */
+.m5-city-compare__empty {
+  text-align: center;
+  padding: var(--cc-spacing-10) var(--cc-spacing-6);
+  color: var(--cc-text-muted);
+}
+
+.m5-city-compare__empty-icon {
+  font-size: 48px;
+  margin-bottom: var(--cc-spacing-4);
+  opacity: 0.5;
+}
+
+.m5-city-compare__empty-text {
+  font-size: var(--cc-font-size-body);
+}
+
+.m5-city-compare__empty-hint {
+  font-size: var(--cc-font-size-small);
+  color: var(--cc-text-light);
+  margin-top: var(--cc-spacing-2);
+}
+
+
+/* ============================================================
+   SECTION 11: Print Optimizations
+   ============================================================ */
+@media print {
+  .m5-city-compare {
+    width: auto;
+    display: block;
+    flex: none;
+    padding: 0 15mm 0 18mm;  /* [T15] 统一 L/R 边距 (原值 0 15mm) */
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .m5-city-compare__title {
+    font-size: 24px;
+    margin: 12px 0 10px;
+    padding-bottom: 8px;
+  }
+
+  .m5-city-compare__banner {
+    padding: 10px 14px;
+    margin-bottom: 10px;
+  }
+
+  .m5-city-compare__banner-title {
+    font-size: 15px;
+  }
+
+  .m5-city-compare__banner-desc {
+    margin-top: 4px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .m5-city-compare__cards {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .m5-city-compare__card {
+    padding: 10px 12px;
+    border-width: 1px;
+    border-radius: 6px;
+  }
+
+  .m5-city-compare__card-title {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .m5-city-compare__card-highlight {
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .m5-city-compare__card-note {
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .m5-city-compare__overlap-main {
+    margin-bottom: 2px;
+  }
+
+  .m5-city-compare__overlap-num {
+    font-size: 30px;
+  }
+
+  .m5-city-compare__overlap-subtitle {
+    font-size: 11px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .m5-city-compare__progress {
+    margin-bottom: 8px;
+  }
+
+  .m5-city-compare__progress-track {
+    height: 7px;
+  }
+
+  .m5-city-compare__overlap-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .m5-city-compare__overlap-stat {
+    display: block;
+    padding: 6px 7px;
+  }
+
+  .m5-city-compare__overlap-stat-label,
+  .m5-city-compare__overlap-ratio {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .m5-city-compare__overlap-stat-value {
+    display: block;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  
+  .m5-city-compare__table-section,
+  .m5-city-compare__advice-card {
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
+  .m5-city-compare__table-section {
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border-width: 1px;
+    border-radius: 6px;
+  }
+
+  .m5-city-compare__table-title {
+    font-size: 15px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .m5-city-compare__table {
+    font-size: 11px;
+  }
+
+  .m5-city-compare__table th,
+  .m5-city-compare__table td {
+    padding: 6px 8px;
+  }
+
+  .m5-city-compare__rank-badge {
+    min-width: 24px;
+    height: 22px;
+    font-size: 11px;
+  }
+
+  .m5-city-compare__tags {
+    gap: 3px;
+    margin-top: 2px;
+  }
+
+  .m5-city-compare__tag {
+    padding: 1px 4px;
+    font-size: 10px;
+  }
+
+  .m5-city-compare__weight-badge {
+    padding: 1px 5px;
+    font-size: 10px;
+  }
+
+  .m5-city-compare__table-note {
+    margin-top: 5px !important;
+    font-size: 10px !important;
+  }
+
+  .m5-city-compare__advice-card {
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border-width: 1px;
+    border-radius: 6px;
+  }
+
+  .m5-city-compare__advice-title {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .m5-city-compare__advice-item {
+    padding-left: 12px;
+    margin: 4px 0;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .m5-city-compare__footnote {
+    padding: 10px 14px;
+    margin-top: 0;
+  }
+
+  .m5-city-compare__footnote-title {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  .m5-city-compare__footnote-text,
+  .m5-city-compare__footnote-line {
+    margin-top: 2px;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+  
+  .m5-city-compare__table tbody tr {
+    page-break-inside: avoid;
+  }
+
+  .m5-city-compare--long {
+    font-size: 9px;
+    line-height: 1.16;
+  }
+
+  .m5-city-compare--long .m5-city-compare__title {
+    font-size: 20px;
+    margin: 7px 0 6px;
+    padding-bottom: 5px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__banner,
+  .m5-city-compare--long .m5-city-compare__table-section,
+  .m5-city-compare--long .m5-city-compare__advice-card,
+  .m5-city-compare--long .m5-city-compare__footnote {
+    padding: 4px 6px;
+    margin-bottom: 4px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__cards {
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__card {
+    padding: 4px 6px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__card-title,
+  .m5-city-compare--long .m5-city-compare__table-title,
+  .m5-city-compare--long .m5-city-compare__advice-title {
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__banner-title,
+  .m5-city-compare--long .m5-city-compare__card-highlight {
+    font-size: 12px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__banner-desc,
+  .m5-city-compare--long .m5-city-compare__card-note,
+  .m5-city-compare--long .m5-city-compare__overlap-subtitle,
+  .m5-city-compare--long .m5-city-compare__overlap-ratio {
+    font-size: 9px;
+    line-height: 1.22;
+  }
+
+  .m5-city-compare--long .m5-city-compare__overlap-num {
+    font-size: 18px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__table {
+    font-size: 8px;
+    line-height: 1.12;
+  }
+
+  .m5-city-compare--long .m5-city-compare__table th,
+  .m5-city-compare--long .m5-city-compare__table td {
+    padding: 2px 4px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__rank-badge {
+    min-width: 16px;
+    height: 14px;
+    font-size: 8px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__tag,
+  .m5-city-compare--long .m5-city-compare__weight-badge {
+    padding: 1px 3px;
+    font-size: 8px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__advice-item,
+  .m5-city-compare--long .m5-city-compare__table-note,
+  .m5-city-compare--long .m5-city-compare__footnote-text,
+  .m5-city-compare--long .m5-city-compare__footnote-line {
+    font-size: 8px !important;
+    line-height: 1.18;
+  }
+
+
+
+  .m5-city-compare--long .m5-city-compare__title {
+    font-size: 18px;
+    margin: 5px 0 4px;
+    padding-bottom: 4px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__banner,
+  .m5-city-compare--long .m5-city-compare__table-section,
+  .m5-city-compare--long .m5-city-compare__advice-card,
+  .m5-city-compare--long .m5-city-compare__footnote {
+    padding: 3px 5px;
+    margin-bottom: 3px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__cards {
+    gap: 3px;
+    margin-bottom: 3px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__card {
+    padding: 3px 5px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__card-title,
+  .m5-city-compare--long .m5-city-compare__table-title,
+  .m5-city-compare--long .m5-city-compare__advice-title {
+    margin-bottom: 2px;
+    font-size: 11px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__banner-title,
+  .m5-city-compare--long .m5-city-compare__card-highlight {
+    font-size: 11px;
+    line-height: 1.15;
+  }
+
+  .m5-city-compare--long .m5-city-compare__banner-desc,
+  .m5-city-compare--long .m5-city-compare__card-note,
+  .m5-city-compare--long .m5-city-compare__overlap-subtitle,
+  .m5-city-compare--long .m5-city-compare__overlap-ratio {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    font-size: 8px;
+    line-height: 1.12;
+  }
+
+  .m5-city-compare--long .m5-city-compare__overlap-main {
+    margin-bottom: 1px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__overlap-num {
+    font-size: 16px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__progress {
+    margin-bottom: 3px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__progress-track {
+    height: 4px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__overlap-stats {
+    gap: 3px;
+    margin-bottom: 3px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__overlap-stat {
+    padding: 3px 4px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__overlap-stat-label {
+    font-size: 7px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__overlap-stat-value {
+    font-size: 8px;
+    margin-top: 1px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__table {
+    font-size: 7.4px;
+    line-height: 1.05;
+  }
+
+  .m5-city-compare--long .m5-city-compare__table th,
+  .m5-city-compare--long .m5-city-compare__table td {
+    padding: 1px 3px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__rank-badge {
+    min-width: 14px;
+    height: 12px;
+    font-size: 7px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__tags {
+    gap: 2px;
+    margin-top: 1px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__tag,
+  .m5-city-compare--long .m5-city-compare__weight-badge {
+    padding: 0 2px;
+    font-size: 7px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__table-note,
+  .m5-city-compare--long .m5-city-compare__advice-item,
+  .m5-city-compare--long .m5-city-compare__footnote-text,
+  .m5-city-compare--long .m5-city-compare__footnote-line {
+    font-size: 7.5px !important;
+    line-height: 1.1;
+  }
+
+  .m5-city-compare--long .m5-city-compare__table-note {
+    margin-top: 2px !important;
+  }
+
+  .m5-city-compare--long .m5-city-compare__advice-item {
+    padding-left: 8px;
+    margin: 1px 0;
+  }
+
+  .m5-city-compare--long .m5-city-compare__footnote-title {
+    margin-bottom: 2px;
+    font-size: 10px;
+  }
+
+
+}
+
+
+/* ============================================================
+   SECTION 12: Utility Classes
+   ============================================================ */
+/* 隐藏元素 */
+.m5-city-compare--hidden {
+  display: none !important;
+}
+
+/* 文本截断 */
+.m5-city-compare--truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 数值列禁止折行 */
+.m5-city-compare__table td:nth-child(n+3) {
+  white-space: nowrap;
+}
+
+/* 数字等宽 */
+.m5-city-compare--mono {
+  font-variant-numeric: tabular-nums;
+}
+
+@media screen and (max-width: 800px) {
+  .m5-city-compare__cards {
+    grid-template-columns: 1fr;
+  }
+}

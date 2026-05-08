@@ -1,0 +1,78 @@
+{#
+================================================================================
+helpers.jinja2 — 共享 Jinja2 宏
+自动生成 by scaffold_templates.py
+================================================================================
+#}
+
+{#- 空值安全输出 -#}
+{% macro safe(value, default='--') -%}
+  {{ value if value is defined and value is not none and value != '' else default }}
+{%- endmacro %}
+
+{#- 数值安全输出 (保证返回数值用于计算) -#}
+{% macro safe_num(value, default=0) -%}
+  {{ value if value is defined and value is not none else default }}
+{%- endmacro %}
+
+{#- 百分比安全输出 -#}
+{% macro safe_pct(value, default='0%') -%}
+  {{ value if value is defined and value is not none and value != '' else default }}
+{%- endmacro %}
+
+{#- 趋势箭头 -#}
+{% macro trend_arrow(trend) -%}
+  {% if trend == 'up' %}
+    <span class="kpi-arrow kpi-arrow--up">↑</span>
+  {% elif trend == 'down' %}
+    <span class="kpi-arrow kpi-arrow--down">↓</span>
+  {% elif trend == 'stable' %}
+    <span class="kpi-arrow kpi-arrow--stable">→</span>
+  {% endif %}
+{%- endmacro %}
+
+{#- 状态类 (基于数值 vs 目标) -#}
+{% macro get_status_class(accuracy, target) -%}
+  {% if accuracy is not defined or accuracy is none %}
+    status--nodata
+  {% elif accuracy >= target %}
+    status--achieved
+  {% elif accuracy >= target - 10 %}
+    status--attention
+  {% else %}
+    status--improve
+  {% endif %}
+{%- endmacro %}
+
+{#- 优先级徽章 -#}
+{% macro priority_badge(level) -%}
+  <span class="priority-badge priority-badge--{{ level | lower }}">{{ level }}</span>
+{%- endmacro %}
+
+{#- 圆环图 SVG (pass_rate: 0-100) -#}
+{% macro donut_chart(pass_rate, size=180, stroke_width=24) %}
+  {% set radius = (size - stroke_width) / 2 %}
+  {% set circumference = 2 * 3.14159 * radius %}
+  {% set safe_rate = pass_rate if pass_rate is defined and pass_rate is not none else 0 %}
+  {% set dash_length = (safe_rate / 100) * circumference %}
+  {% set dash_gap = circumference - dash_length %}
+
+  <div class="donut-container" style="width: {{ size }}px; height: {{ size }}px;">
+    <svg class="donut-svg" viewBox="0 0 {{ size }} {{ size }}">
+      <circle class="donut-track"
+        cx="{{ size / 2 }}" cy="{{ size / 2 }}" r="{{ radius }}" />
+      <circle class="donut-progress"
+        cx="{{ size / 2 }}" cy="{{ size / 2 }}" r="{{ radius }}"
+        stroke-dasharray="{{ dash_length }} {{ dash_gap }}" />
+    </svg>
+    <div class="donut-center">{{ safe_rate | round(1) }}%</div>
+  </div>
+{% endmacro %}
+
+{#- 进度条 (value: 0-100) -#}
+{% macro progress_bar(value, max=100, css_class='') %}
+  {% set pct = [0, [value | default(0), max] | min] | max %}
+  <div class="progress-track {{ css_class }}">
+    <div class="progress-fill" style="width: {{ pct }}%;"></div>
+  </div>
+{% endmacro %}

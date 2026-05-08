@@ -1,0 +1,624 @@
+/* ==========================================================================
+   base.css — 设计令牌 + @page + 页面断裂规则
+   自动生成 by scaffold_templates.py
+   生成时间: 2026-02-26 19:42
+   ========================================================================== */
+
+/* --- 跨平台字体 (Noto Sans SC, SIL OFL 1.1) ---
+   优先使用系统安装的 Noto Sans SC (Linux: apt install fonts-noto-cjk)
+   若系统无此字体，@font-face 从本地 TTF 文件加载作为 fallback
+   ------------------------------------------------ */
+@font-face {
+  font-family: 'Noto Sans SC';
+  src: local('Noto Sans SC'),
+       url('../fonts/NotoSansSC-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- 设计令牌 (Design Tokens) --- */
+:root {
+  --cc-accent-line: var(--pm-teal-soft, #d0e8e8);          /* 页眉分割线 */;
+  --cc-accent-primary: var(--pm-teal, #1f6f78);       /* 强调色（来自用色说明） */;
+  --cc-accent-teal: var(--pm-teal-light, #2a8f8f);          /* 主标题下划线 */;
+  --cc-bg-muted: var(--pm-bg-muted, #f3f0ea);
+  --cc-card-bg: var(--pm-bg-card, #ffffff);
+  --cc-card-border: var(--pm-border-card, #d8e2e8);          /* 卡片/表格边框 */;
+  --cc-danger-red: var(--pm-status-danger, #c44040);           /* 红色等级块/强负值 */;
+  --cc-danger-red-strong: var(--pm-status-danger, #c44040);    /* 红色标记块 */;
+  --cc-dot-gray: var(--pm-text-muted, #8896a7);             /* 未填充点 */;
+  --cc-font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --cc-font-size-body: 14px;
+  --cc-font-size-h1: 28px;
+  --cc-font-size-h2: 22px;
+  --cc-font-size-h3: 20px;
+  --cc-font-size-large-num: 48px;     /* 大数字 */;
+  --cc-font-size-small: 12px;
+  --cc-font-weight-bold: 700;
+  --cc-font-weight-medium: 600;
+  --cc-font-weight-regular: 400;
+  --cc-info-blue: var(--pm-navy, #12344d);            /* 关键数字、进度点、蓝色徽章 */;
+  --cc-line-height-normal: 1.6;
+  --cc-line-height-relaxed: 1.75;
+  --cc-line-height-tight: 1.35;
+  --cc-page-bg: var(--pm-bg-page, #f8f5ef);
+  --cc-radius-full: 999px;
+  --cc-radius-none: 0px;
+  --cc-radius-sm: 4px;
+  --cc-shadow-none: none;
+  --cc-spacing-10: 40px;
+  --cc-spacing-12: 48px;
+  --cc-spacing-2: 8px;
+  --cc-spacing-3: 12px;
+  --cc-spacing-4: 16px;
+  --cc-spacing-5: 20px;
+  --cc-spacing-6: 24px;
+  --cc-spacing-8: 32px;
+  --cc-success-green: var(--pm-status-success, #2d8a6e);        /* 正值（可选） */;
+  --cc-table-border: var(--pm-border-light, #e4e8ec);
+  --cc-table-head: var(--pm-bg-muted, #f3f0ea);
+  --cc-table-row-alt: var(--pm-bg-page, #f8f5ef);
+  --cc-text-light: var(--pm-text-muted, #8896a7);
+  --cc-text-muted: var(--pm-text-muted, #8896a7);
+  --cc-text-primary: var(--pm-text-primary, #1a2332);
+  --cc-text-secondary: var(--pm-text-secondary, #4a5568);
+  --cc-warning-orange: var(--pm-status-attention, #d4943a);       /* 橙色等级块/中等提示 */;
+  --color-accent: var(--pm-teal, #1f6f78);               /* 标题下划线/关键数字/关键图例 */;
+  --color-badge-achieved-bg: var(--pm-status-achieved-bg, #e6f3f3);
+  --color-badge-achieved-text: var(--pm-teal, #1f6f78);
+  --color-badge-attention-bg: var(--pm-status-attention-bg, #fef3e2);
+  --color-badge-attention-text: var(--pm-status-attention, #d4943a);
+  --color-badge-danger-bg: var(--pm-status-danger-bg, #fde8e8);
+  --color-badge-danger-text: var(--pm-status-danger, #c44040);
+  --color-badge-improve-bg: var(--pm-status-improve-bg, #f4eaf0);
+  --color-badge-improve-text: var(--pm-status-improve, #8b4c6a);
+  --color-badge-nodata-bg: var(--pm-status-nodata-bg, #f3f4f6);
+  --color-badge-nodata-text: var(--pm-status-nodata, #9ca3af);
+  --color-badge-purple-bg: var(--pm-sand-dark, #b27a37);
+  --color-badge-success-bg: var(--pm-status-success-bg, #e8f5f0);
+  --color-badge-success-text: var(--pm-status-success, #2d8a6e);       /* 核心考点徽章底色 */;
+  --color-banner-bg: var(--pm-bg-muted, #f3f0ea);         /* 摘要条/建议条灰底 */;
+  --color-bar-orange-from: var(--pm-status-attention, #d4943a);       /* 中置信度条渐变起始 */;
+  --color-bar-orange-to: var(--pm-status-attention, #d4943a);         /* 中置信度条渐变结束 */;
+  --color-bar-track: var(--pm-bg-muted, #f3f0ea);             /* 条形图轨道底 */;
+  --color-bg: var(--pm-bg-page, #f8f5ef);                   /* 页面主背景色 */;
+  --color-bg-muted: var(--pm-bg-muted, #f3f0ea);           /* 灰底条/小结背景 */;
+  --color-bg-page: var(--pm-bg-card, #ffffff);
+  --color-blue-deep: var(--pm-teal, #1f6f78);              /* 深蓝（进度条/阶段高亮） */;
+  --color-border-blue: var(--pm-teal-soft, #d0e8e8);           /* 数据概览外框线 */;
+  --color-border-chart: var(--pm-border-card, #d8e2e8);       /* 图表框线（浅青灰） */;
+  --color-border-light: var(--pm-border-light, #e4e8ec);      /* 浅边框 */;
+  --color-border-purple: var(--pm-status-improve-bg, #f4eaf0);         /* 表格/综合盒子外框线 */;
+  --color-border-strong: var(--pm-border-card, #d8e2e8);          /* 加强边框（Card1） */;
+  --color-border-table: var(--pm-bg-muted, #f3f0ea);       /* 表格框线（浅紫灰） */;
+  --color-card: var(--pm-bg-card, #ffffff);                 /* 卡片背景色 */;
+  --color-card-bg: var(--pm-bg-card, #ffffff);           /* 卡片白底 */;
+  --color-card-blue: rgba(31, 111, 120, 0.15);
+  --color-card-cyan: rgba(31, 111, 120, 0.15);
+  --color-card-fill: var(--pm-bg-page, #f8f5ef);              /* 卡片浅底 */;
+  --color-card-orange: rgba(212, 148, 58, 0.15);
+  --color-card-purple: rgba(178, 122, 55, 0.15);
+  --color-danger: var(--pm-status-danger, #c44040);            /* 危险/需改进 */;
+  --color-divider: var(--pm-border-light, #e4e8ec);           /* 页眉横线 */;
+  --color-endpoint-border: var(--pm-border-card, #d8e2e8);        /* 进度条端点边框 */;
+  --color-fill-teal-soft: var(--pm-teal-soft, #d0e8e8);    /* 目标线填充条 */;
+  --color-icon-muted: var(--pm-border-card, #d8e2e8);            /* 概览卡片图标色 */;
+  --color-label-blue: var(--pm-teal, #1f6f78);           /* 蓝色标注 */;
+  --color-label-orange: var(--pm-status-attention, #d4943a);         /* 橙色标注 */;
+  --color-label-purple: var(--pm-sand-dark, #b27a37);         /* 紫色标注 */;
+  --color-label-red: var(--pm-status-danger, #c44040);            /* 红色标注 */;
+  --color-line: var(--pm-border-divider, #e0ddd6);              /* 目标线竖线 */;
+  --color-line-accent-cyan: var(--pm-teal, #1f6f78);       /* 模块标题下划线（青色） */;
+  --color-muted: var(--pm-status-nodata, #9ca3af);             /* 无数据/禁用 */;
+  --color-page-bg: var(--pm-bg-page, #f8f5ef);           /* 页面底色 */;
+  --color-pill-bg: var(--pm-teal-soft, #d0e8e8);           /* 指标值胶囊底色 */;
+  --color-pill-text: var(--pm-navy, #12344d);         /* 指标值文字蓝色 */;
+  --color-primary-teal: var(--pm-teal, #1f6f78);      /* 圆环主段、列表方块、强调色 */;
+  --color-primary-teal-2: var(--pm-teal-light, #2a8f8f);    /* 章节标题下划线 */;
+  --color-progress-cyan: var(--pm-teal, #1f6f78);         /* 进度条填充/标题下划线 */;
+  --color-progress-track: var(--pm-bg-muted, #f3f0ea);
+  --color-purple: var(--pm-sand-dark, #b27a37);            /* P0标题紫色 */;
+  --color-purple-arrow: var(--pm-status-success, #2d8a6e);      /* 趋势箭头上升色 */;
+  --color-purple-bar: var(--pm-teal, #1f6f78);        /* 当前水平条紫色 */;
+  --color-role-parent: var(--pm-status-attention, #d4943a);            /* 家长 - 橙色 */;
+  --color-role-parent-bg: rgba(212, 148, 58, 0.08);
+  --color-role-student: var(--pm-teal, #1f6f78);           /* 学生 - 蓝色 */;
+  --color-role-student-bg: rgba(31, 111, 120, 0.08);
+  --color-role-teacher: var(--pm-status-danger, #c44040);           /* 老师 - 红色 */;
+  --color-role-teacher-bg: rgba(196, 64, 64, 0.06);
+  --color-row-achieved-bg: var(--pm-bg-card, #ffffff);    /* 已达标行白底 */;
+  --color-row-attention-bg: var(--pm-status-attention-bg, #fef3e2);   /* 需关注行浅黄底 */;
+  --color-row-bg: var(--pm-bg-muted, #f3f0ea);            /* KPI行/小卡片底色 */;
+  --color-row-improve-bg: var(--pm-status-improve-bg, #f4eaf0);     /* 需加强行浅紫底 */;
+  --color-row-nodata-bg: var(--pm-bg-page, #f8f5ef);      /* 无数据行浅灰底 */;
+  --color-section-bar: var(--pm-bg-muted, #f3f0ea);       /* 分区标题条背景 */;
+  --color-section-blue-bg: var(--pm-status-achieved-bg, #e6f3f3);       /* 整体数据质量评估背景 */;
+  --color-section-purple-bg: var(--pm-status-improve-bg, #f4eaf0);     /* 未覆盖的核心考点背景 */;
+  --color-section-yellow-bg: var(--pm-status-attention-bg, #fef3e2);     /* 数据不足提示背景 */;
+  --color-status-achieved: var(--pm-teal, #1f6f78);
+  --color-status-attention: var(--pm-status-attention, #d4943a);
+  --color-status-improve: var(--pm-status-improve, #8b4c6a);
+  --color-status-nodata: var(--pm-status-nodata, #9ca3af);
+  --color-success: var(--pm-status-success, #2d8a6e);           /* 达标/成功 */;
+  --color-surface: var(--pm-bg-card, #ffffff);               /* 白色卡片底 */;
+  --color-surface-muted: var(--pm-bg-muted, #f3f0ea);         /* 模块浅底 */;
+  --color-table-head: var(--pm-bg-muted, #f3f0ea);            /* 表头底色 */;
+  --color-tag-bg: var(--pm-teal-soft, #d0e8e8);                /* 标签底色 */;
+  --color-target-line: var(--pm-border-light, #e4e8ec);        /* 75%达标竖线 */;
+  --color-teal-light: var(--pm-teal-soft, #d0e8e8);        /* 圆环浅段/未达标色 */;
+  --color-text-muted: var(--pm-text-muted, #8896a7);        /* 页眉小字/弱化信息 */;
+  --color-text-primary: var(--pm-text-primary, #1a2332);         /* 主要文字颜色 */;
+  --color-text-secondary: var(--pm-text-secondary, #4a5568);       /* 次要文字颜色 */;
+  --color-text-white: var(--pm-bg-card, #ffffff);        /* 白色文字 */;
+  --color-title-blue: var(--pm-teal, #1f6f78);            /* 蓝色标题文字 */;
+  --color-track-blue: var(--pm-teal-soft, #d0e8e8);        /* 进度条轨道浅蓝 */;
+  --color-track-gray: var(--pm-bg-muted, #f3f0ea);             /* 进度条轨道灰 */;
+  --color-warning: var(--pm-status-attention, #d4943a);           /* 警告/注意 */;
+  --cover-bg: var(--pm-bg-page, #f8f5ef);                   /* 封面背景（近白） */;
+  --cover-brand-blue: var(--pm-navy, #12344d);           /* 品牌深蓝（徽标底色 + 底部标语文字） */;
+  --cover-divider-center: var(--pm-teal, #1f6f78);       /* 分隔线中心色 */;
+  --cover-gap-badge-logo: 9.7mm;         /* 徽标 -> Logo组 */;
+  --cover-gap-logo-title: 19.3mm;        /* Logo组 -> 主标题 */;
+  --cover-gap-sub-divider: 21.5mm;       /* 副标题 -> 分隔线 */;
+  --cover-gap-title-sub: 10.6mm;         /* 主标题 -> 副标题 */;
+  --cover-mt-badge: 16mm;                /* 页面顶部 -> 顶部徽标 */;
+  --cover-pill-bg: var(--pm-sand-light, #f7f0e3);              /* 底部标语胶囊背景 */;
+  --cover-pill-border: var(--pm-border-light, #e4e8ec);          /* 底部标语胶囊边框 */;
+  --cover-text: var(--pm-text-primary, #1a2332);                 /* 封面主文字（纯黑） */;
+  --cw-color-accent-primary: var(--pm-teal, #1f6f78);
+  --cw-color-accent-teal: var(--pm-teal-light, #2a8f8f);
+  --cw-color-bg-header: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-bg-note: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-bg-summary: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-bg-tips: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-border-card: var(--pm-border-card, #d8e2e8);
+  --cw-color-card-blue: var(--pm-teal, #1f6f78);
+  --cw-color-card-green: var(--pm-status-success, #2d8a6e);
+  --cw-color-card-purple: var(--pm-sand-dark, #b27a37);
+  --cw-color-divider-top: var(--pm-teal-soft, #d0e8e8);
+  --cw-color-gap-mild: var(--pm-status-success, #2d8a6e);
+  --cw-color-gap-strong: var(--pm-sand-dark, #b27a37);
+  --cw-color-p0: var(--pm-sand-dark, #b27a37);
+  --cw-color-p1: var(--pm-sand, #e2c48f);
+  --cw-color-p2: var(--pm-teal, #1f6f78);
+  --cw-color-page-bg: var(--pm-bg-page, #f8f5ef);
+  --cw-color-row-p0-a: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-row-p0-b: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-row-p1-a: var(--pm-status-attention-bg, #fef3e2);
+  --cw-color-row-p1-b: var(--pm-status-attention-bg, #fef3e2);
+  --cw-color-row-p2-a: var(--pm-status-success-bg, #e8f5f0);
+  --cw-color-row-p2-b: var(--pm-status-success-bg, #e8f5f0);
+  --cw-color-tag-core: var(--pm-teal, #1f6f78);
+  --cw-color-tag-exam: var(--pm-sand-dark, #b27a37);
+  --cw-color-tag-highfreq: var(--pm-status-success, #2d8a6e);
+  --cw-color-tag-neutral: var(--pm-status-nodata, #9ca3af);  /* v1.1 新增：无标签时的中性色 */;
+  --cw-color-text-meta: var(--pm-status-nodata, #9ca3af);
+  --cw-color-text-muted: var(--pm-text-muted, #8896a7);
+  --cw-color-text-primary: var(--pm-text-primary, #1a2332);
+  --cw-color-text-secondary: var(--pm-text-secondary, #4a5568);
+  --cw-font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --cw-font-size-badge: 11px;
+  --cw-font-size-body: 14px;
+  --cw-font-size-h1: 28px;
+  --cw-font-size-h2: 18px;
+  --cw-font-size-meta: 12px;
+  --cw-font-size-small: 12px;
+  --cw-font-size-table-head: 13px;
+  --cw-font-weight-bold: 700;
+  --cw-font-weight-medium: 600;
+  --cw-font-weight-regular: 400;
+  --cw-line-height-normal: 1.6;
+  --cw-line-height-tight: 1.3;
+  --cw-radius-0: 0px;
+  --cw-radius-md: 12px;
+  --cw-radius-pill: 999px;
+  --cw-radius-sm: 8px;
+  --cw-radius-xs: 4px;
+  --cw-shadow-card: 0px 2px 8px rgba(18, 52, 77, 0.06);
+  --cw-spacing-1: 4px;
+  --cw-spacing-2: 8px;
+  --cw-spacing-3: 12px;
+  --cw-spacing-4: 16px;
+  --cw-spacing-5: 20px;
+  --cw-spacing-6: 24px;
+  --cw-spacing-8: 32px;
+  --donut-size: 180px;
+  --donut-stroke-width: 24px;
+  --font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-family-base: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-size-body: 16px;             /* 正文 */;
+  --font-size-body-lg: 18px;           /* 表格正文/图表标签 */;
+  --font-size-card-title: 24px;            /* 卡片标题 */;
+  --font-size-card-value: 56px;           /* 概览卡片核心数字 */;
+  --font-size-donut: 42px;            /* 圆环中心数字 */;
+  --font-size-h1: 28px;               /* 章节主标题 */;
+  --font-size-h2: 22px;               /* 分区标题 */;
+  --font-size-h3: 18px;               /* 卡片小标题/强调语句 */;
+  --font-size-kpi: 24px;                   /* KPI强调数字 */;
+  --font-size-kpi-value: 24px;        /* KPI数值 */;
+  --font-size-mini: 12px;                 /* 更小注释 */;
+  --font-size-page-header: 16px;           /* 页眉文字 */;
+  --font-size-section-no: 48px;            /* 建议分组序号 */;
+  --font-size-sm: 14px;               /* 辅助说明/标签 */;
+  --font-size-small: 14px;             /* 页眉小字 */;
+  --font-size-stage-title: 20px;           /* 阶段标题 */;
+  --font-size-value: 20px;             /* 数值显示 */;
+  --font-size-xs: 12px;               /* 页眉信息 */;
+  --font-weight-bold: 700;
+  --font-weight-medium: 600;
+  --font-weight-regular: 400;
+  --fs-brand-name: 3.7mm;                /* dida985 文本 */;
+  --fs-cover-badge: 4.7mm;               /* 顶部"智慧诊学" */;
+  --fs-footnote: 3.7mm;                  /* 底部标语 */;
+  --fs-meta: 3.7mm;                      /* 城市/年级/学期/测试周期/分析题量 */;
+  --fs-subtitle: 6mm;                    /* （数学） */;
+  --fs-title: 10mm;                      /* 基线定位分析报告 */;
+  --fw-bold: 700;
+  --fw-medium: 500;
+  --fw-regular: 400;
+  --fw-semibold: 600;
+  --lh-loose: 1.4;
+  --lh-normal: 1.2;
+  --lh-tight: 1.1;
+  --line-height-loose: 1.8;                /* 长说明文字 */;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.7;
+  --line-height-tight: 1.3;
+  --logo-blue: var(--pm-navy, #12344d);                  /* Logo蓝色 */;
+  --logo-green: var(--pm-status-success, #2d8a6e);                 /* Logo绿色 */;
+  --page-min-height: 297mm;
+  --page-margin-top: 12mm;
+  --page-margin-bottom: 10mm;
+  --page-margin-y: 22mm;
+  --page-print-height: calc(var(--page-min-height) - var(--page-margin-y));
+  --page-padding-x: 20mm;
+  --page-padding-y: 15mm;
+  --page-width: 210mm;
+  --radius-badge: 0.5mm;                 /* 顶部蓝色徽标矩形圆角 */;
+  --radius-footer: 1.7mm;                /* 底部标语胶囊圆角 */;
+  --radius-full: 9999px;              /* 完全圆角 */;
+  --radius-lg: 14px;                  /* 胶囊/信息块 */;
+  --radius-md: 10px;                  /* 卡片容器 */;
+  --radius-none: 0;
+  --radius-pill: 999px;                /* 进度条（强制圆角） */;
+  --radius-sm: 6px;                   /* 进度条/小圆角 */;
+  --radius-xl: 18px;                  /* KPI卡片 */;
+  --radius-xs: 4px;
+  --shadow-card: 0 2px 8px rgba(18, 52, 77, 0.06);
+  --shadow-none: none;
+  --space-2xl: 20mm;
+  --space-lg: 6.8mm;
+  --space-md: 3.4mm;
+  --space-sm: 2mm;
+  --space-xl: 10mm;
+  --space-xs: 1mm;
+  --space-xxs: 0.5mm;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-2xl: 40px;
+  --spacing-2xs: 4px;
+  --spacing-32: 32px;
+  --spacing-3xl: 56px;
+  --spacing-4: 4px;
+  --spacing-40: 40px;
+  --spacing-4xl: 72px;
+  --spacing-8: 8px;
+  --spacing-lg: 24px;
+  --spacing-md: 16px;
+  --spacing-sm: 12px;
+  --spacing-xl: 32px;
+  --spacing-xs: 8px;
+  --spacing-xxl: 40px;
+  --spacing-xxs: 4px;
+  --status-achieved: var(--pm-status-success, #2d8a6e);            /* 达标/良好 - 绿色 */;
+  --status-attention: var(--pm-status-attention, #d4943a);           /* 需关注 - 橙色 */;
+  --status-improve: var(--pm-status-danger, #c44040);             /* 待提升 - 红色 */;
+  --status-nodata: var(--pm-status-nodata, #9ca3af);              /* 无数据 - 灰色 */;
+
+  /* ==========================================================================
+     Premium Design Tokens (家长惊艳版) --pm-* prefix
+     基于 月度学情报告_家长惊艳版.html 视觉风格
+     Navy/Teal/Sand 配色 + 大圆角 + 柔和阴影 + 暖底色
+     ========================================================================== */
+
+  /* --- Premium Color Palette --- */
+  --pm-navy-dark:        #0a2234;
+  --pm-navy:             #12344d;
+  --pm-navy-mid:         #1a3a52;
+  --pm-navy-light:       #204a67;
+  --pm-teal:             #1f6f78;
+  --pm-teal-light:       #2a8f8f;
+  --pm-teal-soft:        #d0e8e8;
+  --pm-sand:             #e2c48f;
+  --pm-sand-dark:        #b27a37;
+  --pm-sand-light:       #f7f0e3;
+  --pm-sand-pale:        #faf6ee;
+
+  /* --- Premium Surface --- */
+  --pm-bg-page:          #f8f5ef;
+  --pm-bg-page-end:      #ffffff;
+  --pm-bg-card:          #ffffff;
+  --pm-bg-card-alt:      #faf8f4;
+  --pm-bg-muted:         #f3f0ea;
+  --pm-bg-section:       #f0ede6;
+
+  /* --- Premium Borders --- */
+  --pm-border-card:      #d8e2e8;
+  --pm-border-light:     #e4e8ec;
+  --pm-border-divider:   #e0ddd6;
+  --pm-border-table:     #ddd9d2;
+
+  /* --- Premium Text --- */
+  --pm-text-primary:     #1a2332;
+  --pm-text-secondary:   #4a5568;
+  --pm-text-muted:       #8896a7;
+  --pm-text-light:       #a0aec0;
+  --pm-text-white:       #ffffff;
+  --pm-text-accent:      #1f6f78;
+  --pm-text-gold:        #b27a37;
+
+  /* --- Premium Status --- */
+  --pm-status-achieved:     #1f6f78;
+  --pm-status-achieved-bg:  #e6f3f3;
+  --pm-status-attention:    #d4943a;
+  --pm-status-attention-bg: #fef3e2;
+  --pm-status-improve:      #8b4c6a;
+  --pm-status-improve-bg:   #f4eaf0;
+  --pm-status-danger:       #c44040;
+  --pm-status-danger-bg:    #fde8e8;
+  --pm-status-nodata:       #9ca3af;
+  --pm-status-nodata-bg:    #f3f4f6;
+  --pm-status-success:      #2d8a6e;
+  --pm-status-success-bg:   #e8f5f0;
+
+  /* --- Premium Gradients --- */
+  --pm-gradient-hero:        linear-gradient(135deg, #0a2234 0%, #204a67 100%);
+  --pm-gradient-accent-bar:  linear-gradient(90deg, #e2c48f 0%, #1f6f78 100%);
+  --pm-gradient-page:        linear-gradient(180deg, #f8f5ef 0%, #ffffff 100%);
+  --pm-gradient-progress:    linear-gradient(90deg, #e2c48f, #b27a37);
+  --pm-gradient-cta:         linear-gradient(135deg, #12344d 0%, #1a3a52 100%);
+
+  /* --- Premium Typography --- */
+  --pm-font-size-h1:      40px;
+  --pm-font-size-h2:      26px;
+  --pm-font-size-h3:      18px;
+  --pm-font-size-body:    16px;
+  --pm-font-size-sm:      14px;
+  --pm-font-size-xs:      12px;
+  --pm-font-size-display: 56px;
+  --pm-font-size-kpi:     32px;
+  --pm-line-height-body:  1.78;
+  --pm-line-height-tight: 1.35;
+  --pm-line-height-normal: 1.6;
+
+  /* --- Premium Radius --- */
+  --pm-radius-card:       24px;
+  --pm-radius-card-lg:    28px;
+  --pm-radius-card-sm:    16px;
+  --pm-radius-pill:       999px;
+  --pm-radius-badge:      12px;
+  --pm-radius-table:      12px;
+
+  /* --- Premium Shadows --- */
+  --pm-shadow-card:       0 4px 20px rgba(18, 52, 77, 0.08);
+  --pm-shadow-card-hover: 0 8px 30px rgba(18, 52, 77, 0.12);
+  --pm-shadow-bar:        0 2px 8px rgba(18, 52, 77, 0.10);
+  --pm-shadow-float:      0 12px 40px rgba(18, 52, 77, 0.15);
+}
+
+/* --- 页面设置 --- */
+/* CSS margin 与 Playwright margin 对齐, 确保内容不进入 header/footer 区域 */
+@page {
+  size: A4 portrait;
+  margin-top: 12mm;
+  margin-bottom: 10mm;
+  margin-left: 0;
+  margin-right: 0;
+  background: var(--pm-bg-page);  /* 暖色底纸 */
+}
+
+/* 页眉页脚已迁移至 Playwright headerTemplate/footerTemplate (T14 Phase 6) */
+
+/* --- 全局排版 --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--pm-bg-page);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* --- 模块页面容器 + 分页控制 --- */
+/* report_master.jinja2 使用 .module-page 包裹每个模块 */
+.module-page {
+ break-before: page;
+ page-break-before: always;
+ position: relative;
+ background: var(--pm-bg-page);
+ height: auto;
+ display: flex;
+ flex-direction: column;
+}
+
+@media screen {
+  body {
+    padding: 16px 0 24px;
+  }
+
+  .module-page {
+    width: var(--page-width);
+    max-width: 100%;
+    min-height: var(--page-print-height);
+    margin: 0 auto 18px;
+    box-shadow: 0 2px 12px rgba(18, 52, 77, 0.06);
+  }
+
+  .module-page.comic-module {
+    min-height: var(--page-print-height);
+    height: var(--page-print-height);
+  }
+}
+
+/* Premium: 每页顶部 sand→teal 渐变条 */
+.module-page::before {
+  content: "";
+  display: block;
+  height: 5px;
+  background: var(--pm-gradient-accent-bar);
+  border-radius: 0 0 3px 3px;
+}
+
+.module-page:first-child {
+  break-before: auto;
+}
+
+/* 封面不显示渐变条 (封面有独立的深色背景) */
+.module-page:first-child::before {
+  display: none;
+}
+
+@media print {
+  .module-page {
+    width: auto;
+    display: block;
+    box-shadow: none;
+  }
+}
+
+/* 漫画页: 使用 A4 可打印区高度, 不依赖浏览器视口 */
+.module-page.comic-module {
+  /* 漫画页需要强制分页 */
+  break-before: page;
+  min-height: var(--page-print-height);
+  height: var(--page-print-height);
+  overflow: hidden;
+}
+.module-page.comic-module::before {
+  display: none;
+}
+
+/* 防止末尾空白页: 最后一个模块减少底部空间 */
+.module-page:last-child {
+  padding-bottom: 0;
+}
+
+/* --- 白色圆角内容卡片 --- */
+.module-content-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px 26px;
+  overflow: hidden;
+}
+
+@media print {
+  .module-content-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  /* M3 页面与其他模块统一左右 padding (M1: 18mm/15mm) */
+  .module-page:has(section.m3-kp-drill) {
+    padding: 0 15mm 0 18mm;
+  }
+}
+
+/* body 末尾禁止额外分页 */
+body::after {
+  content: "";
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+
+/* 模块内禁止断裂的元素 */
+tr, .card, .breakthrough-card, .kp-card, .domain-card {
+  break-inside: avoid;
+}
+
+/* [FIX] 避免空白最后一页: M8 附录的最后一个面板允许跨页 */
+.m8-appendix-page tr:last-of-type,
+.m8-appendix-page .card:last-of-type,
+.m8-appendix-page .kp-card:last-of-type,
+.m8-appendix-page .domain-card:last-of-type,
+.m8-appendix-page .m8-appendix-panel:last-of-type {
+  break-inside: auto;
+}
+
+/* --- 跨页表头重复 ---
+   所有含 <thead> 的表格跨页时自动重复表头行 (M2/M3/M4/M5/M7/M8/M9) */
+thead {
+  display: table-header-group;
+}
+
+tfoot {
+  display: table-footer-group;
+}
+
+/* --- 段落底部保护 ---
+   标题后至少跟 2 行正文才分页, 防止页面底部出现孤立行 */
+body {
+  orphans: 2;
+  widows: 2;
+}
+
+/* --- 通用内容区块防截断 ---
+   标题与紧随的内容不应被分页截断, 保持标题+至少部分内容在同一页 */
+h1, h2, h3, h4, h5, h6 {
+  break-after: avoid;
+}
+
+/* 图片/图表块不被截断 */
+img, svg, canvas, .chart-box, .chart-container {
+  break-inside: avoid;
+}
+
+/* --- 通用状态类 --- */
+.m0-status--achieved  { --status-color: var(--pm-teal); }
+.m0-status--attention { --status-color: var(--pm-status-attention); }
+.m0-status--improve   { --status-color: var(--pm-status-danger); }
+.m0-status--nodata    { --status-color: var(--pm-status-nodata); }
+
+/* --- 数据不可用提示 --- */
+.m0-data-unavailable {
+  padding: 12px 16px;
+  color: #999;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ==========================================================================
+   V2-07-P1: 全局视觉层次优化
+   ========================================================================== */
+
+/* --- P1-2: 表格隔行底色 ---
+   M2 用 CSS Grid (不受影响), M3/M4/M5/M7/M8 的 <table> 生效。
+   极淡底色 (#F9F9F9), 不干扰已有行着色 (specificity 低) */
+table tr:nth-child(even) td {
+  background: var(--cc-table-row-alt);
+}
+
+/* --- P1-3: 已移除 (竖蓝条视觉效果不佳, 保留各模块自带下横线即可) ---*/
+
+/* --- P1-4: 分析小结框浅底 ---
+   各章节末尾小结区域: 浅底色 + 蓝色左竖线, 从正文中突出。
+   margin-left: 14px 使竖线与标题首字左侧对齐 (4px border + 10px padding) */
+.m2-cw-summary-bar,
+.m4-summary-card,
+.m6-summary-box {
+  background: var(--pm-bg-muted);
+  border-left: 3px solid var(--pm-teal);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-left: 14px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}

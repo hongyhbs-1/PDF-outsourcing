@@ -1,0 +1,318 @@
+{# ==============================================================================
+   improvement_preview.jinja2 — 第 3 页: 提升预期
+   数据来源: summary / domains / meta (全部从现有 JSON 推导)
+   ============================================================================== #}
+
+{% set acc = summary.current_accuracy | default(0) | float %}
+{% set target_acc = summary.target_accuracy | default(85) | float %}
+{% set delta = summary.current_delta | default(0) | float %}
+{% set student_name = meta.student_display_name | default('同学') %}
+{% set subject = meta.subject_name | default('') %}
+
+{# --- 三档分类 (与 student_profile 保持一致) --- #}
+{% if acc < 60 %}
+  {% set tier = 'need_major' %}
+{% elif acc < 85 %}
+  {% set tier = 'room_grow' %}
+{% else %}
+  {% set tier = 'excellent' %}
+{% endif %}
+
+{# --- 提取薄弱领域用于提升点 --- #}
+{% set weak_items = [] %}
+{% if domains is defined and domains.domain_items is defined %}
+  {% for item in domains.domain_items %}
+    {% if item.status | default('') in ['需加强', '需关注'] and item.has_data | default(true) %}
+      {% set _ = weak_items.append(item) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+<div class="ip-page">
+  <h1 class="ip-title">提升预期与改变</h1>
+
+  <div class="module-content-card">
+
+  {# === 1. 提升路径概览 (三阶段) === #}
+  <div class="ip-roadmap">
+    {% if tier == 'need_major' %}
+    {# 差生路径: 当前→60天→中等→90天→目标 #}
+    <div class="ip-stage">
+      <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
+      <div class="ip-stage__label">当前水平</div>
+      <div class="ip-stage__desc">起点</div>
+    </div>
+    <div class="ip-stage">
+      <div class="ip-stage__marker ip-stage__marker--future">60%</div>
+      <div class="ip-stage__label">阶段性目标</div>
+      <div class="ip-stage__desc">约 60 天</div>
+    </div>
+    <div class="ip-stage">
+      <div class="ip-stage__marker ip-stage__marker--future">75%</div>
+      <div class="ip-stage__label">稳步提升</div>
+      <div class="ip-stage__desc">约 120 天</div>
+    </div>
+    <div class="ip-stage">
+      <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
+      <div class="ip-stage__label">目标达成</div>
+      <div class="ip-stage__desc">约 180 天</div>
+    </div>
+
+    {% elif tier == 'room_grow' %}
+    {# 中等生路径: 当前→30天→目标 #}
+    <div class="ip-stage">
+      <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
+      <div class="ip-stage__label">当前水平</div>
+      <div class="ip-stage__desc">起点</div>
+    </div>
+    <div class="ip-stage">
+      <div class="ip-stage__marker ip-stage__marker--future">80%</div>
+      <div class="ip-stage__label">快速提升</div>
+      <div class="ip-stage__desc">约 30 天</div>
+    </div>
+    <div class="ip-stage">
+      <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
+      <div class="ip-stage__label">目标达成</div>
+      <div class="ip-stage__desc">约 60 天</div>
+    </div>
+
+    {% else %}
+    {# 优等生路径: 当前→保持→冲刺 #}
+    <div class="ip-stage">
+      <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
+      <div class="ip-stage__label">当前水平</div>
+      <div class="ip-stage__desc">优秀</div>
+    </div>
+    <div class="ip-stage">
+      <div class="ip-stage__marker ip-stage__marker--future">90%</div>
+      <div class="ip-stage__label">稳步拔高</div>
+      <div class="ip-stage__desc">约 30 天</div>
+    </div>
+    <div class="ip-stage">
+      <div class="ip-stage__marker ip-stage__marker--future">95%</div>
+      <div class="ip-stage__label">冲刺满分</div>
+      <div class="ip-stage__desc">约 60 天</div>
+    </div>
+    {% endif %}
+  </div>
+
+  {# === 2. 提升路线 === #}
+  <div class="ip-milestones">
+    <div class="ip-section-heading">提升路线</div>
+
+    {% if tier == 'need_major' %}
+    <div class="ip-milestone">
+      <div class="ip-milestone__phase">
+        <div class="ip-milestone__phase-label">第一阶段</div>
+        <div class="ip-milestone__phase-time">0-60天</div>
+      </div>
+      <div class="ip-milestone__body">
+        <div class="ip-milestone__title">基础夯实期</div>
+        <p class="ip-milestone__text">集中补强薄弱领域的基础知识，通过 dida985 每日推送的针对性练习，预计可将正确率从 <strong class="ip-milestone__highlight">{{ acc | int }}%</strong> 提升至 <strong class="ip-milestone__highlight">60%</strong> 左右。</p>
+      </div>
+    </div>
+    <div class="ip-milestone">
+      <div class="ip-milestone__phase">
+        <div class="ip-milestone__phase-label">第二阶段</div>
+        <div class="ip-milestone__phase-time">60-120天</div>
+      </div>
+      <div class="ip-milestone__body">
+        <div class="ip-milestone__title">能力提升期</div>
+        <p class="ip-milestone__text">开始攻克中等难度题型，通过错题精讲和举一反三训练，正确率稳步提升至 <strong class="ip-milestone__highlight">75%</strong> 左右。</p>
+      </div>
+    </div>
+    <div class="ip-milestone">
+      <div class="ip-milestone__phase">
+        <div class="ip-milestone__phase-label">第三阶段</div>
+        <div class="ip-milestone__phase-time">120-180天</div>
+      </div>
+      <div class="ip-milestone__body">
+        <div class="ip-milestone__title">目标冲刺期</div>
+        <p class="ip-milestone__text">全面综合训练，模拟考试环境，追求 <strong class="ip-milestone__highlight">{{ target_acc | int }}%</strong> 的目标正确率。</p>
+      </div>
+    </div>
+
+    {% elif tier == 'room_grow' %}
+    <div class="ip-milestone">
+      <div class="ip-milestone__phase">
+        <div class="ip-milestone__phase-label">第一阶段</div>
+        <div class="ip-milestone__phase-time">0-30天</div>
+      </div>
+      <div class="ip-milestone__body">
+        <div class="ip-milestone__title">薄弱点突破</div>
+        <p class="ip-milestone__text">针对低于目标线的 {{ weak_items | length }} 个薄弱领域进行专项训练，预计可快速提升至 <strong class="ip-milestone__highlight">80%</strong> 左右。</p>
+      </div>
+    </div>
+    <div class="ip-milestone">
+      <div class="ip-milestone__phase">
+        <div class="ip-milestone__phase-label">第二阶段</div>
+        <div class="ip-milestone__phase-time">30-60天</div>
+      </div>
+      <div class="ip-milestone__body">
+        <div class="ip-milestone__title">目标冲刺</div>
+        <p class="ip-milestone__text">全面巩固，消灭偶发失误，稳定达到 <strong class="ip-milestone__highlight">{{ target_acc | int }}%</strong> 的目标正确率。</p>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="ip-milestone">
+      <div class="ip-milestone__phase">
+        <div class="ip-milestone__phase-label">保持提升</div>
+        <div class="ip-milestone__phase-time">0-30天</div>
+      </div>
+      <div class="ip-milestone__body">
+        <div class="ip-milestone__title">细节优化</div>
+        <p class="ip-milestone__text">针对个别偶发失误点进行定向强化，保持高水准的同时进一步提升到 <strong class="ip-milestone__highlight">90%</strong>。</p>
+      </div>
+    </div>
+    <div class="ip-milestone">
+      <div class="ip-milestone__phase">
+        <div class="ip-milestone__phase-label">冲刺</div>
+        <div class="ip-milestone__phase-time">30-60天</div>
+      </div>
+      <div class="ip-milestone__body">
+        <div class="ip-milestone__title">满分冲刺</div>
+        <p class="ip-milestone__text">挑战高难度题型，拓展思维边界，稳定在 <strong class="ip-milestone__highlight">95%</strong> 以上的正确率。</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  {# === 3. 具体提升点 === #}
+  {% if weak_items | length > 0 %}
+  <div class="ip-focus-section">
+    <div class="ip-section-heading">提升要点</div>
+    <div class="ip-focus-grid">
+      {% for item in weak_items[:4] %}
+      <div class="ip-focus-item">
+        <div class="ip-focus-item__name">{{ item.name_cn | default('领域' ~ loop.index) }}</div>
+        <div class="ip-focus-item__gain">+{{ (target_acc - (item.accuracy | default(0) | float)) | int }}%</div>
+        <div class="ip-focus-item__label">预期提升空间</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# === 4. 阶段目标 + 验收标准 + 训练重点 (三栏) === #}
+  <div class="ip-phase-grid">
+    {% if tier == 'need_major' %}
+    <div class="ip-phase-card">
+      <div class="ip-phase-card__header">阶段目标</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">基础正确率达标 <strong>60%</strong></div>
+        <div class="ip-phase-card__item">薄弱领域减少至 <strong>2 个</strong>以内</div>
+        <div class="ip-phase-card__item">错题同类变形正确率 <strong>≥70%</strong></div>
+      </div>
+    </div>
+    <div class="ip-phase-card">
+      <div class="ip-phase-card__header">训练重点</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">每日 <strong>15 分钟</strong>基础专项</div>
+        <div class="ip-phase-card__item">错题当日精讲 + 变形练习</div>
+        <div class="ip-phase-card__item">每周 1 次阶段小测</div>
+      </div>
+    </div>
+    <div class="ip-phase-card ip-phase-card--accent">
+      <div class="ip-phase-card__header">验收标准</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">连续 2 次测评正确率 <strong>≥60%</strong></div>
+        <div class="ip-phase-card__item">基础知识点覆盖率 <strong>≥80%</strong></div>
+        <div class="ip-phase-card__item">错题重做正确率 <strong>≥75%</strong></div>
+      </div>
+    </div>
+
+    {% elif tier == 'room_grow' %}
+    <div class="ip-phase-card">
+      <div class="ip-phase-card__header">阶段目标</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">正确率提升至 <strong>{{ target_acc | int }}%</strong></div>
+        <div class="ip-phase-card__item">薄弱领域全部达标</div>
+        <div class="ip-phase-card__item">中等难度题正确率 <strong>≥85%</strong></div>
+      </div>
+    </div>
+    <div class="ip-phase-card">
+      <div class="ip-phase-card__header">训练重点</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">薄弱领域 <strong>每日 20 分钟</strong>专项</div>
+        <div class="ip-phase-card__item">每两周 1 次诊断测评</div>
+        <div class="ip-phase-card__item">做题顺序和时间分配训练</div>
+      </div>
+    </div>
+    <div class="ip-phase-card ip-phase-card--accent">
+      <div class="ip-phase-card__header">验收标准</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">连续 3 次测评达标</div>
+        <div class="ip-phase-card__item">薄弱领域提升 <strong>≥10%</strong></div>
+        <div class="ip-phase-card__item">考场策略失误 <strong>≤1 次</strong>/套</div>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="ip-phase-card">
+      <div class="ip-phase-card__header">阶段目标</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">正确率稳定在 <strong>95%+</strong></div>
+        <div class="ip-phase-card__item">压轴题得分率 <strong>≥80%</strong></div>
+        <div class="ip-phase-card__item">零失误完成基础题</div>
+      </div>
+    </div>
+    <div class="ip-phase-card">
+      <div class="ip-phase-card__header">训练重点</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">竞赛级题目每日 <strong>2-3 题</strong></div>
+        <div class="ip-phase-card__item">模拟考试环境限时训练</div>
+        <div class="ip-phase-card__item">个别失误点定向强化</div>
+      </div>
+    </div>
+    <div class="ip-phase-card ip-phase-card--accent">
+      <div class="ip-phase-card__header">验收标准</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">模拟考试正确率 <strong>≥95%</strong></div>
+        <div class="ip-phase-card__item">高难度题正确率 <strong>≥85%</strong></div>
+        <div class="ip-phase-card__item">完成时间 <strong>≤80%</strong> 额定</div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  {# === 底部总结 === #}
+  {% if tier == 'need_major' %}
+  <div class="ip-summary-bar">
+    坚持使用 dida985 训练 <strong>180 天</strong>，预计从 {{ acc | int }}% 提升至 <strong>{{ target_acc | int }}%</strong>，提升幅度达 <strong>{{ (target_acc - acc) | int }}%</strong>
+  </div>
+  {% elif tier == 'room_grow' %}
+  <div class="ip-summary-bar">
+    坚持使用 dida985 训练 <strong>60 天</strong>，预计从 {{ acc | int }}% 提升至 <strong>{{ target_acc | int }}%</strong>，提升幅度达 <strong>{{ (target_acc - acc) | int }}%</strong>
+  </div>
+  {% else %}
+  <div class="ip-summary-bar">
+    继续保持优秀表现！通过 dida985 的进阶训练，从 {{ acc | int }}% 稳步提升至 <strong>95%+</strong>，追求极致
+  </div>
+  {% endif %}
+
+  {# === 家长行动指南 === #}
+  <div class="ip-parent-guide">
+    <div class="ip-parent-guide__title">家长行动指南</div>
+    <div class="ip-parent-guide__content">
+      {% if tier == 'need_major' %}
+      <p>1. 每日监督孩子完成 <strong>15 分钟</strong>基础专项训练，确保不中断；</p>
+      <p>2. 每周查看 dida985 学习报告，关注薄弱领域正确率变化；</p>
+      <p>3. 配合错题精讲环节，帮助孩子理解错误原因而非只记答案；</p>
+      <p>4. 每 <strong>60 天</strong>与孩子一起回顾阶段性成果，调整学习节奏。</p>
+      {% elif tier == 'room_grow' %}
+      <p>1. 每日安排 <strong>20 分钟</strong>薄弱领域专项训练，保持连续性；</p>
+      <p>2. 每两周查看一次诊断测评结果，跟踪进步趋势；</p>
+      <p>3. 鼓励孩子总结错题规律，培养自主纠错能力；</p>
+      <p>4. 目标达成后及时肯定，帮助孩子建立学习自信。</p>
+      {% else %}
+      <p>1. 继续保持每日学习习惯，适当增加挑战题比例；</p>
+      <p>2. 关注高难度题目的解题思路，而不仅仅是正确率；</p>
+      <p>3. 鼓励孩子参加竞赛或拓展训练，拓宽思维边界；</p>
+      <p>4. 定期回顾，确保稳定发挥，避免因疏忽而退步。</p>
+      {% endif %}
+    </div>
+  </div>
+
+  </div><!-- /.module-content-card -->
+</div>
