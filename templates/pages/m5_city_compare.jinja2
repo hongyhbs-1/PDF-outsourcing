@@ -223,9 +223,9 @@
 {% endif %}
 
 <div class="m5-city-compare{% if items | length >= long_item_threshold %} m5-city-compare--long{% endif %}">
-  
+
   {# ============================================================
-     PART 1: 标题 + 一句话概述
+     PART 1: 标题 + 一句话概述 (在卡片外)
      ============================================================ #}
   <section class="m5-city-compare__part m5-city-compare__part--header">
     <h1 class="m5-city-compare__title">
@@ -242,7 +242,9 @@
       {%- endif -%}
     </p>
   </section>
-  
+
+  <div class="module-content-card">
+
   {# ============================================================
      PART 2: 高频重合度对照（卡片+表格）
      ============================================================ #}
@@ -439,5 +441,6 @@
     {% endif %}
   </footer>
   {% endif %}
-  
+
+  </div><!-- /.module-content-card -->
 </div>

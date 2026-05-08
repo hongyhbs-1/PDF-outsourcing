@@ -668,4 +668,38 @@
     padding: 0 15mm 0 18mm;
     box-shadow: none;
   }
+
+  /* 压缩介入重点部分，避免页面溢出 */
+  .sp-section-divider {
+    margin: 4px 0;
+  }
+  .sp-group-title {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .sp-intervention-card {
+    padding: 4px 6px;
+    box-shadow: none;
+    border: none;
+  }
+  .sp-intervention-step {
+    padding: 2px 0;
+    gap: 6px;
+  }
+  .sp-intervention-step + .sp-intervention-step {
+    border-top: none;
+    padding-top: 2px;
+  }
+  .sp-intervention-step__title {
+    font-size: 10px;
+  }
+  .sp-intervention-step__text {
+    font-size: 9px;
+    line-height: 1.25;
+  }
+  .sp-intervention-step__num {
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+  }
 }

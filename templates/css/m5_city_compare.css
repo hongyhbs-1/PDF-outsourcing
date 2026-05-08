@@ -133,23 +133,13 @@
    ============================================================ */
 .m5-city-compare__title {
   display: inline-block;
-  position: relative;
   margin: var(--cc-spacing-6) 0;
   padding-bottom: var(--cc-spacing-3);
+  border-bottom: 2px solid var(--cc-accent-teal);
   font-size: var(--cc-font-size-h1);
   font-weight: var(--cc-font-weight-bold);
   line-height: var(--cc-line-height-tight);
   color: var(--cc-text-primary);
-}
-
-.m5-city-compare__title::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--cc-accent-teal);
 }
 
 /* ============================================================
@@ -199,7 +189,6 @@
   background: var(--cc-card-bg);
   border-radius: 8px;
   padding: var(--cc-spacing-5) var(--cc-spacing-6);
-  overflow: hidden;
 }
 
 /* ----------------------
@@ -277,7 +266,6 @@
   height: 10px;
   background: var(--cc-bg-muted);
   border-radius: var(--cc-radius-full);
-  overflow: hidden;
 }
 
 .m5-city-compare__progress-fill {
@@ -536,16 +524,8 @@
 
 
 /* ============================================================
-   SECTION 8: Advice Card Component
+   SECTION 8: Advice (融入背景，无框)
    ============================================================ */
-.m5-city-compare__advice-card {
-  border: 2px solid var(--cc-card-border);
-  background: var(--cc-card-bg);
-  border-radius: 8px;
-  padding: var(--cc-spacing-5) var(--cc-spacing-6);
-  margin-bottom: var(--cc-spacing-6);
-}
-
 .m5-city-compare__advice-title {
   font-size: var(--cc-font-size-h3);
   font-weight: var(--cc-font-weight-bold);
@@ -560,7 +540,6 @@
 }
 
 .m5-city-compare__advice-item {
-  position: relative;
   padding-left: 18px;
   margin: var(--cc-spacing-3) 0;
   line-height: var(--cc-line-height-relaxed);
@@ -569,9 +548,9 @@
 
 .m5-city-compare__advice-item::before {
   content: "*";
-  position: absolute;
-  left: 0;
-  top: 0;
+  margin-left: -18px;
+  display: inline-block;
+  width: 18px;
   color: var(--cc-text-secondary);
   font-weight: var(--cc-font-weight-bold);
 }
@@ -675,19 +654,18 @@
     padding-bottom: 8px;
   }
 
-  .m5-city-compare__banner {
-    padding: 10px 14px;
+  .m5-city-compare__intro {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .m5-city-compare__part {
     margin-bottom: 10px;
   }
 
-  .m5-city-compare__banner-title {
-    font-size: 15px;
-  }
-
-  .m5-city-compare__banner-desc {
-    margin-top: 4px;
-    font-size: 11px;
-    line-height: 1.35;
+  .m5-city-compare__part--header {
+    margin-bottom: 8px;
   }
 
   .m5-city-compare__cards {
@@ -764,7 +742,7 @@
   }
   
   .m5-city-compare__table-section,
-  .m5-city-compare__advice-card {
+  .m5-city-compare__part--advice {
     page-break-inside: auto;
     break-inside: auto;
   }
@@ -817,13 +795,6 @@
     font-size: 10px !important;
   }
 
-  .m5-city-compare__advice-card {
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    border-width: 1px;
-    border-radius: 6px;
-  }
-
   .m5-city-compare__advice-title {
     font-size: 15px;
     margin-bottom: 6px;
@@ -868,9 +839,18 @@
     padding-bottom: 5px;
   }
 
-  .m5-city-compare--long .m5-city-compare__banner,
+  .m5-city-compare--long .m5-city-compare__part {
+    margin-bottom: 4px;
+  }
+
+  .m5-city-compare--long .m5-city-compare__intro {
+    font-size: 9px;
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+
   .m5-city-compare--long .m5-city-compare__table-section,
-  .m5-city-compare--long .m5-city-compare__advice-card,
+  .m5-city-compare--long .m5-city-compare__part--advice,
   .m5-city-compare--long .m5-city-compare__footnote {
     padding: 4px 6px;
     margin-bottom: 4px;
@@ -892,13 +872,11 @@
     font-size: 12px;
   }
 
-  .m5-city-compare--long .m5-city-compare__banner-title,
   .m5-city-compare--long .m5-city-compare__card-highlight {
     font-size: 12px;
   }
 
-  .m5-city-compare--long .m5-city-compare__banner-desc,
-  .m5-city-compare--long .m5-city-compare__card-note,
+  .m5-city-compare--long .m5-city-compare__intro,
   .m5-city-compare--long .m5-city-compare__overlap-subtitle,
   .m5-city-compare--long .m5-city-compare__overlap-ratio {
     font-size: 9px;
@@ -947,9 +925,8 @@
     padding-bottom: 4px;
   }
 
-  .m5-city-compare--long .m5-city-compare__banner,
   .m5-city-compare--long .m5-city-compare__table-section,
-  .m5-city-compare--long .m5-city-compare__advice-card,
+  .m5-city-compare--long .m5-city-compare__part--advice,
   .m5-city-compare--long .m5-city-compare__footnote {
     padding: 3px 5px;
     margin-bottom: 3px;
@@ -971,14 +948,12 @@
     font-size: 11px;
   }
 
-  .m5-city-compare--long .m5-city-compare__banner-title,
   .m5-city-compare--long .m5-city-compare__card-highlight {
     font-size: 11px;
     line-height: 1.15;
   }
 
-  .m5-city-compare--long .m5-city-compare__banner-desc,
-  .m5-city-compare--long .m5-city-compare__card-note,
+  .m5-city-compare--long .m5-city-compare__intro,
   .m5-city-compare--long .m5-city-compare__overlap-subtitle,
   .m5-city-compare--long .m5-city-compare__overlap-ratio {
     margin-top: 2px;
@@ -1084,7 +1059,6 @@
 
 /* 文本截断 */
 .m5-city-compare--truncate {
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
