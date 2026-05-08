@@ -373,12 +373,11 @@
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  opacity: 0.85;
 }
 .mov-difficulty__title {
   font-size: 13px;
   font-weight: 600;
-  color: var(--pm-text-muted);
+  color: var(--pm-text-primary);
   margin: 0 0 8px;
 }
 
@@ -394,7 +393,6 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  opacity: 0.75;
 }
 .mov-pie-legend {
   display: flex;
@@ -423,15 +421,12 @@
 }
 .mov-difficulty__dot--easy {
   background: var(--pm-status-success, #2d8a6e);
-  opacity: 0.6;
 }
 .mov-difficulty__dot--medium {
   background: var(--pm-status-attention, #d4943a);
-  opacity: 0.6;
 }
 .mov-difficulty__dot--hard {
   background: var(--pm-status-danger, #c44040);
-  opacity: 0.6;
 }
 
 /* --- 试卷/批次清单 --- */
