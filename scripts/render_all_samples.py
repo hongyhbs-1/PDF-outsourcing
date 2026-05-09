@@ -8,6 +8,8 @@
     python scripts/render_all_samples.py 2
     python scripts/render_all_samples.py 2 --comic-version v2026-04-29-filled-content
 
+注: --comic-version 为旧漫画页兼容参数；学习蓝图方案不再读取漫画图片。
+
 输出:
     samples/output/<样本名>/<样本名>.html
     samples/output/<样本名>/<样本名>.pdf
@@ -41,7 +43,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--comic-version",
-        help="使用 prompts/comic/versions/<version>/prompts 下的 PNG 漫画图片。",
+        help="旧漫画页兼容参数；学习蓝图方案不再读取漫画图片。",
     )
     return parser.parse_args(argv)
 
@@ -65,12 +67,12 @@ def select_samples(sample_files: list[str], limit: int | None) -> list[str]:
 
 
 def resolve_comic_image_root(comic_version: str | None) -> Path | None:
-    if comic_version is None:
-        return None
-    image_root = PROMPT_VERSIONS_DIR / comic_version / "prompts"
-    if not image_root.is_dir():
-        raise ValueError(f"漫画图片版本目录不存在: {image_root}")
-    return image_root
+    """Legacy no-op compatibility hook.
+
+    The learning blueprint flow no longer reads comic image assets, so the
+    legacy version flag is accepted but ignored.
+    """
+    return None
 
 
 def load_payload(json_path: Path) -> dict:
@@ -167,8 +169,8 @@ def main(argv: list[str] | None = None) -> None:
 
     print("=" * 60)
     print(f"批量渲染测试 — {len(selected_samples)} / {len(sample_files)} 份样本")
-    if comic_image_root is not None:
-        print(f"漫画图片版本 — {args.comic_version}: {comic_image_root}")
+    if args.comic_version is not None:
+        print(f"旧漫画图片版本参数已保留兼容，学习蓝图不会读取图片 — {args.comic_version}")
     print("=" * 60)
 
     results = [

@@ -19,8 +19,10 @@ import argparse
 import base64
 import json
 import sys
+import tempfile
 from pathlib import Path
 
+from learning_blueprint_builder import build_learning_blueprints
 from pdf_chrome_templates import build_pdf_chrome_options
 from pdf_progress_rail import apply_progress_rail
 
@@ -240,6 +242,15 @@ def _build_pdf_kwargs(payload: dict) -> dict:
 # 核心: CSS 合并 + HTML 渲染
 # ---------------------------------------------------------------------------
 
+def _rewrite_font_urls(css: str) -> str:
+    """Rewrite bundled font URLs to absolute file URIs for PDF rendering."""
+    font_file = FONTS_DIR / "NotoSansSC-Variable.ttf"
+    if not font_file.exists():
+        return css
+    font_uri = font_file.resolve().as_uri()
+    return css.replace("url('../fonts/NotoSansSC-Variable.ttf')", f"url('{font_uri}')")
+
+
 def load_css() -> str:
     """合并所有 CSS 文件。"""
     css_parts: list[str] = []
@@ -250,7 +261,7 @@ def load_css() -> str:
         if f.name == "base.css":
             continue
         css_parts.append(f.read_text(encoding="utf-8"))
-    return "\n".join(css_parts)
+    return _rewrite_font_urls("\n".join(css_parts))
 
 
 def _image_to_data_uri(path: Path) -> str:
@@ -324,22 +335,16 @@ def render_html(payload: dict, comic_image_root: Path | None = None) -> str:
 
     font_path = FONTS_DIR / "NotoSansSC-Variable.ttf"
     logo_path = ASSETS_DIR / "logo_dida985.png"
-    tier_name = _select_tier_name(payload)
-    comic_scene1_path, comic_scene2_path = _resolve_comic_image_paths(
-        tier_name,
-        comic_image_root,
-    )
-    comic_scene1_uri = _image_to_data_uri(comic_scene1_path)
-    comic_scene2_uri = _image_to_data_uri(comic_scene2_path)
 
     context = dict(payload)
     context["combined_css"] = load_css()
     context["render_payload"] = payload
+    context.update(build_learning_blueprints(payload))
     context["font_path"] = str(font_path)
     context["logo_path"] = _image_to_data_uri(logo_path)
-    context["comic_scene1_path"] = comic_scene1_uri
-    context["comic_scene2_path"] = comic_scene2_uri
-    context["tier_name"] = tier_name
+    # Kept for compatibility with older templates/debug output. Opening comic
+    # pages are now replaced by the dynamic learning blueprint pages.
+    context["tier_name"] = _select_tier_name(payload)
 
     # 将封面 logo 路径也转为 Data URI (同因: page.set_content() 无法加载 file://)
     logo_data_uri = _image_to_data_uri(logo_path)
@@ -456,11 +461,21 @@ def generate_pdf(html: str, output_path: str, payload: dict) -> Path:
     pdf_kwargs = _build_pdf_kwargs(payload)
     output = Path(output_path)
 
+    temp_html_path: Path | None = None
     with sync_playwright() as p:
         browser = _launch_chromium(p)
         page = browser.new_page()
         try:
-            page.set_content(html, wait_until="load")
+            with tempfile.NamedTemporaryFile(
+                "w",
+                suffix=".html",
+                encoding="utf-8",
+                delete=False,
+            ) as temp_html:
+                temp_html.write(html)
+                temp_html_path = Path(temp_html.name)
+
+            page.goto(temp_html_path.as_uri(), wait_until="load")
             _wait_for_images(page)
 
             final_bytes = _build_final_pdf_bytes(page, pdf_kwargs)
@@ -470,6 +485,8 @@ def generate_pdf(html: str, output_path: str, payload: dict) -> Path:
         finally:
             page.close()
             browser.close()
+            if temp_html_path is not None:
+                temp_html_path.unlink(missing_ok=True)
 
     return output
 
