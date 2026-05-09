@@ -19,11 +19,11 @@ from pathlib import Path
 import jinja2
 
 try:
-    from golden_integration import inject_golden_css
+    from golden_typeset.engine import build_typeset_css
     _HAS_GOLDEN = True
 except ImportError:
     try:
-        from scripts.golden_integration import inject_golden_css
+        from scripts.golden_typeset.engine import build_typeset_css
         _HAS_GOLDEN = True
     except ImportError:
         _HAS_GOLDEN = False
@@ -172,9 +172,9 @@ def render_html(payload: dict, *, for_pdf: bool = False,
     """
     css = _load_combined_css()
 
-    # 黄金比例布局: 计算并注入 CSS 自定义属性
+    # 黄金比例布局: 计算并注入排版 CSS
     if _HAS_GOLDEN:
-        css = inject_golden_css(css, payload)
+        css = css + build_typeset_css(payload)
 
     if for_pdf:
         css = _rewrite_font_paths(css)

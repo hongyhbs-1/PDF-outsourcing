@@ -122,7 +122,7 @@ def render_sample(sample_file: str, *, index: int, total: int,
         html_path.write_text(html, encoding="utf-8")
         print(f"  HTML: {html_path.stat().st_size:,} bytes")
 
-        render_standalone.generate_pdf(html, str(pdf_path), payload)
+        render_standalone.generate_pdf(str(pdf_path), payload, comic_image_root=comic_image_root)
         pdf_size = pdf_path.stat().st_size if pdf_path.exists() else 0
         elapsed = time.time() - t0
         print(f"  PDF:  {pdf_size:,} bytes")

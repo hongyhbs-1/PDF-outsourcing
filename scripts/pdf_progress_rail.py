@@ -28,6 +28,12 @@ SECTION_DEFS = (
     ("m11", "阅读理解深度分析", "阅", "阅读"),
 )
 
+# Chinese ordinal numerals for dynamic renumbering
+_CN_ORDINALS = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一"]
+
+# Keys that use ordinal numbers (m8/m10/m11 use fixed non-ordinal labels)
+_ORDINAL_KEYS = {"m1", "m4", "m2", "m3", "m5", "m6", "m9", "m7"}
+
 NAV_TOP = 52
 NAV_BOTTOM = 52
 TAB_RIGHT_INSET = 2
@@ -88,12 +94,20 @@ def build_section_ranges(
     if total_pages < 1:
         raise ValueError(f"PDF 总页数必须大于 0: {total_pages}")
 
+    # Collect visible sections, renumbering ordinals dynamically
     sections = []
+    ordinal_idx = 0
     for key, title, short_label, tab_label in SECTION_DEFS:
         if key not in toc_pages:
             continue
         page_number = int(toc_pages[key])
         _validate_page(page_number, total_pages, key)
+        # Renumber ordinal keys so gaps don't leave wrong numbers
+        if key in _ORDINAL_KEYS:
+            cn = _CN_ORDINALS[ordinal_idx] if ordinal_idx < len(_CN_ORDINALS) else short_label
+            ordinal_idx += 1
+            title = f"{cn}、{title.split('、', 1)[-1]}" if "、" in title else title
+            short_label = cn
         sections.append((key, title, short_label, tab_label, page_number))
 
     ranges: list[SectionRange] = []
