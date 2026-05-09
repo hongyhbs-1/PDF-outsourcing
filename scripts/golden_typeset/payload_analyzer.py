@@ -1,12 +1,19 @@
 """
 payload_analyzer.py — payload → [(key, natural_height)]
 ========================================================
-每个模块的分析器: 从 payload 提取字符数/字段数 → V() 估算高度。
+双 Pass 架构：
+  Pass 1: 预渲染 HTML → Playwright 测量真实 DOM 高度
+  Pass 2: 用测量值生成精确排版 CSS
+
+回退：如果无法测量（无 Playwright），使用经验估算。
 """
 from __future__ import annotations
-from typing import List
-from .math_func import content_height, F_BODY, F_SMALL, F_TABLE
+from . import WRAPPER_SELECTORS
+from .math_func import content_height, F_BODY, F_SMALL, F_TABLE, ROW_TABLE, ROW_ANALYSIS, ROW_CHECKLIST
 
+# ---------------------------------------------------------------------------
+# Generic helpers
+# ---------------------------------------------------------------------------
 
 def _len(o) -> float:
     return float(len(o)) if isinstance(o, (list, tuple)) else 0.0
@@ -27,77 +34,126 @@ def _sc(items, *keys) -> float:
 def _h(f, c, fc, **kw) -> float:
     return content_height(f, c, fc, **kw)
 
+# ---------------------------------------------------------------------------
+# DOM 测量（Pass 1）
+# ---------------------------------------------------------------------------
 
-def m1(p):
+_MEASURE_JS = """(sel) => {
+    const pxToMm = 96 / 25.4;
+    const wrapper = document.querySelector(sel);
+    if (!wrapper) return [];
+    return Array.from(wrapper.children).map(c => c.getBoundingClientRect().height / pxToMm);
+}"""
+
+
+def measure_dom_heights(page) -> dict[str, list[tuple[str, float]]]:
+    """Pass 1: 用 Playwright 测量每个模块 wrapper 直接子元素的真实高度。"""
+    results = {}
+    for mid, sel in WRAPPER_SELECTORS.items():
+        heights = page.evaluate(_MEASURE_JS, sel)
+        if heights and sum(heights) > 0:
+            results[mid] = [(f"child_{i}", h) for i, h in enumerate(heights)]
+    return results
+
+
+# ---------------------------------------------------------------------------
+# 经验估算（回退）
+# ---------------------------------------------------------------------------
+
+TITLE_HEIGHTS = {
+    "m1": 20.0, "m2": 20.0, "m3": 0.0, "m4": 17.0,
+    "m5": 23.0, "m6": 9.0, "m7": 10.0, "m9": 10.0,
+}
+
+
+def _estimate_m1(p):
     s = p.get("summary", {})
     kf = p.get("key_findings", [])
     bt = p.get("breakthrough", {})
     bti = bt.get("items", []) if isinstance(bt, dict) else []
     sg = p.get("suggestion", {})
-    return [
-        ("banner",   _h(F_BODY,  _c(s.get("banner_text","")), 0)),
-        ("kpi",      _h(F_SMALL, 0, 3 + _len(s.get("pass_segments",[])))),
-        ("findings", _h(F_BODY,  _sc(kf), _len(kf))),
-        ("bt",       _h(F_BODY,  _sc(bti,"name_cn"), _len(bti))),
-        ("suggest",  _h(F_BODY,  _c(sg.get("text","") if isinstance(sg,dict) else ""), 0)),
-    ]
+    banner_h = _h(F_BODY, _c(s.get("banner_text", "")), 0)
+    kpi_h = _h(F_SMALL, 0, 3 + _len(s.get("pass_segments", [])))
+    findings_h = _h(F_BODY, _sc(kf), _len(kf))
+    bt_h = _h(F_BODY, _sc(bti, "name_cn"), _len(bti))
+    suggest_h = _h(F_BODY, _c(sg.get("text", "") if isinstance(sg, dict) else ""), 0)
+    # CSS padding/margin 补偿: module-content-card padding + section bars + internal margins
+    css_overhead = 32.0
+    content_h = banner_h + kpi_h + findings_h + bt_h + suggest_h + css_overhead
+    return [("title", TITLE_HEIGHTS["m1"]), ("content", content_h)]
 
-def m2(p):
-    cw = p.get("core_weakness",{})
-    items = cw.get("items",[]) if isinstance(cw,dict) else []
-    tips = cw.get("tips",[]) if isinstance(cw,dict) else []
-    return [
-        ("intro", 15.0),
-        ("table", _h(F_TABLE, _sc(items,"name_cn","reason"), _len(items))),
-        ("tips",  _h(F_SMALL, _sc(tips), _len(tips))),
-    ]
+def _estimate_m2(p):
+    cw = p.get("core_weakness", {})
+    items = cw.get("items", []) if isinstance(cw, dict) else []
+    tips = cw.get("tips", []) if isinstance(cw, dict) else []
+    return [("title", TITLE_HEIGHTS["m2"]), ("underline", 0.0),
+            ("content", _h(3.2, _sc(items, "name_cn", "reason"), _len(items)) + _h(3.0, _sc(tips), _len(tips)))]
 
-def m3(p):
-    kd = p.get("kp_drill",{})
-    tables = kd.get("tables",{}) if isinstance(kd,dict) else {}
-    if isinstance(tables, list):
-        n_levels = len(tables)
-    elif isinstance(tables, dict):
-        n_levels = sum(1 for k in ("l1","l2","l3","l4") if tables.get(k))
-    else:
-        n_levels = 1
-    return [("drill", _h(F_TABLE, 0, max(n_levels, 1) * 3))]
+def _estimate_m3(p):
+    return [("container", 150.0)]
 
-def m4(p):
-    d = p.get("domains",{})
-    di = d.get("domain_items",[]) if isinstance(d,dict) else []
-    return [
-        ("meta",    12.0),
-        ("legend",  10.0),
-        ("charts",  _h(F_TABLE, 0, _len(di))),
-        ("summary", _h(F_BODY,  _c(d.get("note_text","") if isinstance(d,dict) else ""), 0)),
-    ]
+def _estimate_m4(p):
+    d = p.get("domains", {})
+    di = d.get("domain_items", []) if isinstance(d, dict) else []
+    return [("title", TITLE_HEIGHTS["m4"]),
+            ("content", 12.0 + _h(F_TABLE, 0, _len(di)) + _h(F_BODY, _c(d.get("note_text", "") if isinstance(d, dict) else ""), 0))]
 
-def m5(p):
-    cc = p.get("city_compare",{})
-    oi = cc.get("overlap_items",[]) if isinstance(cc,dict) else []
-    adv = cc.get("advice",[]) if isinstance(cc,dict) else []
-    return [
-        ("banner", 20.0),
-        ("cards",  _h(F_BODY, 0, _len(oi))),
-        ("table",  _h(F_TABLE, 0, _len(oi))),
-        ("advice", _h(F_BODY, _sc(adv), _len(adv))),
-    ]
+def _estimate_m5(p):
+    cc = p.get("city_compare", {})
+    oi = cc.get("overlap_items", []) if isinstance(cc, dict) else []
+    adv = cc.get("advice", []) if isinstance(cc, dict) else []
+    return [("title", TITLE_HEIGHTS["m5"]),
+            ("content", _h(F_BODY, 0, _len(oi)) + _h(F_TABLE, 0, _len(oi)) + _h(F_BODY, _sc(adv), _len(adv)))]
 
-def m6(p):
-    tl = p.get("tiered_learning",{})
-    mod = tl.get("module", tl) if isinstance(tl,dict) else {}
-    tiers = mod.get("tiers",[]) if isinstance(mod,dict) else []
-    cards = sum(len(t.get("cards",[])) if isinstance(t.get("cards",[]),list) else 1
-                for t in (tiers or []) if isinstance(t,dict))
-    return [("focus",20.0), ("tiers",_h(F_BODY,0,max(cards,3)))]
+def _estimate_m6(p):
+    return [("title", TITLE_HEIGHTS["m6"]), ("content", 210.0)]
 
-def m7(p):
-    return [("boxes", _h(F_BODY, 0, 3))]
+def _estimate_m7(p):
+    return [("title", TITLE_HEIGHTS["m7"]), ("content", 220.0)]
 
-def m9(p):
-    return [("content", _h(F_TABLE, 0, 5))]
+def _estimate_m9(p):
+    qd = p.get("question_detail", {}) if isinstance(p, dict) else {}
+    papers = qd.get("papers", []) if isinstance(qd, dict) else []
+    if not isinstance(papers, list) or len(papers) == 0:
+        return []
+    content_h = 30.0
+    for paper in papers:
+        if not isinstance(paper, dict): continue
+        wq = paper.get("wrong_questions", [])
+        if isinstance(wq, list) and len(wq) > 0:
+            for q in wq:
+                content_h += 12.0 if isinstance(q, dict) and (q.get("error_analysis", "") or q.get("key_points", "")) else 7.0
+            content_h += 12.0
+        cq = paper.get("correct_questions", [])
+        if isinstance(cq, list) and len(cq) > 0:
+            content_h += 12.0 + len(cq) * ROW_TABLE
+    return [("title", TITLE_HEIGHTS["m9"]), ("content", content_h)]
+
+_ESTIMATORS = {
+    "m1": _estimate_m1, "m2": _estimate_m2, "m3": _estimate_m3, "m4": _estimate_m4,
+    "m5": _estimate_m5, "m6": _estimate_m6, "m7": _estimate_m7, "m9": _estimate_m9,
+}
 
 
-ANALYZERS = {"m1":m1, "m2":m2, "m3":m3, "m4":m4,
-             "m5":m5, "m6":m6, "m7":m7, "m9":m9}
+# ---------------------------------------------------------------------------
+# 主接口
+# ---------------------------------------------------------------------------
+
+def analyze_with_measured(payload: dict, measured: dict[str, list[tuple[str, float]]]) -> dict[str, list[tuple[str, float]]]:
+    """优先使用 DOM 测量值，回退到估算。"""
+    results = {}
+    for mid in WRAPPER_SELECTORS:
+        if mid in measured and measured[mid]:
+            results[mid] = measured[mid]
+        elif mid in _ESTIMATORS:
+            results[mid] = _ESTIMATORS[mid](payload)
+    return results
+
+
+# 兼容旧接口
+def get_analyzers():
+    """返回估算分析器（兼容 engine.py 旧接口）。"""
+    return _ESTIMATORS
+
+# 旧接口兼容
+ANALYZERS = _ESTIMATORS

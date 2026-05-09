@@ -259,7 +259,9 @@
      Title: 页面主标题
      ==================================================================== #}
   <h1 class="m7-data-reliability__title">
-    八、{{ section.title | default('数据可信度说明', true) }}
+    {% set _qd_m7 = question_detail | default({}, true) %}
+    {% set _qd_papers_m7 = _qd_m7.papers | default([], true) %}
+    {% if _qd_papers_m7 | length > 0 and _qd_m7.total_count | default(0) > 0 %}八{% else %}七{% endif %}、{{ section.title | default('数据可信度说明', true) }}
   </h1>
 
   <div class="module-content-card">

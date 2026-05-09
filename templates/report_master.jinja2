@@ -79,10 +79,15 @@ report_master.jinja2 — 报告主入口模板 (v2)
   <div class="module-page" id="toc-m6">
     {% include 'pages/m6_tiered_learning.jinja2' %}
   </div>
-  {# ---- M9: question_detail ---- #}
+  {# ---- M9: question_detail (only render when data exists) ---- #}
+  {% set _qd = question_detail | default({}, true) %}
+  {% set _qd_papers = _qd.papers | default([], true) %}
+  {% set _qd_total = _qd.total_count | default(0) %}
+  {% if _qd_papers | length > 0 and _qd_total > 0 %}
   <div class="module-page" id="toc-m9">
     {% include 'pages/m9_question_detail.jinja2' %}
   </div>
+  {% endif %}
   {# ---- M7: data_reliability ---- #}
   <div class="module-page" id="toc-m7">
     {% include 'pages/m7_data_reliability.jinja2' %}

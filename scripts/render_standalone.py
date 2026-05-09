@@ -18,6 +18,7 @@
 import argparse
 import base64
 import json
+import os
 import sys
 import tempfile
 from pathlib import Path
@@ -52,6 +53,18 @@ try:
     HAS_FITZ = True
 except ImportError:
     HAS_FITZ = False
+
+try:
+    from golden_typeset.payload_analyzer import measure_dom_heights
+    from golden_typeset.engine import build_typeset_css
+    _HAS_GOLDEN = True
+except ImportError:
+    try:
+        from scripts.golden_typeset.payload_analyzer import measure_dom_heights
+        from scripts.golden_typeset.engine import build_typeset_css
+        _HAS_GOLDEN = True
+    except ImportError:
+        _HAS_GOLDEN = False
 
 
 # ---------------------------------------------------------------------------
@@ -168,22 +181,23 @@ def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
     found_keys: set[str] = set()
 
     # 精确标题匹配：必须是行首的完整章节标题
-    # m7/m8 标题可能因数据不同而变化，使用较短前缀
+    # m7 标题可能因 M9 是否存在而变化序号（七、/八、），提供两个候选
+    # m8 标题可能因数据不同而变化，使用较短前缀
     _EXACT_TITLES = {
-        "m1": "一、诊断摘要",
-        "m4": "二、六大领域达标分析",
-        "m2": "三、核心短板清单",
-        "m3": "四、知识点短板钻取",
-        "m5": "五、城市考情对照",
-        "m6": "六、分层与学习建议",
-        "m9": "七、逐题分析明细",
-        "m7": "八、数据",
-        "m8": "分析范围",
-        "m10": "十、",
-        "m11": "十一、",
+        "m1": ("一、诊断摘要",),
+        "m4": ("二、六大领域达标分析",),
+        "m2": ("三、核心短板清单",),
+        "m3": ("四、知识点短板钻取",),
+        "m5": ("五、城市考情对照",),
+        "m6": ("六、分层与学习建议",),
+        "m9": ("七、逐题分析明细",),
+        "m7": ("七、数据", "八、数据"),
+        "m8": ("分析范围",),
+        "m10": ("十、",),
+        "m11": ("十一、",),
     }
 
-    # m7/m8 需要额外验证：标题行必须很短（< 30 字符），排除正文中的偶然匹配
+    # m7 需要额外验证：标题行必须很短（< 30 字符），排除正文中的偶然匹配
     _SHORT_TITLE_KEYS = {"m7"}
     _SHORT_TITLE_MAX_LEN = 30
 
@@ -199,12 +213,13 @@ def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
         if is_toc_page:
             continue
 
-        for key, title in _EXACT_TITLES.items():
+        for key, titles in _EXACT_TITLES.items():
             if key in found_keys:
                 continue
             for line in lines:
                 stripped = line.strip()
-                if not stripped.startswith(title):
+                matched = any(stripped.startswith(t) for t in titles)
+                if not matched:
                     continue
                 # 对短前缀标题额外验证：行长度不能太长（排除正文中的偶然匹配）
                 if key in _SHORT_TITLE_KEYS and len(stripped) > _SHORT_TITLE_MAX_LEN:
@@ -227,6 +242,20 @@ def _toc_pages_for_injection(toc_pages: dict[str, int]) -> dict[str, int]:
         for key, page_number in toc_pages.items()
         if key in _TOC_DISPLAY_KEYS
     }
+
+
+FONTCONFIG_PATH = os.environ.get("FONTCONFIG_PATH", "")
+
+
+def _ensure_fontconfig_env():
+    """确保 WSL2/Linux 环境下 Fontconfig 可用。"""
+    global FONTCONFIG_PATH
+    if not FONTCONFIG_PATH:
+        for candidate in ["/etc/fonts", "/usr/local/etc/fonts"]:
+            if Path(candidate).is_dir():
+                os.environ["FONTCONFIG_PATH"] = candidate
+                FONTCONFIG_PATH = candidate
+                break
 
 
 def _build_pdf_kwargs(payload: dict) -> dict:
@@ -325,7 +354,7 @@ def _resolve_comic_image_paths(tier_name: str,
     )
 
 
-def render_html(payload: dict, comic_image_root: Path | None = None) -> str:
+def render_html(payload: dict, comic_image_root: Path | None = None, typeset_css: str = "") -> str:
     """将 JSON payload 渲染为 HTML。"""
     env = Environment(
         loader=FileSystemLoader(str(TEMPLATE_DIR)),
@@ -337,7 +366,7 @@ def render_html(payload: dict, comic_image_root: Path | None = None) -> str:
     logo_path = ASSETS_DIR / "logo_dida985.png"
 
     context = dict(payload)
-    context["combined_css"] = load_css()
+    context["combined_css"] = load_css() + typeset_css
     context["render_payload"] = payload
     context.update(build_learning_blueprints(payload))
     context["font_path"] = str(font_path)
@@ -371,10 +400,10 @@ def render_html(payload: dict, comic_image_root: Path | None = None) -> str:
 
 def _launch_chromium(playwright):
     try:
-        return playwright.chromium.launch(channel="chrome")
+        return playwright.chromium.launch(headless=True, args=["--no-sandbox"])
     except Exception:
-        print("[INFO] 未找到系统 Chrome, 使用 Playwright Chromium")
-        return playwright.chromium.launch(headless=True)
+        print("[INFO] Playwright Chromium 不可用, 尝试系统 Chrome")
+        return playwright.chromium.launch(channel="chrome")
 
 
 def _wait_for_images(page) -> None:
@@ -450,14 +479,19 @@ def _build_final_pdf_bytes(page, pdf_kwargs: dict) -> bytes:
     return apply_progress_rail(final_bytes, toc_pages)
 
 
-def generate_pdf(html: str, output_path: str, payload: dict) -> Path:
-    """HTML → PDF (Playwright Chromium)。"""
+def generate_pdf(output_path: str, payload: dict, comic_image_root=None) -> Path:
+    """双 Pass 精确排版 → PDF。
+
+    Pass 1: 渲染 HTML → 测量 DOM 高度
+    Pass 2: 用测量值生成排版 CSS → 渲染 HTML → 生成 PDF
+    """
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
         print("PDF 生成需要 playwright: pip install playwright")
         sys.exit(1)
 
+    _ensure_fontconfig_env()
     pdf_kwargs = _build_pdf_kwargs(payload)
     output = Path(output_path)
 
@@ -466,16 +500,26 @@ def generate_pdf(html: str, output_path: str, payload: dict) -> Path:
         browser = _launch_chromium(p)
         page = browser.new_page()
         try:
-            with tempfile.NamedTemporaryFile(
-                "w",
-                suffix=".html",
-                encoding="utf-8",
-                delete=False,
-            ) as temp_html:
-                temp_html.write(html)
-                temp_html_path = Path(temp_html.name)
+            # -- Pass 1: 测量 DOM 高度 --
+            measured = {}
+            if _HAS_GOLDEN:
+                html_pass1 = render_html(payload, comic_image_root=comic_image_root)
+                page.set_content(html_pass1, wait_until="load")
+                page.emulate_media(media='print')
+                try:
+                    measured = measure_dom_heights(page)
+                    print(f"[Pass 1] DOM 测量完成: {len(measured)} 个模块")
+                except Exception as e:
+                    print(f"[WARNING] Pass 1 DOM 测量失败, 回退到单 Pass 模式: {e}")
+                    measured = {}
 
-            page.goto(temp_html_path.as_uri(), wait_until="load")
+            # -- Pass 2: 精确排版 + PDF 生成 --
+            typeset_css = ""
+            if _HAS_GOLDEN and measured:
+                typeset_css = build_typeset_css(payload, measured=measured)
+
+            html_pass2 = render_html(payload, comic_image_root=comic_image_root, typeset_css=typeset_css)
+            page.set_content(html_pass2, wait_until="load")
             _wait_for_images(page)
 
             final_bytes = _build_final_pdf_bytes(page, pdf_kwargs)
@@ -505,15 +549,17 @@ def main():
     with open(args.json_file, "r", encoding="utf-8") as f:
         payload = json.load(f)
 
-    # 渲染 HTML
-    html = render_html(payload)
+    typeset_css = ""
+    if _HAS_GOLDEN:
+        typeset_css = build_typeset_css(payload)
+
+    html = render_html(payload, typeset_css=typeset_css)
     Path(args.output).write_text(html, encoding="utf-8")
     print(f"HTML: {args.output}")
 
-    # 可选 PDF
     if args.pdf:
         pdf_path = args.output.replace(".html", ".pdf")
-        generate_pdf(html, pdf_path, payload)
+        generate_pdf(pdf_path, payload)
 
 
 if __name__ == "__main__":
