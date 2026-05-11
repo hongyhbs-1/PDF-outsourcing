@@ -155,6 +155,8 @@
 ================================================================================
 #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
+
 {# ========================================================================
    宏定义: Macro Definitions
    ======================================================================== #}
@@ -261,7 +263,7 @@
   <h1 class="m7-data-reliability__title">
     {% set _qd_m7 = question_detail | default({}, true) %}
     {% set _qd_papers_m7 = _qd_m7.papers | default([], true) %}
-    {% if _qd_papers_m7 | length > 0 and _qd_m7.total_count | default(0) > 0 %}八{% else %}七{% endif %}、{{ section.title | default('数据可信度说明', true) }}
+    {{ lb_icon('shield', 'frame-title-icon') }}{% if _qd_papers_m7 | length > 0 and _qd_m7.total_count | default(0) > 0 %}八{% else %}七{% endif %}、{{ section.title | default('数据可信度说明', true) }}
   </h1>
 
   <div class="module-content-card">
@@ -271,7 +273,7 @@
      ==================================================================== #}
   <section class="m7-report-box">
     <div class="m7-report-box__inner">
-      <h2 class="m7-section-title">数据概览</h2>
+      <h2 class="m7-section-title">{{ lb_icon('data', 'frame-section-icon') }} 数据概览</h2>
 
       <div class="m7-overview-cards">
         {# --- 卡片1: 分析题量 --- #}
@@ -386,7 +388,7 @@
   {% if coverage_table.rows and coverage_table.rows | length > 0 %}
   <section class="m7-report-box m7-report-box--purple">
     <div class="m7-report-box__inner">
-      <h2 class="m7-section-title">L2模块覆盖详情</h2>
+      <h2 class="m7-section-title">{{ lb_icon('tree', 'frame-section-icon') }} L2模块覆盖详情</h2>
       <p class="m7-coverage-note">按知识点统计，1题可覆盖多个知识点，因此各模块题量之和可能大于总题数。</p>
 
       <table class="m7-coverage-table">
@@ -454,6 +456,7 @@
     <div class="m7-quality-block m7-quality-block--blue">
       <h2 class="m7-block-title">
         <span class="m7-block-title__bullet"></span>
+        {{ lb_icon('shield', 'frame-inline-icon') }}
         <span>整体数据质量评估</span>
       </h2>
       
@@ -532,6 +535,7 @@
     <div class="m7-quality-block m7-quality-block--yellow">
       <h2 class="m7-block-title">
         <span class="m7-block-title__bullet"></span>
+        {{ lb_icon('warning', 'frame-inline-icon frame-inline-icon--warning') }}
         <span>{{ low_sample.title | default('数据不足提示', true) }}</span>
       </h2>
       
@@ -567,6 +571,7 @@
     <div class="m7-quality-block m7-quality-block--purple">
       <h2 class="m7-block-title">
         <span class="m7-block-title__bullet"></span>
+        {{ lb_icon('target', 'frame-inline-icon') }}
         <span>{{ uncovered_core.title | default('未覆盖的核心考点', true) }}</span>
       </h2>
       
@@ -596,7 +601,7 @@
   {% if m7_density == 'sparse' %}
   <section class="m7-report-box m7-report-box--usage">
     <div class="m7-report-box__inner">
-      <h2 class="m7-section-title">如何使用当前诊断</h2>
+      <h2 class="m7-section-title">{{ lb_icon('support', 'frame-section-icon') }} 如何使用当前诊断</h2>
       <div class="m7-usage-grid">
         <div class="m7-usage-item">
           <div class="m7-usage-item__title">先看趋势</div>

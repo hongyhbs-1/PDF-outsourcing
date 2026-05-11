@@ -205,6 +205,8 @@ CSS变量说明：
 ================================================================================
 #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
+
 {# ============================================================================
    宏定义 (Macros)
    ============================================================================ #}
@@ -356,7 +358,7 @@ CSS变量说明：
      标题组 (Section Heading)
      ------------------------------------------------------------------------ #}
   <div class="m4-section-heading">
-    <h2 class="m4-section-title">二、{{ section.title | default('六大领域达标分析') }}</h2>
+    <h2 class="m4-section-title">{{ lb_icon('module', 'frame-title-icon') }}二、{{ section.title | default('六大领域达标分析') }}</h2>
     <div class="m4-section-underline" aria-hidden="true"></div>
   </div>
 
@@ -367,7 +369,7 @@ CSS变量说明：
      ------------------------------------------------------------------------ #}
   <div class="m4-chart-meta-bar">
     <div class="m4-meta-text">
-      目标线：正确率 ≥ {{ section.target_accuracy_text | default(meta.target_accuracy ~ '%') }}
+      {{ lb_icon('flag', 'frame-inline-icon') }} 目标线：正确率 ≥ {{ section.target_accuracy_text | default(meta.target_accuracy ~ '%') }}
     </div>
     <div class="m4-legend" aria-label="图例">
       {% for leg in legend_items %}
@@ -468,7 +470,7 @@ CSS变量说明：
      ------------------------------------------------------------------------ #}
   {% if domains | length > 0 %}
   <div class="m4-table-card">
-    <div class="m4-table-title">领域表现详情</div>
+    <div class="m4-table-title">{{ lb_icon('data', 'frame-inline-icon') }} 领域表现详情</div>
     <table class="m4-table">
       <thead>
         <tr>
@@ -549,7 +551,7 @@ CSS变量说明：
   {% set summary_items = summary.get('items', []) if summary is mapping else (summary.items if summary.items is defined else []) %}
   {% if summary_items | length > 0 %}
   <div class="m4-summary-card">
-    <div class="m4-summary-title">{{ summary.title | default('分析小结') }}</div>
+    <div class="m4-summary-title">{{ lb_icon('shield', 'frame-inline-icon') }} {{ summary.title | default('分析小结') }}</div>
     <ul class="m4-summary-list">
       {% for item in summary_items %}
       {# 根据第一个highlight的style确定区域类型 #}
@@ -579,7 +581,7 @@ CSS变量说明：
   {% elif section.note_text is defined and section.note_text %}
   {# 如果没有summary但有note_text，显示备注 #}
   <div class="m4-summary-card">
-    <div class="m4-summary-title">说明</div>
+    <div class="m4-summary-title">{{ lb_icon('data', 'frame-inline-icon') }} 说明</div>
     <p class="m4-summary-note">{{ section.note_text }}</p>
   </div>
   {% endif %}

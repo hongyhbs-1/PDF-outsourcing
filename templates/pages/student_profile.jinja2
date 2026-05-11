@@ -3,6 +3,7 @@
    双区结构：整体情况 / 整体分析
    ============================================================================== #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
 {% set acc = summary.current_accuracy | default(0) | float %}
 {% set target_acc = summary.target_accuracy | default(85) | float %}
 {% set delta = summary.current_delta | default(0) | float %}
@@ -114,16 +115,16 @@
 {% endif %}
 
 <div class="sp-page sp-page--{{ sp_density }}">
-  <h1 class="sp-title">学生画像分析</h1>
+  <h1 class="sp-title">{{ lb_icon('profile', 'frame-title-icon') }}学生画像分析</h1>
 
   <div class="module-content-card">
     <div class="sp-group-head">
-      <h2 class="sp-group-title">一、整体情况</h2>
+      <h2 class="sp-group-title">{{ lb_icon('profile', 'frame-section-icon') }}一、整体情况</h2>
     </div>
 
     <div class="sp-hero sp-overview-top">
       <div class="sp-profile-card">
-        <h2 class="sp-card-title">学生档案</h2>
+        <h2 class="sp-card-title">{{ lb_icon('student', 'frame-card-icon') }}学生档案</h2>
         <div class="sp-profile-grid">
           <div class="sp-profile-item">
             <div class="sp-profile-item__k">学生</div>
@@ -153,7 +154,7 @@
       </div>
 
       <div class="sp-hero-main">
-        <div class="sp-hero-kicker">学习画像速览</div>
+        <div class="sp-hero-kicker">{{ lb_icon('profile', 'frame-inline-icon') }}学习画像速览</div>
         <h2 class="sp-hero-title">{{ hero_title }}</h2>
         <p class="sp-hero-text">{{ hero_text }}</p>
         <div class="sp-chip-row">
@@ -170,7 +171,7 @@
     </div>
 
     <div class="sp-overview-conclusion">
-      <div class="sp-section-title">学习画像结论</div>
+      <div class="sp-section-title">{{ lb_icon('shield', 'frame-inline-icon') }}学习画像结论</div>
 
       {% if not has_real_data %}
       <div class="sp-conclusion-card sp-conclusion-card--warn">
@@ -198,12 +199,12 @@
 
   <section class="sp-section sp-section--analysis">
     <div class="sp-group-head">
-      <h2 class="sp-group-title">二、整体分析</h2>
+      <h2 class="sp-group-title">{{ lb_icon('gauge', 'frame-section-icon') }}二、整体分析</h2>
     </div>
 
     <div class="sp-progress-panel">
       <div class="sp-progress-panel__meta">
-        <div class="sp-progress-panel__eyebrow">学习情况分析</div>
+        <div class="sp-progress-panel__eyebrow">{{ lb_icon('gauge', 'frame-inline-icon') }}学习情况分析</div>
         {% if has_real_data %}
         <div class="sp-progress-panel__title">当前 {{ acc | int }}%，目标 {{ target_acc | int }}%，先抓 {{ lead_focus }}</div>
         <p class="sp-progress-panel__text">先看位置，再看后面的分析重点。</p>
@@ -229,25 +230,25 @@
 
     <div class="sp-metric-grid">
       <div class="sp-metric-card">
-        <div class="sp-metric-card__tag">当前水平</div>
+        <div class="sp-metric-card__tag">{{ lb_icon('gauge', 'frame-metric-icon') }}当前水平</div>
         <div class="sp-metric-card__value sp-metric-card__value--current">{{ acc | int }}%</div>
         <div class="sp-metric-card__label">整体正确率</div>
         <div class="sp-metric-card__hint">目标 {{ target_acc | int }}%</div>
       </div>
       <div class="sp-metric-card">
-        <div class="sp-metric-card__tag">当前状态</div>
+        <div class="sp-metric-card__tag">{{ lb_icon('shield', 'frame-metric-icon') }}当前状态</div>
         <div class="sp-metric-card__value">{{ summary.pass_rate_text | default('--') }}</div>
         <div class="sp-metric-card__label">达标率</div>
         <div class="sp-metric-card__hint">趋势 {{ trend_label }}</div>
       </div>
       <div class="sp-metric-card">
-        <div class="sp-metric-card__tag">目标差距</div>
+        <div class="sp-metric-card__tag">{{ lb_icon('gap', 'frame-metric-icon frame-metric-icon--warning') }}目标差距</div>
         <div class="sp-metric-card__value {{ 'sp-metric-card__value--neg' if delta < 0 else 'sp-metric-card__value--pos' }}">{{ gap_to_target }}%</div>
         <div class="sp-metric-card__label">距目标线</div>
         <div class="sp-metric-card__hint">先看 {{ lead_focus }}</div>
       </div>
       <div class="sp-metric-card">
-        <div class="sp-metric-card__tag">突破口</div>
+        <div class="sp-metric-card__tag">{{ lb_icon('target', 'frame-metric-icon') }}突破口</div>
         <div class="sp-metric-card__value">{{ weak_count if has_real_data else domain_count }}</div>
         <div class="sp-metric-card__label">{{ '待突破领域' if has_real_data else '已采集领域' }}</div>
         <div class="sp-metric-card__hint">{{ '先补最弱项' if has_real_data else '继续补样本' }}</div>
@@ -256,7 +257,7 @@
 
     <div class="sp-analysis-grid">
       <div class="sp-analysis-card sp-analysis-card--weakness">
-        <div class="sp-section-title">薄弱环节分析</div>
+        <div class="sp-section-title">{{ lb_icon('warning', 'frame-inline-icon frame-inline-icon--warning') }}薄弱环节分析</div>
 
         {% if not has_real_data %}
         <div class="sp-empty-card">
@@ -292,7 +293,7 @@
       </div>
 
       <div class="sp-analysis-card sp-analysis-card--interpretation">
-        <div class="sp-section-title">读数重点</div>
+        <div class="sp-section-title">{{ lb_icon('data', 'frame-inline-icon') }}读数重点</div>
         <div class="sp-analysis-points">
           <div class="sp-analysis-point">
             <div class="sp-analysis-point__label">1. 当前水平</div>
@@ -319,7 +320,7 @@
 
   <div class="sp-section sp-section--intervention">
     <div class="sp-group-head">
-      <h2 class="sp-group-title">三、本阶段介入重点</h2>
+      <h2 class="sp-group-title">{{ lb_icon('target', 'frame-section-icon') }}三、本阶段介入重点</h2>
     </div>
 
     <div class="sp-intervention-card">

@@ -3,6 +3,7 @@
    数据来源: summary / domains / meta (全部从现有 JSON 推导)
    ============================================================================== #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
 {% set acc = summary.current_accuracy | default(0) | float %}
 {% set target_acc = summary.target_accuracy | default(85) | float %}
 {% set delta = summary.current_delta | default(0) | float %}
@@ -29,7 +30,7 @@
 {% endif %}
 
 <div class="ip-page">
-  <h1 class="ip-title">提升预期与改变</h1>
+  <h1 class="ip-title">{{ lb_icon('growth', 'frame-title-icon frame-title-icon--success') }}提升预期与改变</h1>
 
   <div class="module-content-card">
 
@@ -39,22 +40,22 @@
     {# 差生路径: 当前→60天→中等→90天→目标 #}
     <div class="ip-stage">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
-      <div class="ip-stage__label">当前水平</div>
+      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon') }}当前水平</div>
       <div class="ip-stage__desc">起点</div>
     </div>
     <div class="ip-stage">
       <div class="ip-stage__marker ip-stage__marker--future">60%</div>
-      <div class="ip-stage__label">阶段性目标</div>
+      <div class="ip-stage__label">{{ lb_icon('flag', 'frame-inline-icon') }}阶段性目标</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
     <div class="ip-stage">
       <div class="ip-stage__marker ip-stage__marker--future">75%</div>
-      <div class="ip-stage__label">稳步提升</div>
+      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon frame-inline-icon--success') }}稳步提升</div>
       <div class="ip-stage__desc">约 120 天</div>
     </div>
     <div class="ip-stage">
       <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
-      <div class="ip-stage__label">目标达成</div>
+      <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon') }}目标达成</div>
       <div class="ip-stage__desc">约 180 天</div>
     </div>
 
@@ -62,17 +63,17 @@
     {# 中等生路径: 当前→30天→目标 #}
     <div class="ip-stage">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
-      <div class="ip-stage__label">当前水平</div>
+      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon') }}当前水平</div>
       <div class="ip-stage__desc">起点</div>
     </div>
     <div class="ip-stage">
       <div class="ip-stage__marker ip-stage__marker--future">80%</div>
-      <div class="ip-stage__label">快速提升</div>
+      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon frame-inline-icon--success') }}快速提升</div>
       <div class="ip-stage__desc">约 30 天</div>
     </div>
     <div class="ip-stage">
       <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
-      <div class="ip-stage__label">目标达成</div>
+      <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon') }}目标达成</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
 
@@ -80,17 +81,17 @@
     {# 优等生路径: 当前→保持→冲刺 #}
     <div class="ip-stage">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
-      <div class="ip-stage__label">当前水平</div>
+      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon') }}当前水平</div>
       <div class="ip-stage__desc">优秀</div>
     </div>
     <div class="ip-stage">
       <div class="ip-stage__marker ip-stage__marker--future">90%</div>
-      <div class="ip-stage__label">稳步拔高</div>
+      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon frame-inline-icon--success') }}稳步拔高</div>
       <div class="ip-stage__desc">约 30 天</div>
     </div>
     <div class="ip-stage">
       <div class="ip-stage__marker ip-stage__marker--future">95%</div>
-      <div class="ip-stage__label">冲刺满分</div>
+      <div class="ip-stage__label">{{ lb_icon('trophy', 'frame-inline-icon frame-inline-icon--warning') }}冲刺满分</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
     {% endif %}
@@ -98,7 +99,7 @@
 
   {# === 2. 提升路线 === #}
   <div class="ip-milestones">
-    <div class="ip-section-heading">提升路线</div>
+    <div class="ip-section-heading">{{ lb_icon('growth', 'frame-section-icon frame-section-icon--success') }}提升路线</div>
 
     {% if tier == 'need_major' %}
     <div class="ip-milestone">
@@ -181,11 +182,11 @@
   {# === 3. 具体提升点 === #}
   {% if weak_items | length > 0 %}
   <div class="ip-focus-section">
-    <div class="ip-section-heading">提升要点</div>
+    <div class="ip-section-heading">{{ lb_icon('target', 'frame-section-icon') }}提升要点</div>
     <div class="ip-focus-grid">
       {% for item in weak_items[:4] %}
       <div class="ip-focus-item">
-        <div class="ip-focus-item__name">{{ item.name_cn | default('领域' ~ loop.index) }}</div>
+        <div class="ip-focus-item__name">{{ lb_icon('target', 'frame-inline-icon') }}{{ item.name_cn | default('领域' ~ loop.index) }}</div>
         <div class="ip-focus-item__gain">+{{ (target_acc - (item.accuracy | default(0) | float)) | int }}%</div>
         <div class="ip-focus-item__label">预期提升空间</div>
       </div>
@@ -198,7 +199,7 @@
   <div class="ip-phase-grid">
     {% if tier == 'need_major' %}
     <div class="ip-phase-card">
-      <div class="ip-phase-card__header">阶段目标</div>
+      <div class="ip-phase-card__header">{{ lb_icon('flag', 'frame-card-icon') }}阶段目标</div>
       <div class="ip-phase-card__body">
         <div class="ip-phase-card__item">基础正确率达标 <strong>60%</strong></div>
         <div class="ip-phase-card__item">薄弱领域减少至 <strong>2 个</strong>以内</div>
@@ -206,7 +207,7 @@
       </div>
     </div>
     <div class="ip-phase-card">
-      <div class="ip-phase-card__header">训练重点</div>
+      <div class="ip-phase-card__header">{{ lb_icon('teacher', 'frame-card-icon') }}训练重点</div>
       <div class="ip-phase-card__body">
         <div class="ip-phase-card__item">每日 <strong>15 分钟</strong>基础专项</div>
         <div class="ip-phase-card__item">错题当日精讲 + 变形练习</div>
@@ -214,7 +215,7 @@
       </div>
     </div>
     <div class="ip-phase-card ip-phase-card--accent">
-      <div class="ip-phase-card__header">验收标准</div>
+      <div class="ip-phase-card__header">{{ lb_icon('shield', 'frame-card-icon frame-card-icon--success') }}验收标准</div>
       <div class="ip-phase-card__body">
         <div class="ip-phase-card__item">连续 2 次测评正确率 <strong>≥60%</strong></div>
         <div class="ip-phase-card__item">基础知识点覆盖率 <strong>≥80%</strong></div>
@@ -224,7 +225,7 @@
 
     {% elif tier == 'room_grow' %}
     <div class="ip-phase-card">
-      <div class="ip-phase-card__header">阶段目标</div>
+      <div class="ip-phase-card__header">{{ lb_icon('flag', 'frame-card-icon') }}阶段目标</div>
       <div class="ip-phase-card__body">
         <div class="ip-phase-card__item">正确率提升至 <strong>{{ target_acc | int }}%</strong></div>
         <div class="ip-phase-card__item">薄弱领域全部达标</div>
@@ -232,7 +233,7 @@
       </div>
     </div>
     <div class="ip-phase-card">
-      <div class="ip-phase-card__header">训练重点</div>
+      <div class="ip-phase-card__header">{{ lb_icon('teacher', 'frame-card-icon') }}训练重点</div>
       <div class="ip-phase-card__body">
         <div class="ip-phase-card__item">薄弱领域 <strong>每日 20 分钟</strong>专项</div>
         <div class="ip-phase-card__item">每两周 1 次诊断测评</div>
@@ -240,7 +241,7 @@
       </div>
     </div>
     <div class="ip-phase-card ip-phase-card--accent">
-      <div class="ip-phase-card__header">验收标准</div>
+      <div class="ip-phase-card__header">{{ lb_icon('shield', 'frame-card-icon frame-card-icon--success') }}验收标准</div>
       <div class="ip-phase-card__body">
         <div class="ip-phase-card__item">连续 3 次测评达标</div>
         <div class="ip-phase-card__item">薄弱领域提升 <strong>≥10%</strong></div>
@@ -250,7 +251,7 @@
 
     {% else %}
     <div class="ip-phase-card">
-      <div class="ip-phase-card__header">阶段目标</div>
+      <div class="ip-phase-card__header">{{ lb_icon('flag', 'frame-card-icon') }}阶段目标</div>
       <div class="ip-phase-card__body">
         <div class="ip-phase-card__item">正确率稳定在 <strong>95%+</strong></div>
         <div class="ip-phase-card__item">压轴题得分率 <strong>≥80%</strong></div>
@@ -258,7 +259,7 @@
       </div>
     </div>
     <div class="ip-phase-card">
-      <div class="ip-phase-card__header">训练重点</div>
+      <div class="ip-phase-card__header">{{ lb_icon('teacher', 'frame-card-icon') }}训练重点</div>
       <div class="ip-phase-card__body">
         <div class="ip-phase-card__item">竞赛级题目每日 <strong>2-3 题</strong></div>
         <div class="ip-phase-card__item">模拟考试环境限时训练</div>
@@ -266,7 +267,7 @@
       </div>
     </div>
     <div class="ip-phase-card ip-phase-card--accent">
-      <div class="ip-phase-card__header">验收标准</div>
+      <div class="ip-phase-card__header">{{ lb_icon('shield', 'frame-card-icon frame-card-icon--success') }}验收标准</div>
       <div class="ip-phase-card__body">
         <div class="ip-phase-card__item">模拟考试正确率 <strong>≥95%</strong></div>
         <div class="ip-phase-card__item">高难度题正确率 <strong>≥85%</strong></div>
@@ -293,7 +294,7 @@
 
   {# === 家长行动指南 === #}
   <div class="ip-parent-guide">
-    <div class="ip-parent-guide__title">家长行动指南</div>
+    <div class="ip-parent-guide__title">{{ lb_icon('parent', 'frame-card-icon') }}家长行动指南</div>
     <div class="ip-parent-guide__content">
       {% if tier == 'need_major' %}
       <p>1. 每日监督孩子完成 <strong>15 分钟</strong>基础专项训练，确保不中断；</p>

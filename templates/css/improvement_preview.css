@@ -23,13 +23,15 @@
 }
 
 .ip-title {
+  display: inline-block;
   font-size: 24px;
+  line-height: 1.15;
   font-weight: 700;
   color: var(--pm-teal);
-  border-bottom: 2px solid var(--pm-gradient-accent-bar);
+  border-bottom: 2px solid transparent;
   border-image: var(--pm-gradient-accent-bar) 1;
-  padding-bottom: 8px;
-  margin-bottom: 20px;
+  padding-bottom: 7px;
+  margin: 8px 0 16px;
 }
 
 /* ==========================================================================
@@ -345,9 +347,9 @@
   }
 
   .ip-title {
-    font-size: 24px;
-    padding-bottom: 7px;
-    margin-bottom: 16px;
+    font-size: 22px;
+    padding-bottom: 6px;
+    margin: 8px 0 14px;
   }
 
   .ip-roadmap {

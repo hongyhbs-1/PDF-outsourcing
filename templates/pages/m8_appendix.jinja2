@@ -80,6 +80,8 @@
    }
    ----------------------------------------------------------------------------- #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
+
 {# -----------------------------------------------------------------------------
    辅助宏定义 (Helper Macros)
    ----------------------------------------------------------------------------- #}
@@ -164,7 +166,7 @@
        ------------------------------------------------------------------------- #}
     <div class="m8-appendix-title">
       <h1 class="m8-appendix-title__text">
-        {{ safe_value(meta.page_title, '附录：分析依据') }}
+        {{ lb_icon('paper', 'frame-title-icon') }}{{ safe_value(meta.page_title, '附录：分析依据') }}
       </h1>
       <div class="m8-appendix-title__underline"></div>
     </div>
@@ -175,7 +177,7 @@
        3.2 模块一：分析范围
        ------------------------------------------------------------------------- #}
     <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__titlebar">分析范围</div>
+      <div class="m8-appendix-panel__titlebar">{{ lb_icon('map', 'frame-inline-icon') }} 分析范围</div>
       
       {% if analysis_rows | length > 0 %}
       <table class="m8-appendix-table m8-appendix-kv-table">
@@ -199,7 +201,7 @@
        ------------------------------------------------------------------------- #}
     {% if difficulty and difficulty.get('items', []) | length > 0 %}
     <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__titlebar">难度分布统计</div>
+      <div class="m8-appendix-panel__titlebar">{{ lb_icon('module', 'frame-inline-icon') }} 难度分布统计</div>
 
       {# 3.3.1 统计表格 #}
       <table class="m8-appendix-table m8-appendix-difficulty-table">
@@ -259,7 +261,7 @@
        3.4 模块三：试卷/批次清单
        ------------------------------------------------------------------------- #}
     <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__section-title">试卷/批次清单</div>
+      <div class="m8-appendix-panel__section-title">{{ lb_icon('paper', 'frame-inline-icon') }} 试卷/批次清单</div>
       
       {% if papers and papers.get('items', []) | length > 0 %}
       <table class="m8-appendix-table m8-appendix-papers-table">
@@ -305,7 +307,7 @@
        ------------------------------------------------------------------------- #}
     {% if metric_definitions and metric_definitions | length > 0 %}
     <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__titlebar">指标释义</div>
+      <div class="m8-appendix-panel__titlebar">{{ lb_icon('data', 'frame-inline-icon') }} 指标释义</div>
 
       <div class="m8-metrics-grid">
         {% for metric in metric_definitions %}
@@ -322,7 +324,7 @@
 
     {% if m8_density != 'dense' %}
     <div class="m8-appendix-usage">
-      <div class="m8-appendix-usage__title">附录使用说明</div>
+      <div class="m8-appendix-usage__title">{{ lb_icon('support', 'frame-inline-icon') }} 附录使用说明</div>
       <div class="m8-appendix-usage__text">
         本附录用于说明分析范围、样本来源和指标口径。阅读正文时，可结合试卷清单确认样本覆盖，再结合指标释义理解各模块中的正确率、目标线和优先级等结论。
       </div>

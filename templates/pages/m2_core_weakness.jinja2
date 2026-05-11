@@ -80,6 +80,8 @@
 ================================================================================
 #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
+
 {# ===== 顶层取数入口与默认值 ===== #}
 {# meta 变量定义 - 确保兼容性 #}
 {% set meta = meta | default({}) %}
@@ -96,14 +98,14 @@
 <div class="m2-core-weakness-module">
 
   {# ===== 模块标题 ===== #}
-  <h1 class="m2-cw-module-title">三、{{ safe(s.module_title, '核心短板清单') }}</h1>
+  <h1 class="m2-cw-module-title">{{ lb_icon('warning', 'frame-title-icon frame-title-icon--warning') }}三、{{ safe(s.module_title, '核心短板清单') }}</h1>
   <div class="m2-cw-module-title-underline"></div>
 
   <div class="module-content-card">
 
   {# ===== 3. 导语说明条（仅在有内容时渲染） ===== #}
   {% if s.intro_text %}
-  <div class="m2-cw-note-bar">{{ s.intro_text }}</div>
+  <div class="m2-cw-note-bar">{{ lb_icon('target', 'frame-inline-icon') }} {{ s.intro_text }}</div>
   {% endif %}
 
   {# ===== 4. 表格卡片 ===== #}
@@ -116,7 +118,7 @@
       {"level": "P2", "text": "适时巩固", "class": "p2"}
     ]) %}
     <div class="m2-cw-legend-row">
-      <span class="m2-cw-legend-title">优先级说明</span>
+      <span class="m2-cw-legend-title">{{ lb_icon('flag', 'frame-inline-icon') }} 优先级说明</span>
       {% for lg in legend %}
       <div class="m2-cw-legend-item">
         <div class="m2-cw-legend-badge m2-cw-legend-badge--{{ lg.class | default('p0') }}">
@@ -236,7 +238,7 @@
 
     {# ----- 5.1 标题行 ----- #}
     <div class="m2-cw-reason-header">
-      <span class="m2-cw-reason-header__title">{{ safe(reasoning.title, '排序依据说明') }}</span>
+      <span class="m2-cw-reason-header__title">{{ lb_icon('data', 'frame-inline-icon') }} {{ safe(reasoning.title, '排序依据说明') }}</span>
       <span class="m2-cw-reason-header__subtitle">
         {{ safe(reasoning.subtitle_prefix, '') }}"<span class="m2-cw-reason-header__highlight">{{ safe(reasoning.highlight_kp, '') }}</span>"{{ safe(reasoning.subtitle_suffix, '') }}
       </span>
@@ -246,7 +248,7 @@
     <div class="m2-cw-reason-cards">
       {% for card in reasoning.cards %}
       <div class="m2-cw-reason-card">
-        <div class="m2-cw-reason-card__label">{{ safe(card.label, '') }}</div>
+        <div class="m2-cw-reason-card__label">{{ lb_icon('evidence', 'frame-inline-icon') }} {{ safe(card.label, '') }}</div>
 
         {% if card.is_icon %}
           {# 图标模式（如：核心考点的勾选图标） #}
@@ -280,7 +282,7 @@
   {% set tips = s.tips | default([]) %}
   {% if tips | length > 0 %}
   <div class="m2-cw-tips-box">
-    <div class="m2-cw-tips-title">数据提示</div>
+    <div class="m2-cw-tips-title">{{ lb_icon('data', 'frame-inline-icon') }} 数据提示</div>
     {% for tip in tips %}
     <div class="m2-cw-tips-item">* {{ tip }}</div>
     {% endfor %}

@@ -45,13 +45,15 @@
 
 /* --- 页面标题 --- */
 .sp-title {
-  font-size: 19px;
+  display: inline-block;
+  font-size: 24px;
+  line-height: 1.15;
   font-weight: 700;
   color: var(--pm-teal);
-  border-bottom: 2px solid var(--pm-gradient-accent-bar);
+  border-bottom: 2px solid transparent;
   border-image: var(--pm-gradient-accent-bar) 1;
-  padding-bottom: 4px;
-  margin-bottom: 8px;
+  padding-bottom: 7px;
+  margin: 8px 0 16px;
 }
 
 /* --- 三大分区 --- */
@@ -667,6 +669,12 @@
     width: auto;
     padding: 0 15mm 0 18mm;
     box-shadow: none;
+  }
+
+  .sp-title {
+    font-size: 22px;
+    padding-bottom: 6px;
+    margin: 8px 0 14px;
   }
 
   /* 压缩介入重点部分，避免页面溢出 */

@@ -1,0 +1,52 @@
+/* ==========================================================================
+   目录章节页标题下划线统一覆盖
+   --------------------------------------------------------------------------
+   Loaded last alphabetically by render_standalone.load_css(). Keep this file
+   scoped to TOC-listed chapter page title selectors only.
+   ========================================================================== */
+
+:root {
+  --chapter-title-underline-height: 3px;
+  --chapter-title-underline-gap: 6px;
+  --chapter-title-underline-radius: 2px;
+  --chapter-title-underline-fill: var(--pm-gradient-accent-bar, linear-gradient(90deg, #d9b36a 0%, #1f6f78 100%));
+}
+
+.m1-section-title__text,
+.m2-cw-module-title,
+.m3-kp-drill__title,
+.m4-section-title,
+.m5-city-compare__title,
+.m6-module-title__text,
+.m7-data-reliability__title,
+.m8-appendix-title__text,
+.m9-title {
+  display: inline-block !important;
+  width: fit-content !important;
+  max-width: 100%;
+}
+
+/* Modules that previously used border-bottom for the title underline. */
+.m3-kp-drill__title,
+.m5-city-compare__title {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.m1-section-title__text::after,
+.m2-cw-module-title::after,
+.m3-kp-drill__title::after,
+.m4-section-title::after,
+.m5-city-compare__title::after,
+.m6-module-title__text::after,
+.m7-data-reliability__title::after,
+.m8-appendix-title__text::after,
+.m9-title::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: var(--chapter-title-underline-height);
+  margin-top: var(--chapter-title-underline-gap);
+  background: var(--chapter-title-underline-fill);
+  border-radius: var(--chapter-title-underline-radius);
+}

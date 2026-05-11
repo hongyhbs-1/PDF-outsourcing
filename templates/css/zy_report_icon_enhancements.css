@@ -1,0 +1,195 @@
+/* ============================================================================
+   Shared inline SVG icon enhancements for report body pages.
+   Uses templates/macros/learning_blueprint_icons.jinja2 (PDF-safe inline SVG).
+   ============================================================================ */
+
+/* Loaded after module CSS: normalize legacy SimHei variables to the bundled
+   Noto Sans SC font so PDF output does not fall back to tofu-box glyphs. */
+:root {
+  --font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-family-base: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --cw-font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --cc-font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --appendix-font-family-base: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.frame-title-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+  color: var(--pm-teal);
+}
+
+.frame-title-icon--success {
+  color: var(--pm-status-success, #2d8a6e);
+}
+
+.frame-title-icon--warning {
+  color: var(--pm-status-attention, #d4943a);
+}
+
+.frame-section-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--pm-teal);
+}
+
+.frame-section-icon--success {
+  color: var(--pm-status-success, #2d8a6e);
+}
+
+.frame-card-icon,
+.frame-inline-icon,
+.frame-metric-icon {
+  width: 13px;
+  height: 13px;
+  color: var(--pm-teal);
+}
+
+.frame-card-icon--success,
+.frame-inline-icon--success {
+  color: var(--pm-status-success, #2d8a6e);
+}
+
+.frame-card-icon--warning,
+.frame-inline-icon--warning,
+.frame-metric-icon--warning {
+  color: var(--pm-status-attention, #d4943a);
+}
+
+.sp-title,
+.ip-title,
+.mov-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sp-group-title,
+.sp-card-title,
+.sp-section-title,
+.sp-progress-panel__eyebrow,
+.ip-section-heading,
+.ip-phase-card__header,
+.ip-parent-guide__title,
+.mov-card-title,
+.mov-difficulty__title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.ip-phase-card__header {
+  width: auto;
+}
+
+.sp-hero-kicker,
+.mov-hero-kicker,
+.sp-metric-card__tag,
+.mov-card__label {
+  align-items: center;
+  gap: 4px;
+}
+
+.mov-card__label {
+  display: inline-flex;
+}
+
+.m1-section-bar,
+.m2-cw-note-bar,
+.m3-kp-drill__section-title,
+.m4-chart-meta-bar .m4-meta-text,
+.m4-table-title,
+.m4-summary-title,
+.m5-city-compare__card-title,
+.m5-city-compare__table-title,
+.m5-city-compare__advice-title,
+.m6-training-focus__title,
+.m7-section-title,
+.m8-appendix-panel__titlebar,
+.m8-appendix-panel__section-title,
+.m8-appendix-usage__title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.m1-kpi-label,
+.m1-bt-title,
+.m2-cw-legend-title,
+.m2-cw-reason-header__title,
+.m2-cw-reason-card__label,
+.m2-cw-tips-title,
+.m3-kp-step__name,
+.m3-kp-drill__domain-name,
+.m6-card-header__title,
+.m7-block-title,
+.m7-usage-item__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ip-stage__label,
+.ip-focus-item__name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.sp-metric-card__tag .frame-metric-icon,
+.mov-card__label .frame-metric-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.sp-hero-kicker .frame-inline-icon,
+.mov-hero-kicker .frame-inline-icon {
+  width: 12px;
+  height: 12px;
+}
+
+@media print {
+  .frame-title-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .frame-section-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .frame-card-icon,
+  .frame-inline-icon,
+  .frame-metric-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .sp-title,
+  .ip-title,
+  .mov-title {
+    gap: 5px;
+  }
+
+  .sp-group-title,
+  .sp-card-title,
+  .sp-section-title,
+  .sp-progress-panel__eyebrow,
+  .ip-section-heading,
+  .ip-phase-card__header,
+  .ip-parent-guide__title,
+  .mov-card-title,
+  .mov-difficulty__title {
+    gap: 4px;
+  }
+
+  .ip-stage__label,
+  .ip-focus-item__name {
+    gap: 3px;
+  }
+}

@@ -149,15 +149,7 @@ _TOC_INJECT_JS = """
     for (const [key, pageNum] of Object.entries(toc_pages)) {
         const el = document.querySelector(`[data-toc-key="${key}"]`);
         if (el) {
-            // 使用内联 span + 绝对定位, 防止页码文本变化改变容器高度
-            // 目录项容器需 position: relative (已在 CSS 中设置)
-            const span = document.createElement('span');
-            span.textContent = String(pageNum);
-            span.style.cssText = 'position:absolute; right:0;';
-            // 替换原占位符内容
-            el.textContent = '';
-            el.style.position = el.style.position || 'relative';
-            el.appendChild(span);
+            el.textContent = String(pageNum);
             injected++;
         }
     }
@@ -200,6 +192,12 @@ def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
     # m7 需要额外验证：标题行必须很短（< 30 字符），排除正文中的偶然匹配
     _SHORT_TITLE_KEYS = {"m7"}
     _SHORT_TITLE_MAX_LEN = 30
+    _CONTAINS_TITLE_FALLBACKS = {
+        # Chromium can emit the Chinese numeral in the M3 title as a null glyph
+        # when the bundled CJK font is subset for PDF. Keep TOC extraction
+        # stable by matching the semantic title after skipping the TOC page.
+        "m3": ("知识点短板钻取",),
+    }
 
     for page_idx in range(len(doc)):
         text = doc[page_idx].get_text()
@@ -219,6 +217,11 @@ def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
             for line in lines:
                 stripped = line.strip()
                 matched = any(stripped.startswith(t) for t in titles)
+                if not matched:
+                    matched = any(
+                        fallback in stripped
+                        for fallback in _CONTAINS_TITLE_FALLBACKS.get(key, ())
+                    )
                 if not matched:
                     continue
                 # 对短前缀标题额外验证：行长度不能太长（排除正文中的偶然匹配）
@@ -248,7 +251,7 @@ FONTCONFIG_PATH = os.environ.get("FONTCONFIG_PATH", "")
 
 
 def _ensure_fontconfig_env():
-    """确保 WSL2/Linux 环境下 Fontconfig 可用。"""
+    """确保 WSL2/Linux 环境下 Fontconfig 可用并能发现内置中文字体。"""
     global FONTCONFIG_PATH
     if not FONTCONFIG_PATH:
         for candidate in ["/etc/fonts", "/usr/local/etc/fonts"]:
@@ -257,13 +260,47 @@ def _ensure_fontconfig_env():
                 FONTCONFIG_PATH = candidate
                 break
 
+    font_file = FONTS_DIR / "NotoSansSC-Variable.ttf"
+    if not font_file.exists():
+        return
+
+    default_config = Path("/etc/fonts/fonts.conf")
+    include_line = (
+        f'  <include ignore_missing="yes">{default_config}</include>\n'
+        if default_config.exists()
+        else ""
+    )
+    bundled_config = Path(tempfile.gettempdir()) / "dida985-fonts.conf"
+    config_text = (
+        '<?xml version="1.0"?>\n'
+        '<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n'
+        '<fontconfig>\n'
+        f'  <dir>{FONTS_DIR.resolve()}</dir>\n'
+        f'{include_line}'
+        '</fontconfig>\n'
+    )
+    if not bundled_config.exists() or bundled_config.read_text(encoding="utf-8") != config_text:
+        bundled_config.write_text(config_text, encoding="utf-8")
+    os.environ["FONTCONFIG_FILE"] = str(bundled_config)
+
+
+def _build_pdf_chrome_meta(payload: dict) -> dict:
+    """Build PDF header/footer metadata from the full payload."""
+    meta = dict(payload.get("meta") or {})
+    cover_meta = payload.get("cover", {}).get("cover_meta", {}) or {}
+    summary = payload.get("summary", {}) or {}
+
+    meta.setdefault("grade", cover_meta.get("grade", ""))
+    meta.setdefault("target_score_text", summary.get("target_score_text", ""))
+    return meta
+
 
 def _build_pdf_kwargs(payload: dict) -> dict:
     """构建 Playwright page.pdf() 参数, 含页眉页脚。"""
     return {
         "format": "A4",
         "print_background": True,
-        **build_pdf_chrome_options(payload.get("meta", {})),
+        **build_pdf_chrome_options(_build_pdf_chrome_meta(payload)),
     }
 
 
@@ -495,16 +532,30 @@ def generate_pdf(output_path: str, payload: dict, comic_image_root=None) -> Path
     pdf_kwargs = _build_pdf_kwargs(payload)
     output = Path(output_path)
 
-    temp_html_path: Path | None = None
+    temp_html_paths: list[Path] = []
     with sync_playwright() as p:
         browser = _launch_chromium(p)
         page = browser.new_page()
+
+        def load_html_via_file(html: str) -> None:
+            """Load HTML from file:// so bundled fonts resolve in Chromium PDF."""
+            with tempfile.NamedTemporaryFile(
+                "w",
+                suffix=".html",
+                encoding="utf-8",
+                delete=False,
+            ) as temp_html:
+                temp_html.write(html)
+                temp_path = Path(temp_html.name)
+            temp_html_paths.append(temp_path)
+            page.goto(temp_path.as_uri(), wait_until="load")
+
         try:
             # -- Pass 1: 测量 DOM 高度 --
             measured = {}
             if _HAS_GOLDEN:
                 html_pass1 = render_html(payload, comic_image_root=comic_image_root)
-                page.set_content(html_pass1, wait_until="load")
+                load_html_via_file(html_pass1)
                 page.emulate_media(media='print')
                 try:
                     measured = measure_dom_heights(page)
@@ -519,7 +570,7 @@ def generate_pdf(output_path: str, payload: dict, comic_image_root=None) -> Path
                 typeset_css = build_typeset_css(payload, measured=measured)
 
             html_pass2 = render_html(payload, comic_image_root=comic_image_root, typeset_css=typeset_css)
-            page.set_content(html_pass2, wait_until="load")
+            load_html_via_file(html_pass2)
             _wait_for_images(page)
 
             final_bytes = _build_final_pdf_bytes(page, pdf_kwargs)
@@ -529,7 +580,7 @@ def generate_pdf(output_path: str, payload: dict, comic_image_root=None) -> Path
         finally:
             page.close()
             browser.close()
-            if temp_html_path is not None:
+            for temp_html_path in temp_html_paths:
                 temp_html_path.unlink(missing_ok=True)
 
     return output

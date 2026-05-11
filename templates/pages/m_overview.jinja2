@@ -23,6 +23,7 @@
 #}
 
 {% from 'macros/helpers.jinja2' import safe, safe_num %}
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
 
 {# ========================================================================
    变量预处理
@@ -80,7 +81,7 @@
 <div class="mov-page mov-page--{{ mov_density }}">
 
   <section class="mov-title-section">
-    <h1 class="mov-title">数据分析概览</h1>
+    <h1 class="mov-title">{{ lb_icon('data', 'frame-title-icon') }}数据分析概览</h1>
     <div class="mov-title__underline"></div>
   </section>
 
@@ -89,7 +90,7 @@
   {# ---- 第一部分：样本档案 ---- #}
   <section class="mov-profile-top">
     <div class="mov-profile-card">
-      <h2 class="mov-card-title">样本档案</h2>
+      <h2 class="mov-card-title">{{ lb_icon('paper', 'frame-card-icon') }}样本档案</h2>
       <div class="mov-profile-grid">
         <div class="mov-profile-item">
           <div class="mov-profile-item__k">学生</div>
@@ -114,7 +115,7 @@
   {# ---- 第二部分：报告速览 + 难度分布 ---- #}
   <section class="mov-hero">
     <div class="mov-hero-main">
-      <div class="mov-hero-kicker">报告速览</div>
+      <div class="mov-hero-kicker">{{ lb_icon('data', 'frame-inline-icon') }}报告速览</div>
       <h2 class="mov-hero-title">先看样本规模，再判断结论可信度</h2>
       <p class="mov-hero-text">
       本报告基于<strong>{{ student_name }}</strong>的
@@ -138,7 +139,7 @@
     {# ---- 难度分布扇形图（并入速览右侧） ---- #}
     {% if _diff_items %}
     <div class="mov-difficulty-aside">
-      <div class="mov-difficulty__title">难度分布</div>
+      <div class="mov-difficulty__title">{{ lb_icon('module', 'frame-inline-icon') }}难度分布</div>
       <div class="mov-pie-wrapper">
         {% set colors = {'easy': '#2d8a6e', 'medium': '#d4943a', 'hard': '#c44040'} %}
         <div class="mov-pie"
@@ -166,22 +167,22 @@
     <div class="mov-card">
       <div class="mov-card__eyebrow">样本规模</div>
       <div class="mov-card__num">{{ paper_count_display }}</div>
-      <div class="mov-card__label">分析试卷</div>
+      <div class="mov-card__label">{{ lb_icon('paper', 'frame-metric-icon') }}分析试卷</div>
       <div class="mov-card__hint">{{ sample_strength }}</div>
     </div>
     <div class="mov-card">
       <div class="mov-card__num">{{ big_q_count }}</div>
-      <div class="mov-card__label">有效大题</div>
+      <div class="mov-card__label">{{ lb_icon('question', 'frame-metric-icon') }}有效大题</div>
       <div class="mov-card__hint">展开 {{ sub_q_count }} 道子题</div>
     </div>
     <div class="mov-card">
       <div class="mov-card__num">{{ accuracy_display }}</div>
-      <div class="mov-card__label">整体正确率</div>
+      <div class="mov-card__label">{{ lb_icon('gauge', 'frame-metric-icon') }}整体正确率</div>
       <div class="mov-card__hint">目标 {{ _summary.target_accuracy_text | default('--') }}</div>
     </div>
     <div class="mov-card">
       <div class="mov-card__num">{{ coverage_display }}</div>
-      <div class="mov-card__label">L3 覆盖</div>
+      <div class="mov-card__label">{{ lb_icon('tree', 'frame-metric-icon') }}L3 覆盖</div>
       <div class="mov-card__hint">{% if coverage_rate is not none %}已覆盖 {{ coverage_rate }}%{% else %}L3 明细待补充{% endif %}</div>
     </div>
   </div>
@@ -191,7 +192,7 @@
   {# ---- 试卷/批次清单 ---- #}
   {% if _papers and _papers.get('items', []) | length > 0 %}
   <div class="mov-papers">
-    <h2 class="mov-difficulty__title">试卷/批次清单</h2>
+    <h2 class="mov-difficulty__title">{{ lb_icon('paper', 'frame-inline-icon') }}试卷/批次清单</h2>
     <table class="mov-papers__table">
       <thead>
         <tr>

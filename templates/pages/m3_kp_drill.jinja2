@@ -148,6 +148,8 @@
  # }
  # ----------------------------------------------------------------------------- #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
+
 {# -----------------------------------------------------------------------------
  # 宏定义：安全输出 (Safe Output Macros)
  # ----------------------------------------------------------------------------- #}
@@ -228,7 +230,7 @@
   <div class="m3-kp-drill__section">
     {# 区块标题 #}
     <div class="m3-kp-drill__section-title">
-      {{ level }} {{ col_name }}分析
+      {{ lb_icon('module' if level == 'L2' else ('target' if level == 'L3' else 'feature'), 'frame-inline-icon') }} {{ level }} {{ col_name }}分析
     </div>
 
     {# 数据表格 #}
@@ -341,7 +343,7 @@
 <section class="m3-kp-drill">
   <div class="m3-kp-drill__container">
 
-    <h2 class="m3-kp-drill__title">四、{{ module_title }}</h2>
+    <h2 class="m3-kp-drill__title">{{ lb_icon('tree', 'frame-title-icon') }}四、{{ module_title }}</h2>
 
     <div class="module-content-card">
 
@@ -360,7 +362,7 @@
           <div class="m3-kp-step m3-kp-step--{{ step.theme | default('l1', true) }}">
             <div class="m3-kp-step__lvl">{{ step.level | default("L?", true) }}</div>
             <div class="m3-kp-step__meta">
-              <div class="m3-kp-step__name">{{ step.name | default("--", true) }}</div>
+              <div class="m3-kp-step__name">{{ lb_icon('tree' if step.level == 'L1' else ('module' if step.level == 'L2' else ('target' if step.level == 'L3' else 'feature')), 'frame-inline-icon') }} {{ step.name | default("--", true) }}</div>
               <div class="m3-kp-step__desc">{{ step.desc | default("", true) }}</div>
             </div>
           </div>
@@ -375,7 +377,7 @@
         <div class="m3-kp-step m3-kp-step--l1">
           <div class="m3-kp-step__lvl">L1</div>
           <div class="m3-kp-step__meta">
-            <div class="m3-kp-step__name">领域</div>
+            <div class="m3-kp-step__name">{{ lb_icon('tree', 'frame-inline-icon') }} 领域</div>
             <div class="m3-kp-step__desc">(6项)</div>
           </div>
         </div>
@@ -383,7 +385,7 @@
         <div class="m3-kp-step m3-kp-step--l2">
           <div class="m3-kp-step__lvl">L2</div>
           <div class="m3-kp-step__meta">
-            <div class="m3-kp-step__name">模块</div>
+            <div class="m3-kp-step__name">{{ lb_icon('module', 'frame-inline-icon') }} 模块</div>
             <div class="m3-kp-step__desc">(粗粒度)</div>
           </div>
         </div>
@@ -391,7 +393,7 @@
         <div class="m3-kp-step m3-kp-step--l3">
           <div class="m3-kp-step__lvl">L3</div>
           <div class="m3-kp-step__meta">
-            <div class="m3-kp-step__name">知识点</div>
+            <div class="m3-kp-step__name">{{ lb_icon('target', 'frame-inline-icon') }} 知识点</div>
             <div class="m3-kp-step__desc">(中粒度)</div>
           </div>
         </div>
@@ -400,7 +402,7 @@
         <div class="m3-kp-step m3-kp-step--l4">
           <div class="m3-kp-step__lvl">L4</div>
           <div class="m3-kp-step__meta">
-            <div class="m3-kp-step__name">技能点</div>
+            <div class="m3-kp-step__name">{{ lb_icon('feature', 'frame-inline-icon') }} 技能点</div>
             <div class="m3-kp-step__desc">(细粒度)</div>
           </div>
         </div>
@@ -414,7 +416,7 @@
     {% if path_example and (path_example.nodes is defined and path_example.nodes | length > 0) %}
     <div class="m3-kp-path">
       {# 标题 #}
-      <div class="m3-kp-drill__section-title">{{ path_example.title | default("钻取路径示例", true) }}</div>
+      <div class="m3-kp-drill__section-title">{{ lb_icon('map', 'frame-inline-icon') }} {{ path_example.title | default("钻取路径示例", true) }}</div>
 
       {# 路径节点 #}
       <div class="m3-kp-path__nodes">
@@ -502,6 +504,7 @@
           {# 领域标题栏 #}
           <div class="m3-kp-drill__domain-header">
             <span class="m3-kp-drill__domain-badge m3-kp-drill__domain-badge--l1">L1</span>
+            {{ lb_icon('tree', 'frame-inline-icon') }}
             <span class="m3-kp-drill__domain-name">{{ d_name }}</span>
           </div>
 

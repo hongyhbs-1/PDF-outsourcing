@@ -2,12 +2,11 @@
   Page 1: Student Diagnostic Panorama Blueprint
   Required context key: diagnostic_blueprint
 --------------------------------------------------------------------------- #}
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
 {% set bp = diagnostic_blueprint %}
 <section class="m0-module-page learning-blueprint-page diagnostic-blueprint-page">
   <div class="edge-tabs-mask"></div>
   <header class="lb-header">
-    <div class="lb-page-label">{{ bp.meta.page1_label }}</div>
-    <div class="lb-meta-line">{{ bp.meta.student_name }} ｜ {{ bp.meta.grade }} ｜ {{ bp.meta.subject_name }} ｜ {{ bp.meta.report_title }} ｜ 目标 {{ bp.meta.target_score_text }}</div>
     <h1>{{ bp.headline.title }}</h1>
     <div class="lb-subtitle"><span></span>{{ bp.headline.subtitle }}<span></span></div>
     <div class="lb-slogan">{{ bp.headline.slogan }}</div>
@@ -15,7 +14,7 @@
 
   <main class="diagnostic-grid">
     <section class="lb-panel profile-panel">
-      <h2><b>01</b> 学习画像总览</h2>
+      <h2><b>01</b> {{ lb_icon('profile', 'lb-title-icon') }}学习画像总览</h2>
       <div class="student-card">
         <div class="student-avatar" aria-hidden="true">
           <svg viewBox="0 0 72 72" role="img">
@@ -25,26 +24,26 @@
           </svg>
         </div>
         <div class="student-meta">
-          <p><span>学生</span>{{ bp.profile.student_name }}</p>
-          <p><span>年级</span>{{ bp.profile.grade }}</p>
-          <p><span>城市</span>{{ bp.profile.city_name }}</p>
-          <p><span>科目</span>{{ bp.profile.subject_name }}</p>
+          <p>{{ lb_icon('student', 'lb-meta-icon') }}<span>学生</span>{{ bp.profile.student_name }}</p>
+          <p>{{ lb_icon('grade', 'lb-meta-icon') }}<span>年级</span>{{ bp.profile.grade }}</p>
+          <p>{{ lb_icon('city', 'lb-meta-icon') }}<span>城市</span>{{ bp.profile.city_name }}</p>
+          <p>{{ lb_icon('subject', 'lb-meta-icon') }}<span>科目</span>{{ bp.profile.subject_name }}</p>
         </div>
       </div>
       <div class="metric-row three">
-        <div class="metric-card primary"><span>当前水平</span><strong>{{ bp.profile.current_accuracy_text }}</strong><em>整体正确率</em></div>
-        <div class="metric-card success"><span>目标线</span><strong>{{ bp.profile.target_accuracy_text }}</strong><em>目标正确率</em></div>
-        <div class="metric-card warning"><span>差距</span><strong>{{ bp.profile.delta_text }}</strong><em>距目标线</em></div>
+        <div class="metric-card primary">{{ lb_icon('gauge', 'metric-icon') }}<span>当前水平</span><strong>{{ bp.profile.current_accuracy_text }}</strong><em>整体正确率</em></div>
+        <div class="metric-card success">{{ lb_icon('target', 'metric-icon') }}<span>目标线</span><strong>{{ bp.profile.target_accuracy_text }}</strong><em>目标正确率</em></div>
+        <div class="metric-card warning">{{ lb_icon('gap', 'metric-icon') }}<span>差距</span><strong>{{ bp.profile.delta_text }}</strong><em>距目标线</em></div>
       </div>
       <div class="small-card-row">
-        <div class="small-signal"><i class="icon-gauge"></i><span>学习状态</span><strong>{{ bp.profile.stage_name }}</strong></div>
-        <div class="small-signal"><i class="icon-growth"></i><span>当前阶段</span><strong>{{ bp.profile.stage_hint }}</strong></div>
-        <div class="small-signal"><i class="icon-target"></i><span>重点关注领域</span><strong>{{ bp.profile.focus_domains_text }}</strong></div>
+        <div class="small-signal">{{ lb_icon('gauge', 'signal-icon') }}<div><span>学习状态</span><strong>{{ bp.profile.stage_name }}</strong></div></div>
+        <div class="small-signal">{{ lb_icon('growth', 'signal-icon') }}<div><span>当前阶段</span><strong>{{ bp.profile.stage_hint }}</strong></div></div>
+        <div class="small-signal">{{ lb_icon('target', 'signal-icon') }}<div><span>重点关注领域</span><strong>{{ bp.profile.focus_domains_text }}</strong></div></div>
       </div>
     </section>
 
     <section class="lb-panel ability-axis-panel">
-      <h2><b>02</b> {{ bp.meta.ability_map_title }}</h2>
+      <h2><b>02</b> {{ lb_icon('map', 'lb-title-icon') }}{{ bp.meta.ability_map_title }}</h2>
       <div class="ability-map-wrap">
         <svg class="ability-map-svg" viewBox="0 0 600 590" role="img" aria-label="{{ bp.meta.ability_map_aria }}">
           <defs>
@@ -91,7 +90,7 @@
     </section>
 
     <section class="lb-panel shortlist-panel">
-      <h2><b>03</b> 核心短板清单 <small>优先突破</small></h2>
+      <h2><b>03</b> {{ lb_icon('warning', 'lb-title-icon lb-title-icon--warning') }}核心短板清单 <small>优先突破</small></h2>
       <table class="shortlist-table">
         <thead>
           <tr>
@@ -102,7 +101,7 @@
           {% for item in bp.shortlist %}
           <tr>
             <td><span class="priority-badge {{ item.priority_class }}">{{ item.priority }}</span></td>
-            <td><strong>{{ item.name }}</strong><small>{{ item.tag_text }}</small></td>
+            <td><strong class="shortlist-kp-name">{{ lb_icon('target', 'shortlist-row-icon') }}{{ item.name }}</strong><small>{{ item.tag_text }}</small></td>
             <td>{{ item.domain }}</td>
             <td>{{ item.accuracy_text }}</td>
             <td class="gap-cell">{{ item.gap_text }}</td>
@@ -115,14 +114,21 @@
     </section>
 
     <section class="lb-panel knowledge-tree-panel">
-      <h2><b>04</b> 知识点钻取结构 <small>能力树</small></h2>
+      <h2><b>04</b> {{ lb_icon('tree', 'lb-title-icon') }}知识点钻取结构 <small>能力树</small></h2>
       <div class="drill-head"><span>{{ bp.meta.l1_label }}</span><i></i><span>L2 知识模块</span><i></i><span>L3 知识点</span><i></i><span>L4 考点细节</span></div>
       <div class="drill-list">
         {% for item in bp.shortlist %}
+        {% set domain_icon = 'tree' %}
+        {% if '几何' in item.domain %}{% set domain_icon = 'domain-geometry' %}
+        {% elif '代数' in item.domain or '方程' in item.domain or '不等式' in item.domain %}{% set domain_icon = 'domain-algebra' %}
+        {% elif '函数' in item.domain %}{% set domain_icon = 'domain-function' %}
+        {% elif '统计' in item.domain or '概率' in item.domain %}{% set domain_icon = 'domain-statistics' %}
+        {% elif '数论' in item.domain or '数与' in item.domain %}{% set domain_icon = 'domain-number' %}
+        {% elif '应用' in item.domain %}{% set domain_icon = 'domain-application' %}{% endif %}
         <div class="drill-row state-{{ item.priority_class }}">
-          <span class="drill-domain">{{ item.domain }}</span>
-          <span class="drill-module">{{ item.domain }}</span>
-          <span class="drill-kp">{{ item.name }}</span>
+          <span class="drill-domain">{{ lb_icon(domain_icon, 'drill-row-icon drill-domain-icon') }}{{ item.domain }}</span><i></i>
+          <span class="drill-module">{{ item.l2 or item.domain }}</span><i></i>
+          <span class="drill-kp">{{ item.name }}</span><i></i>
           <span class="drill-detail">{{ item.tag_text or '专项突破' }}</span>
         </div>
         {% endfor %}
@@ -130,12 +136,12 @@
     </section>
 
     <section class="lb-panel evidence-panel">
-      <h2><b>05</b> 数据分析依据</h2>
+      <h2><b>05</b> {{ lb_icon('data', 'lb-title-icon') }}数据分析依据</h2>
       <div class="engine-grid">
-        <div class="engine-card"><i class="icon-paper"></i><strong>{{ bp.evidence.paper_count }}</strong><span>分析试卷</span></div>
-        <div class="engine-card"><i class="icon-calendar"></i><strong>{{ bp.evidence.test_period }}</strong><span>数据周期</span></div>
-        <div class="engine-card"><i class="icon-doc"></i><strong>{{ bp.evidence.valid_questions }}</strong><span>有效大题</span></div>
-        <div class="engine-card"><i class="icon-shield"></i><strong>{{ bp.confidence.level }}</strong><span>数据可信度</span></div>
+        <div class="engine-card">{{ lb_icon('paper', 'engine-icon') }}<div><strong>{{ bp.evidence.paper_count }}</strong><span>分析试卷</span></div></div>
+        <div class="engine-card engine-card--period">{{ lb_icon('calendar', 'engine-icon') }}<div><strong>{{ bp.evidence.test_period | replace('-', '<br>至 ') | safe }}</strong><span>数据周期</span></div></div>
+        <div class="engine-card">{{ lb_icon('question', 'engine-icon') }}<div><strong>{{ bp.evidence.valid_questions }}</strong><span>有效大题</span></div></div>
+        <div class="engine-card">{{ lb_icon('shield', 'engine-icon engine-icon--success') }}<div><strong>{{ bp.confidence.level }}</strong><span>数据可信度</span></div></div>
       </div>
       <div class="ai-core-svg">
         <svg viewBox="0 0 220 130" role="img" aria-label="AI分析引擎">
@@ -146,23 +152,24 @@
           <g class="ai-dots"><circle cx="46" cy="65" r="4"/><circle cx="174" cy="65" r="4"/><circle cx="110" cy="13" r="4"/><circle cx="110" cy="117" r="4"/></g>
         </svg>
       </div>
-      <div class="expanded-line"><strong>展开 {{ bp.evidence.expanded_questions }} 道子题</strong><span>深入分析每一道题的得分点与失分点</span></div>
+      <div class="expanded-line">{{ lb_icon('question', 'expanded-line-icon') }}<div><strong>展开 {{ bp.evidence.expanded_questions }} 道子题</strong><span>深入分析每一道题的得分点与失分点</span></div></div>
     </section>
 
     <section class="lb-panel path-panel">
-      <h2><b>06</b> 提分路径 <small>{{ bp.profile.current_accuracy_text }} → {{ bp.profile.target_accuracy_text }}</small></h2>
+      <h2><b>06</b> {{ lb_icon('target', 'lb-title-icon lb-title-icon--success') }}提分路径 <small>{{ bp.profile.current_accuracy_text }} → {{ bp.profile.target_accuracy_text }}</small></h2>
       <div class="path-stage-grid">
-        <div class="stage-card stage-foundation"><strong>第一阶段</strong><em>0-30天</em><span>突破基础证据</span><p>补齐数据缺口，聚焦短板与高频考点。</p></div>
+        <div class="stage-card stage-foundation">{{ lb_icon('flag', 'path-stage-icon') }}<div><strong>第一阶段</strong><em>0-30天</em><span>突破基础证据</span><p>补齐数据缺口，聚焦短板与高频考点。</p></div></div>
         <div class="stage-arrow"></div>
-        <div class="stage-card stage-improve"><strong>第二阶段</strong><em>30-60天</em><span>巩固核心能力</span><p>模块专项突破，提升题型迁移能力。</p></div>
+        <div class="stage-card stage-improve">{{ lb_icon('growth', 'path-stage-icon') }}<div><strong>第二阶段</strong><em>30-60天</em><span>巩固核心能力</span><p>模块专项突破，提升题型迁移能力。</p></div></div>
         <div class="stage-arrow"></div>
-        <div class="stage-card stage-sprint"><strong>第三阶段</strong><em>60天+</em><span>冲刺目标线</span><p>综合训练、阶段复测，稳定冲刺目标。</p></div>
+        <div class="stage-card stage-sprint">{{ lb_icon('trophy', 'path-stage-icon path-stage-icon--sprint') }}<div><strong>第三阶段</strong><em>60天+</em><span>冲刺目标线</span><p>综合训练、阶段复测，稳定冲刺目标。</p></div></div>
       </div>
-      <div class="path-timeline"><span>{{ bp.profile.current_accuracy_text }} 当前水平</span><i></i><span>{{ bp.profile.target_accuracy_text }} 目标线</span></div>
+      <div class="path-timeline path-timeline--reference">
+        {% for node in bp.profile.path_milestones %}
+        <div class="path-node path-node--{{ node.state }}"><strong>{{ node.value }}</strong><span>{{ node.label }}</span></div>
+        {% endfor %}
+      </div>
     </section>
   </main>
 
-  <footer class="lb-footer">
-    <span>{{ bp.footer.left }}</span><span>{{ bp.footer.middle }}</span><span>{{ bp.footer.right }}</span>
-  </footer>
 </section>

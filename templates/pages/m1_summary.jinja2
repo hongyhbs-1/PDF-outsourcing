@@ -80,6 +80,7 @@ render_payload.module_1_summary 结构示例:
    方式2: template.render(module_1_summary=...)              -- 包一层传入
    ============================================================================ #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
 {% set _data = module_1_summary | default({}) %}
 {% set meta = _data.meta | default(meta | default({})) %}
 {% set summary = _data.summary | default(summary | default({})) %}
@@ -178,7 +179,7 @@ render_payload.module_1_summary 结构示例:
      章节标题 (Section Title)
      -------------------------------------------------------------------------- #}
   <section class="m1-section-title">
-    <h1 class="m1-section-title__text">一、诊断摘要</h1>
+    <h1 class="m1-section-title__text">{{ lb_icon('data', 'frame-title-icon') }}一、诊断摘要</h1>
     <div class="m1-section-title__underline"></div>
   </section>
 
@@ -187,7 +188,7 @@ render_payload.module_1_summary 结构示例:
   {# --------------------------------------------------------------------------
      整体学情总结（原摘要主卡片 + 原关键发现合并）
      -------------------------------------------------------------------------- #}
-  <div class="m1-section-bar">一、整体学情总结</div>
+  <div class="m1-section-bar">{{ lb_icon('gauge', 'frame-section-icon') }} 一、整体学情总结</div>
 
   <div class="m1-summary-card">
     
@@ -248,7 +249,7 @@ render_payload.module_1_summary 结构示例:
         <div class="m1-kpi-row">
           <div class="m1-kpi-left">
             <span class="m1-kpi-dot"></span>
-            <span class="m1-kpi-label">目标分数</span>
+            <span class="m1-kpi-label">{{ lb_icon('target', 'frame-metric-icon') }} 目标分数</span>
           </div>
           <div class="m1-kpi-pill">
             <span class="m1-kpi-value">{{ safe(summary.target_score_text, '--') }}</span>
@@ -259,7 +260,7 @@ render_payload.module_1_summary 结构示例:
         <div class="m1-kpi-row">
           <div class="m1-kpi-left">
             <span class="m1-kpi-dot"></span>
-            <span class="m1-kpi-label">目标线</span>
+            <span class="m1-kpi-label">{{ lb_icon('flag', 'frame-metric-icon') }} 目标线</span>
           </div>
           <div class="m1-kpi-pill">
             <span class="m1-kpi-value">{{ safe(summary.target_accuracy_text, '--') }}</span>
@@ -272,7 +273,7 @@ render_payload.module_1_summary 结构示例:
         <div class="m1-kpi-row {{ get_status_class(_current_acc, _target_acc) }}">
           <div class="m1-kpi-left">
             <span class="m1-kpi-dot"></span>
-            <span class="m1-kpi-label">总体知识点正确率</span>
+            <span class="m1-kpi-label">{{ lb_icon('gauge', 'frame-metric-icon') }} 总体知识点正确率</span>
           </div>
           <div class="m1-kpi-pill">
             <span class="m1-kpi-value">{{ safe(summary.current_accuracy_text, '--') }}</span>
@@ -315,7 +316,7 @@ render_payload.module_1_summary 结构示例:
      ⚠️ P0修复：使用 ['items'] 取值，避免与 dict.items() 方法冲突
      -------------------------------------------------------------------------- #}
   <div class="m1-section-bar m1-section-bar--subtle">
-    二、优先突破
+    {{ lb_icon('target', 'frame-section-icon') }} 二、优先突破
   </div>
   
   {% if bt_items | length > 0 %}
@@ -323,7 +324,7 @@ render_payload.module_1_summary 结构示例:
       {% for item in bt_items %}
         <div class="m1-breakthrough-card">
           {# 知识点名称 #}
-          <div class="m1-bt-title">{{ safe(item.name_cn, '未知知识点') }}</div>
+          <div class="m1-bt-title">{{ lb_icon('target', 'frame-inline-icon') }} {{ safe(item.name_cn, '未知知识点') }}</div>
           
           {# 双层进度条 #}
           <div class="m1-breakthrough-progress">
@@ -388,7 +389,7 @@ render_payload.module_1_summary 结构示例:
      -------------------------------------------------------------------------- #}
   {% if suggestion.text is defined and suggestion.text %}
     <div class="m1-suggestion-callout">
-      {{ suggestion.text }}
+      {{ lb_icon('support', 'frame-inline-icon') }} {{ suggestion.text }}
     </div>
   {% endif %}
 

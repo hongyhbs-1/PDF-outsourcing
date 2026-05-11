@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+from functools import lru_cache
 import html
+from pathlib import Path
 from typing import Any
 
 
@@ -23,6 +25,7 @@ FOOTER_PADDING = "0 15mm 5.4mm 18mm"
 DEFAULT_TITLE = "学情诊断报告"
 DEFAULT_BRAND = "dida985小程序"
 DEFAULT_POSITIONING = "逐题透析 · 逐点拆解 · 对标历年真题考点"
+FONT_FILE = Path(__file__).resolve().parent.parent / "templates" / "fonts" / "NotoSansSC-Variable.ttf"
 
 
 def _escape(value: Any) -> str:
@@ -39,8 +42,41 @@ def _meta_value(meta: dict | None, *keys: str, default: str = "") -> str:
     return default
 
 
+def _build_header_context(meta: dict | None) -> str:
+    """Build the right-side PDF header context line."""
+    explicit = _meta_value(meta, "header_meta_line")
+    if explicit:
+        return explicit
+
+    student = _meta_value(meta, "student_display_name", "student_name")
+    grade = _meta_value(meta, "grade", "student_grade")
+    subject = _meta_value(meta, "subject_name", "subject", default="学科")
+    target = _meta_value(meta, "target_score_text")
+
+    parts = [part for part in [student, grade, subject] if part]
+    if target:
+        parts.append(f"目标 {target}")
+    return " ｜ ".join(parts) if parts else DEFAULT_POSITIONING
+
+
+@lru_cache(maxsize=1)
+def _font_face_css() -> str:
+    if not FONT_FILE.exists():
+        return ""
+    return (
+        '@font-face {'
+        'font-family: "Noto Sans SC";'
+        'src: local("Noto Sans SC"),'
+        f"url('{FONT_FILE.as_uri()}') format('truetype');"
+        'font-weight: 100 900;'
+        'font-style: normal;'
+        '}'
+    )
+
+
 def _base_style() -> str:
     return f"""<style>
+{_font_face_css()}
 #header, #footer {{
   margin: 0 !important;
   box-sizing: border-box !important;
@@ -91,19 +127,15 @@ def build_pdf_margins() -> dict[str, str]:
 
 def build_header_template(meta: dict | None) -> str:
     title = _escape(_meta_value(meta, "report_short_title", "report_title", default=DEFAULT_TITLE))
-    student = _meta_value(meta, "student_display_name", "student_name")
-    subject = _meta_value(meta, "subject_name", "subject", default="学科")
-    center = f"{student} · {subject}" if student else subject
-    center_text = _escape(center)
+    context_text = _escape(_build_header_context(meta))
 
     return (
         _base_style()
         + f'<div class="pw-hf-wrap" style="height:{MARGIN_TOP}; padding:{HEADER_PADDING};">'
         + '  <div class="pw-hf-row" style="height:5mm; border-bottom:0.5px solid '
         + f'{LINE}; padding-bottom:1.1mm;">'
-        + f'    <span class="pw-hf-ellipsis" style="flex:1; color:{TEXT_STRONG};">{title}</span>'
-        + f'    <span class="pw-hf-ellipsis" style="flex:0 0 auto; padding:0 5mm; color:{TEAL};">{center_text}</span>'
-        + f'    <span class="pw-hf-ellipsis" style="flex:1; text-align:right;">{DEFAULT_POSITIONING}</span>'
+        + f'    <span class="pw-hf-ellipsis" style="flex:0 0 38%; color:{TEXT_STRONG};">{title}</span>'
+        + f'    <span class="pw-hf-ellipsis" style="flex:1; text-align:right; color:{TEAL};">{context_text}</span>'
         + '  </div>'
         + f'  <div style="width:18mm; height:0.6mm; background:{SAND}; margin-top:-0.3mm;"></div>'
         + '</div>'

@@ -48,7 +48,9 @@
 
 /* P7-1: 放大字、加行距 */
 .mtoc-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 42px max-content minmax(24px, 1fr) 52px;
+  column-gap: 8px;
   align-items: baseline;
   padding: 20px 0;
   border-bottom: 1px solid var(--pm-border-light);
@@ -69,16 +71,17 @@
 /* 标题文字 */
 /* P7-1: 放大标题文字 */
 .mtoc-item__title {
-  flex: 1;
   font-size: 20px;
   font-weight: 600;
   color: var(--pm-text-primary);
+  white-space: nowrap;
 }
 
 /* 页码占位 */
 .mtoc-item__page {
-  flex: 0 0 52px;
+  min-width: 52px;
   text-align: right;
+  justify-self: end;
   font-size: 18px;
   font-weight: 600;
   color: var(--pm-text-secondary);
@@ -87,10 +90,9 @@
 
 /* 引导点 (标题与页码之间) */
 .mtoc-item__dots {
-  flex: 1;
+  width: 100%;
   border-bottom: 1px dotted var(--pm-border-light);
-  margin: 0 8px;
-  min-width: 20px;
+  min-width: 24px;
   align-self: baseline;
   position: relative;
   top: -4px;

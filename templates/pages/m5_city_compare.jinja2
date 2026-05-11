@@ -94,6 +94,8 @@
 ================================================================================
 #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
+
 {# ============================================================
    宏定义：条件样式类映射
    ============================================================ #}
@@ -229,7 +231,7 @@
      ============================================================ #}
   <section class="m5-city-compare__part m5-city-compare__part--header">
     <h1 class="m5-city-compare__title">
-      五、{{ data.module_title | default('城市考情对照') }}
+      {{ lb_icon('city', 'frame-title-icon') }}五、{{ data.module_title | default('城市考情对照') }}
     </h1>
     <p class="m5-city-compare__intro">
       {%- set city_name = meta.city_name | default('本') -%}
@@ -269,7 +271,7 @@
        右卡：高频重合度概览
        ---------------------- #}
     <div class="m5-city-compare__card m5-city-compare__card--overlap">
-      <div class="m5-city-compare__card-title">高频重合度</div>
+      <div class="m5-city-compare__card-title">{{ lb_icon('target', 'frame-card-icon') }} 高频重合度</div>
 
       <div class="m5-city-compare__overlap-main">
         <span class="m5-city-compare__overlap-num">{{ overlap_pct }}%</span>
@@ -315,7 +317,7 @@
      ---------------------- #}
   {% if has_overlap_items %}
   <section class="m5-city-compare__table-section">
-    <div class="m5-city-compare__table-title">重合知识点清单</div>
+    <div class="m5-city-compare__table-title">{{ lb_icon('paper', 'frame-inline-icon') }} 重合知识点清单</div>
 
     <table class="m5-city-compare__table">
       <thead>
@@ -390,7 +392,7 @@
      ============================================================ #}
   {% if advice_list | length > 0 %}
   <section class="m5-city-compare__part m5-city-compare__part--advice">
-    <div class="m5-city-compare__advice-title">备考建议</div>
+    <div class="m5-city-compare__advice-title">{{ lb_icon('teacher', 'frame-inline-icon') }} 备考建议</div>
     <ul class="m5-city-compare__advice-list">
       {% for advice in advice_list %}
       <li class="m5-city-compare__advice-item">
@@ -433,7 +435,7 @@
   <footer class="m5-city-compare__footnote">
     {% if footnote.text %}
     <div class="m5-city-compare__footnote-text">
-      {{ footnote.text }}
+      {{ lb_icon('data', 'frame-inline-icon') }} {{ footnote.text }}
     </div>
     {% endif %}
     {% if footnote.note %}

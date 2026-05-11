@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 120">
+  <title>Static execution axis skeleton</title>
+  <g fill="none" stroke="#C7D9E8" stroke-width="2">
+    <line x1="95" y1="60" x2="805" y2="60" stroke-dasharray="8 8"/>
+  </g>
+  <g fill="#F7FBFD" stroke="#A9C7D8" stroke-width="2">
+    <circle cx="80" cy="60" r="32"/><circle cx="240" cy="60" r="32"/><circle cx="400" cy="60" r="32"/>
+    <circle cx="560" cy="60" r="32"/><circle cx="720" cy="60" r="32"/><circle cx="860" cy="60" r="32"/>
+  </g>
+</svg>

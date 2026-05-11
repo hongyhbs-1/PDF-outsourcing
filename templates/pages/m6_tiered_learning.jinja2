@@ -174,6 +174,8 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 ================================================================================
 #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
+
 {# ============================================================================
    宏定义 (Macros)
    ============================================================================ #}
@@ -242,7 +244,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
      -------------------------------------------------------------------------- #}
   <div class="m6-module-title">
     <h1 class="m6-module-title__text">
-      六、{{ module.title | default('分层与学习建议', true) }}
+      {{ lb_icon('support', 'frame-title-icon') }}六、{{ module.title | default('分层与学习建议', true) }}
     </h1>
     <div class="m6-module-title__underline"></div>
   </div>
@@ -263,7 +265,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 
   {% if weak_items | length > 0 %}
   <div class="m6-training-focus">
-    <div class="m6-training-focus__title">训练重点速览</div>
+    <div class="m6-training-focus__title">{{ lb_icon('target', 'frame-section-icon') }} 训练重点速览</div>
     <div class="m6-training-focus__grid">
       {% for item in weak_items[:6] %}
       <div class="m6-training-focus__item">
@@ -294,7 +296,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     <div class="m6-card-header">
       <span class="m6-bullet m6-bullet--{{ stage_card.bullet_color | default('blue', true) }}"></span>
       <h2 class="m6-card-header__title">
-        {{ stage_card.title | default('当前学习阶段判定', true) }}
+        {{ lb_icon('gauge', 'frame-card-icon') }} {{ stage_card.title | default('当前学习阶段判定', true) }}
       </h2>
     </div>
 

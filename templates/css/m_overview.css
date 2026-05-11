@@ -44,12 +44,12 @@
 }
 
 .mov-page--dense .mov-title-section {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .mov-page--dense .mov-title {
-  font-size: 25px;
-  margin: 12px 0 4px;
+  font-size: 24px;
+  margin: 8px 0 16px;
 }
 
 .mov-page--dense .mov-hero-main,
@@ -150,26 +150,20 @@
 
 /* --- 标题 --- */
 .mov-title-section {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
-/* V3-5: 首标题与页眉保持 20px 间距 */
 .mov-title {
   display: inline-block;
-  font-size: 28px;
+  font-size: 24px;
+  line-height: 1.15;
   font-weight: 700;
-  color: var(--pm-text-primary);
-  margin: 20px 0 6px;
-}
-.mov-title::after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 3px;
-  margin-top: 6px;
-  background: var(--pm-gradient-accent-bar);
+  color: var(--pm-teal);
+  border-bottom: 2px solid transparent;
   border-image: var(--pm-gradient-accent-bar) 1;
-  border-radius: 2px;
+  padding-bottom: 7px;
+  margin: 8px 0 16px;
 }
+.mov-title::after,
 .mov-title__underline {
   display: none;
 }
@@ -556,18 +550,16 @@
     line-height: 1.28;
   }
 
-  .mov-title-section {
-    margin-bottom: 8px;
+  .mov-title-section,
+  .mov-page--dense .mov-title-section {
+    margin-bottom: 14px;
   }
 
-  .mov-title {
+  .mov-title,
+  .mov-page--dense .mov-title {
     font-size: 22px;
-    margin: 8px 0 4px;
-  }
-
-  .mov-title::after {
-    height: 2px;
-    margin-top: 5px;
+    padding-bottom: 6px;
+    margin: 8px 0 14px;
   }
 
   .mov-hero,
