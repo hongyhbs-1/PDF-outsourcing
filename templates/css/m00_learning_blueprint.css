@@ -155,7 +155,7 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.lb-title-icon { width: 13px; height: 13px; margin: 0 1px; color: var(--lb-teal); }
+.lb-title-icon { width: 16px; height: 16px; margin: 0 1px; color: var(--lb-teal); }
 .lb-title-icon--warning { color: var(--lb-orange); }
 .lb-title-icon--success { color: #168A96; }
 .lb-meta-icon { width: 11px; height: 11px; margin-right: 1px; color: #7EA5BE; }
@@ -168,14 +168,14 @@
 .stage-flow-icon { width: 16px; height: 16px; }
 .data-card-icon { width: 19px; height: 19px; margin: 0 auto 3px; color: #4A84BD; }
 .data-card-icon--success { color: #168A96; }
-.pipeline-icon { width: 13px; height: 13px; margin-right: 3px; color: #4A84BD; }
+.pipeline-icon { width: 16px; height: 16px; margin-right: 3px; color: #4A84BD; }
 .axis-stage-icon { width: 16px; height: 16px; }
 .shortlist-row-icon { width: 10px; height: 10px; color: var(--lb-teal); }
 .drill-head-icon { width: 10px; height: 10px; color: var(--lb-title); }
 .drill-row-icon { width: 9px; height: 9px; color: var(--lb-muted); margin-right: 3px; }
 .expanded-line-icon,
 .note-icon { width: 12px; height: 12px; color: var(--lb-title); }
-.stage-detail-icon { width: 12px; height: 12px; color: var(--lb-title); }
+.stage-detail-icon { width: 14px; height: 14px; color: var(--lb-title); }
 .stage-detail-icon--sprint { color: var(--lb-orange); }
 .axis-check-icon { width: 11px; height: 11px; color: #4A84BD; }
 .drill-domain-icon { width: 16px; height: 16px; margin-right: 6px; }

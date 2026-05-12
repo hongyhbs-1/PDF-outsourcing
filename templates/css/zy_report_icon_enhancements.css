@@ -41,8 +41,8 @@
 .frame-card-icon,
 .frame-inline-icon,
 .frame-metric-icon {
-  width: 13px;
-  height: 13px;
+  width: 16px;
+  height: 16px;
   color: var(--pm-teal);
 }
 
@@ -166,8 +166,8 @@
   .frame-card-icon,
   .frame-inline-icon,
   .frame-metric-icon {
-    width: 12px;
-    height: 12px;
+    width: 15px;
+    height: 15px;
   }
 
   .sp-title,

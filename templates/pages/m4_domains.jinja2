@@ -383,9 +383,10 @@ CSS变量说明：
       {% set weakest_item = domains | selectattr('name_cn', 'equalto', weakest) | first %}
       {% set strongest = domain_groups.achieved[0] if domain_groups.achieved | length > 0 else '暂无达标领域' %}
       {% if weakest_item and weakest_item.accuracy is not none and weakest_item.accuracy != '' %}
-      <strong>{{ weakest }}</strong>正确率{{ weakest_item.accuracy_text | default('--') }}，距目标差{{ weakest_item.delta_text | default('--') }}，是当前最大短板，<strong>建议优先补强</strong>；
+      <strong>{{ weakest }}</strong>正确率{{ weakest_item.accuracy_text | default('--') }}，距目标差{{ weakest_item.delta_text | default('--') }}，是当前最大短板，
+      <strong>建议重点复习这部分内容，找老师加强讲解</strong>；
       {% if strongest != weakest %}
-      <strong>{{ strongest }}</strong>{% if strongest in domain_groups.achieved %}达标{% endif %}，可作为信心基础。
+      <strong>{{ strongest }}</strong>达标，可作为信心基础。
       {% endif %}
       {% else %}
       {% if domain_groups.improve | length > 0 %}需重点关注：{{ domain_groups.improve | join('、') }}；{% endif %}
@@ -547,9 +548,10 @@ CSS变量说明：
             {{ item.count_text | default((item.count | default('--')) ~ '题' if item.count is defined and item.count is not none else '--') }}
           </td>
 
-          {# 置信度 — 辩论共识：视觉降级11px muted #}
+          {# 置信度 — 三方共识：改为图标（高=✅ 中=⚠️ 低=❌） #}
           <td class="m4-text-muted" style="font-size: 11px;">
-            {{ item.confidence | default('--') }}
+            {% set conf = item.confidence | default('--') %}
+            {% if conf == '高' %}✅{% elif conf == '中' %}⚠️{% elif conf == '低' %}❌{% else %}{{ conf }}{% endif %}
           </td>
           
           {# 状态徽章 (兼容英文 achieved/improve/attention) #}
@@ -565,7 +567,9 @@ CSS变量说明：
         {% endfor %}
       </tbody>
     </table>
-    <div class="m4-table-footnote">本表仅展示重点模块，领域正确率基于全部知识点统计</div>
+    <div class="m4-table-footnote">
+      {% if nodata_domains | length > 0 %}⚠️ 数据提示：{{ nodata_domains | map(attribute='name_cn') | join('、') }}题量不足，结论置信度较低，建议补充练习后重新评估。{% else %}本表仅展示重点模块，领域正确率基于全部知识点统计{% endif %}
+    </div>
   </div>
   {% endif %}
 
@@ -583,43 +587,26 @@ CSS变量说明：
   {% endif %}
 
   {# ------------------------------------------------------------------------
-     分析小结 (Summary Card) — 辩论共识：保留但改为两卡片（教学建议+数据提示）
+     分析小结 (Summary Card) — 三方共识：单卡片（教学建议），数据提示移至表格脚注
      ------------------------------------------------------------------------ #}
-  {% set summary_items = summary.get('items', []) if summary is mapping else (summary.items if summary.items is defined else []) %}
-  {% set teaching_suggestion = [] %}
-  {% set data_note = [] %}
-  {% for item in summary_items %}
-    {% set item_style = item.highlights[0].style if item.highlights is defined and item.highlights | length > 0 else 'default' %}
-    {% if item_style == 'improve' or item_style == 'attention' %}
-      {% set _ = teaching_suggestion.append(item) %}
-    {% elif item_style == 'muted' or '数据' in (item.label | default('')) %}
-      {% set _ = data_note.append(item) %}
-    {% endif %}
-  {% endfor %}
   {% set weak_domains_list = domain_groups.improve + domain_groups.attention %}
   {% set strong_domains_list = domain_groups.achieved %}
-  {% if weak_domains_list | length > 0 or strong_domains_list | length > 0 or data_note | length > 0 %}
+  {% if weak_domains_list | length > 0 or strong_domains_list | length > 0 %}
   <div class="m4-summary-card">
     <div class="m4-summary-title">{{ summary.title | default('分析小结') }}</div>
     {% if weak_domains_list | length > 0 or strong_domains_list | length > 0 %}
     <div class="m4-summary-item m4-summary-item--improve">
       <span class="m4-summary-label">教学建议：</span>
       <span class="m4-summary-text">
-        {% if strong_domains_list | length > 0 %}已达标领域（{{ strong_domains_list | join('、') }}）可作为提分基础，{% endif %}
-        {% if weak_domains_list | length > 0 %}优先攻克薄弱领域（{{ weak_domains_list | join('、') }}）。{% endif %}
-      </span>
-    </div>
-    {% endif %}
-    {% if nodata_domains | length > 0 %}
-    <div class="m4-summary-item m4-summary-item--muted">
-      <span class="m4-summary-label">数据提示：</span>
-      <span class="m4-summary-text">
-        {{ nodata_domains | map(attribute='name_cn') | join('、') }}题量不足（各不足5题），结论置信度较低，建议补充练习后重新评估。
+        {% if strong_domains_list | length > 0 %}已达标领域（{{ strong_domains_list | join('、') }}）可作为信心基础，{% endif %}
+        {% if weak_domains_list | length > 0 %}重点攻克薄弱领域（{{ weak_domains_list | join('、') }}）。{% endif %}
       </span>
     </div>
     {% endif %}
   </div>
   {% endif %}
+
+  {# 数据提示 → 移至表格脚注（三方共识：nodata领域信息放入表格footnote） #}
 
   </div><!-- /.module-content-card -->
 

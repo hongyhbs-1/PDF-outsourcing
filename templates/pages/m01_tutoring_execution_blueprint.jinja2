@@ -45,7 +45,7 @@
         {% for stage in bp.stage_plan.stages %}
         <div class="exec-stage stage-{{ stage.state }}">
           <div class="stage-icon stage-icon--{{ stage.state }}">
-            {% if stage.state == 'foundation' %}{{ lb_icon('flag', 'stage-flow-icon') }}{% elif stage.state == 'improve' %}{{ lb_icon('growth', 'stage-flow-icon') }}{% else %}{{ lb_icon('trophy', 'stage-flow-icon') }}{% endif %}
+            {% if stage.state == 'foundation' %}{{ lb_icon('flag', 'stage-flow-icon') }}{% elif stage.state == 'improve' %}{{ lb_icon('rocket', 'stage-flow-icon') }}{% else %}{{ lb_icon('trophy', 'stage-flow-icon') }}{% endif %}
           </div>
           <strong>{{ stage.range }}</strong>
           <em>{{ stage.title }}</em>
@@ -57,7 +57,7 @@
       <div class="stage-details">
         {% for stage in bp.stage_plan.stages %}
         <div class="stage-detail stage-{{ stage.state }}">
-          <h3>{% if stage.state == 'foundation' %}{{ lb_icon('flag', 'stage-detail-icon') }}{% elif stage.state == 'improve' %}{{ lb_icon('growth', 'stage-detail-icon') }}{% else %}{{ lb_icon('trophy', 'stage-detail-icon stage-detail-icon--sprint') }}{% endif %}{{ stage.no }}</h3>
+          <h3>{% if stage.state == 'foundation' %}{{ lb_icon('flag', 'stage-detail-icon') }}{% elif stage.state == 'improve' %}{{ lb_icon('rocket', 'stage-detail-icon') }}{% else %}{{ lb_icon('trophy', 'stage-detail-icon stage-detail-icon--sprint') }}{% endif %}{{ stage.no }}</h3>
           <ul>{% for text in stage["items"] %}<li>{{ text }}</li>{% endfor %}</ul>
         </div>
         {% endfor %}
@@ -74,7 +74,7 @@
       </div>
       <div class="pipeline-flow">
         {% for step in bp.data_engine.pipeline %}
-        <span>{% if loop.index == 1 %}{{ lb_icon('collect', 'pipeline-icon') }}{% elif loop.index == 2 %}{{ lb_icon('clean', 'pipeline-icon') }}{% elif loop.index == 3 %}{{ lb_icon('feature', 'pipeline-icon') }}{% elif loop.index == 4 %}{{ lb_icon('ai', 'pipeline-icon') }}{% else %}{{ lb_icon('output', 'pipeline-icon') }}{% endif %}{{ step }}</span>{% if not loop.last %}<i></i>{% endif %}
+        <span>{% if loop.index == 1 %}{{ lb_icon('collect', 'pipeline-icon') }}{% elif loop.index == 2 %}{{ lb_icon('clean', 'pipeline-icon') }}{% elif loop.index == 3 %}{{ lb_icon('chart', 'pipeline-icon') }}{% elif loop.index == 4 %}{{ lb_icon('ai', 'pipeline-icon') }}{% else %}{{ lb_icon('bulb', 'pipeline-icon') }}{% endif %}{{ step }}</span>{% if not loop.last %}<i></i>{% endif %}
         {% endfor %}
       </div>
       <div class="engine-source">{{ lb_icon('data', 'note-icon') }}{{ bp.data_engine.source_text }}</div>
