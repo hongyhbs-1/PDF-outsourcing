@@ -887,6 +887,8 @@
   /* 模板实际使用 .m4-section-domains (非 .m4-module-domains) */
   .m4-section-domains {
     width: auto;
+    display: block;
+    flex: none;
     padding: 0 15mm 0 18mm;  /* [T15] 统一 L/R 边距 */
   }
 

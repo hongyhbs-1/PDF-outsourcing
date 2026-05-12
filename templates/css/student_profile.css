@@ -697,6 +697,8 @@
 @media print {
   .sp-page {
     width: auto;
+    display: block;
+    flex: none;
     padding: 0 15mm 0 18mm;
     box-shadow: none;
   }
