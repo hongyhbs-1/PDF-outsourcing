@@ -14,6 +14,9 @@ margin-top 作用于这些直接子元素。
 溢出保护:
   scale < 1.0 时: 使用 CSS zoom 属性压缩 wrapper 布局尺寸 (Chromium 支持)
   zoom 影响布局盒模型，真正减少内容占用的页面高度，防止溢出到新页
+
+min-height 扣除:
+  外层 .module-page::before 渐变条占 ~5px，min-height 需扣除 6px 避免溢出生成空白页
 """
 from __future__ import annotations
 from typing import Dict
@@ -50,7 +53,7 @@ def build_css(layouts: Dict[str, PageLayout]) -> str:
         # Wrapper: min-height + flex + 自适应 justify-content
         justify = _justify_for_ratio(ratio)
         parts.append(f"  {sel} {{")
-        parts.append(f"    min-height: 275mm;")
+        parts.append(f"    min-height: calc(275mm - 6px);")
         parts.append(f"    display: flex;")
         parts.append(f"    flex-direction: column;")
         parts.append(f"    justify-content: {justify};")
