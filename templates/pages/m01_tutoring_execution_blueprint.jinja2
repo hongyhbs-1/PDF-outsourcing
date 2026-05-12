@@ -16,7 +16,7 @@
     <section class="lb-panel exec-panel drill-structure-panel">
       <h2><b>07</b> {{ lb_icon('tree', 'lb-title-icon') }}知识点钻取结构 <small>能力树</small></h2>
       <p class="panel-lead">从领域到考点逐层定位，精准找到需要补强的知识点。</p>
-      <div class="drill-head wide"><span>{{ bp.meta.l1_label }}</span><i></i><span>L2 知识模块</span><i></i><span>L3 知识点</span><i></i><span>L4 考点细节</span></div>
+      <div class="drill-head wide"><span>{{ bp.meta.l1_label }}</span><i></i><span>L2（知识模块）</span><i></i><span>L3（知识点）</span><i></i><span>L4（考点细节）</span></div>
       <div class="focus-paths">
         {% for row in bp.focus_paths %}
         {% set domain_icon = '' %}
@@ -35,7 +35,7 @@
         {% endfor %}
       </div>
       <div class="state-legend compact-legend">
-        <span class="dot nodata">未测：数据不足</span><span class="dot need_test">待补测：有待验证</span><span class="dot improve">需加强：存在薄弱</span>
+        <span class="dot nodata">数据不足</span><span class="dot attention">需关注</span><span class="dot improve">需加强</span><span class="dot achieved">已达标</span>
       </div>
     </section>
 
@@ -69,11 +69,9 @@
     <section class="lb-panel exec-panel data-engine-panel">
       <h2><b>09</b> {{ lb_icon('ai', 'lb-title-icon') }}数据分析引擎 <small>AI数据驾驶舱</small></h2>
       <p class="panel-lead">多维数据融合分析，驱动科学决策。</p>
-      <div class="data-engine-cards">
-        <div>{{ lb_icon('paper', 'data-card-icon') }}<strong>{{ bp.data_engine.paper_count }}</strong><span>分析试卷</span></div>
-        <div>{{ lb_icon('question', 'data-card-icon') }}<strong>{{ bp.data_engine.valid_questions }}</strong><span>有效大题</span></div>
-        <div>{{ lb_icon('module', 'data-card-icon') }}<strong>{{ bp.data_engine.domain_modules }}</strong><span>领域模块</span></div>
-        <div>{{ lb_icon('shield', 'data-card-icon data-card-icon--success') }}<strong>{{ bp.data_engine.reliability_level }}</strong><span>数据可信度</span><em>{% for i in range(bp.data_engine.stars) %}★{% endfor %}</em></div>
+      <div class="data-quality-card">
+        <h3>{{ lb_icon('shield', 'data-card-icon data-card-icon--success') }} 数据质量说明</h3>
+        <p>本报告基于 <strong>{{ bp.data_engine.paper_count }} 套试卷</strong>、<strong>{{ bp.data_engine.valid_questions }} 道有效大题</strong>、<strong>{{ bp.data_engine.domain_modules }} 个领域模块</strong>生成，数据可信度评估为 <strong>{{ bp.data_engine.reliability_level }}</strong>{% if bp.data_engine.stars %}（{% for i in range(bp.data_engine.stars) %}★{% endfor %}）{% endif %}。</p>
       </div>
       <div class="pipeline-flow">
         {% for step in bp.data_engine.pipeline %}
