@@ -124,11 +124,56 @@ scripts/_output/
 | `zy_report_icon_enhancements.css` | 重命名为 `shared_icon_enhancements.css` | 2026-05-12 |
 | `zz_chapter_title_underlines.css` | 重命名为 `shared_chapter_underlines.css` | 2026-05-12 |
 
-## 7. 待优化项
+## 7. Git Commit 规范
 
-以下项目风险较高，需在功能稳定后执行：
+### 格式
 
-1. **大文件拆分**：`learning_blueprint_builder.py` → `builders/` 子包
-2. **CSS 拆分**：`m7_data_reliability.css` → 提取 `shared_data_table.css`
-3. **目录重组**：`static/` → `assets/comics/`，`tests/` 从 `scripts/` 分离
-4. **模板命名统一**：`m_overview` → `mX_overview`（需确认模块编号）
+```
+<type>: <简短描述>
+
+<可选详细说明>
+```
+
+### Type 列表
+
+| Type | 用途 | 示例 |
+|------|------|------|
+| `feat` | 新功能 | `feat: add M10 composition module` |
+| `fix` | Bug 修复 | `fix: Section 07 layout collision` |
+| `refactor` | 重构（不改功能） | `refactor: CSS rename zy/zz → shared_` |
+| `style` | 样式调整（不改逻辑） | `style: icon size 13→16px` |
+| `docs` | 文档 | `docs: add engineering standards` |
+| `test` | 测试 | `test: add pagination regression test` |
+| `chore` | 构建/工具/杂项 | `chore: update .gitignore` |
+
+### 规则
+
+- 描述用中文或英文均可，保持一条 commit 一致
+- 破坏性变更加 `BREAKING CHANGE:` 前缀或 footer 说明
+- 关联模块编号（如 `fix(m4): ...`、`feat(m10): ...`）
+
+## 8. 优化路线图
+
+### P1（先做）
+
+| 项目 | 工时 | 前置 | 状态 |
+|------|------|------|------|
+| Git Commit 规范 | 0.5h | 无 | ✅ 已补充 |
+| 归档 learning_blueprint_two_page_package/ | 0.5h | 无 | 待执行 |
+| 测试文件分离到 tests/ | 1h | 无 | 待执行 |
+
+### P2（功能稳定后）
+
+| 项目 | 工时 | 前置 |
+|------|------|------|
+| learning_blueprint_builder.py 拆分 | 2h | 功能稳定 |
+| m7_data_reliability.css 拆分 | 2h | 功能稳定 |
+| m4/m5/m6 CSS 拆分 | 3h | m7 试点成功 |
+| 模板命名统一 | 2h | A 项完成 |
+| 入口脚本拆分 | 1h | 无 |
+| static/ → assets/comics/ | 0.5h | 可与模板命名同步 |
+| CSS/模板代码风格规范 | 1h | CSS 拆分完成 |
+
+### 核心原则
+
+先做零风险高回报的（规范、归档），再做结构重组（tests分离），最后做需要全面回归测试的（大文件拆分、模板重命名）
