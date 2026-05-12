@@ -697,18 +697,18 @@ def build_learning_blueprints(payload: dict) -> dict[str, dict]:
         "support_system": {
             "teacher_items": ["精准诊断", "定制计划", "学情跟踪", "策略指导"],
             "parent_items": ["了解学情", "监督执行", "鼓励支持", "配合学校"],
-            "student_items": ["主动学习", "完成训练", "查漏补缺", "总结反思"],
-            "summary": "家长、老师、学生三方协同，让学习更有方向，进步更有保障。",
+            "student_items": ["了解薄弱点", "每日练习", "错题整理", "定期回顾"],
+            "summary": "了解学情、配合练习、持续巩固，让学习进步更明显。",
         },
         "axis": {
             "active_stage": active_stage,
             "stages": [
-                {"name": "数据进入", "desc": "试卷收集与上传", "icon": "data"},
-                {"name": "AI诊断分析", "desc": "多维数据建模分析", "icon": "ai"},
-                {"name": "补齐证据", "desc": "补测关键知识点", "icon": "evidence"},
-                {"name": "老师执行", "desc": "制定计划并落地", "icon": "teacher"},
-                {"name": "追踪复测", "desc": "阶段检测与反馈", "icon": "track"},
-                {"name": "专项突破", "desc": "持续优化与提分", "icon": "target"},
+                {"name": "提交试卷", "desc": "收集答题记录", "icon": "data"},
+                {"name": "系统分析", "desc": "AI诊断薄弱点", "icon": "ai"},
+                {"name": "补充测试", "desc": "完善数据覆盖", "icon": "evidence"},
+                {"name": "制定计划", "desc": "每日练习目标", "icon": "teacher"},
+                {"name": "定期自测", "desc": "检验学习效果", "icon": "track"},
+                {"name": "持续提升", "desc": "巩固突破目标", "icon": "target"},
             ],
         },
         "footer": {
