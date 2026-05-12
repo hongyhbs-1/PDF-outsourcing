@@ -5,21 +5,16 @@ math_func.py -- 黄金比例排版模型
 
 核心模型:
   n 个容器, n-1 个容器间间距。
-  间距序列使用平滑 phi 增长 (golden_gaps):
+  间距序列使用严格 phi 增长 (golden_gaps):
 
   基本单位 u 决定一切:
-    top_pad    = u                                (顶部留白, 与底部对称)
-    inter[k]   = u * phi^(k * dampening)          (第 k 个间距, k=0..n-2)
-    bottom_pad = u                                (底部留白, 与顶部对称)
+    top_pad    = u                (顶部留白, 与底部对称)
+    inter[k]   = u * phi^k       (第 k 个间距, k=0..n-2)
+    bottom_pad = u                (底部留白, 与顶部对称)
 
-  dampening = 1.0 / num_inter, 使 n 越大增长越缓,
-  防止最后一个间距跳跃过大。
-  num_inter=2 时 d=0.5 (phi^0.5=1.27), num_inter=3+ 时 d<1.0 递减。
+  相邻间距比: inter[k+1]/inter[k] = phi  (严格黄金比例)
 
-  相邻间距比: inter[k+1]/inter[k] = phi^dampening
-  不严格等于 phi, 但保持单调递增的黄金比例增长趋势。
-
-  总留白 = u * (2 + sum(phi^(k*d), k=0..num_inter-1))
+  总留白 = u * (2 + sum(phi^k, k=0..num_inter-1))
 
   u = remaining / (2 + weighted_sum)
   u 受 u_max 约束: 紧凑模式 10mm, 正常模式 15mm
@@ -71,16 +66,14 @@ def golden_gaps(remaining: float, n: int,
                 content_ratio: float = 1.0) -> List[float]:
     """G(R, n) -> [top_pad, inter_0, ..., inter_{n-2}, bottom_pad]
 
-    间距序列使用平滑 phi 增长:
+    间距序列使用严格 phi 增长:
       top_pad    = u
-      inter[k]   = u * phi^(k * dampening)     (k = 0, 1, ..., n-2)
+      inter[k]   = u * phi^k       (k = 0, 1, ..., n-2)
       bottom_pad = u
 
-    dampening = 1.0 / num_inter 使 n 越大衰减越快，
-    防止最后一个间距跳跃过大。
-    num_inter=2 时 d=0.5 (phi^0.5=1.27), num_inter=3+ 时 d<1.0 递减。
+    相邻间距比: inter[k+1]/inter[k] = phi  (严格黄金比例, 可验证)
 
-    总留白 = u * (2 + sum(phi^(k*d), k=0..num_inter-1))
+    总留白 = u * (2 + sum(phi^k, k=0..num_inter-1))
 
     content_ratio < 0.4 时启用紧凑模式: u_max = 10mm
     否则 u_max = 15mm
@@ -97,13 +90,8 @@ def golden_gaps(remaining: float, n: int,
     # 多容器: n-1 个容器间间距
     num_inter = n - 1
 
-    # 平滑衰减: 防止最后一个间距跳跃过大
-    # dampening < 1.0 时 phi 增长趋缓: phi^(k*d) 而非 phi^k
-    # num_inter=2 时 d=0.5 (phi^0.5=1.27), num_inter=3+ 时 d<1.0 递减
-    dampening = 1.0 / num_inter
-
-    # 加权和: sum(phi^(k*dampening), k=0..num_inter-1)
-    geo_sum = sum(PHI ** (k * dampening) for k in range(num_inter))
+    # 加权和: sum(phi^k, k=0..num_inter-1)
+    geo_sum = sum(PHI ** k for k in range(num_inter))
     total_weight = 2.0 + geo_sum
 
     # u_max: 紧凑模式 vs 正常模式
@@ -111,11 +99,11 @@ def golden_gaps(remaining: float, n: int,
     u = min(u_max, remaining / total_weight)
 
     # top_pad = u
-    # inter[k] = u * phi^(k * dampening)
+    # inter[k] = u * phi^k
     # bottom_pad = u
     result = [u]  # top_pad
     for k in range(num_inter):
-        result.append(u * PHI ** (k * dampening))
+        result.append(u * PHI ** k)
     result.append(u)  # bottom_pad
 
     return result
@@ -150,7 +138,7 @@ def layout_page(heights: List[tuple[str, float]],
       2. 接近溢出 (ratio >= 0.85): 预防性压缩, 确保内容+间距 <= H
       3. 内容 <= H: 黄金间距排版
          - top_pad = bottom_pad = u  (垂直居中)
-         - inter[k] = u * phi^(k*d)  (平滑增长, d=dampening)
+         - inter[k] = u * phi^k      (严格黄金比例增长)
          - u 受 u_max 约束 (紧凑/正常模式)
       4. content_ratio < 0.4: 紧凑模式, u_max=10mm
          content_ratio >= 0.6: 高密度, 靠上排列

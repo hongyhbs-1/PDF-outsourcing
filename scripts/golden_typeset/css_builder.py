@@ -47,9 +47,10 @@ def build_css(layouts: Dict[str, PageLayout]) -> str:
                      f"ratio={ratio:.2f} {tag}/{density_tag} */")
         parts.append("@media print {")
 
-        # Wrapper: flex + 自适应 justify-content
+        # Wrapper: min-height + flex + 自适应 justify-content
         justify = _justify_for_ratio(ratio)
         parts.append(f"  {sel} {{")
+        parts.append(f"    min-height: 275mm;")
         parts.append(f"    display: flex;")
         parts.append(f"    flex-direction: column;")
         parts.append(f"    justify-content: {justify};")
