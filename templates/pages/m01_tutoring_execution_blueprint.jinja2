@@ -13,10 +13,10 @@
   </header>
 
   <main class="execution-grid">
-    <section class="lb-panel exec-panel drill-structure-panel">
-      <h2><b>07</b> {{ lb_icon('tree', 'lb-title-icon') }}知识点钻取结构 <small>能力树</small></h2>
-      <p class="panel-lead">从领域到考点逐层定位，精准找到需要补强的知识点。</p>
-      <div class="drill-head wide"><span>{{ bp.meta.l1_label }}</span><i></i><span>L2（知识模块）</span><i></i><span>L3（知识点）</span><i></i><span>L4（考点细节）</span></div>
+    <section class="lb-panel exec-panel improvement-path-panel">
+      <h2><b>07</b> {{ lb_icon('target', 'lb-title-icon lb-title-icon--success') }}个性化练习建议</h2>
+      <p class="panel-lead">基于诊断结果，每周3-5次，每次15-30分钟。</p>
+      <div class="drill-head wide"><span>知识领域</span><i></i><span>建议练习</span><i></i><span>练习目标</span></div>
       <div class="focus-paths">
         {% for row in bp.focus_paths %}
         {% set domain_icon = '' %}
@@ -28,20 +28,15 @@
         {% elif '应用' in row.domain %}{% set domain_icon = 'domain-application' %}{% endif %}
         <div class="focus-row state-{{ row.state }}">
           <span class="drill-domain">{% if domain_icon %}{{ lb_icon(domain_icon, 'drill-row-icon drill-domain-icon') }}{% endif %}{{ row.domain }}</span><i></i>
-          <span>{{ row.l2 }}</span><i></i>
           <span>{{ row.l3 }}</span><i></i>
           <span class="last">{{ row.l4 }}</span>
         </div>
         {% endfor %}
       </div>
       <div class="state-legend compact-legend">
-        <span class="dot achieved">已达标</span><span class="dot attention">需关注</span><span class="dot improve">需加强</span><span class="dot nodata">数据不足</span>
+        <span class="dot improve">重点突破</span><span class="dot attention">巩固提升</span><span class="dot achieved">保持练习</span>
       </div>
     </section>
-
-    <section class="lb-panel exec-panel improvement-path-panel">
-      <h2><b>08</b> {{ lb_icon('target', 'lb-title-icon lb-title-icon--success') }}提分路径图 <small>{{ bp.stage_plan.current_text }} → {{ bp.stage_plan.target_text }}</small></h2>
-      <p class="panel-lead">分阶段提升，稳步达成目标。</p>
       <div class="stage-flow">
         {% for stage in bp.stage_plan.stages %}
         <div class="exec-stage stage-{{ stage.state }}">
