@@ -63,14 +63,14 @@
             <circle cx="300" cy="300" r="40" />
             <circle cx="300" cy="284" r="14" />
             <path d="M268 326c6-20 20-28 32-28s26 8 32 28" />
-            <text x="300" y="340">各领域答对率</text>
+            <text x="300" y="348">各领域答对率</text>
           </g>
           {% for d in bp.domains %}
           <g class="domain-node state-{{ d.state }}" transform="translate({{ d.x }}, {{ d.y }})">
             <polygon points="0,-44 38,-22 38,22 0,44 -38,22 -38,-22" />
-            <text class="domain-name" x="0" y="-10">{{ d.name }}</text>
-            <text class="domain-acc" x="0" y="16">{{ d.accuracy_text }}</text>
-            <text class="domain-state" x="0" y="38">{{ d.state_label }}</text>
+            <text class="domain-name" x="0" y="-18">{{ d.name }}</text>
+            <text class="domain-acc" x="0" y="10">{{ d.accuracy_text }}</text>
+            <text class="domain-state" x="0" y="32">{{ d.state_label }}</text>
           </g>
           {% endfor %}
           <g class="map-spokes">

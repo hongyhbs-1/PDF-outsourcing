@@ -35,7 +35,7 @@
         {% endfor %}
       </div>
       <div class="state-legend compact-legend">
-        <span class="dot nodata">数据不足</span><span class="dot attention">需关注</span><span class="dot improve">需加强</span><span class="dot achieved">已达标</span>
+        <span class="dot achieved">已达标</span><span class="dot attention">需关注</span><span class="dot improve">需加强</span><span class="dot nodata">数据不足</span>
       </div>
     </section>
 
@@ -67,8 +67,8 @@
     </section>
 
     <section class="lb-panel exec-panel data-engine-panel">
-      <h2><b>09</b> {{ lb_icon('ai', 'lb-title-icon') }}数据分析引擎 <small>AI数据驾驶舱</small></h2>
-      <p class="panel-lead">多维数据融合分析，驱动科学决策。</p>
+      <h2><b>09</b> {{ lb_icon('shield', 'lb-title-icon') }}数据来源说明</h2>
+      <p class="panel-lead">基于真实试卷数据生成，结论可信赖。</p>
       <div class="data-quality-card">
         <h3>{{ lb_icon('shield', 'data-card-icon data-card-icon--success') }} 数据质量说明</h3>
         <p>本报告基于 <strong>{{ bp.data_engine.paper_count }} 套试卷</strong>、<strong>{{ bp.data_engine.valid_questions }} 道有效大题</strong>、<strong>{{ bp.data_engine.domain_modules }} 个领域模块</strong>生成，数据可信度评估为 <strong>{{ bp.data_engine.reliability_level }}</strong>{% if bp.data_engine.stars %}（{% for i in range(bp.data_engine.stars) %}★{% endfor %}）{% endif %}。</p>
@@ -82,8 +82,8 @@
     </section>
 
     <section class="lb-panel exec-panel support-system-panel">
-      <h2><b>10</b> {{ lb_icon('support', 'lb-title-icon') }}学习支持系统 <small>协同成长</small></h2>
-      <p class="panel-lead">家长、老师、学生三方协同，全程陪伴孩子进步。</p>
+      <h2><b>10</b> {{ lb_icon('support', 'lb-title-icon') }}家长配合要点</h2>
+      <p class="panel-lead">帮助孩子提升，家长可以这样做。</p>
       <div class="support-triangle">
         <svg viewBox="0 0 440 300" role="img" aria-label="老师家长学生三方协同">
           <defs>
@@ -106,8 +106,8 @@
       <div class="support-summary">{{ lb_icon('support', 'note-icon') }}{{ bp.support_system.summary }}</div>
     </section>
 
-    <section class="lb-panel execution-axis-panel">
-      <h2><b>11</b> {{ lb_icon('axis', 'lb-title-icon') }}执行中轴线：从数据到成长的闭环</h2>
+    <section class="execution-axis-panel">
+      <h2><b>11</b> {{ lb_icon('track', 'lb-title-icon') }}每周练习建议</h2>
       <div class="axis-flow">
         {% for stage in bp.axis.stages %}
         <div class="axis-stage {% if stage.name == bp.axis.active_stage %}active{% endif %}">
@@ -118,12 +118,12 @@
         {% if not loop.last %}<i class="axis-arrow"></i>{% endif %}
         {% endfor %}
       </div>
-      <div class="axis-note">{{ lb_icon('track', 'note-icon') }}闭环驱动，持续优化，让每一次努力都看得见进步。</div>
+      <div class="axis-note">{{ lb_icon('track', 'note-icon') }}每天练习15-30分钟，持续巩固薄弱知识点。</div>
       <div class="axis-check-strip">
-        <span>{{ lb_icon('track', 'axis-check-icon') }}补测闭环</span>
-        <span>{{ lb_icon('evidence', 'axis-check-icon') }}错因归档</span>
-        <span>{{ lb_icon('target', 'axis-check-icon') }}阶段复测</span>
-        <span>{{ lb_icon('support', 'axis-check-icon') }}家校反馈</span>
+        <span>{{ lb_icon('track', 'axis-check-icon') }}每日练习</span>
+        <span>{{ lb_icon('evidence', 'axis-check-icon') }}错题整理</span>
+        <span>{{ lb_icon('target', 'axis-check-icon') }}定期自测</span>
+        <span>{{ lb_icon('support', 'axis-check-icon') }}家长督促</span>
       </div>
     </section>
   </main>
