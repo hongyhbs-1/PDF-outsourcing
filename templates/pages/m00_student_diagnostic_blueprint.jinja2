@@ -69,14 +69,14 @@
             <circle cx="300" cy="282" r="16" />
             <path d="M265 332c7-26 26-37 35-37s28 11 35 37" />
             <text x="300" y="360">{{ bp.profile.student_name }}</text>
-            <text x="300" y="384">{{ bp.meta.ability_axis_label }}</text>
+            <text x="300" y="384">各领域答对率</text>
           </g>
           {% for d in bp.domains %}
           <g class="domain-node state-{{ d.state }}" transform="translate({{ d.x }}, {{ d.y }})">
             <polygon points="0,-44 38,-22 38,22 0,44 -38,22 -38,-22" />
             <text class="domain-name" x="0" y="-10">{{ d.name }}</text>
             <text class="domain-acc" x="0" y="16">{{ d.accuracy_text }}</text>
-            <text class="domain-state" x="0" y="38">{{ d.state_label }}</text>
+            <text class="domain-state" x="0" y="38">{{ '待提升' if d.state_label == '需加强' else d.state_label }}</text>
           </g>
           {% endfor %}
         </svg>
@@ -84,8 +84,8 @@
       <div class="map-legend">
         <span class="legend achieved">已达标</span>
         <span class="legend attention">需关注</span>
-        <span class="legend improve">需加强</span>
-        <span class="legend nodata">数据不足</span>
+        <span class="legend improve">待提升</span>
+        <span class="legend nodata">题目太少</span>
       </div>
     </section>
 

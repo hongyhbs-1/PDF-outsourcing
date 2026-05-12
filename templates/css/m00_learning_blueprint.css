@@ -253,7 +253,7 @@
 .domain-node.state-improve text { fill: #D14B2E; }
 .domain-node.state-nodata polygon { stroke: #BAC8D3; fill: #F7F9FB; }
 .domain-node.state-nodata text { fill: #667085; }
-.map-legend { display:flex; gap:6px; justify-content:center; font-size:9px; margin-top:-2mm; }
+.map-legend { display:flex; gap:6px; justify-content:center; font-size:10px; margin-top:-2mm; }
 .legend::before, .dot::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:4px; vertical-align:middle; }
 .legend.achieved::before { background:#168A96; }.legend.attention::before { background:#F4A340; }.legend.improve::before { background:#E96F4A; }.legend.nodata::before { background:#B7C4CF; }
 
