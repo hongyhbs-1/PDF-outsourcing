@@ -120,8 +120,8 @@
     <div class="m2-cw-core-summary__label">本页核心结论</div>
     <div class="m2-cw-core-summary__grid">
       <div class="m2-cw-core-summary__item"><strong>短板集中</strong><span>{% if weakness_summary.domains | length > 0 %}{{ weakness_summary.domains[:3] | join('、') }}{% else %}暂无明显集中领域{% endif %}</span></div>
-      <div class="m2-cw-core-summary__item"><strong>优先处理</strong><span>P0/P1 共{{ weakness_summary.p0 + weakness_summary.p1 }}个，先补高差距项</span></div>
-      <div class="m2-cw-core-summary__item"><strong>迁移重点</strong><span>先建立方法链路，再做同类题迁移</span></div>
+      <div class="m2-cw-core-summary__item"><strong>优先处理</strong><span>P0/P1 共{{ weakness_summary.p0 + weakness_summary.p1 }}个，先补差距最大的项</span></div>
+      <div class="m2-cw-core-summary__item"><strong>学习方法</strong><span>先学会一种解法，再做同类题巩固（举一反三能力）</span></div>
     </div>
   </div>
 
@@ -272,7 +272,7 @@
     <div class="m2-cw-reason-cards">
       {% for card in reasoning.cards %}
       <div class="m2-cw-reason-card">
-        <div class="m2-cw-reason-card__label">{{ lb_icon('evidence', 'frame-inline-icon') }} {{ safe(card.label, '') }}</div>
+        <div class="m2-cw-reason-card__label">{{ safe(card.label, '') }}</div>
 
         {% if card.is_icon %}
           {# 图标模式（如：核心考点的勾选图标） #}

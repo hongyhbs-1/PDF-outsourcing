@@ -379,7 +379,19 @@ CSS变量说明：
   <div class="m4-core-conclusion">
     <div class="m4-core-conclusion__label">本页核心结论</div>
     <div class="m4-core-conclusion__text">
-      先看六大领域整体达标情况，再看表格明细依据。{% if domain_groups.improve | length > 0 %}{{ domain_groups.improve | join('、') }}是当前首要补强领域；{% endif %}{% if domain_groups.attention | length > 0 %}{{ domain_groups.attention | join('、') }}需要持续关注；{% endif %}{% if domain_groups.achieved | length > 0 %}{{ domain_groups.achieved | join('、') }}可作为稳定优势。{% endif %}
+      {% set weakest = domain_groups.improve[0] if domain_groups.improve | length > 0 else (domain_groups.attention[0] if domain_groups.attention | length > 0 else '暂无数据') %}
+      {% set weakest_item = domains | selectattr('name_cn', 'equalto', weakest) | first %}
+      {% set strongest = domain_groups.achieved[0] if domain_groups.achieved | length > 0 else '暂无达标领域' %}
+      {% if weakest_item and weakest_item.accuracy is not none and weakest_item.accuracy != '' %}
+      <strong>{{ weakest }}</strong>正确率{{ weakest_item.accuracy_text | default('--') }}，距目标差{{ weakest_item.delta_text | default('--') }}，是当前最大短板，<strong>建议优先补强</strong>；
+      {% if strongest != weakest %}
+      <strong>{{ strongest }}</strong>{% if strongest in domain_groups.achieved %}达标{% endif %}，可作为信心基础。
+      {% endif %}
+      {% else %}
+      {% if domain_groups.improve | length > 0 %}需重点关注：{{ domain_groups.improve | join('、') }}；{% endif %}
+      {% if domain_groups.attention | length > 0 %}持续关注：{{ domain_groups.attention | join('、') }}；{% endif %}
+      {% if domain_groups.achieved | length > 0 %}{{ domain_groups.achieved | join('、') }}表现良好。{% endif %}
+      {% endif %}
     </div>
   </div>
 
@@ -529,14 +541,14 @@ CSS变量说明：
           <td class="m4-td-delta {{ dclass }}">
             {{ item.delta_text | default('--') }}
           </td>
-          
-          {# 数量（题量） #}
-          <td>
+
+          {# 数量（题量） — 辩论共识：视觉降级11px muted #}
+          <td class="m4-text-muted" style="font-size: 11px;">
             {{ item.count_text | default((item.count | default('--')) ~ '题' if item.count is defined and item.count is not none else '--') }}
           </td>
-          
-          {# 置信度 #}
-          <td>
+
+          {# 置信度 — 辩论共识：视觉降级11px muted #}
+          <td class="m4-text-muted" style="font-size: 11px;">
             {{ item.confidence | default('--') }}
           </td>
           
@@ -571,43 +583,41 @@ CSS变量说明：
   {% endif %}
 
   {# ------------------------------------------------------------------------
-     分析小结 (Summary Card)
+     分析小结 (Summary Card) — 辩论共识：保留但改为两卡片（教学建议+数据提示）
      ------------------------------------------------------------------------ #}
   {% set summary_items = summary.get('items', []) if summary is mapping else (summary.items if summary.items is defined else []) %}
-  {% if summary_items | length > 0 %}
+  {% set teaching_suggestion = [] %}
+  {% set data_note = [] %}
+  {% for item in summary_items %}
+    {% set item_style = item.highlights[0].style if item.highlights is defined and item.highlights | length > 0 else 'default' %}
+    {% if item_style == 'improve' or item_style == 'attention' %}
+      {% set _ = teaching_suggestion.append(item) %}
+    {% elif item_style == 'muted' or '数据' in (item.label | default('')) %}
+      {% set _ = data_note.append(item) %}
+    {% endif %}
+  {% endfor %}
+  {% set weak_domains_list = domain_groups.improve + domain_groups.attention %}
+  {% set strong_domains_list = domain_groups.achieved %}
+  {% if weak_domains_list | length > 0 or strong_domains_list | length > 0 or data_note | length > 0 %}
   <div class="m4-summary-card">
-    <div class="m4-summary-title">{{ lb_icon('shield', 'frame-inline-icon') }} {{ summary.title | default('分析小结') }}</div>
-    <ul class="m4-summary-list">
-      {% for item in summary_items %}
-      {# 根据第一个highlight的style确定区域类型 #}
-      {% set item_style = item.highlights[0].style if item.highlights is defined and item.highlights | length > 0 else 'default' %}
-      <li class="m4-summary-item m4-summary-item--{{ item_style }}">
-        <span class="m4-summary-label">{{ item.label | default('') }}：</span>
-        <span class="m4-summary-text">
-          {# 如果有highlights，渲染高亮文本 #}
-          {% if item.highlights is defined and item.highlights | length > 0 %}
-            {% set remaining_text = item.text | default('') %}
-            {% for hl in item.highlights %}
-              {% set parts = remaining_text.split(hl.text) %}
-              {% if parts | length > 1 %}
-                {{ parts[0] }}<span class="m4-hl-{{ hl.style | default('muted') }}">{{ hl.text }}</span>
-                {% set remaining_text = parts[1:] | join(hl.text) %}
-              {% endif %}
-            {% endfor %}
-            {{ remaining_text }}
-          {% else %}
-            {{ item.text | default('') }}
-          {% endif %}
-        </span>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% elif section.note_text is defined and section.note_text %}
-  {# 如果没有summary但有note_text，显示备注 #}
-  <div class="m4-summary-card">
-    <div class="m4-summary-title">{{ lb_icon('data', 'frame-inline-icon') }} 说明</div>
-    <p class="m4-summary-note">{{ section.note_text }}</p>
+    <div class="m4-summary-title">{{ summary.title | default('分析小结') }}</div>
+    {% if weak_domains_list | length > 0 or strong_domains_list | length > 0 %}
+    <div class="m4-summary-item m4-summary-item--improve">
+      <span class="m4-summary-label">教学建议：</span>
+      <span class="m4-summary-text">
+        {% if strong_domains_list | length > 0 %}已达标领域（{{ strong_domains_list | join('、') }}）可作为提分基础，{% endif %}
+        {% if weak_domains_list | length > 0 %}优先攻克薄弱领域（{{ weak_domains_list | join('、') }}）。{% endif %}
+      </span>
+    </div>
+    {% endif %}
+    {% if nodata_domains | length > 0 %}
+    <div class="m4-summary-item m4-summary-item--muted">
+      <span class="m4-summary-label">数据提示：</span>
+      <span class="m4-summary-text">
+        {{ nodata_domains | map(attribute='name_cn') | join('、') }}题量不足（各不足5题），结论置信度较低，建议补充练习后重新评估。
+      </span>
+    </div>
+    {% endif %}
   </div>
   {% endif %}
 
