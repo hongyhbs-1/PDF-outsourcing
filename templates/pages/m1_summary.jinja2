@@ -196,7 +196,7 @@ render_payload.module_1_summary 结构示例:
   <section class="m1-core-conclusion">
     <div class="m1-core-conclusion__label">本页核心结论</div>
     <div class="m1-core-conclusion__text">
-      3级知识点达标率{{ safe_pct(summary.pass_rate_text, '0%') }}：{% if pass_stats.total > 0 %}在已分析的{{ pass_stats.total }}个三级知识点中，{{ pass_stats.achieved }}个已达到{{ safe(summary.target_accuracy_text, '目标线') }}，{{ pass_stats.pending }}个仍未达标；{% endif %}优先补齐当前未达标短板，比平均用力更容易缩小目标差距。
+      三级知识点（L3）达标率 {{ safe_pct(summary.pass_rate_text, '0%') }}（= 达标的知识点/总知识点）：{% if pass_stats.total > 0 %}在已分析的{{ pass_stats.total }}个知识点中，{{ pass_stats.achieved }}个已达到{{ safe(summary.target_accuracy_text, '目标线') }}，{{ pass_stats.pending }}个需重点补齐；{% endif %}优先补齐当前未达标知识点，比平均用力更容易缩小目标差距。
     </div>
   </section>
 
@@ -211,7 +211,7 @@ render_payload.module_1_summary 结构示例:
 
     {# 摘要横幅 #}
     <div class="m1-summary-banner">
-      {{ safe_pct(summary.pass_rate_text, '0%') }}表示3级知识点达标率：{% if pass_stats.total > 0 %}已分析的{{ pass_stats.total }}个三级知识点中，{{ pass_stats.achieved }}个达标、{{ pass_stats.pending }}个未达标。{% endif %}达标指正确率达到或超过本次设定的{{ safe(summary.target_accuracy_text, '目标线') }}。
+      {{ safe_pct(summary.pass_rate_text, '0%') }}表示三级知识点（L3）达标率（= 达标的知识点/总知识点）：{% if pass_stats.total > 0 %}已分析的{{ pass_stats.total }}个知识点中，{{ pass_stats.achieved }}个达标、{{ pass_stats.pending }}个需重点补齐。{% endif %}达标指正确率达到或超过本次设定的{{ safe(summary.target_accuracy_text, '目标线') }}。
     </div>
 
     {# 摘要内容区 #}
@@ -227,7 +227,7 @@ render_payload.module_1_summary 结构示例:
         {% endif %}
 
         {# 圆环图说明 #}
-        <div class="m1-donut-caption">L3 知识点达标率（达标 = 超过目标线）</div>
+        <div class="m1-donut-caption">三级知识点（L3）达标率（= 达标的知识点/总知识点）</div>
 
         {# 图例 #}
         {% if summary.pass_segments is defined and summary.pass_segments %}

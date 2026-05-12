@@ -118,14 +118,21 @@
       <div class="mov-hero-kicker">{{ lb_icon('data', 'frame-inline-icon') }}报告速览</div>
       <h2 class="mov-hero-title">先看样本规模，再判断结论可信度</h2>
       <p class="mov-hero-text">
-      基于<strong>{{ paper_count_display }}</strong> 份试卷、<strong>{{ big_q_count }}</strong> 道大题（<strong>{{ sub_q_count }}</strong> 子题），覆盖 <strong>{{ l3_covered }}</strong> 个 L3 知识点，正确率 <strong>{{ accuracy_display }}</strong>。
-      {{ hero_text }}
+      {% if l3_covered is defined and l3_covered and l3_covered > 0 %}
+      基于<strong>{{ paper_count_display }}</strong> 份试卷、<strong>{{ big_q_count }}</strong> 道大题（<strong>{{ sub_q_count }}</strong> 子题），覆盖 <strong>{{ l3_covered }}</strong> 个三级知识点（L3），整体正确率 <strong>{{ accuracy_display }}</strong>。{{ hero_text }}
+      {% else %}
+      基于<strong>{{ paper_count_display }}</strong> 份试卷、<strong>{{ big_q_count }}</strong> 道大题（<strong>{{ sub_q_count }}</strong> 子题）进行了初步分析。知识点层面的精准诊断正在完善中，建议补充更多有效数据后重新生成可获得完整报告。{{ hero_text }}
+      {% endif %}
       </p>
       <div class="mov-chip-row">
         <span class="mov-chip mov-chip--accent">整体正确率 {{ accuracy_display }}</span>
         <span class="mov-chip mov-chip--soft">{{ paper_count_display }} 份样本</span>
         <span class="mov-chip mov-chip--soft">{{ big_q_count }} 道有效大题</span>
-        <span class="mov-chip mov-chip--soft">{% if coverage_rate is not none %}L3 覆盖 {{ coverage_rate }}%{% else %}L3 覆盖待补充{% endif %}</span>
+        {% if l3_covered is defined and l3_covered and l3_covered > 0 %}
+        <span class="mov-chip mov-chip--soft">三级知识点（L3）覆盖 {{ l3_covered }} 个</span>
+        {% else %}
+        <span class="mov-chip mov-chip--soft" style="color: #d4943a;">⚠️ 知识点标注完善中</span>
+        {% endif %}
       </div>
     </div>
 
