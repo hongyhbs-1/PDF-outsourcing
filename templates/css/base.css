@@ -407,6 +407,14 @@
   --pm-shadow-card-hover: 0 8px 30px rgba(18, 52, 77, 0.12);
   --pm-shadow-bar:        0 2px 8px rgba(18, 52, 77, 0.10);
   --pm-shadow-float:      0 12px 40px rgba(18, 52, 77, 0.15);
+
+  /* Golden ratio layout */
+  --phi: 1.618;
+  --phi-inv: 0.618;
+  --phi-major: 61.8%;
+  --phi-minor: 38.2%;
+  --phi-2thirds: 66.667%;
+  --phi-1third: 33.333%;
 }
 
 /* --- 页面设置 --- */

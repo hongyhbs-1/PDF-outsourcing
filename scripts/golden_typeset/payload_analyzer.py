@@ -90,7 +90,34 @@ def _estimate_m2(p):
             ("content", _h(3.2, _sc(items, "name_cn", "reason"), _len(items)) + _h(3.0, _sc(tips), _len(tips)))]
 
 def _estimate_m3(p):
-    return [("container", 150.0)]
+    """M3 知识点短板钻取 — 按实际领域数和表行数估算。"""
+    drill = p.get("kp_drill", p.get("m3_kp_drill", {}))
+    if not isinstance(drill, dict):
+        return [("title", 0.0), ("content", 150.0)]
+
+    domains = drill.get("domains", [])
+    n_domains = len(domains) if isinstance(domains, list) else 6
+
+    # 标题 + 简介 + 步骤
+    intro_h = 28.0
+
+    # 每个领域面板: header(8mm) + L2表(预估) + L3表(预估) + L4表(预估)
+    total_rows = 0
+    for d in (domains if isinstance(domains, list) else []):
+        if not isinstance(d, dict):
+            continue
+        for level_key in ("l2_items", "l3_items", "l4_items"):
+            items = d.get(level_key, [])
+            total_rows += len(items) if isinstance(items, list) else 3
+
+    # 如果无具体数据，用经验默认值
+    if total_rows == 0:
+        total_rows = n_domains * 6  # 每领域约6行
+
+    panel_h = n_domains * 12.0 + total_rows * ROW_TABLE
+    content_h = intro_h + panel_h + 16.0  # 16mm padding/margin
+
+    return [("title", 0.0), ("content", min(content_h, 250.0))]
 
 def _estimate_m4(p):
     d = p.get("domains", {})
