@@ -318,14 +318,25 @@ def _rewrite_font_urls(css: str) -> str:
 
 
 def load_css() -> str:
-    """合并所有 CSS 文件。"""
+    """合并所有 CSS 文件。
+    
+    加载顺序：base.css → m*.css（模块样式）→ shared_*.css（共享覆盖）
+    不依赖文件名字母序 hack，显式控制优先级。
+    """
     css_parts: list[str] = []
     base = CSS_DIR / "base.css"
     if base.exists():
         css_parts.append(base.read_text(encoding="utf-8"))
+    # 模块 CSS（m*.css）
+    for f in sorted(CSS_DIR.glob("m*.css")):
+        css_parts.append(f.read_text(encoding="utf-8"))
+    # 模块 CSS（非 m 前缀的模块样式，如 comic、student_profile 等）
     for f in sorted(CSS_DIR.glob("*.css")):
-        if f.name == "base.css":
+        if f.name == "base.css" or f.name.startswith("m") or f.name.startswith("shared_"):
             continue
+        css_parts.append(f.read_text(encoding="utf-8"))
+    # 共享覆盖（shared_*.css）— 最后加载，优先级最高
+    for f in sorted(CSS_DIR.glob("shared_*.css")):
         css_parts.append(f.read_text(encoding="utf-8"))
     return _rewrite_font_urls("\n".join(css_parts))
 
