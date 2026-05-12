@@ -37,6 +37,10 @@
         <span class="dot improve">重点突破</span><span class="dot attention">巩固提升</span><span class="dot achieved">保持练习</span>
       </div>
     </section>
+
+    <section class="lb-panel exec-panel improvement-path-panel">
+      <h2><b>08</b> {{ lb_icon('target', 'lb-title-icon lb-title-icon--success') }}提分路径图 <small>{{ bp.stage_plan.current_text }} → {{ bp.stage_plan.target_text }}</small></h2>
+      <p class="panel-lead">分阶段提升，稳步达成目标。</p>
       <div class="stage-flow">
         {% for stage in bp.stage_plan.stages %}
         <div class="exec-stage stage-{{ stage.state }}">
