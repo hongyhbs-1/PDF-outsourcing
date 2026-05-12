@@ -1,1 +1,32 @@
+# 构建输出
+dist/
+build/
+
+# 顶层调试产物
+output*.html
+output*.pdf
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 样本输出（生成产物）
+samples/output/
+
+# 脚本临时输出
+scripts/_output/
+
+# 编辑器/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# ACE 工具
 .ace-tool/
