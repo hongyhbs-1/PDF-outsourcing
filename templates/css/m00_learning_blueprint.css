@@ -172,7 +172,7 @@
 .axis-stage-icon { width: 16px; height: 16px; }
 .shortlist-row-icon { width: 10px; height: 10px; color: var(--lb-teal); }
 .drill-head-icon { width: 10px; height: 10px; color: var(--lb-title); }
-.drill-row-icon { width: 9px; height: 9px; color: var(--lb-muted); margin-right: 3px; }
+.drill-row-icon { width: 13px; height: 13px; color: var(--lb-muted); margin-right: 3px; }
 .expanded-line-icon,
 .note-icon { width: 12px; height: 12px; color: var(--lb-title); }
 .stage-detail-icon { width: 14px; height: 14px; color: var(--lb-title); }

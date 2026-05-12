@@ -114,7 +114,7 @@
 
     <section class="lb-panel knowledge-tree-panel">
       <h2><b>04</b> {{ lb_icon('tree', 'lb-title-icon') }}知识点钻取结构 <small>能力树</small></h2>
-<span>{{ bp.meta.l1_label }}</span><i></i><span>L2（知识模块）</span><i></i><span>L3（知识点）</span><i></i><span>L4（考点细节）</span>
+      <div class="drill-head"><span>{{ bp.meta.l1_label }}</span><i></i><span>L2（知识模块）</span><i></i><span>L3（知识点）</span><i></i><span>L4（考点细节）</span></div>
       <div class="drill-list">
         {% for item in bp.shortlist %}
         {% set domain_icon = 'tree' %}
