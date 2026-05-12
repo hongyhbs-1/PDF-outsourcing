@@ -371,6 +371,8 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
      ========================================================================== #}
   {% set student_card = module.cards.student_suggestion | default({}) %}
 
+  <div class="m6-grid-split">
+  <div class="m6-grid-split__left">
   <section class="m6-card m6-card--role m6-card--student">
 
     {# 卡片标题 #}
@@ -414,6 +416,8 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     </div>
 
   </section>
+  </div><!-- /.m6-grid-split__left -->
+  <div class="m6-grid-split__right">
 
   {# ==========================================================================
      卡片3：给家长的配合建议 (Parent Guidance Card) - NEW
@@ -509,6 +513,9 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     {% endif %}
 
   </section>
+  </div><!-- /.m6-grid-split__right -->
+  </div><!-- /.m6-grid-split -->
+
   </div><!-- /.module-content-card -->
 
 </div>

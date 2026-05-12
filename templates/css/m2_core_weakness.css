@@ -557,7 +557,27 @@
 }
 
 /* ============================================================================
-   12. 打印优化 (Print Optimization)
+   12. Grid Split Layout (reasoning left, tips right)
+   ============================================================================ */
+.m2-grid-split {
+  display: grid;
+  grid-template-columns: var(--phi-major) var(--phi-minor);
+  gap: 10px;
+  align-items: start;
+}
+
+.m2-grid-split__left,
+.m2-grid-split__right {
+  min-width: 0;
+}
+
+/* Single-child: reasoning only, no tips — span full width */
+.m2-grid-split:has(.m2-grid-split__left:not(:empty)):not(:has(.m2-grid-split__right)) {
+  grid-template-columns: 1fr;
+}
+
+/* ============================================================================
+   13. 打印优化 (Print Optimization)
    ============================================================================ */
 @media print {
   .m2-core-weakness-module {
@@ -811,5 +831,8 @@
   .m2-cw-empty-guidance {
     margin-left: 0;
     margin-right: 0;
+  }
+  .m2-grid-split {
+    gap: 6px;
   }
 }

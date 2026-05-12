@@ -829,6 +829,73 @@
   margin-top: 8px;
 }
 
+/* ============================================================================
+   Grid Split Layout (Golden Ratio — student left, parent+teacher right)
+   ============================================================================ */
+.m6-grid-split {
+  display: grid;
+  grid-template-columns: var(--phi-major) var(--phi-minor);
+  gap: 10px;
+  margin-top: 10px;
+  align-items: start;
+}
+
+.m6-grid-split__left,
+.m6-grid-split__right {
+  min-width: 0;
+}
+
+.m6-grid-split__left .m6-card--student {
+  margin-top: 0;
+}
+
+.m6-grid-split__right .m6-card--parent {
+  margin-top: 0;
+}
+
+.m6-grid-split__right .m6-card--teacher {
+  margin-top: 8px;
+}
+
+/* Student suggestion grid: keep 2-col in wider left column */
+.m6-grid-split__left .m6-suggestion-sections {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* Compact styles for narrow right column */
+.m6-grid-split__right .m6-card--parent,
+.m6-grid-split__right .m6-card--teacher {
+  padding: 12px 14px;
+}
+
+.m6-grid-split__right .m6-card-header__title {
+  font-size: 16px;
+}
+
+.m6-grid-split__right .m6-summary-box {
+  padding: 8px 10px;
+}
+
+.m6-grid-split__right .m6-summary-box__text {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.m6-grid-split__right .m6-check-item__text {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.m6-grid-split__right .m6-guidance-paragraph {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.m6-grid-split__right .m6-role-icon {
+  width: 18px;
+  height: 18px;
+}
+
 @media print {
   .m6-page {
     width: auto;
@@ -1041,6 +1108,38 @@
   .m6-check-item {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+
+  /* Grid split print overrides */
+  .m6-grid-split {
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .m6-grid-split__left .m6-suggestion-sections {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .m6-grid-split__right .m6-card--parent,
+  .m6-grid-split__right .m6-card--teacher {
+    padding: 5px 7px;
+  }
+  .m6-grid-split__right .m6-card-header__title {
+    font-size: 10px;
+  }
+  .m6-grid-split__right .m6-summary-box__text {
+    font-size: 8px;
+    line-height: 1.15;
+  }
+  .m6-grid-split__right .m6-check-item__text {
+    font-size: 7.5px;
+    line-height: 1.12;
+  }
+  .m6-grid-split__right .m6-guidance-paragraph {
+    font-size: 8px;
+    line-height: 1.15;
+  }
+  .m6-grid-split__right .m6-role-icon {
+    width: 12px;
+    height: 12px;
   }
 }
 

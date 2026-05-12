@@ -257,7 +257,12 @@
 
   {# ===== 5. 排序依据说明（可选，条件渲染） ===== #}
   {% set reasoning = s.reasoning | default(None) %}
+  {% set tips = s.tips | default([]) %}
+
+  {% if (reasoning and reasoning.cards) or tips | length > 0 %}
+  <div class="m2-grid-split">
   {% if reasoning and reasoning.cards %}
+  <div class="m2-grid-split__left">
   <div class="m2-cw-reason-section">
 
     {# ----- 5.1 标题行 ----- #}
@@ -300,18 +305,23 @@
     {% endif %}
 
   </div>
+  </div><!-- /.m2-grid-split__left -->
   {% endif %}
 
   {# ===== 6. 数据提示（可选，条件渲染） ===== #}
-  {% set tips = s.tips | default([]) %}
   {% if tips | length > 0 %}
+  <div class="m2-grid-split__right">
   <div class="m2-cw-tips-box">
     <div class="m2-cw-tips-title">{{ lb_icon('data', 'frame-inline-icon') }} 数据提示</div>
     {% for tip in tips %}
     <div class="m2-cw-tips-item">* {{ tip }}</div>
     {% endfor %}
   </div>
+  </div><!-- /.m2-grid-split__right -->
   {% endif %}
+  </div><!-- /.m2-grid-split -->
+  {% endif %}
+
   </div><!-- /.module-content-card -->
 
 </div>

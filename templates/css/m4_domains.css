@@ -881,7 +881,59 @@
 }
 
 /* ============================================================================
-   12. 打印优化 (Print Optimization - 对齐 m2)
+   12. Grid Split Layout (Golden Ratio — chart left, table right)
+   ============================================================================ */
+.m4-grid-split {
+  display: grid;
+  grid-template-columns: var(--phi-major) var(--phi-minor);
+  gap: 10px;
+  margin: 0 var(--cw-spacing-6) 8px;
+  align-items: start;
+}
+
+.m4-grid-split__left,
+.m4-grid-split__right {
+  min-width: 0;
+}
+
+/* Zero external margins — grid gap handles spacing */
+.m4-grid-split__left .m4-peer-card,
+.m4-grid-split__left .m4-peer-card--overview,
+.m4-grid-split__left .m4-chart-card {
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+}
+
+.m4-grid-split__right .m4-table-card.m4-peer-card {
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+}
+
+.m4-grid-split__right .m4-summary-card {
+  margin: 8px 0 0;
+}
+
+/* Compact table for narrow (38%) column */
+.m4-grid-split__right .m4-table thead th,
+.m4-grid-split__right .m4-table tbody td {
+  padding: 4px 5px;
+  font-size: 10.5px;
+}
+
+.m4-grid-split__right .m4-badge {
+  padding: 2px 4px;
+  font-size: 10px;
+}
+
+.m4-grid-split__right .m4-table-footnote {
+  padding: 5px 8px;
+  font-size: 10px;
+}
+
+/* ============================================================================
+   13. 打印优化 (Print Optimization - 对齐 m2)
    ============================================================================ */
 @media print {
   /* 模板实际使用 .m4-section-domains (非 .m4-module-domains) */
@@ -895,14 +947,37 @@
   /* [T15] 子元素边距归零 — 由容器 padding 统一提供 */
   .m4-section-title { padding-left: 0; padding-right: 0; }
   .m4-section-underline { margin-left: 0; }
-  .m4-core-conclusion,
-  .m4-peer-card,
-  .m4-table-card.m4-peer-card,
+  .m4-core-conclusion { margin-left: 0; margin-right: 0; }
+  .m4-peer-card { margin-left: 0; margin-right: 0; }
+  .m4-table-card.m4-peer-card { margin-left: 0; margin-right: 0; }
   .m4-chart-meta-bar { margin-left: 0; margin-right: 0; }
   .m4-chart-box { margin-left: 0; margin-right: 0; }
   .m4-chart-card { margin-left: 0; margin-right: 0; }
   .m4-table-card { margin-left: 0; margin-right: 0; }
   .m4-summary-card { margin-left: 0; margin-right: 0; }
+
+  /* Grid split print overrides */
+  .m4-grid-split {
+    margin-left: 0;
+    margin-right: 0;
+    gap: 6px;
+  }
+  .m4-grid-split__right .m4-summary-card {
+    margin-top: 6px;
+  }
+  .m4-grid-split__right .m4-table thead th,
+  .m4-grid-split__right .m4-table tbody td {
+    padding: 3px 4px;
+    font-size: 9.5px;
+  }
+  .m4-grid-split__right .m4-badge {
+    font-size: 9px;
+    padding: 1px 3px;
+  }
+  .m4-grid-split__right .m4-table-footnote {
+    padding: 4px 6px;
+    font-size: 9px;
+  }
 
   .m4-module-domains {
     padding-top: 8px;

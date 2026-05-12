@@ -396,6 +396,8 @@ CSS变量说明：
     </div>
   </div>
 
+  <div class="m4-grid-split">
+  <div class="m4-grid-split__left">
   <div class="m4-peer-card m4-peer-card--overview">
     <div class="m4-peer-title">{{ lb_icon('gauge', 'frame-inline-icon') }} 领域达标概览</div>
 
@@ -502,6 +504,8 @@ CSS变量说明：
   </div>
   {% endif %}
   </div><!-- /.m4-peer-card--overview -->
+  </div><!-- /.m4-grid-split__left -->
+  <div class="m4-grid-split__right">
 
   {# ------------------------------------------------------------------------
      表格卡片：领域表现详情 (Table Card)
@@ -512,12 +516,10 @@ CSS变量说明：
     <table class="m4-table">
       <thead>
         <tr>
-          <th style="width: 20%;">领域</th>
-          <th style="width: 15%;">正确率</th>
-          <th style="width: 15%;">距目标线</th>
-          <th style="width: 15%;">涉及题数</th>
-          <th style="width: 15%;">置信度</th>
-          <th style="width: 20%;">状态</th>
+          <th style="width: 32%;">领域</th>
+          <th style="width: 22%;">正确率</th>
+          <th style="width: 22%;">距目标</th>
+          <th style="width: 24%;">状态</th>
         </tr>
       </thead>
       <tbody>
@@ -532,28 +534,17 @@ CSS变量说明：
           <td>
             <strong>{{ get_domain_name(item) }}</strong>
           </td>
-          
+
           {# 正确率 #}
           <td class="{% if not item_has_data %}m4-text-muted{% endif %}">
             {{ item.accuracy_text | default('--') }}
           </td>
-          
+
           {# 距目标线 #}
           <td class="m4-td-delta {{ dclass }}">
             {{ item.delta_text | default('--') }}
           </td>
 
-          {# 数量（题量） — 辩论共识：视觉降级11px muted #}
-          <td class="m4-text-muted" style="font-size: 11px;">
-            {{ item.count_text | default((item.count | default('--')) ~ '题' if item.count is defined and item.count is not none else '--') }}
-          </td>
-
-          {# 置信度 — 三方共识：改为图标（高=✅ 中=⚠️ 低=❌） #}
-          <td class="m4-text-muted" style="font-size: 11px;">
-            {% set conf = item.confidence | default('--') %}
-            {% if conf == '高' %}✅{% elif conf == '中' %}⚠️{% elif conf == '低' %}❌{% else %}{{ conf }}{% endif %}
-          </td>
-          
           {# 状态徽章 (兼容英文 achieved/improve/attention) #}
           <td>
             {% set status_val = status_cn(item.status | default('无数据')) | trim %}
@@ -568,7 +559,8 @@ CSS变量说明：
       </tbody>
     </table>
     <div class="m4-table-footnote">
-      {% if nodata_domains | length > 0 %}⚠️ 数据提示：{{ nodata_domains | map(attribute='name_cn') | join('、') }}题量不足，结论置信度较低，建议补充练习后重新评估。{% else %}本表仅展示重点模块，领域正确率基于全部知识点统计{% endif %}
+      {% for item in domains %}{% set item_has_data = item.has_data if item.has_data is defined else (item.accuracy is not none) %}{% if item_has_data %}{{ get_domain_name(item) }}{{ item.count_text | default('--') }}{% if item.confidence | default('') %}(置信{{ item.confidence }}){% endif %}{% if not loop.last %}；{% endif %}{% endif %}{% endfor %}
+      {% if nodata_domains | length > 0 %} | ⚠️ {{ nodata_domains | map(attribute='name_cn') | join('、') }}题量不足{% endif %}
     </div>
   </div>
   {% endif %}
@@ -607,6 +599,9 @@ CSS变量说明：
   {% endif %}
 
   {# 数据提示 → 移至表格脚注（三方共识：nodata领域信息放入表格footnote） #}
+
+  </div><!-- /.m4-grid-split__right -->
+  </div><!-- /.m4-grid-split -->
 
   </div><!-- /.module-content-card -->
 
