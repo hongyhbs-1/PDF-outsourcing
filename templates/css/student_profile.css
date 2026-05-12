@@ -99,6 +99,39 @@
 /* ======================================================================
    1. 整体情况
    ====================================================================== */
+
+/* --- 合并核心框（速览+结论+读数重点 → 黄金广告位） --- */
+.sp-hero-unified {
+  background: var(--pm-bg-card);
+  border: 1px solid var(--pm-border-card);
+  border-radius: 8px;
+  box-shadow: var(--pm-shadow-card);
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.sp-hero-unified__title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  line-height: 1.3;
+  margin: 0 0 6px 0;
+}
+
+.sp-hero-unified__text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pm-text-secondary);
+  margin: 0 0 10px 0;
+}
+
+.sp-hero-unified__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
 .sp-hero {
   display: flex;
   gap: 8px;
@@ -437,10 +470,7 @@
 }
 
 .sp-analysis-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-  gap: 8px;
-  align-items: start;
+  display: block;
 }
 
 .sp-analysis-card {

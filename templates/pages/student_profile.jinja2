@@ -115,91 +115,32 @@
 {% endif %}
 
 <div class="sp-page sp-page--{{ sp_density }}">
-  <h1 class="sp-title">{{ lb_icon('profile', 'frame-title-icon') }}学生画像分析</h1>
+  <h1 class="sp-title">{{ lb_icon('profile', 'frame-title-icon') }}{{ student_name }}{{ subject }}画像分析</h1>
 
   <div class="module-content-card">
-    <div class="sp-group-head">
-      <h2 class="sp-group-title">{{ lb_icon('profile', 'frame-section-icon') }}一、整体情况</h2>
-    </div>
 
-    <div class="sp-hero sp-overview-top">
-      <div class="sp-profile-card">
-        <h2 class="sp-card-title">{{ lb_icon('student', 'frame-card-icon') }}学生档案</h2>
-        <div class="sp-profile-grid">
-          <div class="sp-profile-item">
-            <div class="sp-profile-item__k">学生</div>
-            <div class="sp-profile-item__v">{{ student_name }}</div>
-          </div>
-          <div class="sp-profile-item">
-            <div class="sp-profile-item__k">年级</div>
-            <div class="sp-profile-item__v">{{ student_grade }}</div>
-          </div>
-          <div class="sp-profile-item">
-            <div class="sp-profile-item__k">城市</div>
-            <div class="sp-profile-item__v">{{ student_city }}</div>
-          </div>
-          <div class="sp-profile-item">
-            <div class="sp-profile-item__k">科目</div>
-            <div class="sp-profile-item__v">{{ subject }}</div>
-          </div>
-          <div class="sp-profile-item">
-            <div class="sp-profile-item__k">考试</div>
-            <div class="sp-profile-item__v">{{ meta.exam_name | default('综合测评') }}</div>
-          </div>
-          <div class="sp-profile-item">
-            <div class="sp-profile-item__k">趋势</div>
-            <div class="sp-profile-item__v">{{ trend_label }}</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sp-hero-main">
-        <div class="sp-hero-kicker">{{ lb_icon('profile', 'frame-inline-icon') }}学习画像速览</div>
-        <h2 class="sp-hero-title">{{ hero_title }}</h2>
-        <p class="sp-hero-text">{{ hero_text }}</p>
-        <div class="sp-chip-row">
-          {% if has_real_data %}
-          <span class="sp-chip sp-chip--tier sp-chip--{{ tier }}">{{ status_text }}</span>
-          <span class="sp-chip sp-chip--soft">重点：{{ lead_focus }}</span>
-          <span class="sp-chip sp-chip--soft">达标 {{ summary.pass_rate_text | default('--') }}</span>
-          {% else %}
-          <span class="sp-chip sp-chip--soft">{{ status_text }}</span>
-          <span class="sp-chip sp-chip--soft">已采集 {{ domain_count }} 个领域</span>
-          {% endif %}
-        </div>
+    {# ===================== 合并核心框：速览 + 结论 + 读数重点 ===================== #}
+    <div class="sp-hero-unified">
+      <h2 class="sp-hero-unified__title">{{ hero_title }}</h2>
+      <p class="sp-hero-unified__text">{{ hero_text }}</p>
+      <div class="sp-hero-unified__chips">
+        {% if has_real_data %}
+        <span class="sp-chip sp-chip--tier sp-chip--{{ tier }}">{{ status_text }}</span>
+        <span class="sp-chip sp-chip--soft">{{ acc | int }}% 正确率</span>
+        <span class="sp-chip sp-chip--soft">距目标 {{ gap_to_target }}%</span>
+        <span class="sp-chip sp-chip--soft">先抓 {{ lead_focus }}</span>
+        {% else %}
+        <span class="sp-chip sp-chip--soft">{{ status_text }}</span>
+        <span class="sp-chip sp-chip--soft">已采集 {{ domain_count }} 个领域</span>
+        {% endif %}
       </div>
     </div>
 
-    <div class="sp-overview-conclusion">
-      <div class="sp-section-title">{{ lb_icon('shield', 'frame-inline-icon') }}学习画像结论</div>
-
-      {% if not has_real_data %}
-      <div class="sp-conclusion-card sp-conclusion-card--warn">
-        <div class="sp-conclusion-card__tag">数据待补充</div>
-        <p class="sp-conclusion-card__text">当前答题数据不足以支撑完整画像。已完成领域分析数 <strong>{{ domain_count }}</strong>，建议每领域有效答题不少于 <strong>5 题</strong> 后再看综合诊断。</p>
-      </div>
-      {% elif tier == 'need_major' %}
-      <div class="sp-conclusion-card">
-        <div class="sp-conclusion-card__tag sp-conclusion-card__tag--need_major">需大幅提升</div>
-        <p class="sp-conclusion-card__text">当前正确率 <strong>{{ acc | int }}%</strong>，距离目标 <strong>{{ target_acc | int }}%</strong> 还有较大差距。建议先围绕 <strong>{{ lead_focus }}</strong> 建立稳定得分，再逐步扩展到其他薄弱领域。</p>
-      </div>
-      {% elif tier == 'room_grow' %}
-      <div class="sp-conclusion-card">
-        <div class="sp-conclusion-card__tag sp-conclusion-card__tag--room_grow">有提升空间</div>
-        <p class="sp-conclusion-card__text">当前已具备提分基础，主要问题不是整体偏弱，而是少数领域在持续拖分。建议优先补齐 <strong>{{ focus_summary }}</strong>{% if weak_domains | length > 2 %} 等关键短板{% endif %}，比平均用力更高效。</p>
-      </div>
-      {% else %}
-      <div class="sp-conclusion-card sp-conclusion-card--good">
-        <div class="sp-conclusion-card__tag sp-conclusion-card__tag--excellent">表现优秀</div>
-        <p class="sp-conclusion-card__text">整体正确率 <strong>{{ acc | int }}%</strong> 已达到或超过 <strong>{{ target_acc | int }}%</strong> 的目标线。下一步更适合保持优势输出，并针对偶发失误做精细化控制。</p>
-      </div>
-      {% endif %}
-    </div>
   <div class="sp-section-divider"></div>
 
   <section class="sp-section sp-section--analysis">
     <div class="sp-group-head">
-      <h2 class="sp-group-title">{{ lb_icon('gauge', 'frame-section-icon') }}二、整体分析</h2>
+      <h2 class="sp-group-title">{{ lb_icon('gauge', 'frame-section-icon') }}一、整体分析</h2>
     </div>
 
     <div class="sp-progress-panel">
@@ -292,73 +233,10 @@
         {% endif %}
       </div>
 
-      <div class="sp-analysis-card sp-analysis-card--interpretation">
-        <div class="sp-section-title">{{ lb_icon('data', 'frame-inline-icon') }}读数重点</div>
-        <div class="sp-analysis-points">
-          <div class="sp-analysis-point">
-            <div class="sp-analysis-point__label">1. 当前水平</div>
-            <p class="sp-analysis-point__text">{{ analysis_level_text }}</p>
-          </div>
-          <div class="sp-analysis-point">
-            <div class="sp-analysis-point__label">2. 当前状态</div>
-            <p class="sp-analysis-point__text">{{ analysis_state_text }}</p>
-          </div>
-          <div class="sp-analysis-point">
-            <div class="sp-analysis-point__label">3. 目标差距</div>
-            <p class="sp-analysis-point__text">{{ analysis_gap_text }}</p>
-          </div>
-          <div class="sp-analysis-point">
-            <div class="sp-analysis-point__label">4. 突破口</div>
-            <p class="sp-analysis-point__text">{{ analysis_breakthrough_text }}</p>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
   <div class="sp-section-divider"></div>
-
-  <div class="sp-section sp-section--intervention">
-    <div class="sp-group-head">
-      <h2 class="sp-group-title">{{ lb_icon('target', 'frame-section-icon') }}三、本阶段介入重点</h2>
-    </div>
-
-    <div class="sp-intervention-card">
-      {% if not has_real_data %}
-      <div class="sp-intervention-step">
-        <div class="sp-intervention-step__num">1</div>
-        <div class="sp-intervention-step__body">
-          <div class="sp-intervention-step__title">补足数据基础</div>
-          <p class="sp-intervention-step__text">先完成至少一套完整测评，确保有效答题记录达到一定数量后，再查看综合诊断与介入建议。</p>
-        </div>
-      </div>
-      {% else %}
-      <div class="sp-intervention-step">
-        <div class="sp-intervention-step__num">1</div>
-        <div class="sp-intervention-step__body">
-          <div class="sp-intervention-step__title">主攻 {{ lead_focus }}</div>
-          <p class="sp-intervention-step__text">优先从 {{ lead_focus }} 入手建立稳定得分{% if weak_domains | length > 1 %}，再逐步扩展到 {{ secondary_focus }}{% endif %}。</p>
-        </div>
-      </div>
-      {% if weak_domains | length > 1 %}
-      <div class="sp-intervention-step">
-        <div class="sp-intervention-step__num">2</div>
-        <div class="sp-intervention-step__body">
-          <div class="sp-intervention-step__title">跟进 {{ secondary_focus }}</div>
-          <p class="sp-intervention-step__text">在主攻方向取得进展后，及时跟进 {{ secondary_focus }} 等次重点领域，避免短板反复。</p>
-        </div>
-      </div>
-      {% endif %}
-      <div class="sp-intervention-step">
-        <div class="sp-intervention-step__num">{{ 3 if weak_domains | length > 1 else 2 }}</div>
-        <div class="sp-intervention-step__body">
-          <div class="sp-intervention-step__title">巩固优势领域</div>
-          <p class="sp-intervention-step__text">在补短板的同时，保持优势领域的稳定性，避免顾此失彼。{% if tier == 'excellent' %}当前整体已达标，重点在精细化控制与偶发失误的消除。{% endif %}</p>
-        </div>
-      </div>
-      {% endif %}
-    </div>
-  </div>
 
   </div><!-- /.module-content-card -->
 

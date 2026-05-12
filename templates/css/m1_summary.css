@@ -219,7 +219,9 @@ body {
 .m1-summary-banner {
   background: var(--color-banner-bg);
   padding: var(--spacing-12) var(--spacing-16);
-  font-size: 16px;
+  margin-top: var(--spacing-12);
+  border-radius: var(--radius-md);
+  font-size: 17px;
   font-weight: var(--font-weight-medium);
   color: var(--color-text-primary);
   line-height: var(--line-height-normal);
@@ -248,6 +250,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: var(--spacing-10, 10px);
 }
 
@@ -429,24 +432,20 @@ body {
 
 .m1-section-bar {
   margin: var(--spacing-20, 20px) var(--page-padding-x) var(--spacing-8);
-  padding: var(--spacing-10, 10px) var(--spacing-14, 14px);
-  background: var(--color-section-bar);
-  border-radius: var(--radius-md);
-  font-size: 20px;
+  padding: var(--spacing-10, 10px) 0;
+  background: none;
+  border-bottom: 1px solid var(--color-divider);
+  border-radius: 0;
+  font-size: 18px;
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
 }
 
-/* --------------------------------------------------------------------------
- * 9.1 简化分区标题条 (Subtle Section Bar)
+/* -------------------------------------------------------------------------- 
+ * 9.1 简化分区标题条 (Subtle Section Bar) — 已合并到 m1-section-bar
  * -------------------------------------------------------------------------- */
 .m1-section-bar--subtle {
-  background: transparent;
-  padding-left: 0;
-  padding-right: 0;
-  border-bottom: 1px solid var(--color-divider);
-  border-radius: 0;
-  font-size: 18px;
+  /* 已与 m1-section-bar 统一，保留选择器以防模板引用 */
 }
 
 /* ============================================================================

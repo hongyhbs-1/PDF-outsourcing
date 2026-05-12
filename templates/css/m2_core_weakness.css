@@ -173,13 +173,14 @@
    5. 说明条组件 (Note Bar)
    ============================================================================ */
 .m2-cw-note-bar {
-  background: var(--cw-color-bg-note);
+  background: none;
   color: var(--cw-color-text-secondary);
   font-size: var(--cw-font-size-body);
   line-height: var(--cw-line-height-normal);
-  padding: var(--cw-spacing-3) var(--cw-spacing-4);
+  padding: 0 0 0 var(--cw-spacing-3);
   margin: 0 var(--cw-spacing-6) var(--cw-spacing-4);
-  border-radius: var(--cw-radius-0);
+  border-left: 1.5mm solid var(--pm-teal, #1f6f78);
+  border-radius: 0;
 }
 
 /* ============================================================================
@@ -528,9 +529,10 @@
   .m2-cw-module-title { padding: 12px 0 0; }
   .m2-cw-module-title::after { margin-bottom: 10px; }
   .m2-cw-module-title-underline { margin-left: 0; }
-  .m2-cw-note-bar { padding: 8px 12px; margin: 0 0 10px; }
+  .m2-cw-note-bar { padding: 0 0 0 8px; margin: 0 0 10px; }
   .m2-cw-weakness-card { padding: 12px; margin: 0 0 12px; }
   .m2-cw-reason-section { margin: 0 0 12px; }
+  .m2-cw-summary-bar { margin-left: 0; margin-right: 0; }
   .m2-cw-tips-box { padding: 10px 12px; margin: 0 0 12px; }
 
   /* 避免表格行被分页切断 */

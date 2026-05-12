@@ -28,11 +28,21 @@
     {% endif %}
   {% endfor %}
 {% endif %}
+{% set ip_lead = weak_items[0].name_cn | default('核心领域') if weak_items | length > 0 else '整体稳定性' %}
+{% set ip_secondary = weak_items[1].name_cn | default('次重点领域') if weak_items | length > 1 else ip_lead %}
 
 <div class="ip-page">
   <h1 class="ip-title">{{ lb_icon('growth', 'frame-title-icon frame-title-icon--success') }}提升预期与改变</h1>
 
   <div class="module-content-card">
+
+  {# === 0. 本阶段介入重点（从学生画像迁移） === #}
+  {% if weak_items | length > 0 %}
+  <div class="ip-intervention-bar">
+    {{ lb_icon('target', 'frame-inline-icon') }}
+    <strong>本阶段介入重点：</strong>主攻 {{ ip_lead }}{% if weak_items | length > 1 %}，跟进 {{ ip_secondary }}{% endif %}，巩固优势领域
+  </div>
+  {% endif %}
 
   {# === 1. 提升路径概览 (三阶段) === #}
   <div class="ip-roadmap">

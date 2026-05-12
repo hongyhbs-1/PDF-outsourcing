@@ -188,7 +188,7 @@
   font-size: var(--cw-font-size-body);
   line-height: var(--cw-line-height-normal);
   padding: 8px 12px;
-  margin: 0 var(--cw-spacing-6) 10px;
+  margin: 0;
   border-radius: var(--cw-radius-0);
   display: flex;
   justify-content: space-between;
@@ -242,10 +242,10 @@
    7. 条形图容器 (Chart Box - 对齐 m2-cw-weakness-card)
    ============================================================================ */
 .m4-chart-box {
-  margin: 0 var(--cw-spacing-6) 10px;
-  border: 1px solid var(--cw-color-border-card);
-  background: var(--cw-color-page-bg);
-  border-radius: var(--cw-radius-0);
+  margin: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
   padding: 10px 12px;
   overflow: hidden;
   position: relative;
@@ -463,6 +463,17 @@
 /* 左极端 (≤8%): 目标标签右偏防止与 0% 重叠 */
 .m4-axis--target-left .m4-t-target {
   transform: translateX(-20%);
+}
+
+/* ============================================================================
+   7b. 图表卡片（整合 meta-bar + 条形图 + 无数据说明）
+   ============================================================================ */
+.m4-chart-card {
+  margin: 0 var(--cw-spacing-6) 10px;
+  border: 1px solid var(--cw-color-border-card);
+  background: var(--cw-color-page-bg);
+  border-radius: var(--cw-radius-0);
+  overflow: hidden;
 }
 
 /* ============================================================================
@@ -781,7 +792,7 @@
 .m4-nodata-merge {
   background: var(--cw-color-bg-muted, #F6F7F9);
   border: 1px solid var(--cw-color-border-card, #C4D4E0);
-  border-radius: 8px;
+  border-radius: var(--cw-radius-xs, 4px);
   padding: 8px 12px;
   margin: 8px 0;
   font-size: 12px;
@@ -819,6 +830,7 @@
   .m4-section-underline { margin-left: 0; }
   .m4-chart-meta-bar { margin-left: 0; margin-right: 0; }
   .m4-chart-box { margin-left: 0; margin-right: 0; }
+  .m4-chart-card { margin-left: 0; margin-right: 0; }
   .m4-table-card { margin-left: 0; margin-right: 0; }
   .m4-summary-card { margin-left: 0; margin-right: 0; }
 

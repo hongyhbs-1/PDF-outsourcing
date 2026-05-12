@@ -364,12 +364,13 @@ CSS变量说明：
 
   <div class="module-content-card">
 
-  {# ------------------------------------------------------------------------
-     图表说明条 (Chart Meta Bar)
+  {# ------------------------------------------------------------------------ 
+     图表卡片（整合 meta-bar + 条形图 + 无数据说明）
      ------------------------------------------------------------------------ #}
+  <div class="m4-chart-card">
   <div class="m4-chart-meta-bar">
     <div class="m4-meta-text">
-      {{ lb_icon('flag', 'frame-inline-icon') }} 目标线：正确率 ≥ {{ section.target_accuracy_text | default(meta.target_accuracy ~ '%') }}
+      {{ lb_icon('flag', 'frame-inline-icon') }} 目标线：正确率 ≥ {{ target_accuracy | round(0) | int }}%
     </div>
     <div class="m4-legend" aria-label="图例">
       {% for leg in legend_items %}
@@ -464,6 +465,7 @@ CSS变量说明：
     </span>
   </div>
   {% endif %}
+  </div><!-- /.m4-chart-card -->
 
   {# ------------------------------------------------------------------------
      表格卡片：领域表现详情 (Table Card)
@@ -586,8 +588,9 @@ CSS变量说明：
   </div>
   {% endif %}
 
-</section>
   </div><!-- /.module-content-card -->
+
+</section>
 
 {# ============================================================================
    END OF TEMPLATE

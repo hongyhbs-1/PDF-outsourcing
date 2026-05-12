@@ -81,7 +81,7 @@
 <div class="mov-page mov-page--{{ mov_density }}">
 
   <section class="mov-title-section">
-    <h1 class="mov-title">{{ lb_icon('data', 'frame-title-icon') }}数据分析概览</h1>
+    <h1 class="mov-title">{{ lb_icon('data', 'frame-title-icon') }}{{ student_name }}数据分析概览</h1>
     <div class="mov-title__underline"></div>
   </section>
 
@@ -118,11 +118,7 @@
       <div class="mov-hero-kicker">{{ lb_icon('data', 'frame-inline-icon') }}报告速览</div>
       <h2 class="mov-hero-title">先看样本规模，再判断结论可信度</h2>
       <p class="mov-hero-text">
-      本报告基于<strong>{{ student_name }}</strong>的
-      <strong>{{ paper_count_display }}</strong> 份试卷、<strong>{{ big_q_count }}</strong> 道大题（展开
-      <strong>{{ sub_q_count }}</strong> 道子题）进行逐题分析，覆盖
-      <strong>{{ l3_covered }}</strong> 个 L3 知识点，整体正确率
-      <strong>{{ accuracy_display }}</strong>。
+      基于<strong>{{ paper_count_display }}</strong> 份试卷、<strong>{{ big_q_count }}</strong> 道大题（<strong>{{ sub_q_count }}</strong> 子题），覆盖 <strong>{{ l3_covered }}</strong> 个 L3 知识点，正确率 <strong>{{ accuracy_display }}</strong>。
       {{ hero_text }}
       </p>
       <div class="mov-chip-row">
@@ -131,9 +127,6 @@
         <span class="mov-chip mov-chip--soft">{{ big_q_count }} 道有效大题</span>
         <span class="mov-chip mov-chip--soft">{% if coverage_rate is not none %}L3 覆盖 {{ coverage_rate }}%{% else %}L3 覆盖待补充{% endif %}</span>
       </div>
-      <p class="mov-hero-note">
-        <strong>数据口径说明：</strong>已剔除学生未作答的题目及缺少题干仅有解答的无效数据；一道题目涉及多个知识点时，按各知识点分别统计正确率，因此知识点分析数量可能多于题目数量。诊断结论以有效大题为口径。
-      </p>
     </div>
 
     {# ---- 难度分布扇形图（并入速览右侧） ---- #}

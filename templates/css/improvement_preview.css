@@ -34,6 +34,21 @@
   margin: 8px 0 16px;
 }
 
+/* --- 本阶段介入重点（从学生画像迁移） --- */
+.ip-intervention-bar {
+  background: var(--pm-teal-soft, #d0e8e8);
+  color: var(--pm-text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.ip-intervention-bar strong {
+  color: var(--pm-teal);
+}
+
 /* ==========================================================================
    1. 提升路径概览
    ========================================================================== */

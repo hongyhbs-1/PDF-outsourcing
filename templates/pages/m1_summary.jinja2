@@ -181,6 +181,8 @@ render_payload.module_1_summary 结构示例:
   <section class="m1-section-title">
     <h1 class="m1-section-title__text">{{ lb_icon('data', 'frame-title-icon') }}一、诊断摘要</h1>
     <div class="m1-section-title__underline"></div>
+    {# 摘要横幅 — 黄金广告位，紧跟标题 #}
+    <div class="m1-summary-banner">{{ safe(summary.banner_text, '暂无摘要信息') }}</div>
   </section>
 
   <div class="module-content-card">
@@ -191,11 +193,6 @@ render_payload.module_1_summary 结构示例:
   <div class="m1-section-bar">{{ lb_icon('gauge', 'frame-section-icon') }} 一、整体学情总结</div>
 
   <div class="m1-summary-card">
-    
-    {# 摘要横幅 #}
-    <div class="m1-summary-banner">
-      {{ safe(summary.banner_text, '暂无摘要信息') }}
-    </div>
 
     {# 摘要内容区 #}
     <div class="m1-summary-content">
@@ -210,7 +207,7 @@ render_payload.module_1_summary 结构示例:
         {% endif %}
 
         {# 圆环图说明 #}
-        <div class="m1-donut-caption">L3 知识点达标率</div>
+        <div class="m1-donut-caption">L3 知识点达标率（达标 = 超过目标线）</div>
 
         {# 图例 #}
         {% if summary.pass_segments is defined and summary.pass_segments %}
@@ -264,25 +261,6 @@ render_payload.module_1_summary 结构示例:
           </div>
           <div class="m1-kpi-pill">
             <span class="m1-kpi-value">{{ safe(summary.target_accuracy_text, '--') }}</span>
-          </div>
-        </div>
-
-        {# KPI 行 3: 当前正确率 #}
-        {% set _current_acc = summary.current_accuracy | default(0) %}
-        {% set _target_acc = summary.target_accuracy | default(75) %}
-        <div class="m1-kpi-row {{ get_status_class(_current_acc, _target_acc) }}">
-          <div class="m1-kpi-left">
-            <span class="m1-kpi-dot"></span>
-            <span class="m1-kpi-label">{{ lb_icon('gauge', 'frame-metric-icon') }} 总体知识点正确率</span>
-          </div>
-          <div class="m1-kpi-pill">
-            <span class="m1-kpi-value">{{ safe(summary.current_accuracy_text, '--') }}</span>
-            {% if summary.current_delta_text is defined and summary.current_delta_text %}
-              <span class="m1-kpi-delta">{{ summary.current_delta_text }}</span>
-            {% endif %}
-            {% if summary.current_trend is defined %}
-              {{ trend_arrow(summary.current_trend) }}
-            {% endif %}
           </div>
         </div>
 
@@ -368,7 +346,7 @@ render_payload.module_1_summary 结构示例:
           {# 标签组 + 提升空间 (V3-1: 学生正确率从条内移到标签行) #}
           <div class="m1-bt-tags">
             {% if item.city_tag_left is defined and item.city_tag_left %}
-              <span class="m1-bt-tag m1-bt-tag--strong">{{ item.city_tag_left }}</span>
+              <span class="m1-bt-tag m1-bt-tag--strong">考点排名{{ item.city_tag_left | replace('城市', '') }}</span>
             {% endif %}
             {% if item.city_tag_right is defined and item.city_tag_right %}
               <span class="m1-bt-tag">{{ item.city_tag_right }}</span>
