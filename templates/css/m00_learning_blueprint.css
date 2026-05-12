@@ -366,7 +366,8 @@
 .data-engine-cards span { display:block; color:#667085; font-size:9px; margin-top:3px; }
 .data-engine-cards em { color:var(--lb-orange); font-style:normal; font-size:9px; letter-spacing:1px; }
 .pipeline-flow { margin-top:9px; display:flex; align-items:center; justify-content:space-between; }
-.pipeline-flow span { display:inline-flex; align-items:center; border:1px solid #D9E7F0; border-radius:999px; padding:4px 7px; color:var(--lb-title); font-weight:700; font-size:9px; background:#fff; }
+.pipeline-flow > span { display:inline-flex; align-items:center; border:1px solid #D9E7F0; border-radius:999px; padding:4px 7px; color:var(--lb-title); font-weight:700; font-size:9px; background:#fff; }
+.pipeline-flow .pipeline-icon { border:0; border-radius:0; background:transparent; min-height:0; padding:0; }
 .pipeline-flow i { flex:1; border-top:2px solid #C7D9E8; margin:0 6px; position:relative; }
 .pipeline-flow i::after { content:""; position:absolute; right:-2px; top:-4px; border-left:6px solid #C7D9E8; border-top:4px solid transparent; border-bottom:4px solid transparent; }
 

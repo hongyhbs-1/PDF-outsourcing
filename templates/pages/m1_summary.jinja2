@@ -88,6 +88,16 @@ render_payload.module_1_summary 结构示例:
 {% set breakthrough = _data.breakthrough | default(breakthrough | default({})) %}
 {% set suggestion = _data.suggestion | default(suggestion | default({})) %}
 {% set bt_items = breakthrough['items'] | default([]) %}
+{% set pass_stats = namespace(total=0, achieved=0, pending=0) %}
+{% for seg in summary.pass_segments | default([]) %}
+  {% set seg_value = seg.value | default(0) | int %}
+  {% set pass_stats.total = pass_stats.total + seg_value %}
+  {% if '未' in (seg.name | default('')) or seg.icon | default('') == 'minus' %}
+    {% set pass_stats.pending = pass_stats.pending + seg_value %}
+  {% else %}
+    {% set pass_stats.achieved = pass_stats.achieved + seg_value %}
+  {% endif %}
+{% endfor %}
 {% if bt_items | length >= 6 %}
   {% set m1_density = 'dense' %}
 {% else %}
@@ -181,8 +191,13 @@ render_payload.module_1_summary 结构示例:
   <section class="m1-section-title">
     <h1 class="m1-section-title__text">{{ lb_icon('data', 'frame-title-icon') }}一、诊断摘要</h1>
     <div class="m1-section-title__underline"></div>
-    {# 摘要横幅 — 黄金广告位，紧跟标题 #}
-    <div class="m1-summary-banner">{{ safe(summary.banner_text, '暂无摘要信息') }}</div>
+  </section>
+
+  <section class="m1-core-conclusion">
+    <div class="m1-core-conclusion__label">本页核心结论</div>
+    <div class="m1-core-conclusion__text">
+      3级知识点达标率{{ safe_pct(summary.pass_rate_text, '0%') }}：{% if pass_stats.total > 0 %}在已分析的{{ pass_stats.total }}个三级知识点中，{{ pass_stats.achieved }}个已达到{{ safe(summary.target_accuracy_text, '目标线') }}，{{ pass_stats.pending }}个仍未达标；{% endif %}优先补齐当前未达标短板，比平均用力更容易缩小目标差距。
+    </div>
   </section>
 
   <div class="module-content-card">
@@ -193,6 +208,11 @@ render_payload.module_1_summary 结构示例:
   <div class="m1-section-bar">{{ lb_icon('gauge', 'frame-section-icon') }} 一、整体学情总结</div>
 
   <div class="m1-summary-card">
+
+    {# 摘要横幅 #}
+    <div class="m1-summary-banner">
+      {{ safe_pct(summary.pass_rate_text, '0%') }}表示3级知识点达标率：{% if pass_stats.total > 0 %}已分析的{{ pass_stats.total }}个三级知识点中，{{ pass_stats.achieved }}个达标、{{ pass_stats.pending }}个未达标。{% endif %}达标指正确率达到或超过本次设定的{{ safe(summary.target_accuracy_text, '目标线') }}。
+    </div>
 
     {# 摘要内容区 #}
     <div class="m1-summary-content">
@@ -261,6 +281,26 @@ render_payload.module_1_summary 结构示例:
           </div>
           <div class="m1-kpi-pill">
             <span class="m1-kpi-value">{{ safe(summary.target_accuracy_text, '--') }}</span>
+          </div>
+        </div>
+
+
+        {# KPI 行 3: 当前正确率 #}
+        {% set _current_acc = summary.current_accuracy | default(0) %}
+        {% set _target_acc = summary.target_accuracy | default(75) %}
+        <div class="m1-kpi-row {{ get_status_class(_current_acc, _target_acc) }}">
+          <div class="m1-kpi-left">
+            <span class="m1-kpi-dot"></span>
+            <span class="m1-kpi-label">{{ lb_icon('gauge', 'frame-metric-icon') }} 当前答题正确率</span>
+          </div>
+          <div class="m1-kpi-pill">
+            <span class="m1-kpi-value">{{ safe(summary.current_accuracy_text, '--') }}</span>
+            {% if summary.current_delta_text is defined and summary.current_delta_text %}
+              <span class="m1-kpi-delta">{{ summary.current_delta_text }}</span>
+            {% endif %}
+            {% if summary.current_trend is defined %}
+              {{ trend_arrow(summary.current_trend) }}
+            {% endif %}
           </div>
         </div>
 
@@ -343,15 +383,14 @@ render_payload.module_1_summary 结构示例:
             </div>
           </div>
 
-          {# 标签组 + 提升空间 (V3-1: 学生正确率从条内移到标签行) #}
+          {# 标签组：先讲提升空间，再补充城市考频参考，避免“上海TOP”歧义 #}
           <div class="m1-bt-tags">
+            <span class="m1-bt-tag m1-bt-tag--improve">提升空间 {{ safe(item.gap_to_target_text | default(item.delta_vs_target_text), '--') }}</span>
             {% if item.city_tag_left is defined and item.city_tag_left %}
-              <span class="m1-bt-tag m1-bt-tag--strong">考点排名{{ item.city_tag_left | replace('城市', '') }}</span>
+              <span class="m1-bt-tag m1-bt-tag--evidence">城市考频参考：{{ item.city_tag_left | replace('TOP', '前') | replace('Top', '前') | replace('top', '前') }}{% if item.city_tag_right is defined and item.city_tag_right %} · {{ item.city_tag_right }}{% endif %}</span>
+            {% elif item.city_tag_right is defined and item.city_tag_right %}
+              <span class="m1-bt-tag m1-bt-tag--evidence">{{ item.city_tag_right }}</span>
             {% endif %}
-            {% if item.city_tag_right is defined and item.city_tag_right %}
-              <span class="m1-bt-tag">{{ item.city_tag_right }}</span>
-            {% endif %}
-            <span class="m1-bt-tag m1-bt-tag--improve">提升空间 {{ safe(item.accuracy_text, '0%') }}</span>
           </div>
         </div>
       {% endfor %}

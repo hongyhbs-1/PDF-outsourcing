@@ -89,6 +89,21 @@
 {# [v1.2 fix] 使用 .get() 避免与 dict.items() 方法冲突 #}
 {% set items = s.get('items', []) %}
 {% set has_data = s.get('has_data', (items | length) > 0) %}
+{% set weakness_summary = namespace(domains=[], p0=0, p1=0, p2=0) %}
+{% for it in items %}
+  {% set domain_name = it.domain | default('') %}
+  {% if domain_name and domain_name not in weakness_summary.domains %}
+    {% set weakness_summary.domains = weakness_summary.domains + [domain_name] %}
+  {% endif %}
+  {% set level = it.priority_level | default('') %}
+  {% if level == 'P0' %}
+    {% set weakness_summary.p0 = weakness_summary.p0 + 1 %}
+  {% elif level == 'P1' %}
+    {% set weakness_summary.p1 = weakness_summary.p1 + 1 %}
+  {% elif level == 'P2' %}
+    {% set weakness_summary.p2 = weakness_summary.p2 + 1 %}
+  {% endif %}
+{% endfor %}
 
 {# ===== 空值防护宏定义 ===== #}
 {% macro safe(value, default='') -%}
@@ -100,6 +115,15 @@
   {# ===== 模块标题 ===== #}
   <h1 class="m2-cw-module-title">{{ lb_icon('warning', 'frame-title-icon frame-title-icon--warning') }}三、{{ safe(s.module_title, '核心短板清单') }}</h1>
   <div class="m2-cw-module-title-underline"></div>
+
+  <div class="m2-cw-core-summary">
+    <div class="m2-cw-core-summary__label">本页核心结论</div>
+    <div class="m2-cw-core-summary__grid">
+      <div class="m2-cw-core-summary__item"><strong>短板集中</strong><span>{% if weakness_summary.domains | length > 0 %}{{ weakness_summary.domains[:3] | join('、') }}{% else %}暂无明显集中领域{% endif %}</span></div>
+      <div class="m2-cw-core-summary__item"><strong>优先处理</strong><span>P0/P1 共{{ weakness_summary.p0 + weakness_summary.p1 }}个，先补高差距项</span></div>
+      <div class="m2-cw-core-summary__item"><strong>迁移重点</strong><span>先建立方法链路，再做同类题迁移</span></div>
+    </div>
+  </div>
 
   <div class="module-content-card">
 

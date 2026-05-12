@@ -351,6 +351,18 @@ CSS变量说明：
         else 75
     )
 ) | float %}
+{% set domain_groups = namespace(achieved=[], attention=[], improve=[]) %}
+{% for d in domains %}
+  {% set d_name = get_domain_name(d) %}
+  {% set d_status = d.status | default('') %}
+  {% if '加强' in d_status %}
+    {% set domain_groups.improve = domain_groups.improve + [d_name] %}
+  {% elif '关注' in d_status %}
+    {% set domain_groups.attention = domain_groups.attention + [d_name] %}
+  {% elif '达标' in d_status %}
+    {% set domain_groups.achieved = domain_groups.achieved + [d_name] %}
+  {% endif %}
+{% endfor %}
 
 <section class="m4-module-domains m4-section-domains" data-module="4" data-module-name="domains">
   
@@ -364,8 +376,18 @@ CSS变量说明：
 
   <div class="module-content-card">
 
-  {# ------------------------------------------------------------------------ 
-     图表卡片（整合 meta-bar + 条形图 + 无数据说明）
+  <div class="m4-core-conclusion">
+    <div class="m4-core-conclusion__label">本页核心结论</div>
+    <div class="m4-core-conclusion__text">
+      先看六大领域整体达标情况，再看表格明细依据。{% if domain_groups.improve | length > 0 %}{{ domain_groups.improve | join('、') }}是当前首要补强领域；{% endif %}{% if domain_groups.attention | length > 0 %}{{ domain_groups.attention | join('、') }}需要持续关注；{% endif %}{% if domain_groups.achieved | length > 0 %}{{ domain_groups.achieved | join('、') }}可作为稳定优势。{% endif %}
+    </div>
+  </div>
+
+  <div class="m4-peer-card m4-peer-card--overview">
+    <div class="m4-peer-title">{{ lb_icon('gauge', 'frame-inline-icon') }} 领域达标概览</div>
+
+  {# ------------------------------------------------------------------------
+     图表说明条 (Chart Meta Bar)
      ------------------------------------------------------------------------ #}
   <div class="m4-chart-card">
   <div class="m4-chart-meta-bar">
@@ -448,7 +470,8 @@ CSS变量说明：
       <span class="m4-tick m4-t-target">{{ target_accuracy | round(0) | int }}%目标</span>
       <span class="m4-tick m4-t100">100%</span>
     </div>
-  </div>
+  </div><!-- /.m4-chart-box -->
+  </div><!-- /.m4-chart-card -->
 
   {# ------------------------------------------------------------------------
      无数据领域合并说明 (Merged No-Data Note)
@@ -465,14 +488,14 @@ CSS变量说明：
     </span>
   </div>
   {% endif %}
-  </div><!-- /.m4-chart-card -->
+  </div><!-- /.m4-peer-card--overview -->
 
   {# ------------------------------------------------------------------------
      表格卡片：领域表现详情 (Table Card)
      ------------------------------------------------------------------------ #}
   {% if domains | length > 0 %}
-  <div class="m4-table-card">
-    <div class="m4-table-title">{{ lb_icon('data', 'frame-inline-icon') }} 领域表现详情</div>
+  <div class="m4-table-card m4-peer-card">
+    <div class="m4-table-title m4-peer-title">{{ lb_icon('data', 'frame-inline-icon') }} 领域表现详情</div>
     <table class="m4-table">
       <thead>
         <tr>
