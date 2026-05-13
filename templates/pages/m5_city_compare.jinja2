@@ -223,6 +223,10 @@
 {% else %}
   {% set overlap_pct = overlap_ratio | round | int %}
 {% endif %}
+{% set overlap_names = [] %}
+{% for item in items[:3] %}
+  {% if item.kp_name %}{% set _ = overlap_names.append(item.kp_name) %}{% endif %}
+{% endfor %}
 
 <div class="m5-city-compare{% if items | length >= long_item_threshold %} m5-city-compare--long{% endif %}">
 
@@ -233,87 +237,31 @@
     <h1 class="m5-city-compare__title">
       {{ lb_icon('city', 'frame-title-icon') }}五、{{ data.module_title | default('城市考情对照') }}
     </h1>
-    <p class="m5-city-compare__intro">
-      {%- set city_name = meta.city_name | default('本') -%}
-      {%- if has_data and overlap_count > 0 -%}
-        以下列出你的薄弱知识点与{{ city_name }}市历年中考高频考点的重合情况，帮助你明确提分优先级。
-      {%- elif has_data -%}
-        以下是你的薄弱知识点与{{ city_name }}市历年中考高频考点的对照情况。
-      {%- else -%}
-        你的薄弱知识点与{{ city_name }}市历年中考高频考点暂无重合。
-      {%- endif -%}
-    </p>
+    <section class="m5-core-conclusion">
+      <div class="m5-core-conclusion__label">{{ lb_icon('city', 'frame-conclusion-icon') }}本页核心结论</div>
+      <div class="m5-core-conclusion__text">
+        {%- set city_name = meta.city_name | default('本') -%}
+        {%- if has_data and overlap_count > 0 -%}
+          你的{{ overlap_count }}个薄弱知识点{% if overlap_names | length > 0 %}（{{ overlap_names | join('、') }}）{% endif %}与{{ city_name }}市高频考点重合，重合度{{ overlap_pct }}%，说明这些知识点同时具备个人短板与城市高频属性。
+        {%- elif has_data -%}
+          当前薄弱知识点暂未命中{{ city_name }}市高频考点，说明本次短板与城市高频交集有限。
+        {%- else -%}
+          你的薄弱知识点与{{ city_name }}市历年中考高频考点暂无重合。
+        {%- endif -%}
+      </div>
+    </section>
   </section>
 
   <div class="module-content-card">
 
   {# ============================================================
-     PART 2: 高频重合度对照（卡片+表格）
+     PART 2: 重合知识点清单 → 高频重合度概览
      ============================================================ #}
   {% if has_data %}
   <section class="m5-city-compare__part m5-city-compare__part--data">
-    <div class="m5-city-compare__cards">
-    
-    {# ----------------------
-       左卡：核心结论
-       ---------------------- #}
-    <div class="m5-city-compare__card">
-      <div class="m5-city-compare__card-highlight">
-        {%- if overlap_count > 0 -%}
-          你的{{ overlap_count }}个薄弱知识点与城市高频考点重合，重合度{{ overlap_pct }}%。这些是提分性价比最高的突破口。
-        {%- else -%}
-          当前薄弱知识点与城市高频考点无重合，可按自身节奏逐一补强。
-        {%- endif -%}
-      </div>
-    </div>
-    
-    {# ----------------------
-       右卡：高频重合度概览
-       ---------------------- #}
-    <div class="m5-city-compare__card m5-city-compare__card--overlap">
-      <div class="m5-city-compare__card-title">{{ lb_icon('target', 'frame-card-icon') }} 高频重合度</div>
-
-      <div class="m5-city-compare__overlap-main">
-        <span class="m5-city-compare__overlap-num">{{ overlap_pct }}%</span>
-      </div>
-      <div class="m5-city-compare__overlap-subtitle">
-        当前短板与城市 top{{ city_top_n }} 的重合率
-      </div>
-
-      <div class="m5-city-compare__progress">
-        <div class="m5-city-compare__progress-track">
-          <div class="m5-city-compare__progress-fill" style="width: {{ overlap_pct }}%;"></div>
-        </div>
-      </div>
-
-      <div class="m5-city-compare__overlap-stats">
-        <div class="m5-city-compare__overlap-stat">
-          <span class="m5-city-compare__overlap-stat-label">重合知识点</span>
-          <span class="m5-city-compare__overlap-stat-value">{{ overlap_count }}</span>
-        </div>
-        <div class="m5-city-compare__overlap-stat">
-          <span class="m5-city-compare__overlap-stat-label">核心短板总数</span>
-          <span class="m5-city-compare__overlap-stat-value">{{ student_core_weak_total }}</span>
-        </div>
-        <div class="m5-city-compare__overlap-stat">
-          <span class="m5-city-compare__overlap-stat-label">城市参考范围</span>
-          <span class="m5-city-compare__overlap-stat-value">Top{{ city_top_n }}</span>
-        </div>
-      </div>
-
-      <div class="m5-city-compare__overlap-ratio">
-        {% if overlap_count > 0 %}
-        已识别 {{ overlap_count }}/{{ student_core_weak_total }} 个优先突破的考试高频短板。
-        {% else %}
-        当前未命中城市高频交集，但仍可依据下方清单安排专项补练。
-        {% endif %}
-      </div>
-    </div>
-    
-  </div><!-- /.m5-city-compare__cards -->
 
   {# ----------------------
-     表格：重合知识点清单
+     表格：重合知识点清单（先看具体知识点）
      ---------------------- #}
   {% if has_overlap_items %}
   <section class="m5-city-compare__table-section">
@@ -378,53 +326,61 @@
     </div>
   </section>
   {% endif %}
+
+  {# ----------------------
+     高频重合度概览（置于清单之后，宽度与清单一致）
+     ---------------------- #}
+  <section class="m5-city-compare__card m5-city-compare__card--overlap m5-city-compare__card--overlap-wide">
+    <div class="m5-city-compare__card-title">{{ lb_icon('target', 'frame-card-icon') }} 高频重合度</div>
+
+    <div class="m5-city-compare__overlap-layout">
+      <div>
+        <div class="m5-city-compare__overlap-main">
+          <span class="m5-city-compare__overlap-num">{{ overlap_pct }}%</span>
+        </div>
+        <div class="m5-city-compare__overlap-subtitle">
+          当前短板与城市 top{{ city_top_n }} 的重合率
+        </div>
+      </div>
+
+      <div class="m5-city-compare__overlap-body">
+        <div class="m5-city-compare__progress">
+          <div class="m5-city-compare__progress-track">
+            <div class="m5-city-compare__progress-fill" style="width: {{ overlap_pct }}%;"></div>
+          </div>
+        </div>
+
+        <div class="m5-city-compare__overlap-stats">
+          <div class="m5-city-compare__overlap-stat">
+            <span class="m5-city-compare__overlap-stat-label">重合知识点</span>
+            <span class="m5-city-compare__overlap-stat-value">{{ overlap_count }}</span>
+          </div>
+          <div class="m5-city-compare__overlap-stat">
+            <span class="m5-city-compare__overlap-stat-label">核心短板总数</span>
+            <span class="m5-city-compare__overlap-stat-value">{{ student_core_weak_total }}</span>
+          </div>
+          <div class="m5-city-compare__overlap-stat">
+            <span class="m5-city-compare__overlap-stat-label">城市参考范围</span>
+            <span class="m5-city-compare__overlap-stat-value">Top{{ city_top_n }}</span>
+          </div>
+        </div>
+
+        <div class="m5-city-compare__overlap-ratio">
+          {% if overlap_count > 0 %}
+          已识别 {{ overlap_count }}/{{ student_core_weak_total }} 个优先突破的考试高频短板。
+          {% else %}
+          当前未命中城市高频交集，但仍可依据上方清单安排专项补练。
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
   </section><!-- /.m5-city-compare__part--data -->
   {% endif %}
 
   {% if not has_data %}
   <section class="m5-city-compare__empty">
     <div class="m5-city-compare__empty-text">暂无城市考情对照数据</div>
-  </section>
-  {% endif %}
-
-  {# ============================================================
-     PART 3: 建议（融入背景，不单独框起来）
-     ============================================================ #}
-  {% if advice_list | length > 0 %}
-  <section class="m5-city-compare__part m5-city-compare__part--advice">
-    <div class="m5-city-compare__advice-title">{{ lb_icon('teacher', 'frame-inline-icon') }} 备考建议</div>
-    <ul class="m5-city-compare__advice-list">
-      {% for advice in advice_list %}
-      <li class="m5-city-compare__advice-item">
-        {% if advice is mapping %}
-          {% set a_title = advice.get('title') %}
-          {% set a_content = advice.get('content') %}
-          {% set a_text = advice.get('text') %}
-          {% set a_hlkp = advice.get('highlight_kp') %}
-          {% set a_hlnum = advice.get('highlight_num') %}
-          {% set a_name = advice.get('name_cn') or advice.get('name') %}
-          {% set a_comment = advice.get('comment') %}
-          {% if a_content %}
-            {% if a_title %}<strong>{{ a_title }}：</strong>{% endif %}{{ a_content }}
-          {% elif a_text %}
-            {% set text = a_text | default('') %}
-            {% if a_hlkp %}
-              {{ text | replace('"' ~ a_hlkp ~ '"', '<span class="m5-city-compare__advice-highlight">"' ~ a_hlkp ~ '"</span>') | safe }}
-            {% elif a_hlnum %}
-              {{ text | replace(a_hlnum, '<span class="m5-city-compare__advice-num">' ~ a_hlnum ~ '</span>') | safe }}
-            {% else %}
-              {{ text }}
-            {% endif %}
-          {% elif a_comment %}
-            {% if a_name %}<strong>{{ a_name }}：</strong>{% endif %}{{ a_comment }}
-          {% else %}
-            {{ advice | string }}
-          {% endif %}
-        {% else %}
-          {{ advice }}
-        {% endif %}</li>
-      {% endfor %}
-    </ul>
   </section>
   {% endif %}
 

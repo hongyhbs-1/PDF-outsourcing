@@ -37,7 +37,7 @@
   --color-divider: var(--pm-border-light, #e4e8ec);               /* 行分割线 */
   --color-bar-track: var(--pm-bg-muted, #f3f0ea);             /* 条形图轨道底 */
   --color-tag-bg: var(--pm-teal-soft, #d0e8e8);                /* 标签底色 */
-  --color-icon-muted: var(--pm-border-card, #d8e2e8);            /* 概览卡片图标色 */
+  --color-icon-muted: var(--pm-teal, #1f6f78);            /* 概览卡片图标色：PDF中需保持清晰 */
 
   /* ----- 1.4 Section Backgrounds (三段彩底) ----- */
   --color-section-blue-bg: var(--pm-status-achieved-bg, #e6f3f3);       /* 整体数据质量评估背景 */
@@ -210,13 +210,18 @@
   width: 44px;
   height: 44px;
   margin-bottom: var(--spacing-md);
-  opacity: 0.9;
+  opacity: 1;
   color: var(--color-icon-muted);
 }
 
 .m7-overview-card__icon svg {
   width: 100%;
   height: 100%;
+}
+
+.m7-overview-card__icon svg * {
+  stroke-width: 2.4;
+  vector-effect: non-scaling-stroke;
 }
 
 .m7-overview-card__title {

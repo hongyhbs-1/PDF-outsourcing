@@ -48,60 +48,60 @@
   <div class="ip-roadmap">
     {% if tier == 'need_major' %}
     {# 差生路径: 当前→60天→中等→90天→目标 #}
-    <div class="ip-stage">
+    <div class="ip-stage ip-stage--current">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon') }}当前水平</div>
+      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
       <div class="ip-stage__desc">起点</div>
     </div>
-    <div class="ip-stage">
+    <div class="ip-stage ip-stage--checkpoint">
       <div class="ip-stage__marker ip-stage__marker--future">60%</div>
-      <div class="ip-stage__label">{{ lb_icon('flag', 'frame-inline-icon') }}阶段性目标</div>
+      <div class="ip-stage__label">{{ lb_icon('flag', 'frame-inline-icon ip-stage-icon--checkpoint') }}阶段性目标</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
-    <div class="ip-stage">
+    <div class="ip-stage ip-stage--boost">
       <div class="ip-stage__marker ip-stage__marker--future">75%</div>
-      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon frame-inline-icon--success') }}稳步提升</div>
+      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}稳步提升</div>
       <div class="ip-stage__desc">约 120 天</div>
     </div>
-    <div class="ip-stage">
+    <div class="ip-stage ip-stage--target">
       <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon') }}目标达成</div>
+      <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon ip-stage-icon--target') }}目标达成</div>
       <div class="ip-stage__desc">约 180 天</div>
     </div>
 
     {% elif tier == 'room_grow' %}
     {# 中等生路径: 当前→30天→目标 #}
-    <div class="ip-stage">
+    <div class="ip-stage ip-stage--current">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon') }}当前水平</div>
+      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
       <div class="ip-stage__desc">起点</div>
     </div>
-    <div class="ip-stage">
+    <div class="ip-stage ip-stage--boost">
       <div class="ip-stage__marker ip-stage__marker--future">80%</div>
-      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon frame-inline-icon--success') }}快速提升</div>
+      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}快速提升</div>
       <div class="ip-stage__desc">约 30 天</div>
     </div>
-    <div class="ip-stage">
+    <div class="ip-stage ip-stage--target">
       <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon') }}目标达成</div>
+      <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon ip-stage-icon--target') }}目标达成</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
 
     {% else %}
     {# 优等生路径: 当前→保持→冲刺 #}
-    <div class="ip-stage">
+    <div class="ip-stage ip-stage--current">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon') }}当前水平</div>
+      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
       <div class="ip-stage__desc">优秀</div>
     </div>
-    <div class="ip-stage">
+    <div class="ip-stage ip-stage--boost">
       <div class="ip-stage__marker ip-stage__marker--future">90%</div>
-      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon frame-inline-icon--success') }}稳步拔高</div>
+      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}稳步拔高</div>
       <div class="ip-stage__desc">约 30 天</div>
     </div>
-    <div class="ip-stage">
+    <div class="ip-stage ip-stage--target">
       <div class="ip-stage__marker ip-stage__marker--future">95%</div>
-      <div class="ip-stage__label">{{ lb_icon('trophy', 'frame-inline-icon frame-inline-icon--warning') }}冲刺满分</div>
+      <div class="ip-stage__label">{{ lb_icon('trophy', 'frame-inline-icon ip-stage-icon--target') }}冲刺满分</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
     {% endif %}

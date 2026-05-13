@@ -97,6 +97,43 @@
   background: var(--pm-text-muted);
 }
 
+.ip-stage--current {
+  --ip-stage-color: var(--pm-teal, #1f6f78);
+  --ip-stage-ring: rgba(31, 111, 120, 0.20);
+}
+.ip-stage--checkpoint {
+  --ip-stage-color: var(--pm-info-blue, #4a84bd);
+  --ip-stage-ring: rgba(74, 132, 189, 0.18);
+}
+.ip-stage--boost {
+  --ip-stage-color: var(--pm-status-attention, #d4943a);
+  --ip-stage-ring: rgba(212, 148, 58, 0.20);
+}
+.ip-stage--target {
+  --ip-stage-color: var(--pm-status-success, #2d8a6e);
+  --ip-stage-ring: rgba(45, 138, 110, 0.20);
+}
+.ip-stage--current .ip-stage__marker,
+.ip-stage--checkpoint .ip-stage__marker,
+.ip-stage--boost .ip-stage__marker,
+.ip-stage--target .ip-stage__marker {
+  background: var(--ip-stage-color);
+}
+.ip-stage--current .ip-stage__marker {
+  box-shadow: 0 0 0 5px var(--ip-stage-ring);
+}
+.ip-stage--current .ip-stage__label .ip-stage-icon--current,
+.ip-stage--checkpoint .ip-stage__label .ip-stage-icon--checkpoint,
+.ip-stage--boost .ip-stage__label .ip-stage-icon--boost,
+.ip-stage--target .ip-stage__label .ip-stage-icon--target {
+  color: var(--ip-stage-color);
+}
+.ip-stage--current:not(:last-child)::after,
+.ip-stage--checkpoint:not(:last-child)::after,
+.ip-stage--boost:not(:last-child)::after {
+  background: linear-gradient(90deg, var(--ip-stage-color), var(--pm-border-divider));
+}
+
 /* 连接线 */
 .ip-stage:not(:last-child)::after {
   content: "";
@@ -385,6 +422,10 @@
 
   .ip-stage__marker--current {
     box-shadow: 0 0 0 4px rgba(31, 111, 120, 0.2);
+  }
+
+  .ip-stage--current .ip-stage__marker {
+    box-shadow: 0 0 0 4px var(--ip-stage-ring);
   }
 
   .ip-stage:not(:last-child)::after {

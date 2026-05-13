@@ -175,6 +175,32 @@
   display: none;
 }
 
+.m6-core-conclusion {
+  margin: 0 0 var(--spacing-md);
+  padding: 10px 12px;
+  background: var(--pm-gradient-conclusion);
+  border: 1px solid rgba(31, 111, 120, 0.16);
+  border-radius: 8px;
+  box-shadow: var(--pm-shadow-card);
+}
+
+.m6-core-conclusion__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-blue-deep);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 3px;
+}
+
+.m6-core-conclusion__text {
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.45;
+}
+
 /* ============================================================================
    5. 通用卡片容器 (Card Container)
    ============================================================================ */
@@ -202,6 +228,27 @@
 
 .m6-card--strong-border {
   border-color: var(--color-border-strong);
+}
+
+.m6-card--city-advice {
+  border-left: 4px solid var(--color-blue-deep);
+  margin-bottom: 10px;
+}
+
+.m6-city-advice-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 14px;
+}
+
+.m6-city-advice-item {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* --------------------------------------------------------------------------
@@ -827,71 +874,58 @@
   font-size: 12px;
   color: var(--color-text-muted, #999);
   margin-top: 8px;
+  line-height: 1.35;
+}
+
+.m6-city-advice-inline {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+}
+
+.m6-city-advice-inline strong {
+  color: var(--color-blue-deep);
 }
 
 /* ============================================================================
-   Grid Split Layout (Golden Ratio — student left, parent+teacher right)
+   Role Suggestion Stack Layout
    ============================================================================ */
-.m6-grid-split {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+.m6-role-stack {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-top: 10px;
-  align-items: start;
 }
 
-.m6-grid-split__left,
-.m6-grid-split__right {
-  min-width: 0;
+.m6-role-stack .m6-card--role {
+  margin-bottom: 0;
 }
 
-.m6-grid-split__left .m6-card--student {
-  margin-top: 0;
+.m6-role-stack .m6-card--student .m6-suggestion-sections {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.m6-grid-split__right .m6-card--parent {
-  margin-top: 0;
+.m6-role-stack .m6-card--parent,
+.m6-role-stack .m6-card--teacher {
+  padding: 14px 16px;
 }
 
-.m6-grid-split__right .m6-card--teacher {
-  margin-top: 8px;
-}
-
-/* Student suggestion grid: keep 2-col in wider left column */
-.m6-grid-split__left .m6-suggestion-sections {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-/* Compact styles for narrow right column */
-.m6-grid-split__right .m6-card--parent,
-.m6-grid-split__right .m6-card--teacher {
-  padding: 12px 14px;
-}
-
-.m6-grid-split__right .m6-card-header__title {
+.m6-role-stack .m6-card-header__title {
   font-size: 16px;
 }
 
-.m6-grid-split__right .m6-summary-box {
-  padding: 8px 10px;
+.m6-role-stack .m6-summary-box {
+  padding: 9px 11px;
 }
 
-.m6-grid-split__right .m6-summary-box__text {
+.m6-role-stack .m6-summary-box__text,
+.m6-role-stack .m6-check-item__text,
+.m6-role-stack .m6-guidance-paragraph {
   font-size: 12px;
   line-height: 1.4;
 }
 
-.m6-grid-split__right .m6-check-item__text {
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.m6-grid-split__right .m6-guidance-paragraph {
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.m6-grid-split__right .m6-role-icon {
+.m6-role-stack .m6-role-icon {
   width: 18px;
   height: 18px;
 }
@@ -924,24 +958,79 @@
     margin-top: 5px;
   }
 
-  .m6-training-focus {
-    padding: 5px 7px;
+  .m6-core-conclusion {
     margin-bottom: 6px;
+    padding: 6px 8px;
+    border-radius: 8px;
   }
 
-  .m6-training-focus__chips {
+  .m6-core-conclusion__label {
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  .m6-core-conclusion__text {
+    font-size: 9.5px;
+    line-height: 1.22;
+  }
+
+  .m6-training-focus {
+    padding: 4px 6px;
+    margin-bottom: 4px;
+  }
+
+  .m6-training-focus__title {
+    font-size: 11px;
+    margin-bottom: 5px;
+    padding-left: 7px;
+    border-left-width: 2px;
+  }
+
+  .m6-training-focus__grid {
     gap: 4px;
   }
 
+  .m6-training-focus__item {
+    gap: 4px;
+    padding: 3px 6px;
+    font-size: 9px;
+  }
+
+  .m6-training-focus__name,
+  .m6-training-focus__acc,
+  .m6-training-focus__delta {
+    font-size: 9px;
+  }
+
   .m6-training-focus__note {
-    margin-top: 3px;
-    font-size: 8px;
+    margin-top: 2px;
+    font-size: 7.5px;
+    line-height: 1.18;
+  }
+
+  .m6-city-advice-inline {
+    margin-top: 2px;
   }
 
   .m6-card {
     padding: 7px 9px;
     margin-bottom: 6px;
     border-radius: 5px;
+  }
+
+  .m6-card--city-advice {
+    margin-bottom: 6px;
+  }
+
+  .m6-city-advice-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px 8px;
+    padding-left: 12px;
+  }
+
+  .m6-city-advice-item {
+    font-size: 8.5px;
+    line-height: 1.18;
   }
 
   .m6-card-header {
@@ -1037,7 +1126,7 @@
 
   .m6-suggestion-sections {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 5px;
+    gap: 4px;
   }
 
   .m6-suggestion-section:last-child:nth-child(odd) {
@@ -1082,11 +1171,11 @@
   }
 
   .m6-check-item {
-    gap: 5px;
-    padding: 3px 5px;
-    margin-bottom: 3px;
+    gap: 4px;
+    padding: 2px 4px;
+    margin-bottom: 2px;
     font-size: 8px;
-    line-height: 1.15;
+    line-height: 1.12;
     border-radius: 5px;
   }
 
@@ -1110,36 +1199,47 @@
     page-break-inside: avoid;
   }
 
-  /* Grid split print overrides */
-  .m6-grid-split {
-    gap: 6px;
-    margin-top: 6px;
+  /* Role stack print overrides */
+  .m6-role-stack {
+    gap: 3px;
+    margin-top: 3px;
   }
-  .m6-grid-split__left .m6-suggestion-sections {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .m6-role-stack .m6-card--student .m6-suggestion-sections {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  .m6-grid-split__right .m6-card--parent,
-  .m6-grid-split__right .m6-card--teacher {
-    padding: 5px 7px;
+  .m6-role-stack .m6-card--student {
+    padding: 5px 6px;
   }
-  .m6-grid-split__right .m6-card-header__title {
-    font-size: 11px;
+  .m6-role-stack .m6-card--parent,
+  .m6-role-stack .m6-card--teacher {
+    padding: 3px 5px;
   }
-  .m6-grid-split__right .m6-summary-box__text {
+  .m6-role-stack .m6-card-header {
+    margin-bottom: 3px;
+  }
+  .m6-role-stack .m6-card-header__title {
     font-size: 9.5px;
-    line-height: 1.2;
   }
-  .m6-grid-split__right .m6-check-item__text {
-    font-size: 9px;
-    line-height: 1.2;
+  .m6-role-stack .m6-summary-box {
+    padding: 3px 5px;
+    margin-bottom: 3px;
   }
-  .m6-grid-split__right .m6-guidance-paragraph {
-    font-size: 9.5px;
-    line-height: 1.2;
+  .m6-role-stack .m6-summary-box__text,
+  .m6-role-stack .m6-check-item__text,
+  .m6-role-stack .m6-guidance-paragraph {
+    font-size: 8px;
+    line-height: 1.12;
   }
-  .m6-grid-split__right .m6-role-icon {
-    width: 12px;
-    height: 12px;
+  .m6-role-stack .m6-guidance-paragraph {
+    margin-bottom: 3px;
+  }
+  .m6-role-stack .m6-check-item {
+    padding: 1px 4px;
+    margin-bottom: 1px;
+  }
+  .m6-role-stack .m6-role-icon {
+    width: 11px;
+    height: 11px;
   }
 }
 

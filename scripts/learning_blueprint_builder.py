@@ -504,6 +504,107 @@ def _build_focus_paths(city_focus: list[dict], shortlist: list[dict], limit: int
     return rows
 
 
+def _execution_task_copy(row: dict) -> dict[str, str]:
+    """Convert a diagnostic focus item into teacher/student/tracking actions.
+
+    The second blueprint should not repeat the first page's L1-L4 drill table.
+    It uses the same diagnosis only as input, then renders execution actions.
+    """
+    state = str(row.get("state") or "improve")
+    domain = str(row.get("domain") or "待确认")
+    l2 = str(row.get("l2") or "")
+    l3 = str(row.get("l3") or "待确认知识点")
+    combined = f"{domain} {l2} {l3}"
+
+    if state == "nodata" or domain == "—":
+        return {
+            "target": "补充样本",
+            "focus": "先形成可判断证据",
+            "teacher_action": "安排补测题组",
+            "student_task": "完成基础样本",
+            "tracking_signal": "样本覆盖可判读",
+            "icon": "data",
+        }
+    if state == "need_test":
+        return {
+            "target": f"{domain}验证",
+            "focus": l3,
+            "teacher_action": "先补测确认",
+            "student_task": "限时小测+订正",
+            "tracking_signal": "确认是否专项",
+            "icon": "question",
+        }
+    if state == "achieved":
+        return {
+            "target": f"{domain}巩固",
+            "focus": l3,
+            "teacher_action": "保持难度梯度",
+            "student_task": "穿插复习题",
+            "tracking_signal": "稳定在目标线",
+            "icon": "shield",
+        }
+
+    if any(key in combined for key in ("全等", "判定")):
+        teacher_action = "拆判定条件链"
+        student_task = "画图推理+变式练"
+        tracking_signal = "步骤表达达标"
+        icon = "domain-geometry"
+    elif "勾股" in combined:
+        teacher_action = "建立直角模型"
+        student_task = "应用题转图形"
+        tracking_signal = "模型识别达标"
+        icon = "domain-geometry"
+    elif any(key in combined for key in ("几何", "图形", "三角")):
+        teacher_action = "梳理图形关系"
+        student_task = "条件标注+证明"
+        tracking_signal = "推理链完整"
+        icon = "domain-geometry"
+    elif any(key in combined for key in ("代数", "方程", "不等式", "运算")):
+        teacher_action = "定位运算错因"
+        student_task = "分步演算+纠错"
+        tracking_signal = "同类题回升"
+        icon = "domain-algebra"
+    elif "函数" in combined:
+        teacher_action = "梳理变量关系"
+        student_task = "读图识别+迁移"
+        tracking_signal = "图像题稳定"
+        icon = "domain-function"
+    elif any(key in combined for key in ("统计", "概率")):
+        teacher_action = "重建数据读法"
+        student_task = "图表分析训练"
+        tracking_signal = "信息提取达标"
+        icon = "domain-statistics"
+    else:
+        teacher_action = "讲清关键方法"
+        student_task = "专项练习+复盘"
+        tracking_signal = "连续复测达标"
+        icon = "target"
+
+    return {
+        "target": f"{domain}专项",
+        "focus": l3,
+        "teacher_action": teacher_action,
+        "student_task": student_task,
+        "tracking_signal": tracking_signal,
+        "icon": icon,
+    }
+
+
+def _build_execution_tasks(focus_paths: list[dict], limit: int = 4) -> list[dict]:
+    """Build task-oriented rows for the execution blueprint."""
+    source = [row for row in focus_paths if row.get("state") != "nodata"] or focus_paths[:1]
+    tasks = []
+    for idx, row in enumerate(source[:limit], start=1):
+        task = _execution_task_copy(row)
+        task.update({
+            "no": f"T{idx}",
+            "state": row.get("state") or "improve",
+            "state_label": row.get("state_label") or _state_label(row.get("state")),
+        })
+        tasks.append(task)
+    return tasks
+
+
 def _build_diagnostic_drill_rows(domains: list[dict], shortlist: list[dict], limit: int = 6) -> list[dict]:
     """Build a fuller L1-L4 drill table for the first blueprint reference page."""
     rows: list[dict] = []
@@ -653,6 +754,7 @@ def build_learning_blueprints(payload: dict) -> dict[str, dict]:
     active_stage = _active_axis_stage(payload, shortlist)
     stage_plan = _build_stage_plan(payload, shortlist)
     focus_paths = _build_focus_paths(city_focus, shortlist, limit=5)
+    execution_tasks = _build_execution_tasks(focus_paths, limit=4)
     diagnostic_drill_rows = _build_diagnostic_drill_rows(domains, shortlist, limit=6)
 
     student_name = _first(_get(payload, "meta.student_display_name"), default="学生")
@@ -729,6 +831,7 @@ def build_learning_blueprints(payload: dict) -> dict[str, dict]:
             "slogan": "AI负责诊断，老师负责执行，系统负责持续追踪，三方协同让进步可见、可量化。",
         },
         "focus_paths": focus_paths,
+        "execution_tasks": execution_tasks,
         "stage_plan": stage_plan,
         "evidence": evidence,
         "confidence": confidence,

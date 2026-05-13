@@ -322,6 +322,16 @@
 {% set level_guide = data.level_guide | default([], true) %}
 {% set tables = data.tables | default([], true) %}
 {% set path_example = data.path_example | default({}, true) %}
+{% set path_nodes = path_example.nodes | default([], true) %}
+{% set drill_path_names = [] %}
+{% set drill_focus = namespace(l3='', l4='', max_gap='') %}
+{% for node in path_nodes %}
+  {% if node.name_cn %}{% set _ = drill_path_names.append(node.name_cn) %}{% endif %}
+  {% if node.level == 'L3' %}{% set drill_focus.l3 = node.name_cn | default('', true) %}{% endif %}
+  {% if node.level == 'L4' %}{% set drill_focus.l4 = node.name_cn | default('', true) %}{% endif %}
+  {% set node_delta = node.delta_vs_target if node.delta_vs_target is defined else node.gap_to_target | default(none) %}
+  {% if node_delta is not none %}{% set drill_focus.max_gap = (node_delta | abs) ~ '%' %}{% endif %}
+{% endfor %}
 
 {# [v2.0] 六大领域数据 #}
 {% set domain_names = data.domain_names | default({
@@ -339,11 +349,36 @@
 
 {# [v2.0] has_data 判定：优先用适配层提供的，否则根据 domain_panels 或 tables 计算 #}
 {% set has_data = data.has_data | default((domain_panels | length) > 0 or (tables | length) > 0, true) %}
+{% set drill_nodata_names = [] %}
+{% for dk in domain_keys %}
+  {% set panel = domain_panels[dk] | default({}, true) %}
+  {% set l2_items = panel.l2_items | default([], true) %}
+  {% set l3_items = panel.l3_items | default([], true) %}
+  {% set l4_items = panel.l4_items | default([], true) %}
+  {% set any_items = (l2_items | length > 0) or (l3_items | length > 0) or (l4_items | length > 0) %}
+  {% set panel_has_data = panel.has_data | default(false, true) %}
+  {% if not any_items and not panel_has_data %}
+    {% set d_name = panel.domain_name | default(domain_names[dk] | default("领域" ~ dk, true), true) %}
+    {% set _ = drill_nodata_names.append(d_name) %}
+  {% endif %}
+{% endfor %}
 
 <section class="m3-kp-drill">
   <div class="m3-kp-drill__container">
 
     <h2 class="m3-kp-drill__title">{{ lb_icon('tree', 'frame-title-icon') }}四、{{ module_title }}</h2>
+
+    <section class="m3-kp-core-summary">
+      <div class="m3-kp-core-summary__label">{{ lb_icon('tree', 'frame-conclusion-icon') }}本页核心结论</div>
+      <div class="m3-kp-core-summary__text">
+        {% if drill_focus.l3 or drill_focus.l4 %}
+          本页沿 L1-L4 逐层钻取，重点定位到{% if drill_focus.l3 %}「{{ drill_focus.l3 }}」{% endif %}{% if drill_focus.l4 %}及「{{ drill_focus.l4 }}」{% endif %}{% if drill_focus.max_gap %}，最大距目标线约 {{ drill_focus.max_gap }}{% endif %}；
+        {% else %}
+          本页用于展示从领域到考点细节的短板定位路径；
+        {% endif %}
+        {% if drill_nodata_names | length > 0 %}另有 {{ drill_nodata_names | length }} 个领域样本不足，需补充答题记录后再做细颗粒诊断。{% else %}下方按领域列出知识模块、知识点与考点细节，便于安排专项补强。{% endif %}
+      </div>
+    </section>
 
     <div class="module-content-card">
 

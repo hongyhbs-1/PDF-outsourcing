@@ -95,7 +95,10 @@
 }
 
 .m1-core-conclusion__label,
+.m3-kp-core-summary__label,
 .m4-core-conclusion__label,
+.m5-core-conclusion__label,
+.m6-core-conclusion__label,
 .m2-cw-core-summary__label {
   display: inline-flex;
   align-items: center;
@@ -168,6 +171,7 @@
 }
 
 .m1-kpi-label,
+.m1-goal-metric-label,
 .m1-bt-title,
 .m2-cw-legend-title,
 .m2-cw-reason-header__title,

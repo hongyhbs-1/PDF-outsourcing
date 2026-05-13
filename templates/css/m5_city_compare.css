@@ -164,6 +164,32 @@
   color: var(--cc-text-secondary);
 }
 
+.m5-core-conclusion {
+  margin: 4px 0 0;
+  padding: 10px 12px;
+  background: var(--pm-gradient-conclusion);
+  border: 1px solid rgba(31, 111, 120, 0.16);
+  border-radius: 8px;
+  box-shadow: var(--pm-shadow-card);
+}
+
+.m5-core-conclusion__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cc-accent-primary);
+  font-size: 12px;
+  font-weight: var(--cc-font-weight-bold);
+  margin-bottom: 3px;
+}
+
+.m5-core-conclusion__text {
+  color: var(--cc-text-primary);
+  font-size: 14px;
+  font-weight: var(--cc-font-weight-bold);
+  line-height: 1.45;
+}
+
 
 /* ============================================================
    SECTION 5: (Banner removed — replaced by __intro)
@@ -230,6 +256,21 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+
+.m5-city-compare__card--overlap-wide {
+  margin-bottom: var(--cc-spacing-8);
+}
+
+.m5-city-compare__overlap-layout {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.42fr) minmax(0, 1fr);
+  gap: var(--cc-spacing-8);
+  align-items: center;
+}
+
+.m5-city-compare__overlap-body {
+  min-width: 0;
 }
 
 .m5-city-compare__overlap-main {
@@ -660,6 +701,22 @@
     line-height: 1.4;
   }
 
+  .m5-core-conclusion {
+    margin-top: 0;
+    padding: 7px 10px;
+    border-radius: 8px;
+  }
+
+  .m5-core-conclusion__label {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+
+  .m5-core-conclusion__text {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
   .m5-city-compare__part {
     margin-bottom: 10px;
   }
@@ -694,6 +751,15 @@
     margin-top: 6px;
     font-size: 11px;
     line-height: 1.35;
+  }
+
+  .m5-city-compare__overlap-layout {
+    grid-template-columns: 95px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .m5-city-compare__card--overlap-wide {
+    margin-bottom: 10px;
   }
 
   .m5-city-compare__overlap-main {

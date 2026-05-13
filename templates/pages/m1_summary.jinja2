@@ -259,51 +259,48 @@ render_payload.module_1_summary 结构示例:
         {% endif %}
       </div>
 
-      {# 右侧: KPI 三行 #}
+      {# 右侧: 目标与当前表现（分数目标 / 达标线 / 当前表现） #}
+      {% set _current_acc_raw = summary.current_accuracy if summary.current_accuracy is defined and summary.current_accuracy is not none and summary.current_accuracy != '' else none %}
+      {% set _target_acc_raw = summary.target_accuracy if summary.target_accuracy is defined and summary.target_accuracy is not none and summary.target_accuracy != '' else none %}
+      {% set _current_acc = _current_acc_raw | float if _current_acc_raw is not none else none %}
+      {% set _target_acc = _target_acc_raw | float if _target_acc_raw is not none else none %}
+      {% set _has_goal_gap = _current_acc is not none and _target_acc is not none %}
+      {% set _delta_num = (summary.current_delta | float) if summary.current_delta is defined and summary.current_delta is not none and summary.current_delta != '' else ((_current_acc - _target_acc) if _has_goal_gap else none) %}
+      {% set _delta_text_clean = safe(summary.current_delta_text, ((_delta_num | round(0) | int) ~ '%') if _delta_num is not none else '--') | replace('-', '') | replace('+', '') %}
       <div class="m1-summary-right">
-        
-        {# KPI 行 1: 目标分数 #}
-        <div class="m1-kpi-row">
-          <div class="m1-kpi-left">
-            <span class="m1-kpi-dot"></span>
-            <span class="m1-kpi-label">{{ lb_icon('target', 'frame-metric-icon') }} 目标分数</span>
+        <div class="m1-goal-metrics">
+          <div class="m1-goal-metric-card m1-goal-metric-card--score">
+            <div class="m1-goal-metric-label">{{ lb_icon('target', 'frame-metric-icon') }}<span>目标分数</span></div>
+            <div class="m1-goal-metric-value">{{ safe(summary.target_score_text, '--') }}</div>
+            <div class="m1-goal-metric-desc">最终分数目标</div>
           </div>
-          <div class="m1-kpi-pill">
-            <span class="m1-kpi-value">{{ safe(summary.target_score_text, '--') }}</span>
+
+          <div class="m1-goal-metric-card m1-goal-metric-card--line">
+            <div class="m1-goal-metric-label">{{ lb_icon('flag', 'frame-metric-icon') }}<span>目标线</span></div>
+            <div class="m1-goal-metric-value">{{ safe(summary.target_accuracy_text, '--') }}</div>
+            <div class="m1-goal-metric-desc">答题正确率达标线</div>
+          </div>
+
+          <div class="m1-goal-metric-card m1-goal-metric-card--current {{ get_status_class(_current_acc, _target_acc if _target_acc is not none else 0) }}">
+            <div class="m1-goal-metric-label">{{ lb_icon('gauge', 'frame-metric-icon') }}<span>当前答题正确率</span></div>
+            <div class="m1-goal-metric-current">
+              <span class="m1-goal-metric-value">{{ safe(summary.current_accuracy_text, '--') }}</span>
+              {% if _has_goal_gap and _delta_num is not none %}
+                {% if _delta_num < 0 %}
+                  <span class="m1-goal-metric-gap m1-goal-metric-gap--below">低于目标线 {{ _delta_text_clean }}</span>
+                {% elif _delta_num > 0 %}
+                  <span class="m1-goal-metric-gap m1-goal-metric-gap--above">高于目标线 {{ _delta_text_clean }}</span>
+                {% else %}
+                  <span class="m1-goal-metric-gap m1-goal-metric-gap--on">已达目标线</span>
+                {% endif %}
+              {% endif %}
+              {% if _current_acc is not none and summary.current_trend is defined and summary.current_trend %}
+                {{ trend_arrow(summary.current_trend) }}
+              {% endif %}
+            </div>
+            <div class="m1-goal-metric-desc">当前答题表现，作为后续提分起点</div>
           </div>
         </div>
-
-        {# KPI 行 2: 目标线 #}
-        <div class="m1-kpi-row">
-          <div class="m1-kpi-left">
-            <span class="m1-kpi-dot"></span>
-            <span class="m1-kpi-label">{{ lb_icon('flag', 'frame-metric-icon') }} 目标线</span>
-          </div>
-          <div class="m1-kpi-pill">
-            <span class="m1-kpi-value">{{ safe(summary.target_accuracy_text, '--') }}</span>
-          </div>
-        </div>
-
-
-        {# KPI 行 3: 当前正确率 #}
-        {% set _current_acc = summary.current_accuracy | default(0) %}
-        {% set _target_acc = summary.target_accuracy | default(75) %}
-        <div class="m1-kpi-row {{ get_status_class(_current_acc, _target_acc) }}">
-          <div class="m1-kpi-left">
-            <span class="m1-kpi-dot"></span>
-            <span class="m1-kpi-label">{{ lb_icon('gauge', 'frame-metric-icon') }} 当前答题正确率</span>
-          </div>
-          <div class="m1-kpi-pill">
-            <span class="m1-kpi-value">{{ safe(summary.current_accuracy_text, '--') }}</span>
-            {% if summary.current_delta_text is defined and summary.current_delta_text %}
-              <span class="m1-kpi-delta">{{ summary.current_delta_text }}</span>
-            {% endif %}
-            {% if summary.current_trend is defined %}
-              {{ trend_arrow(summary.current_trend) }}
-            {% endif %}
-          </div>
-        </div>
-
       </div>
     </div>
 

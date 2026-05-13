@@ -14,28 +14,21 @@
 
   <main class="execution-grid">
     <section class="lb-panel exec-panel drill-structure-panel">
-      <h2><b>05</b> {{ lb_icon('tree', 'lb-title-icon') }}知识点钻取结构 <small>能力树</small></h2>
-      <p class="panel-lead">从领域到考点逐层定位，精准找到需要补强的知识点。</p>
-      <div class="drill-head wide"><span>{{ bp.meta.l1_label }}</span><i></i><span>L2 知识模块</span><i></i><span>L3 知识点</span><i></i><span>L4 考点细节</span></div>
-      <div class="focus-paths">
-        {% for row in bp.focus_paths %}
-        {% set domain_icon = '' %}
-        {% if '几何' in row.domain %}{% set domain_icon = 'domain-geometry' %}
-        {% elif '代数' in row.domain or '方程' in row.domain or '不等式' in row.domain %}{% set domain_icon = 'domain-algebra' %}
-        {% elif '函数' in row.domain %}{% set domain_icon = 'domain-function' %}
-        {% elif '统计' in row.domain or '概率' in row.domain %}{% set domain_icon = 'domain-statistics' %}
-        {% elif '数论' in row.domain or '数与' in row.domain %}{% set domain_icon = 'domain-number' %}
-        {% elif '应用' in row.domain or '综合' in row.domain %}{% set domain_icon = 'domain-application' %}{% endif %}
-        <div class="focus-row state-{{ row.state }}">
-          <span class="drill-domain">{% if domain_icon %}{{ lb_icon(domain_icon, 'drill-row-icon drill-domain-icon') }}{% endif %}{{ row.domain }}</span><i></i>
-          <span>{{ row.l2 }}</span><i></i>
-          <span>{{ row.l3 }}</span><i></i>
-          <span class="last">{{ row.l4 }}</span>
+      <h2><b>05</b> {{ lb_icon('teacher', 'lb-title-icon') }}诊断结果转执行 <small>任务树</small></h2>
+      <p class="panel-lead">不重复前页 L1-L4 钻取表，直接把诊断定位转成老师可教、学生可练、系统可追踪的任务。</p>
+      <div class="exec-task-head"><span>执行对象</span><span>老师动作</span><span>学生任务</span><span>追踪信号</span></div>
+      <div class="exec-task-list">
+        {% for task in bp.execution_tasks %}
+        <div class="exec-task-row state-{{ task.state }}">
+          <div class="exec-task-target">{{ lb_icon(task.icon, 'exec-task-icon') }}<em>{{ task.no }}</em><strong>{{ task.target }}</strong><small>{{ task.focus }}</small></div>
+          <div>{{ task.teacher_action }}</div>
+          <div>{{ task.student_task }}</div>
+          <div class="last">{{ task.tracking_signal }}</div>
         </div>
         {% endfor %}
       </div>
-      <div class="state-legend compact-legend">
-        <span class="dot nodata">未测：数据不足</span><span class="dot need_test">待补测：有待验证</span><span class="dot improve">需加强：存在薄弱</span>
+      <div class="execution-legend compact-legend">
+        <span class="dot need_test">先验证</span><span class="dot improve">进入专项</span><span class="dot nodata">补数据</span>
       </div>
     </section>
 

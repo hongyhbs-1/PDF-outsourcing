@@ -1,10 +1,10 @@
 {#
 ================================================================================
-模块6：分层与学习建议 (Tiered Learning Recommendations)
-文件：6_tiered_learning.jinja2
-版本：v1.1 (扩展版 - 三角色分栏)
-更新：2025-01-15
-说明：基于 render_payload 数据结构渲染分层学习建议模块
+模块6:分层与学习建议 (Tiered Learning Recommendations)
+文件:6_tiered_learning.jinja2
+版本:v1.1 (扩展版 - 三角色分栏)
+更新:2025-01-15
+说明:基于 render_payload 数据结构渲染分层学习建议模块
       支持学生/家长/老师三角色独立卡片展示
 
 ================================================================================
@@ -13,7 +13,7 @@
 
 {
   "page_header": {
-    "report_name": "基线定位分析报告（数学）",
+    "report_name": "基线定位分析报告(数学)",
     "report_date": "2025.06.05"
   },
   "module": {
@@ -47,27 +47,27 @@
           "has_data": true
         },
         "note": {
-          "title": "当前阶段特点：",
-          "text": "基础较好，但部分核心考点存在明显短板。重点是针对性突破薄弱环节。"
+          "title": "当前阶段特点:",
+          "text": "基础较好,但部分核心考点存在明显短板。重点是针对性突破薄弱环节。"
         }
       },
       "student_suggestion": {
         "title": "给学生的学习建议",
         "bullet_color": "blue",
         "icon": "student",
-        "summary": "你的代数基础扎实，但几何是明显短板。接下来重点'补几何、稳代数'。",
+        "summary": "你的代数基础扎实,但几何是明显短板。接下来重点'补几何、稳代数'。",
         "sections": [
           {
             "no": "01",
-            "title": "近期重点（1-2周）",
+            "title": "近期重点(1-2周)",
             "items": [
               "每天专项练习相似三角形判定题2-3道",
-              "复习勾股定理公式，确保正定理和逆定理区分清楚"
+              "复习勾股定理公式,确保正定理和逆定理区分清楚"
             ]
           },
           {
             "no": "02",
-            "title": "中期规划（1-2月）",
+            "title": "中期规划(1-2月)",
             "items": [
               "系统完成三角形章节的专项复习",
               "每周完成2套几何综合练习"
@@ -79,27 +79,27 @@
         "title": "给家长的配合建议",
         "bullet_color": "orange",
         "icon": "parent",
-        "summary": "孩子代数能力不错，但几何需要重点关注。建议创造安静学习环境，支持专项训练。",
+        "summary": "孩子代数能力不错,但几何需要重点关注。建议创造安静学习环境,支持专项训练。",
         "checklist": [
-          "督促孩子每天完成几何专项练习，建议固定在晚自习时间段",
-          "可考虑购买相似三角形专项练习册，针对薄弱点加强",
-          "多鼓励少施压，几何需要时间积累，避免焦虑情绪传递"
+          "督促孩子每天完成几何专项练习,建议固定在晚自习时间段",
+          "可考虑购买相似三角形专项练习册,针对薄弱点加强",
+          "多鼓励少施压,几何需要时间积累,避免焦虑情绪传递"
         ]
       },
       "teacher_guidance": {
         "title": "给老师的教学建议",
         "bullet_color": "red",
         "icon": "teacher",
-        "summary": "该生代数基础扎实，几何是主要失分点。建议针对相似三角形和勾股定理进行系统梳理。",
+        "summary": "该生代数基础扎实,几何是主要失分点。建议针对相似三角形和勾股定理进行系统梳理。",
         "paragraph_parts": [
-          "当前识别的P0级短板（如相似三角形、勾股定理）涉及多个关联知识点，且解题方法灵活多变。这类问题往往",
+          "当前识别的P0级短板(如相似三角形、勾股定理)涉及多个关联知识点,且解题方法灵活多变。这类问题往往",
           { "em": "需要系统梳理知识结构、讲解典型题型变式" },
-          "，并针对学生具体错因进行个性化指导。"
+          ",并针对学生具体错因进行个性化指导。"
         ],
         "checklist": [
           "系统梳理几何证明的辅助线添加方法",
           "针对相似三角形判定的常见错误进行专项纠正",
-          "设计阶梯式训练方案，从基础到综合逐步提升"
+          "设计阶梯式训练方案,从基础到综合逐步提升"
         ]
       }
     }
@@ -110,54 +110,54 @@
 字段说明
 ================================================================================
 
-page_header.report_name      - 报告名称（string）
-page_header.report_date      - 报告日期（string, 格式: YYYY.MM.DD）
+page_header.report_name      - 报告名称(string)
+page_header.report_date      - 报告日期(string, 格式: YYYY.MM.DD)
 
-module.title                 - 模块标题（string）
+module.title                 - 模块标题(string)
 
 --- Card 1: 阶段判定 ---
-stage_judgement.title        - 卡片标题（string）
-stage_judgement.bullet_color - 标题bullet颜色（enum: blue/red/orange）
+stage_judgement.title        - 卡片标题(string)
+stage_judgement.bullet_color - 标题bullet颜色(enum: blue/red/orange)
 stage_judgement.stages[]     - 阶段定义数组
-  .key                       - 阶段标识（enum: basic/improve/sprint）
-  .name                      - 阶段名称（string）
-  .desc                      - 阶段描述/阈值（string）
+  .key                       - 阶段标识(enum: basic/improve/sprint)
+  .name                      - 阶段名称(string)
+  .desc                      - 阶段描述/阈值(string)
 stage_judgement.current      - 当前状态对象
-  .pass_rate                 - 达标率数值（number, 0-100, nullable）
-  .pass_rate_text            - 达标率文案（string）
-  .position_hint             - 位置提示文案（string）- 基于gap_to_target生成
-  .stage_key                 - 当前阶段key（enum: basic/improve/sprint）
-  .has_data                  - 是否有有效数据（boolean）
+  .pass_rate                 - 达标率数值(number, 0-100, nullable)
+  .pass_rate_text            - 达标率文案(string)
+  .position_hint             - 位置提示文案(string)- 基于gap_to_target生成
+  .stage_key                 - 当前阶段key(enum: basic/improve/sprint)
+  .has_data                  - 是否有有效数据(boolean)
 stage_judgement.note         - 说明框对象
-  .title                     - 说明标题（string）
-  .text                      - 说明正文（string）
+  .title                     - 说明标题(string)
+  .text                      - 说明正文(string)
 
 --- Card 2: 学生建议 (NEW) ---
-student_suggestion.title     - 卡片标题（string）
-student_suggestion.summary   - 总体建议摘要（string）- 映射自 for_student.summary
+student_suggestion.title     - 卡片标题(string)
+student_suggestion.summary   - 总体建议摘要(string)- 映射自 for_student.summary
 student_suggestion.sections[]- 建议分组
-  .no                        - 序号（string, "01"/"02"）
-  .title                     - 分组标题（string）- 如"近期重点"/"中期规划"
-  .items[]                   - 建议条目（array of string）
+  .no                        - 序号(string, "01"/"02")
+  .title                     - 分组标题(string)- 如"近期重点"/"中期规划"
+  .items[]                   - 建议条目(array of string)
 
 --- Card 3: 家长建议 (NEW) ---
-parent_guidance.title        - 卡片标题（string）
-parent_guidance.summary      - 总体建议（string）- 映射自 for_parent.summary
-parent_guidance.checklist[]  - 行动清单（array of string）- 映射自 for_parent.action_items
+parent_guidance.title        - 卡片标题(string)
+parent_guidance.summary      - 总体建议(string)- 映射自 for_parent.summary
+parent_guidance.checklist[]  - 行动清单(array of string)- 映射自 for_parent.action_items
 
 --- Card 4: 老师建议 ---
-teacher_guidance.title           - 卡片标题（string）
-teacher_guidance.summary         - 总体建议（string）- 映射自 for_teacher.summary
-teacher_guidance.paragraph_parts - 段落组成部分（array of string|object）
+teacher_guidance.title           - 卡片标题(string)
+teacher_guidance.summary         - 总体建议(string)- 映射自 for_teacher.summary
+teacher_guidance.paragraph_parts - 段落组成部分(array of string|object)
   - string: 普通文本
   - object { "em": "强调文字" }: 红色强调
-teacher_guidance.checklist[]     - 教学关注点（array of string）- 映射自 for_teacher.teaching_focus
+teacher_guidance.checklist[]     - 教学关注点(array of string)- 映射自 for_teacher.teaching_focus
 
 ================================================================================
-数据来源映射（report_output_from_llm_v5.1 → 本模板）
+数据来源映射(report_output_from_llm_v5.1 → 本模板)
 ================================================================================
 
-【重要】v5.1 schema 规定 study_suggestions 位于 standard_texts 下，不是顶层！
+【重要】v5.1 schema 规定 study_suggestions 位于 standard_texts 下,不是顶层!
 
 report_output.meta.report_date                                     → page_header.report_date
 report_output.core_data.benchmark_summary.pass_rate                → stage_judgement.current.pass_rate
@@ -180,12 +180,12 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
    宏定义 (Macros)
    ============================================================================ #}
 
-{#- 安全获取嵌套属性，带默认值 -#}
+{#- 安全获取嵌套属性,带默认值 -#}
 {% macro safe_get(obj, key, default='') %}
   {{- obj[key] if obj and key in obj and obj[key] is not none else default -}}
 {% endmacro %}
 
-{#- 安全获取数值，带默认值和边界处理 -#}
+{#- 安全获取数值,带默认值和边界处理 -#}
 {% macro safe_number(value, default=0, min_val=0, max_val=100) %}
   {%- if value is not none and value is number -%}
     {{- [max_val, [min_val, value] | max] | min -}}
@@ -236,6 +236,32 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 {% set _tl = tiered_learning | default({}) %}
 {% set page_header = page_header | default(_tl.page_header | default({})) %}
 {% set module = module | default(_tl.module | default({})) %}
+{% set stage_card = module.cards.stage_judgement | default({}) %}
+{% set current = stage_card.current | default({}) %}
+{% set current_stage = namespace(name=current.position_hint | default('当前阶段待确认', true)) %}
+{% for stage in stage_card.stages | default([]) %}
+  {% if stage.key == current.stage_key %}{% set current_stage.name = stage.name | default(current_stage.name, true) %}{% endif %}
+{% endfor %}
+{% set weak_items = [] %}
+{% if domains is defined and domains.domain_items is defined %}
+  {% for item in domains.domain_items %}
+    {% if item.status | default('') in ['需加强', '需关注'] and item.has_data | default(true) %}
+      {% set _ = weak_items.append(item) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% set weak_domain_names = [] %}
+{% for item in weak_items[:3] %}{% set _ = weak_domain_names.append(item.name_cn | default('领域' ~ loop.index, true)) %}{% endfor %}
+{% set core_items = core_weakness['items'] | default([], true) if core_weakness is defined and 'items' in core_weakness else [] %}
+{% set core_weak_names = [] %}
+{% for item in core_items[:3] %}{% if item.name %}{% set _ = core_weak_names.append(item.name) %}{% endif %}{% endfor %}
+{% set drill_nodes = kp_drill.path_example.nodes | default([], true) if kp_drill is defined and kp_drill.path_example is defined else [] %}
+{% set drill_focus = namespace(name='') %}
+{% for node in drill_nodes %}{% if node.level == 'L3' and node.name_cn %}{% set drill_focus.name = node.name_cn %}{% endif %}{% endfor %}
+{% set city_items = city_compare.overlap_items | default([], true) if city_compare is defined else [] %}
+{% set city_overlap_names = [] %}
+{% for item in city_items[:3] %}{% if item.kp_name %}{% set _ = city_overlap_names.append(item.kp_name) %}{% endif %}{% endfor %}
+{% set city_advice_list = city_compare.advice | default([], true) if city_compare is defined else [] %}
 
 <div class="m6-page">
 
@@ -249,38 +275,17 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     <div class="m6-module-title__underline"></div>
   </div>
 
+  <section class="m6-core-conclusion">
+    <div class="m6-core-conclusion__label">{{ lb_icon('support', 'frame-conclusion-icon') }}本页核心结论</div>
+    <div class="m6-core-conclusion__text">
+      当前处于「{{ current_stage.name }}」；P9 领域上{% if weak_domain_names | length > 0 %}{{ weak_domain_names | join('、') }}低于目标线{% else %}薄弱领域待确认{% endif %}，P10 优先处理{% if core_weak_names | length > 0 %}{{ core_weak_names | join('、') }}{% else %}核心短板{% endif %}，P11 重点钻取{% if drill_focus.name %}{{ drill_focus.name }}{% else %}L3/L4薄弱环节{% endif %}，P12 显示{% if city_overlap_names | length > 0 %}{{ city_overlap_names | join('、') }}与高频考点重合{% else %}高频重合项待确认{% endif %}。建议 30 天内先补{{ core_weak_names[:2] | join('、') if core_weak_names | length > 0 else '核心短板' }}，60 天内完成复测与巩固。
+    </div>
+  </section>
+
   <div class="module-content-card">
 
   {# ==========================================================================
-     训练重点速览 (Training Focus Summary)
-     ========================================================================== #}
-  {% set weak_items = [] %}
-  {% if domains is defined and domains.domain_items is defined %}
-    {% for item in domains.domain_items %}
-      {% if item.status | default('') in ['需加强', '需关注'] and item.has_data | default(true) %}
-        {% set _ = weak_items.append(item) %}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-
-  {% if weak_items | length > 0 %}
-  <div class="m6-training-focus">
-    <div class="m6-training-focus__title">{{ lb_icon('target', 'frame-section-icon') }} 训练重点速览</div>
-    <div class="m6-training-focus__grid">
-      {% for item in weak_items[:6] %}
-      <div class="m6-training-focus__item">
-        <span class="m6-training-focus__name">{{ item.name_cn | default('领域' ~ loop.index) }}</span>
-        <span class="m6-training-focus__acc">{{ item.accuracy_text | default('--') }}</span>
-        <span class="m6-training-focus__delta {{ 'm6-training-focus__delta--neg' if (item.delta_vs_target | default(0)) < 0 }}">{{ item.delta_text | default('') }}</span>
-      </div>
-      {% endfor %}
-    </div>
-    <div class="m6-training-focus__note">以上为当前低于目标线的领域，以下建议将围绕这些薄弱环节展开。</div>
-  </div>
-  {% endif %}
-
-  {# ==========================================================================
-     卡片1：当前学习阶段判定 (Stage Judgement Card)
+     卡片1:当前学习阶段判定 (Stage Judgement Card)
      ========================================================================== #}
   {% set stage_card = module.cards.stage_judgement | default({}) %}
   {% set current = stage_card.current | default({}) %}
@@ -308,7 +313,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
         {#<div class="m6-stage-label__desc">({{ stage.desc | default('--', true) }})</div>#}
       </div>
       {% else %}
-      {# 默认阶段标签（无数据时） #}
+      {# 默认阶段标签(无数据时) #}
       <div class="m6-stage-label">
         <div class="m6-stage-label__name">基础巩固期</div>
         <div class="m6-stage-label__desc">(达标率 &lt; 60%)</div>
@@ -353,7 +358,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     {% set note = stage_card.note | default({}) %}
     <div class="m6-note-box">
       <div class="m6-note-box__title">
-        {{ note.title | default('当前阶段特点：', true) }}
+        {{ note.title | default('当前阶段特点:', true) }}
       </div>
       <div class="m6-note-box__text">
         {% if has_data and note.text %}
@@ -367,12 +372,32 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   </section>
 
   {# ==========================================================================
-     卡片2：给学生的学习建议 (Student Suggestion Card) - NEW
+     训练重点速览 (Training Focus Summary) - 先判定阶段,再看训练重点
+     ========================================================================== #}
+  {% if weak_items | length > 0 %}
+  <div class="m6-training-focus">
+    <div class="m6-training-focus__title">{{ lb_icon('target', 'frame-section-icon') }} 训练重点速览</div>
+    <div class="m6-training-focus__grid">
+      {% for item in weak_items[:6] %}
+      <div class="m6-training-focus__item">
+        <span class="m6-training-focus__name">{{ item.name_cn | default('领域' ~ loop.index) }}</span>
+        <span class="m6-training-focus__acc">{{ item.accuracy_text | default('--') }}</span>
+        <span class="m6-training-focus__delta {{ 'm6-training-focus__delta--neg' if (item.delta_vs_target | default(0)) < 0 }}">{{ item.delta_text | default('') }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="m6-training-focus__note">以上为当前低于目标线的领域，建议结合当前学习阶段安排专项突破。{% if city_advice_list | length > 0 %}<span class="m6-city-advice-inline"><strong>城市考情备考建议：</strong>{% set first_advice = city_advice_list[0] %}{% if first_advice is mapping %}{{ first_advice.content | default(first_advice.text, true) }}{% else %}{{ first_advice }}{% endif %}</span>{% endif %}</div>
+  </div>
+  {% endif %}
+
+  {# ==========================================================================
+     角色建议区：给学生 / 给家长 / 给老师
      ========================================================================== #}
   {% set student_card = module.cards.student_suggestion | default({}) %}
+  {% set parent_card = module.cards.parent_guidance | default({}) %}
+  {% set teacher_card = module.cards.teacher_guidance | default({}) %}
 
-  <div class="m6-grid-split">
-  <div class="m6-grid-split__left">
+  <div class="m6-role-stack">
   <section class="m6-card m6-card--role m6-card--student">
 
     {# 卡片标题 #}
@@ -416,14 +441,10 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     </div>
 
   </section>
-  </div><!-- /.m6-grid-split__left -->
-  <div class="m6-grid-split__right">
 
   {# ==========================================================================
-     卡片3：给家长的配合建议 (Parent Guidance Card) - NEW
+     卡片3:给家长的配合建议 (Parent Guidance Card) - NEW
      ========================================================================== #}
-  {% set parent_card = module.cards.parent_guidance | default({}) %}
-
   <section class="m6-card m6-card--role m6-card--parent">
 
     {# 卡片标题 #}
@@ -461,10 +482,8 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   </section>
 
   {# ==========================================================================
-     卡片4：给老师的教学建议 (Teacher Guidance Card)
+     卡片4:给老师的教学建议 (Teacher Guidance Card)
      ========================================================================== #}
-  {% set teacher_card = module.cards.teacher_guidance | default({}) %}
-
   <section class="m6-card m6-card--role m6-card--teacher">
 
     {# 卡片标题 #}
@@ -483,7 +502,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     </div>
     {% endif %}
 
-    {# 段落内容（支持红色强调） #}
+    {# 段落内容(支持红色强调) #}
     {% if teacher_card.paragraph_parts | default([]) | length > 0 %}
     <p class="m6-guidance-paragraph">
       {% for part in teacher_card.paragraph_parts %}
@@ -513,8 +532,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     {% endif %}
 
   </section>
-  </div><!-- /.m6-grid-split__right -->
-  </div><!-- /.m6-grid-split -->
+  </div><!-- /.m6-role-stack -->
 
   </div><!-- /.module-content-card -->
 

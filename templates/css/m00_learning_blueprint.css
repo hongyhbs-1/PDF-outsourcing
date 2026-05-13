@@ -346,6 +346,97 @@
 .focus-row i::after { content:"›"; color:#8FAFC2; }
 .compact-legend { margin-top:8px; display:flex; gap:10px; font-size:9px; color:#667085; }
 .dot.nodata::before { background:#B7C4CF; }.dot.need_test::before { background:#F4A340; }.dot.improve::before { background:#E96F4A; }
+.exec-task-head {
+  display: grid;
+  grid-template-columns: 1.15fr .95fr .95fr .95fr;
+  gap: 5px;
+  margin-bottom: 5px;
+  color: #0B477A;
+  font-size: 8.5px;
+  font-weight: 800;
+}
+.exec-task-head span {
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: #EAF3FB;
+  text-align: center;
+}
+.exec-task-list {
+  display: grid;
+  gap: 5px;
+}
+.exec-task-row {
+  display: grid;
+  grid-template-columns: 1.15fr .95fr .95fr .95fr;
+  gap: 5px;
+  align-items: stretch;
+  font-size: 8.6px;
+  color: #344054;
+}
+.exec-task-row > div {
+  min-height: 34px;
+  padding: 5px 6px;
+  border: 1px solid #D9E7F0;
+  border-radius: 7px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.25;
+}
+.exec-task-target {
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  padding-left: 29px !important;
+  text-align: left !important;
+}
+.exec-task-target em {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  color: #8CA4B5;
+  font-size: 7px;
+  font-style: normal;
+  font-weight: 800;
+}
+.exec-task-target strong {
+  display: block;
+  color: var(--lb-title);
+  font-size: 9.5px;
+  line-height: 1.1;
+}
+.exec-task-target small {
+  display: block;
+  margin-top: 2px;
+  color: #667085;
+  font-size: 7.5px;
+  line-height: 1.15;
+}
+.exec-task-icon {
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  color: var(--lb-title);
+}
+.exec-task-row.state-improve .exec-task-target,
+.exec-task-row.state-need_test .exec-task-target,
+.exec-task-row.state-achieved .exec-task-target,
+.exec-task-row.state-nodata .exec-task-target {
+  background: #FAFCFE;
+}
+.exec-task-row.state-improve .exec-task-icon { color: #D14B2E; }
+.exec-task-row.state-need_test .exec-task-icon { color: #C47A12; }
+.exec-task-row.state-achieved .exec-task-icon { color: #168A96; }
+.exec-task-row.state-nodata .exec-task-icon { color: #8CA4B5; }
+.execution-legend {
+  justify-content: center;
+}
 
 .stage-flow { display:flex; align-items:center; justify-content:space-between; border:1px solid #D9E7F0; border-radius:8px; padding:7px 8px; background:#FAFCFE; }
 .exec-stage { text-align:center; min-width:72px; }
