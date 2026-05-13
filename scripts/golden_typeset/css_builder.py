@@ -1,15 +1,14 @@
 """
 css_builder.py -- PageLayout -> CSS
 ====================================
-输出 margin-top + wrapper flexbox 居中。
+输出 margin-top + wrapper flexbox 顶部阅读流。
 
 每个 wrapper 通常有 2-3 个直接子元素（标题 + 内容卡）。
 margin-top 作用于这些直接子元素。
 
 密度策略:
-  高密度 (content_ratio >= 0.6): flex-start, 内容靠上, 底部自然留白
-  中密度 (0.4 <= ratio < 0.6):   center, 居中
-  低密度 (ratio < 0.4):          center + 紧凑 padding (u_max=10mm)
+  所有密度均保持 flex-start，保证章节标题从页首开始阅读。
+  低密度 (ratio < 0.4) 仍在数学模型中使用紧凑 padding (u_max=10mm)，避免内容过散。
 
 溢出保护:
   scale < 1.0 时: 使用 CSS zoom 属性压缩 wrapper 布局尺寸 (Chromium 支持)
@@ -25,10 +24,8 @@ from .math_func import PageLayout
 
 
 def _justify_for_ratio(ratio: float) -> str:
-    """根据密度选择 justify-content 值。"""
-    if ratio >= 0.6:
-        return "flex-start"
-    return "center"
+    """保持章节页顶部阅读顺序，避免低密度页面内容垂直居中下坠。"""
+    return "flex-start"
 
 
 def build_css(layouts: Dict[str, PageLayout]) -> str:

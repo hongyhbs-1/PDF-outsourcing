@@ -10,6 +10,7 @@
   --chapter-title-underline-gap: 6px;
   --chapter-title-underline-radius: 2px;
   --chapter-title-underline-fill: var(--pm-gradient-accent-bar, linear-gradient(90deg, #d9b36a 0%, #1f6f78 100%));
+  --chapter-title-icon-slot: 30px;
 }
 
 .m1-section-title__text,
@@ -21,9 +22,25 @@
 .m7-data-reliability__title,
 .m8-appendix-title__text,
 .m9-title {
-  display: inline-block !important;
+  display: inline-flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 6px;
+  row-gap: 0;
   width: fit-content !important;
   max-width: 100%;
+}
+
+.m1-section-title__text .frame-title-icon,
+.m2-cw-module-title .frame-title-icon,
+.m3-kp-drill__title .frame-title-icon,
+.m4-section-title .frame-title-icon,
+.m5-city-compare__title .frame-title-icon,
+.m6-module-title__text .frame-title-icon,
+.m7-data-reliability__title .frame-title-icon,
+.m8-appendix-title__text .frame-title-icon,
+.m9-title .frame-title-icon {
+  margin-right: 0;
 }
 
 /* Modules that previously used border-bottom for the title underline. */
@@ -44,9 +61,30 @@
 .m9-title::after {
   content: "";
   display: block;
+  flex: 0 0 100%;
   width: 100%;
   height: var(--chapter-title-underline-height);
   margin-top: var(--chapter-title-underline-gap);
   background: var(--chapter-title-underline-fill);
   border-radius: var(--chapter-title-underline-radius);
+}
+
+.m1-section-title__text:has(.frame-title-icon)::after,
+.m2-cw-module-title:has(.frame-title-icon)::after,
+.m3-kp-drill__title:has(.frame-title-icon)::after,
+.m4-section-title:has(.frame-title-icon)::after,
+.m5-city-compare__title:has(.frame-title-icon)::after,
+.m6-module-title__text:has(.frame-title-icon)::after,
+.m7-data-reliability__title:has(.frame-title-icon)::after,
+.m8-appendix-title__text:has(.frame-title-icon)::after,
+.m9-title:has(.frame-title-icon)::after {
+  flex-basis: calc(100% - var(--chapter-title-icon-slot));
+  width: calc(100% - var(--chapter-title-icon-slot));
+  margin-left: var(--chapter-title-icon-slot);
+}
+
+@media print {
+  :root {
+    --chapter-title-icon-slot: 28px;
+  }
 }

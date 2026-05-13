@@ -377,11 +377,12 @@ CSS变量说明：
   <div class="module-content-card">
 
   <div class="m4-core-conclusion">
-    <div class="m4-core-conclusion__label">本页核心结论</div>
+    <div class="m4-core-conclusion__label">{{ lb_icon('module', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m4-core-conclusion__text">
       {% set weakest = domain_groups.improve[0] if domain_groups.improve | length > 0 else (domain_groups.attention[0] if domain_groups.attention | length > 0 else '暂无数据') %}
       {% set weakest_item = domains | selectattr('name_cn', 'equalto', weakest) | first %}
       {% set strongest = domain_groups.achieved[0] if domain_groups.achieved | length > 0 else '暂无达标领域' %}
+      先看六大领域整体达标情况，再看表格明细依据。
       {% if weakest_item and weakest_item.accuracy is not none and weakest_item.accuracy != '' %}
       <strong>{{ weakest }}</strong>正确率{{ weakest_item.accuracy_text | default('--') }}，距目标差{{ weakest_item.delta_text | default('--') }}，是当前最大短板，
       <strong>建议重点复习这部分内容，找老师加强讲解</strong>；

@@ -462,7 +462,7 @@ def _active_axis_stage(payload: dict, shortlist: list[dict]) -> str:
     if "追踪" in report_title or "阶段" in report_title:
         return "追踪复测"
     if "低" in total_level or "不足" in total_level:
-        return "补齐证据"
+        return "数据进入"
     has_real_weakness = any(item.get("priority") != "补测" for item in shortlist)
     if has_real_weakness:
         return "老师执行"
@@ -501,6 +501,53 @@ def _build_focus_paths(city_focus: list[dict], shortlist: list[dict], limit: int
         })
     while len(rows) < limit:
         rows.append({"domain": "—", "l2": "数据不足", "l3": "待补充样本", "l4": "未测", "state": "nodata", "state_label": "未测"})
+    return rows
+
+
+def _build_diagnostic_drill_rows(domains: list[dict], shortlist: list[dict], limit: int = 6) -> list[dict]:
+    """Build a fuller L1-L4 drill table for the first blueprint reference page."""
+    rows: list[dict] = []
+    used_names: set[str] = set()
+
+    for item in shortlist:
+        if len(rows) >= limit:
+            break
+        name = str(item.get("name") or "待确认知识点")
+        used_names.add(name)
+        rows.append({
+            "domain": item.get("domain") or "—",
+            "l2": item.get("l2") or _infer_l2_from_name(name),
+            "l3": name,
+            "l4": item.get("tag_text") or "专项突破",
+            "state": item.get("priority_class") or "p2",
+        })
+
+    used_domains = {str(row.get("domain")) for row in rows if row.get("domain") not in (None, "—")}
+    for domain in domains:
+        if len(rows) >= limit:
+            break
+        domain_name = str(domain.get("name") or "—")
+        if domain_name in used_domains:
+            continue
+        state = str(domain.get("state") or "nodata")
+        if state == "achieved":
+            l4 = "保持巩固"
+        elif state == "nodata":
+            l4 = "待补测"
+        elif state == "attention":
+            l4 = "巩固提升"
+        else:
+            l4 = "专项突破"
+        rows.append({
+            "domain": domain_name,
+            "l2": _infer_l2_from_name(domain_name),
+            "l3": f"{domain_name}关键能力",
+            "l4": l4,
+            "state": state,
+        })
+
+    while len(rows) < limit:
+        rows.append({"domain": "—", "l2": "数据不足", "l3": "待补充样本", "l4": "未测", "state": "nodata"})
     return rows
 
 
@@ -606,6 +653,7 @@ def build_learning_blueprints(payload: dict) -> dict[str, dict]:
     active_stage = _active_axis_stage(payload, shortlist)
     stage_plan = _build_stage_plan(payload, shortlist)
     focus_paths = _build_focus_paths(city_focus, shortlist, limit=5)
+    diagnostic_drill_rows = _build_diagnostic_drill_rows(domains, shortlist, limit=6)
 
     student_name = _first(_get(payload, "meta.student_display_name"), default="学生")
     grade = _first(_get(payload, "meta.grade"), _get(payload, "cover.cover_meta.grade"), default="—")
@@ -632,7 +680,7 @@ def build_learning_blueprints(payload: dict) -> dict[str, dict]:
         "report_id": _first(_get(payload, "meta.report_id"), default="—"),
         "ability_map_title": f"{subject_label}能力中轴图",
         "ability_map_aria": f"{subject_label}能力中轴图",
-        "ability_axis_label": "各领域答对率",
+        "ability_axis_label": f"{subject_label}能力中轴",
         "l1_label": "L1 六大领域" if is_math else "L1 能力领域",
         "page1_label": "第1页 / 共2页",
         "page2_label": "第2页 / 共2页",
@@ -660,7 +708,9 @@ def build_learning_blueprints(payload: dict) -> dict[str, dict]:
         },
         "domains": domains,
         "shortlist": shortlist,
+        "diagnostic_drill_rows": diagnostic_drill_rows,
         "city_focus": city_focus,
+        "stage_plan": stage_plan,
         "evidence": evidence,
         "confidence": confidence,
         "note": _business_note(payload, confidence),
@@ -703,12 +753,11 @@ def build_learning_blueprints(payload: dict) -> dict[str, dict]:
         "axis": {
             "active_stage": active_stage,
             "stages": [
-                {"name": "提交试卷", "desc": "收集答题记录", "icon": "data"},
-                {"name": "系统分析", "desc": "AI诊断薄弱点", "icon": "ai"},
-                {"name": "补充测试", "desc": "完善数据覆盖", "icon": "evidence"},
-                {"name": "制定计划", "desc": "每日练习目标", "icon": "teacher"},
-                {"name": "定期自测", "desc": "检验学习效果", "icon": "track"},
-                {"name": "持续提升", "desc": "巩固突破目标", "icon": "target"},
+                {"name": "数据进入", "desc": "试卷收集与上传", "icon": "data"},
+                {"name": "AI诊断分析", "desc": "多维数据建模分析", "icon": "ai"},
+                {"name": "老师执行", "desc": "制定计划并落地", "icon": "teacher"},
+                {"name": "追踪复测", "desc": "阶段检测与反馈", "icon": "track"},
+                {"name": "专项突破", "desc": "持续优化与提分", "icon": "rocket"},
             ],
         },
         "footer": {

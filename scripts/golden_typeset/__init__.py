@@ -6,7 +6,7 @@ golden_typeset — 数学公式驱动的 PDF 排版引擎
 策略:
   内容 ≤ 画布: 黄金间距(gₖ₊₁/gₖ=φ)填满页面
   内容 > 画布: 等比压缩, 强制单页
-  CSS 兜底:    flexbox justify-content:center 安全网
+  CSS 兜底:    flexbox 顶部阅读流，防止低密度章节内容下坠
 """
 
 # 共享常量: 各模块 wrapper 的 CSS 选择器

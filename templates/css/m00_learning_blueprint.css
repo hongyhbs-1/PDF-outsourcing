@@ -407,6 +407,293 @@
 .axis-check-strip > span { display:inline-flex; align-items:center; justify-content:center; gap:4px; min-height:25px; border:1px solid #D9E7F0; border-radius:999px; background:#FAFCFE; color:#416376; font-size:9px; font-weight:800; }
 .axis-check-strip .axis-check-icon { border:0; border-radius:0; background:transparent; min-height:0; padding:0; }
 
+/* Reference-image polish for the two opening blueprint pages. */
+.lb-header h1 {
+  font-size: 27px;
+  letter-spacing: 2px;
+  color: #123B68;
+}
+.lb-subtitle {
+  font-size: 12.5px;
+  letter-spacing: 2px;
+}
+.lb-slogan,
+.lb-banner {
+  width: 79%;
+  padding: 5px 12px;
+  border-radius: 8px;
+}
+.lb-slogan strong {
+  color: #D14B2E;
+  font-weight: 800;
+}
+.lb-panel {
+  border-color: rgba(173, 202, 218, .96);
+  box-shadow: 0 3px 10px rgba(16, 64, 92, .045);
+}
+.lb-panel h2 {
+  font-size: 14px;
+  margin-bottom: 2.4mm;
+}
+.lb-panel h2 b {
+  min-width: 23px;
+  height: 23px;
+  border-radius: 6px;
+  font-size: 12px;
+  background: #0B477A;
+}
+.lb-title-icon {
+  width: 17px;
+  height: 17px;
+}
+.diagnostic-grid {
+  grid-template-columns: 30% 34% 34%;
+  gap: 1.8mm;
+}
+.ability-axis-panel .ability-map-wrap {
+  min-height: 76mm;
+}
+.ability-map-svg {
+  width: 112%;
+  max-width: none;
+  max-height: 96mm;
+  margin-top: 1mm;
+}
+.knowledge-tree-panel,
+.evidence-panel {
+  min-height: 38mm;
+  background:
+    linear-gradient(90deg, rgba(173, 202, 218, .12) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(173, 202, 218, .10) 1px, transparent 1px),
+    rgba(255,255,255,.94);
+  background-size: 18mm 18mm;
+}
+.path-panel {
+  min-height: 32mm;
+  padding: 2.2mm;
+}
+.path-panel h2 {
+  margin-bottom: 1.2mm;
+}
+.drill-list {
+  gap: 3px;
+}
+.drill-row {
+  font-size: 9px;
+}
+.drill-row > span,
+.focus-row > span {
+  min-height: 23px;
+}
+.drill-row.state-achieved .drill-domain {
+  border-color: #B7DED7;
+  background: #F4FCFA !important;
+}
+.drill-row.state-attention .drill-domain {
+  border-color: #F3C88C;
+  background: #FFF9F0 !important;
+}
+.drill-row.state-improve .drill-domain {
+  border-color: #F2B6A6;
+  background: #FFF8F5 !important;
+}
+.drill-row.state-nodata .drill-domain {
+  border-color: #D7E3EA;
+  background: #F7FAFC !important;
+}
+.drill-row.state-achieved .drill-detail {
+  color: #168A96;
+  border-color: #B7DED7;
+  background: #F4FCFA;
+}
+.drill-row.state-attention .drill-detail {
+  color: #C47A12;
+  border-color: #F3C88C;
+  background: #FFF9F0;
+}
+.drill-row.state-improve .drill-detail {
+  color: #D14B2E;
+  border-color: #F2B6A6;
+  background: #FFF4EF;
+}
+.ai-core-strip {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+  padding: 5px 7px;
+  border: 1px dashed #BFD3E2;
+  border-radius: 9px;
+  background: radial-gradient(circle at 22% 50%, #F3FBFD 0%, #FAFCFE 72%);
+}
+.ai-core-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid #BFD3E2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #0B477A;
+  background: #fff;
+}
+.ai-core-badge strong {
+  font-size: 15px;
+  line-height: 1;
+}
+.ai-core-badge span {
+  font-size: 7px;
+  margin-top: 2px;
+}
+.ai-core-meta strong {
+  display: block;
+  color: var(--lb-title);
+  font-size: 11px;
+}
+.ai-core-meta span {
+  display: block;
+  margin-top: 2px;
+  color: var(--lb-orange);
+  letter-spacing: 1px;
+  font-size: 10px;
+}
+.path-stage-grid {
+  position: relative;
+  z-index: 1;
+  grid-template-columns: 1fr 15px 1fr 15px 1fr;
+  gap: 5px;
+  margin-bottom: 18px;
+}
+.stage-card {
+  grid-template-columns: 26px 1fr;
+  align-items: center;
+  min-height: 28px;
+  padding: 3px 6px;
+}
+.stage-card > div {
+  line-height: 1.05;
+}
+.stage-card > .path-stage-icon {
+  box-sizing: border-box;
+  width: 22px;
+  height: 22px;
+  padding: 4px;
+}
+.stage-card strong {
+  display: inline;
+  margin-right: 4px;
+  font-size: 8px;
+}
+.stage-card em {
+  font-size: 9px;
+}
+.stage-card span {
+  font-size: 7px;
+  line-height: 1.1;
+  color: var(--lb-title);
+}
+.stage-card ul {
+  display: none;
+}
+.execution-grid {
+  grid-template-rows: minmax(66mm, auto) minmax(60mm, auto) minmax(52mm, auto);
+  gap: 2.4mm;
+}
+.drill-structure-panel {
+  grid-column: 1;
+  grid-row: 1;
+}
+.exec-panel {
+  min-height: 60mm;
+}
+.execution-axis-panel {
+  min-height: 52mm;
+}
+.improvement-path-panel .stage-flow {
+  padding: 10px 12px;
+}
+.improvement-path-panel .stage-details {
+  margin-top: 10px;
+}
+.data-engine-panel .data-engine-cards {
+  margin-top: 3px;
+}
+.data-engine-cards div {
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.data-engine-cards strong {
+  font-size: 18px;
+  margin-top: 2px;
+}
+.data-engine-cards span {
+  font-size: 9.5px;
+}
+.pipeline-flow {
+  margin-top: 12px;
+}
+.support-triangle {
+  height: 158px;
+}
+.path-panel .path-timeline {
+  position: absolute;
+  z-index: 2;
+  left: 5mm;
+  right: 5mm;
+  bottom: 1.6mm;
+  margin-top: 0;
+  min-height: 18px;
+}
+.path-panel .path-timeline::before {
+  top: 9px;
+}
+.path-panel .path-timeline::after {
+  top: 5px;
+}
+.path-panel .path-node strong {
+  width: 21px;
+  height: 21px;
+  font-size: 8px;
+}
+.path-panel .path-node span {
+  font-size: 6px;
+}
+.axis-title {
+  font-size: 15px !important;
+  color: #123B68 !important;
+}
+.axis-flow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.axis-stage {
+  flex: 1 1 0;
+  min-height: 82px;
+  padding: 10px 5px;
+}
+.axis-icon {
+  width: 38px;
+  height: 38px;
+}
+.axis-stage-icon {
+  width: 19px;
+  height: 19px;
+}
+.axis-arrow {
+  flex: 0 0 18px;
+  text-align: center;
+}
+.axis-check-strip {
+  margin-top: 9px;
+}
+
 @media print {
   .learning-blueprint-page {
     width: auto;

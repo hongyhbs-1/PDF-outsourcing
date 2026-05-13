@@ -194,7 +194,7 @@ render_payload.module_1_summary 结构示例:
   </section>
 
   <section class="m1-core-conclusion">
-    <div class="m1-core-conclusion__label">本页核心结论</div>
+    <div class="m1-core-conclusion__label">{{ lb_icon('target', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m1-core-conclusion__text">
       三级知识点（L3）达标率 {{ safe_pct(summary.pass_rate_text, '0%') }}（= 达标的知识点/总知识点）：{% if pass_stats.total > 0 %}在已分析的{{ pass_stats.total }}个知识点中，{{ pass_stats.achieved }}个已达到{{ safe(summary.target_accuracy_text, '目标线') }}，{{ pass_stats.pending }}个需重点补齐；{% endif %}优先补齐当前未达标知识点，比平均用力更容易缩小目标差距。
     </div>
