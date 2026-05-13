@@ -1,0 +1,356 @@
+{
+  "_comment": "Minimal example — 每个模块只保留最小必要字段, 数组只有1项, 可选字段省略或null",
+  "_version": "v0.1.0",
+  "meta": {
+    "report_id": "RPT_MIN_001",
+    "report_title": "学生学情诊断报告",
+    "report_name": "数学学情诊断报告",
+    "report_date": "2025-01-01",
+    "student_display_name": "测试用户",
+    "city_name": "上海",
+    "module_title": "学生学情诊断报告",
+    "left_title": "学生学情诊断报告（数学）",
+    "page_title": "测试用户的学情诊断报告",
+    "subject": "math",
+    "subject_name": "数学",
+    "full_score": 150,
+    "exam_name": "中考",
+    "source_canonical_dataset_id": null,
+    "canonical_dataset_version": "canonical_dataset_raw.v1",
+    "ruleset_version": null,
+    "knowledge_dict_version": null,
+    "city_exam_context_version": null
+  },
+  "cover": {
+    "badge_text": "方向比速度重要",
+    "brand": {
+      "logo_url": "assets/logo_dida985.png",
+      "brand_name": "dida985"
+    },
+    "title": "学生学情诊断报告",
+    "subject": "数学",
+    "cover_meta": {
+      "city": "上海",
+      "grade": null,
+      "report_generated_at": null,
+      "total_questions": 10
+    },
+    "footer_tagline": "测试用户专属分析\n基于\u201c历年真题考点\u201d大数据"
+  },
+  "summary": {
+    "banner_text": "最小测试数据",
+    "target_score_text": "120分+",
+    "target_accuracy": 75,
+    "target_accuracy_text": "75%",
+    "current_accuracy": 60,
+    "current_accuracy_text": "60%",
+    "current_delta": -15,
+    "current_delta_text": "-15%",
+    "current_trend": "stable",
+    "pass_rate": 50,
+    "pass_rate_text": "50%",
+    "pass_segments": [
+      {
+        "name": "已达标",
+        "value": 5,
+        "display_text": "5个",
+        "color_hex": "#23ACCC",
+        "icon": "check"
+      }
+    ]
+  },
+  "key_findings": [
+    "这是最小测试的唯一发现"
+  ],
+  "breakthrough": {
+    "title": "优先突破项",
+    "target_line_pct": 75,
+    "target_line_text": "75%目标线",
+    "items": [
+      {
+        "name_cn": "测试知识点A",
+        "priority_level": "P0",
+        "accuracy": 40,
+        "accuracy_text": "40%",
+        "gap_to_target": -35,
+        "gap_to_target_text": "-35%",
+        "city_tag_left": "上海top1",
+        "city_tag_right": "核心考点"
+      }
+    ]
+  },
+  "suggestion": {
+    "text": "最小测试建议文本"
+  },
+  "core_weakness": {
+    "module_title": "核心短板清单",
+    "intro_text": "最小测试",
+    "legend": [
+      { "level": "P0", "text": "紧急", "class": "p0" }
+    ],
+    "table_columns": ["排名", "知识点", "领域", "正确率", "距目标线", "城市排名", "标签"],
+    "items": [
+      {
+        "priority_level": "P0",
+        "priority_class": "p0",
+        "rank_index": 1,
+        "name": "测试知识点A",
+        "domain": "代数",
+        "accuracy_text": "40%",
+        "distance_text": "-35%",
+        "distance_class": "strong",
+        "has_city_rank": false,
+        "city_rank_text": "",
+        "tag": "",
+        "tag_class": "neutral"
+      }
+    ],
+    "reasoning": {
+      "title": "排序依据说明",
+      "subtitle_prefix": "综合",
+      "highlight_kp": "测试知识点A",
+      "subtitle_suffix": "等维度综合排序",
+      "cards": [
+        {
+          "label": "正确率",
+          "value": "40%",
+          "value_class": "text-red",
+          "weight_text": "权重40%",
+          "is_icon": false,
+          "icon_color": null
+        }
+      ],
+      "summary_text": "最小测试排序说明。"
+    },
+    "tips": [],
+    "has_data": true
+  },
+  "kp_drill": {
+    "header": {
+      "left_text": "知识点短板钻取",
+      "right_text": "2025-01-01"
+    },
+    "module_title": "知识点短板钻取",
+    "intro_text": "最小测试",
+    "has_data": true,
+    "level_guide": [
+      { "level": "L2", "name": "知识模块", "desc": "中观知识模块", "theme": "l2" }
+    ],
+    "tables": [
+      {
+        "level": "L2",
+        "title": "测试模块",
+        "subtitle": "L2层级",
+        "theme": "l2",
+        "columns": ["排名", "优先级", "模块名称", "正确率", "距目标线", "题量"],
+        "items": [
+          {
+            "rank": 1,
+            "priority_level": "P0",
+            "name_cn": "测试模块A",
+            "code": "TEST_L2_001",
+            "accuracy": 40,
+            "gap_to_target": -35,
+            "count": 5
+          }
+        ],
+        "cta_text": null
+      }
+    ],
+    "path_example": null
+  },
+  "domains": {
+    "title": "六大领域达标分析",
+    "target_accuracy": 75,
+    "target_accuracy_text": "75%目标线",
+    "legend": [
+      { "key": "improve", "label": "需加强" }
+    ],
+    "domain_items": [
+      {
+        "code": "1.00",
+        "name_cn": "代数",
+        "status": "需加强",
+        "status_icon_url": null,
+        "accuracy": 60,
+        "accuracy_text": "60%",
+        "progress_pct": 60,
+        "progress_style_width": "60%",
+        "progress_class": "improve",
+        "delta_vs_target": -15,
+        "gap_to_target": -15,
+        "delta_text": "-15%",
+        "delta_class": "red",
+        "count": 10,
+        "count_text": "10题",
+        "confidence": "低",
+        "confidence_class": "low",
+        "has_data": true
+      }
+    ],
+    "summary": null,
+    "note_text": "最小测试说明"
+  },
+  "city_compare": {
+    "banner": {
+      "title": "城市考情对照",
+      "desc": "最小测试"
+    },
+    "overlap_summary": {
+      "student_core_weak_total": 1,
+      "city_top_n": 20,
+      "overlap_count": 1,
+      "overlap_ratio": 100,
+      "dot_total": 20,
+      "dot_filled": 1,
+      "has_data": true
+    },
+    "overlap_items": [
+      {
+        "code": "TEST_L3_001",
+        "city_rank": 1,
+        "rank_badge_class": "red",
+        "kp_name": "测试知识点A",
+        "student_accuracy": 40,
+        "gap_to_target": -35,
+        "gap_class": "danger",
+        "year_coverage_rate": 80,
+        "year_coverage_rate_raw": 0.8,
+        "coverage_class": "normal",
+        "real_exam_count": 5,
+        "tags": ["核心考点"]
+      }
+    ],
+    "advice": [
+      "最小测试建议"
+    ],
+    "footnote": null
+  },
+  "tiered_learning": {
+    "page_header": {
+      "report_name": "数学学情诊断报告",
+      "report_date": "2025-01-01"
+    },
+    "module": {
+      "title": "分层与学习建议",
+      "cards": {
+        "stage_judgement": {
+          "title": "当前学习阶段判定",
+          "bullet_color": "orange",
+          "stages": [
+            { "key": "basic", "name": "基础巩固期", "desc": "正确率60%以下" }
+          ],
+          "current": {
+            "pass_rate": 50,
+            "pass_rate_text": "50%",
+            "position_hint": "当前处于基础巩固期",
+            "stage_key": "basic",
+            "has_data": true
+          },
+          "note": {
+            "title": "阶段说明",
+            "text": "最小测试阶段说明。"
+          }
+        },
+        "student_suggestion": {
+          "title": "给学生的学习建议",
+          "bullet_color": "blue",
+          "icon": "student",
+          "summary": "最小测试学生建议。",
+          "sections": [
+            {
+              "no": "1",
+              "title": "学习计划",
+              "items": ["第一条建议"]
+            }
+          ]
+        },
+        "parent_guidance": {
+          "title": "给家长的配合建议",
+          "bullet_color": "orange",
+          "icon": "parent",
+          "summary": "最小测试家长建议。",
+          "checklist": ["第一条配合建议"]
+        },
+        "teacher_guidance": {
+          "title": "给老师的教学建议",
+          "bullet_color": "red",
+          "icon": "teacher",
+          "summary": "最小测试教师建议。",
+          "paragraph_parts": ["最小测试教学建议文本。"],
+          "checklist": ["第一条教学建议"]
+        }
+      }
+    }
+  },
+  "data_reliability": {
+    "section_4_coverage": {
+      "title": "数据可信度说明",
+      "stats": {
+        "total_questions": 10,
+        "total_questions_text": "10题",
+        "test_period": "2025年1月",
+        "test_period_days": 30,
+        "l2_covered": 1,
+        "l2_total": 20,
+        "l2_covered_text": "1/20"
+      },
+      "summary_text": "最小测试覆盖说明。",
+      "coverage_table": {
+        "rows": [
+          {
+            "code": "TEST_L2_001",
+            "name_cn": "测试模块A",
+            "count": 10,
+            "count_text": "10题",
+            "bar": { "width_pct": 80, "style_width": "80%", "class": "yellow" },
+            "confidence": "中",
+            "confidence_text": "中",
+            "confidence_badge_class": "badge-yellow"
+          }
+        ]
+      },
+      "data_insufficient": {
+        "low_sample": { "title": "样本不足", "items": [] },
+        "uncovered_core": { "title": "未覆盖", "items": [] }
+      },
+      "quality_assessment": {
+        "metrics": [
+          { "label": "数据覆盖率", "value_pct": 5, "subtext": "1/20模块" }
+        ]
+      },
+      "warnings_detail": {
+        "has_warnings": false,
+        "total_count": 0,
+        "summary_text": "无告警。",
+        "groups": []
+      }
+    }
+  },
+  "appendix": {
+    "analysis_scope": {
+      "rows": {
+        "report_id": "DIDA985-MIN-001",
+        "generated_date": "2025-01-01",
+        "question_count_text": "10题",
+        "data_source_desc": "学生练习记录",
+        "knowledge_system": "上海中考数学知识图谱 v2.0"
+      }
+    },
+    "difficulty": {
+      "items": [
+        { "level": "easy", "name_cn": "基础题", "count": 10, "ratio": 100, "accuracy": 60, "status_text": "基本掌握" }
+      ]
+    },
+    "papers": {
+      "items": [
+        { "index": 1, "paper_name": "测试试卷", "question_count": 10, "source_file": "test.pdf" }
+      ],
+      "total_questions": 10,
+      "total_papers": 1
+    },
+    "metric_definitions": [
+      { "name": "正确率", "desc": "该知识点下答对题目数 / 总题目数 × 100%" }
+    ]
+  }
+}
