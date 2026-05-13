@@ -784,9 +784,32 @@
   }
 
   .m3-kp-step {
-    height: 42px;
-    padding: 5px 8px;
-    gap: 5px;
+    height: 36px;
+    padding: 4px 6px;
+    gap: 4px;
+  }
+
+  .m3-kp-step__lvl {
+    font-size: 18px;
+  }
+
+  .m3-kp-step__name {
+    font-size: 11px;
+  }
+
+  .m3-kp-step__desc {
+    font-size: 8px;
+  }
+
+  .m3-kp-step-arrow {
+    width: 12px;
+    height: 36px;
+  }
+
+  .m3-kp-step-arrow::before {
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 8px solid var(--color-step-arrow);
   }
 
   .m3-kp-drill__panel {
