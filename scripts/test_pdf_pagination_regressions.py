@@ -173,7 +173,7 @@ class PdfPaginationRegressionTest(unittest.TestCase):
         # m5 tail-grid removed in CSS refactor; verify m7 quality-box compact rules still exist
         self.assertIn(".m7-quality-box", m7_print_rules)
         self.assertIn("display: grid;", m7_print_rules)
-        self.assertIn("grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);", m7_print_rules)
+        self.assertIn("grid-template-columns: 2fr 1fr;", m7_print_rules)
 
     def test_m7_dense_print_tail_is_extra_compact(self) -> None:
         print_rules = read_text(M7_CSS).split("@media print", maxsplit=1)[1]
