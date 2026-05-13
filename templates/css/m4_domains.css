@@ -182,7 +182,7 @@
 .m4-core-conclusion {
   margin: 0 var(--cw-spacing-6) 10px;
   padding: 10px 12px;
-  background: linear-gradient(90deg, rgba(31, 111, 120, 0.10), rgba(217, 179, 106, 0.10));
+  background: var(--pm-gradient-conclusion);
   border: 1px solid rgba(31, 111, 120, 0.16);
   border-radius: var(--cw-radius-sm);
 }

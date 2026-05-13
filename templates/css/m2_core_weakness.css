@@ -172,7 +172,7 @@
 .m2-cw-core-summary {
   margin: 0 var(--cw-spacing-6) var(--cw-spacing-4);
   padding: var(--cw-spacing-3) var(--cw-spacing-4);
-  background: linear-gradient(90deg, rgba(139, 76, 106, 0.10), rgba(31, 111, 120, 0.08));
+  background: var(--pm-gradient-conclusion);
   border: 1px solid rgba(139, 76, 106, 0.16);
   border-radius: var(--cw-radius-sm);
 }

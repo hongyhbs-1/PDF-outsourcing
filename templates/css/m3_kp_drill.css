@@ -114,7 +114,7 @@
 
 /* [FIX] 恢复被上方 reset 覆盖的 module-content-card padding */
 .m3-kp-drill .module-content-card {
-  background: #fff;
+  background: var(--pm-bg-card);
   border-radius: 10px;
   padding: 20px 26px;
   overflow: hidden;
@@ -754,10 +754,10 @@
 
   /* [FIX] 恢复 module-content-card 在打印模式下的 padding */
   .m3-kp-drill .module-content-card {
-    background: #fff;
+    background: var(--pm-bg-card);
     border-radius: 10px;
     padding: 16px 20px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: var(--pm-shadow-card);
   }
 
   /* [T15] 内部容器边距归零 — 由外层容器 padding 统一提供 */

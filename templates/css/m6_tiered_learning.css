@@ -291,7 +291,7 @@
 .m6-stage-label {
   flex: 1;
   padding: 12px 10px;
-  background: #fff;
+  background: var(--pm-bg-card);
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
 }
@@ -407,7 +407,7 @@
   background: var(--color-blue-deep);
   border-radius: 50%;
   border: 2px solid #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--pm-shadow-card);
 }
 
 /* 当前位置信息容器 - 固定在进度条下方居中 */
@@ -500,7 +500,7 @@
 }
 
 .m6-suggestion-section {
-  background: #fff;
+  background: var(--pm-bg-card);
   padding: 16px 20px;
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
@@ -599,7 +599,7 @@
   gap: 12px;
   padding: 10px 12px;
   margin-bottom: 8px;
-  background: #fff;
+  background: var(--pm-bg-card);
   border: 1px solid var(--color-border-light);
   border-radius: 8px;
   font-size: var(--font-size-body);
@@ -771,7 +771,7 @@
 
 /* --- 12.5 训练重点速览 --- */
 .m6-training-focus {
-  background: #fff;
+  background: var(--pm-bg-card);
   border: 1px solid var(--color-border-light, #d8e2e8);
   border-radius: 8px;
   padding: 16px 20px;

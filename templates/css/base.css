@@ -394,6 +394,7 @@
   --pm-gradient-page:        linear-gradient(180deg, #f8f5ef 0%, #ffffff 100%);
   --pm-gradient-progress:    linear-gradient(90deg, #e2c48f, #b27a37);
   --pm-gradient-cta:         linear-gradient(135deg, #12344d 0%, #1a3a52 100%);
+  --pm-gradient-conclusion:  linear-gradient(90deg, rgba(31, 111, 120, 0.10), rgba(217, 179, 106, 0.10));
 
   /* --- Premium Typography --- */
   --pm-font-size-h1:      40px;
@@ -534,7 +535,7 @@ body {
 
 /* --- 白色圆角内容卡片 --- */
 .module-content-card {
-  background: #fff;
+  background: var(--pm-bg-card);
   border-radius: 10px;
   padding: 20px 26px;
   overflow: hidden;
@@ -542,7 +543,7 @@ body {
 
 @media print {
   .module-content-card {
-    background: #fff;
+    background: var(--pm-bg-card);
     border-radius: 10px;
     padding: 16px 20px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
