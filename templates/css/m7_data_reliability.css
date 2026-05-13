@@ -366,12 +366,12 @@
 }
 
 .m7-tag--warning {
-  background: rgba(212, 148, 58, 0.15);
+  background: var(--pm-bg-attention-soft);
   color: var(--color-label-orange);
 }
 
 .m7-tag--error {
-  background: rgba(196, 64, 64, 0.15);
+  background: var(--pm-bg-danger-soft);
   color: var(--color-label-red);
 }
 
@@ -481,19 +481,19 @@
 
 .m7-confidence-badge--green,
 .m7-confidence-badge--high {
-  background: rgba(31, 111, 120, 0.15);
+  background: var(--pm-bg-teal-soft);
   color: var(--color-progress-cyan);
 }
 
 .m7-confidence-badge--warning,
 .m7-confidence-badge--mid {
-  background: rgba(212, 148, 58, 0.15);
+  background: var(--pm-bg-attention-soft);
   color: var(--color-label-orange);
 }
 
 .m7-confidence-badge--gray,
 .m7-confidence-badge--low {
-  background: rgba(178, 122, 55, 0.15);
+  background: var(--pm-bg-sand-soft);
   color: var(--color-label-purple);
 }
 
@@ -841,7 +841,7 @@
   display: inline-flex;
   align-items: center;
   padding: var(--spacing-xxs) var(--spacing-sm);
-  background: rgba(196, 64, 64, 0.1);
+  background: var(--pm-bg-danger-light);
   color: var(--color-label-red);
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-medium);
@@ -872,17 +872,17 @@
 }
 
 .m7-severity-pill--high {
-  background: rgba(196, 64, 64, 0.15);
+  background: var(--pm-bg-danger-soft);
   color: var(--color-label-red);
 }
 
 .m7-severity-pill--medium {
-  background: rgba(212, 148, 58, 0.15);
+  background: var(--pm-bg-attention-soft);
   color: var(--color-label-orange);
 }
 
 .m7-severity-pill--low {
-  background: rgba(31, 111, 120, 0.15);
+  background: var(--pm-bg-teal-soft);
   color: var(--color-label-blue);
 }
 
@@ -957,17 +957,17 @@
 }
 
 .m7-warning-group__icon-wrap--high {
-  background: rgba(196, 64, 64, 0.1);
+  background: var(--pm-bg-danger-light);
   color: var(--color-label-red);
 }
 
 .m7-warning-group__icon-wrap--medium {
-  background: rgba(212, 148, 58, 0.1);
+  background: var(--pm-bg-attention-light);
   color: var(--color-label-orange);
 }
 
 .m7-warning-group__icon-wrap--low {
-  background: rgba(31, 111, 120, 0.1);
+  background: var(--pm-bg-teal-light);
   color: var(--color-label-blue);
 }
 
@@ -1025,17 +1025,17 @@
 }
 
 .m7-warning-group__count-badge--high {
-  background: rgba(196, 64, 64, 0.1);
+  background: var(--pm-bg-danger-light);
   color: var(--color-label-red);
 }
 
 .m7-warning-group__count-badge--medium {
-  background: rgba(212, 148, 58, 0.1);
+  background: var(--pm-bg-attention-light);
   color: var(--color-label-orange);
 }
 
 .m7-warning-group__count-badge--low {
-  background: rgba(31, 111, 120, 0.1);
+  background: var(--pm-bg-teal-light);
   color: var(--color-label-blue);
 }
 
@@ -1063,15 +1063,15 @@
 }
 
 .m7-warning-item--high {
-  background: rgba(196, 64, 64, 0.02);
+  background: var(--pm-bg-danger-faint);
 }
 
 .m7-warning-item--medium {
-  background: rgba(212, 148, 58, 0.02);
+  background: var(--pm-bg-attention-faint);
 }
 
 .m7-warning-item--low {
-  background: rgba(31, 111, 120, 0.02);
+  background: var(--pm-bg-teal-faint);
 }
 
 /* ----- 20.9 左侧颜色指示条 ----- */
@@ -1169,17 +1169,17 @@
 }
 
 .m7-detail-tag--current {
-  background: rgba(196, 64, 64, 0.1);
+  background: var(--pm-bg-danger-light);
   color: var(--color-label-red);
 }
 
 .m7-detail-tag--suggest {
-  background: rgba(31, 111, 120, 0.1);
+  background: var(--pm-bg-teal-light);
   color: var(--color-progress-cyan);
 }
 
 .m7-detail-tag--ci {
-  background: rgba(178, 122, 55, 0.1);
+  background: var(--pm-bg-sand-light);
   color: var(--color-label-purple);
 }
 
@@ -1218,7 +1218,7 @@
   align-items: center;
   gap: var(--spacing-md);
   padding: var(--spacing-lg);
-  background: rgba(31, 111, 120, 0.05);
+  background: var(--pm-bg-teal-subtle);
   border-radius: var(--radius-md);
 }
 
@@ -1228,7 +1228,7 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  background: rgba(31, 111, 120, 0.15);
+  background: var(--pm-bg-teal-soft);
   border-radius: 50%;
   color: var(--color-progress-cyan);
   flex-shrink: 0;
@@ -1647,18 +1647,18 @@
   .m7-data-reliability--dense .m7-kp-level-badge {
     width: 18px;
     height: 12px;
-    font-size: 7px;
+    font-size: 9px;
   }
 
   .m7-data-reliability--dense .m7-coverage-table {
     margin-top: 2px;
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .m7-data-reliability--dense .m7-coverage-table th,
   .m7-data-reliability--dense .m7-coverage-table td {
     padding: 2px 4px;
-    font-size: 8px;
+    font-size: 9px;
     line-height: 1.15;
   }
 
@@ -1669,13 +1669,13 @@
   .m7-data-reliability--dense .m7-confidence-badge {
     min-width: 22px;
     height: 14px;
-    font-size: 7px;
+    font-size: 9px;
   }
 
   .m7-data-reliability--dense .m7-note {
     margin-top: 3px;
     padding: 3px 5px;
-    font-size: 7px;
+    font-size: 9px;
     line-height: 1.18;
   }
 
@@ -1711,7 +1711,7 @@
 
   .m7-data-reliability--dense .m7-block-desc {
     margin-bottom: 3px;
-    font-size: 7.5px;
+    font-size: 9px;
     line-height: 1.15;
   }
 
@@ -1733,12 +1733,12 @@
 
   .m7-data-reliability--dense .m7-metric-item__label,
   .m7-data-reliability--dense .m7-metric-item__value {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .m7-data-reliability--dense .m7-metric-item__sub {
     margin-top: 1px;
-    font-size: 7px;
+    font-size: 9px;
     line-height: 1.15;
   }
 
@@ -1758,7 +1758,7 @@
   }
 
   .m7-data-reliability--dense .m7-list-item__text {
-    font-size: 7.5px;
+    font-size: 9px;
     line-height: 1.12;
   }
 
@@ -1778,7 +1778,7 @@
     padding: 1px 3px;
     padding-top: 1px;
     padding-bottom: 1px;
-    font-size: 7px;
+    font-size: 9px;
     line-height: 1.1;
     border-radius: 3px;
   }

@@ -374,6 +374,20 @@
   --pm-status-success:      #2d8a6e;
   --pm-status-success-bg:   #e8f5f0;
 
+  /* --- Premium Transparent Backgrounds (badge/overlay) --- */
+  --pm-bg-teal-faint:    rgba(31, 111, 120, 0.02);
+  --pm-bg-teal-subtle:   rgba(31, 111, 120, 0.05);
+  --pm-bg-teal-light:    rgba(31, 111, 120, 0.1);
+  --pm-bg-teal-soft:     rgba(31, 111, 120, 0.15);
+  --pm-bg-attention-faint:  rgba(212, 148, 58, 0.02);
+  --pm-bg-attention-light:  rgba(212, 148, 58, 0.1);
+  --pm-bg-attention-soft:   rgba(212, 148, 58, 0.15);
+  --pm-bg-danger-faint:     rgba(196, 64, 64, 0.02);
+  --pm-bg-danger-light:     rgba(196, 64, 64, 0.1);
+  --pm-bg-danger-soft:      rgba(196, 64, 64, 0.15);
+  --pm-bg-sand-light:       rgba(178, 122, 55, 0.1);
+  --pm-bg-sand-soft:        rgba(178, 122, 55, 0.15);
+
   /* --- Premium Gradients --- */
   --pm-gradient-hero:        linear-gradient(135deg, #0a2234 0%, #204a67 100%);
   --pm-gradient-accent-bar:  linear-gradient(90deg, #e2c48f 0%, #1f6f78 100%);
