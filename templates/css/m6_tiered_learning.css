@@ -834,7 +834,7 @@
    ============================================================================ */
 .m6-grid-split {
   display: grid;
-  grid-template-columns: var(--phi-major) var(--phi-minor);
+  grid-template-columns: 2fr 1fr;
   gap: 10px;
   margin-top: 10px;
   align-items: start;
@@ -1123,19 +1123,19 @@
     padding: 5px 7px;
   }
   .m6-grid-split__right .m6-card-header__title {
-    font-size: 10px;
+    font-size: 11px;
   }
   .m6-grid-split__right .m6-summary-box__text {
-    font-size: 8px;
-    line-height: 1.15;
+    font-size: 9.5px;
+    line-height: 1.2;
   }
   .m6-grid-split__right .m6-check-item__text {
-    font-size: 7.5px;
-    line-height: 1.12;
+    font-size: 9px;
+    line-height: 1.2;
   }
   .m6-grid-split__right .m6-guidance-paragraph {
-    font-size: 8px;
-    line-height: 1.15;
+    font-size: 9.5px;
+    line-height: 1.2;
   }
   .m6-grid-split__right .m6-role-icon {
     width: 12px;
