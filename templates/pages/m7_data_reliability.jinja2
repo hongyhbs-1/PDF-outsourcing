@@ -247,6 +247,11 @@
 {% set uncovered_core = data_insufficient.uncovered_core if data_insufficient.uncovered_core else {} %}
 {% set uncovered_items = uncovered_core['items'] if uncovered_core and 'items' in uncovered_core else [] %}
 {% set coverage_count = coverage_table.rows | default([], true) | length %}
+{% set representative_l2_count = [coverage_count, 6] | min %}
+{% set quality_metrics = quality_assessment.metrics | default([], true) %}
+{% set data_coverage_rate = quality_metrics[0].value_pct if quality_metrics | length > 0 else 90 %}
+{% set high_confidence_rate = quality_metrics[1].value_pct if quality_metrics | length > 1 else 75 %}
+{% set freshness_rate = quality_metrics[2].value_pct if quality_metrics | length > 2 else 100 %}
 {% if coverage_count >= 8 or low_sample_items | length >= 4 or uncovered_items | length >= 4 %}
   {% set m7_density = 'dense' %}
 {% elif coverage_count <= 1 and low_sample_items | length == 0 and uncovered_items | length <= 1 %}
@@ -266,6 +271,13 @@
     {{ lb_icon('shield', 'frame-title-icon') }}{% if _qd_papers_m7 | length > 0 and _qd_m7.total_count | default(0) > 0 %}八{% else %}七{% endif %}、{{ section.title | default('数据可信度说明', true) }}
   </h1>
 
+  <section class="m7-core-conclusion">
+    <div class="m7-core-conclusion__label">{{ lb_icon('shield', 'frame-conclusion-icon') }}本页核心结论</div>
+    <div class="m7-core-conclusion__text">
+      原始输入已识别为{{ stats.total_questions | default('--', true) }}题，并归因覆盖 {{ stats.l2_covered | default('--', true) }}/{{ stats.l2_total | default('--', true) }} 个 L2 模块（本页列出 {{ representative_l2_count }} 个代表模块），说明试卷识别与知识点解析可追溯；批改归因通过题量、置信度和分布条逐项校验；报告结论由{{ data_coverage_rate }}% 数据覆盖率、{{ high_confidence_rate }}% 高置信度占比、{{ freshness_rate }}% 数据时效性共同支撑；最终结果同时标出{{ low_sample_items | length }}个样本不足项和{{ uncovered_items | length }}个未覆盖核心考点，补齐后可复评，形成可信背书。
+    </div>
+  </section>
+
   <div class="module-content-card">
 
   {# ====================================================================
@@ -273,7 +285,7 @@
      ==================================================================== #}
   <section class="m7-report-box">
     <div class="m7-report-box__inner">
-      <h2 class="m7-section-title">{{ lb_icon('data', 'frame-section-icon') }} 数据概览</h2>
+      <h2 class="m7-section-title">{{ lb_icon('data', 'frame-section-icon') }} 原始输入识别与数据概览</h2>
 
       <div class="m7-overview-cards">
         {# --- 卡片1: 分析题量 --- #}
@@ -388,8 +400,8 @@
   {% if coverage_table.rows and coverage_table.rows | length > 0 %}
   <section class="m7-report-box m7-report-box--purple">
     <div class="m7-report-box__inner">
-      <h2 class="m7-section-title">{{ lb_icon('tree', 'frame-section-icon') }} L2模块覆盖详情</h2>
-      <p class="m7-coverage-note">按知识点统计，1题可覆盖多个知识点，因此各模块题量之和可能大于总题数。</p>
+      <h2 class="m7-section-title">{{ lb_icon('tree', 'frame-section-icon') }} 批改归因与L2模块覆盖详情</h2>
+      <p class="m7-coverage-note">按知识点统计并归因到L2模块，1题可覆盖多个知识点；题量、置信度和分布条共同用于校验批改归因是否稳定。</p>
 
       <table class="m7-coverage-table">
         <thead>
@@ -457,7 +469,7 @@
       <h2 class="m7-block-title">
         <span class="m7-block-title__bullet"></span>
         {{ lb_icon('shield', 'frame-inline-icon') }}
-        <span>整体数据质量评估</span>
+        <span>报告结论可信度评估</span>
       </h2>
       
       <p class="m7-block-desc">

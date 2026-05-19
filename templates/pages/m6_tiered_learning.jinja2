@@ -256,12 +256,20 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 {% set core_weak_names = [] %}
 {% for item in core_items[:3] %}{% if item.name %}{% set _ = core_weak_names.append(item.name) %}{% endif %}{% endfor %}
 {% set drill_nodes = kp_drill.path_example.nodes | default([], true) if kp_drill is defined and kp_drill.path_example is defined else [] %}
-{% set drill_focus = namespace(name='') %}
-{% for node in drill_nodes %}{% if node.level == 'L3' and node.name_cn %}{% set drill_focus.name = node.name_cn %}{% endif %}{% endfor %}
+{% set drill_focus = namespace(l3='', l4='') %}
+{% for node in drill_nodes %}
+  {% if node.level == 'L3' and node.name_cn %}{% set drill_focus.l3 = node.name_cn %}{% endif %}
+  {% if node.level == 'L4' and node.name_cn %}{% set drill_focus.l4 = node.name_cn %}{% endif %}
+{% endfor %}
 {% set city_items = city_compare.overlap_items | default([], true) if city_compare is defined else [] %}
 {% set city_overlap_names = [] %}
 {% for item in city_items[:3] %}{% if item.kp_name %}{% set _ = city_overlap_names.append(item.kp_name) %}{% endif %}{% endfor %}
 {% set city_advice_list = city_compare.advice | default([], true) if city_compare is defined else [] %}
+{% set city_label = meta.city_name | default('本市', true) %}
+{% set thirty_day_targets = core_weak_names[:2] if core_weak_names | length > 0 else (city_overlap_names[:2] if city_overlap_names | length > 0 else []) %}
+{% set sixty_day_targets = [] %}
+{% if core_weak_names | length > 2 %}{% set _ = sixty_day_targets.append(core_weak_names[2]) %}{% endif %}
+{% if sixty_day_targets | length == 0 and city_overlap_names | length > 2 %}{% set _ = sixty_day_targets.append(city_overlap_names[2]) %}{% endif %}
 
 <div class="m6-page">
 
@@ -278,7 +286,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   <section class="m6-core-conclusion">
     <div class="m6-core-conclusion__label">{{ lb_icon('support', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m6-core-conclusion__text">
-      当前处于「{{ current_stage.name }}」；P9 领域上{% if weak_domain_names | length > 0 %}{{ weak_domain_names | join('、') }}低于目标线{% else %}薄弱领域待确认{% endif %}，P10 优先处理{% if core_weak_names | length > 0 %}{{ core_weak_names | join('、') }}{% else %}核心短板{% endif %}，P11 重点钻取{% if drill_focus.name %}{{ drill_focus.name }}{% else %}L3/L4薄弱环节{% endif %}，P12 显示{% if city_overlap_names | length > 0 %}{{ city_overlap_names | join('、') }}与高频考点重合{% else %}高频重合项待确认{% endif %}。建议 30 天内先补{{ core_weak_names[:2] | join('、') if core_weak_names | length > 0 else '核心短板' }}，60 天内完成复测与巩固。
+      当前处于「{{ current_stage.name }}」，建议按 30/60 天推进：P9 领域上{% if weak_domain_names | length > 0 %}{{ weak_domain_names | join('、') }}低于目标线{% else %}薄弱领域待确认{% endif %}；P10 优先处理{% if core_weak_names | length > 0 %}{{ core_weak_names | join('、') }}{% else %}核心短板{% endif %}；P11 重点钻取{% if drill_focus.l3 %}{{ drill_focus.l3 }}{% else %}L3薄弱环节{% endif %}{% if drill_focus.l4 %}/{{ drill_focus.l4 }}{% endif %}；P12 显示{% if city_overlap_names | length > 0 %}{{ city_overlap_names | join('、') }}与{{ city_label }}市高频考点重合{% else %}高频重合项待确认{% endif %}。30 天内先掌握{{ thirty_day_targets | join('、') if thirty_day_targets | length > 0 else '核心短板' }}，60 天内巩固{{ sixty_day_targets | join('、') if sixty_day_targets | length > 0 else '重点知识点' }}并完成复测。
     </div>
   </section>
 

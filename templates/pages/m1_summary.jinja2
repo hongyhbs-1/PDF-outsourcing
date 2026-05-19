@@ -209,11 +209,6 @@ render_payload.module_1_summary 结构示例:
 
   <div class="m1-summary-card">
 
-    {# 摘要横幅 #}
-    <div class="m1-summary-banner">
-      {{ safe_pct(summary.pass_rate_text, '0%') }}表示三级知识点（L3）达标率（= 达标的知识点/总知识点）：{% if pass_stats.total > 0 %}已分析的{{ pass_stats.total }}个知识点中，{{ pass_stats.achieved }}个达标、{{ pass_stats.pending }}个需重点补齐。{% endif %}达标指正确率达到或超过本次设定的{{ safe(summary.target_accuracy_text, '目标线') }}。
-    </div>
-
     {# 摘要内容区 #}
     <div class="m1-summary-content">
       
@@ -315,6 +310,11 @@ render_payload.module_1_summary 结构示例:
       {% endfor %}
     </div>
     {% endif %}
+
+    {# 摘要说明放在本卡片底部，避免与“本页核心结论”重复挤在顶部 #}
+    <div class="m1-summary-banner">
+      整体正确率看所有答题表现；三级知识点（L3）达标率看细分知识点是否达标。{{ safe_pct(summary.pass_rate_text, '0%') }}表示三级知识点（L3）达标率（= 达标的知识点/总知识点）：{% if pass_stats.total > 0 %}已分析的{{ pass_stats.total }}个知识点中，{{ pass_stats.achieved }}个达标、{{ pass_stats.pending }}个需重点补齐。{% endif %}达标指正确率达到或超过本次设定的{{ safe(summary.target_accuracy_text, '目标线') }}。
+    </div>
   </div>
 
   {% if summary.high_freq_kp_total is defined and summary.pass_segments is defined and summary.pass_segments | length >= 2 %}

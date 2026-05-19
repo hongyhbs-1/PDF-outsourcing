@@ -152,6 +152,32 @@
   width: 100%;
 }
 
+.m7-core-conclusion {
+  margin: 0 0 var(--spacing-md);
+  padding: 10px 12px;
+  background: var(--pm-gradient-conclusion);
+  border: 1px solid rgba(31, 111, 120, 0.16);
+  border-radius: var(--radius-md);
+  box-shadow: var(--pm-shadow-card);
+}
+
+.m7-core-conclusion__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 4px;
+}
+
+.m7-core-conclusion__text {
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 /* ==========================================================================
    Section 5: Report Box (通用容器)
    ========================================================================== */
@@ -1285,6 +1311,23 @@
   .m7-data-reliability__title::after {
     height: 3px;
     margin-top: 6px;
+  }
+
+  .m7-core-conclusion {
+    margin-bottom: 7px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    box-shadow: none;
+  }
+
+  .m7-core-conclusion__label {
+    font-size: 10px;
+    margin-bottom: 3px;
+  }
+
+  .m7-core-conclusion__text {
+    font-size: 12px;
+    line-height: 1.3;
   }
 
   .m7-report-box {

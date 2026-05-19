@@ -387,6 +387,7 @@
      # ========================================================================= #}
     {% if intro_text %}
     <div class="m3-kp-drill__intro-panel">
+      <div class="m3-kp-drill__section-title m3-kp-drill__section-title--guide">{{ lb_icon('tree', 'frame-inline-icon') }} 层级说明</div>
       {# 说明文字 #}
       <div class="m3-kp-drill__desc">{{ intro_text }}</div>
 
@@ -444,6 +445,8 @@
         {% endif %}
       </div>
       {% endif %}
+    </div>
+    {% endif %}
 
     {# =========================================================================
      # 区块4：钻取路径示例（可选）
@@ -479,11 +482,6 @@
       {% if path_example.note_text %}
       <div class="m3-kp-path__note">* {{ path_example.note_text }}<br>* 示例，不代表本次诊断结果</div>
       {% endif %}
-    </div>
-    {% endif %}
-    
-
-
     </div>
     {% endif %}
     </div><!-- /.module-content-card -->

@@ -301,3 +301,138 @@
     column-gap: 5px;
   }
 }
+
+
+/* ============================================================================
+   P8-P14 opinion-doc consistency: module spacing, heading scale, core takeaway
+   --------------------------------------------------------------------------
+   Keep the enlarged version screen-only. Windows Chrome's print engine is
+   sensitive to late shared `!important` font/padding increases across dense
+   chapter pages, so print keeps each module's compact, page-tested sizes and
+   only strengthens weight/contrast.
+   ============================================================================ */
+@media screen {
+  .m1-core-conclusion,
+  .m2-cw-core-summary,
+  .m3-kp-core-summary,
+  .m4-core-conclusion,
+  .m5-core-conclusion,
+  .m6-core-conclusion,
+  .m7-core-conclusion {
+    padding: 14px 16px !important;
+    border: 1.5px solid rgba(31, 111, 120, 0.20) !important;
+    border-radius: 10px !important;
+    box-shadow: var(--pm-shadow-card, 0 4px 14px rgba(18, 52, 77, 0.08));
+  }
+
+  .m1-core-conclusion,
+  .m2-cw-core-summary,
+  .m3-kp-core-summary,
+  .m4-core-conclusion,
+  .m6-core-conclusion,
+  .m7-core-conclusion {
+    margin-bottom: 16px !important;
+  }
+
+  .m5-core-conclusion {
+    margin-top: 8px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .m1-core-conclusion__label,
+  .m2-cw-core-summary__label,
+  .m3-kp-core-summary__label,
+  .m4-core-conclusion__label,
+  .m5-core-conclusion__label,
+  .m6-core-conclusion__label,
+  .m7-core-conclusion__label {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    margin-bottom: 5px !important;
+  }
+
+  .m1-core-conclusion__text,
+  .m2-cw-core-summary__text,
+  .m3-kp-core-summary__text,
+  .m4-core-conclusion__text,
+  .m5-core-conclusion__text,
+  .m6-core-conclusion__text,
+  .m7-core-conclusion__text {
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    line-height: 1.48 !important;
+  }
+
+  .m1-section-bar,
+  .m2-cw-note-bar__title,
+  .m2-cw-legend-title,
+  .m2-cw-reason-header__title,
+  .m2-cw-tips-title,
+  .m3-kp-drill__section-title,
+  .m4-peer-title,
+  .m4-table-title,
+  .m4-summary-title,
+  .m5-city-compare__card-title,
+  .m5-city-compare__table-title,
+  .m5-city-compare__footnote-title,
+  .m6-card-header__title,
+  .m6-training-focus__title,
+  .m6-note-box__title,
+  .m6-suggestion-section__title,
+  .m7-section-title,
+  .m7-block-title,
+  .m7-warnings-section-title {
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    line-height: 1.28 !important;
+    color: var(--pm-text-primary, #1a2332) !important;
+  }
+}
+
+@media print {
+  .m1-core-conclusion,
+  .m2-cw-core-summary,
+  .m3-kp-core-summary,
+  .m4-core-conclusion,
+  .m5-core-conclusion,
+  .m6-core-conclusion,
+  .m7-core-conclusion {
+    box-shadow: none !important;
+  }
+
+  .m1-core-conclusion__label,
+  .m2-cw-core-summary__label,
+  .m3-kp-core-summary__label,
+  .m4-core-conclusion__label,
+  .m5-core-conclusion__label,
+  .m6-core-conclusion__label,
+  .m7-core-conclusion__label,
+  .m1-core-conclusion__text,
+  .m2-cw-core-summary__text,
+  .m3-kp-core-summary__text,
+  .m4-core-conclusion__text,
+  .m5-core-conclusion__text,
+  .m6-core-conclusion__text,
+  .m7-core-conclusion__text,
+  .m1-section-bar,
+  .m2-cw-note-bar__title,
+  .m2-cw-legend-title,
+  .m2-cw-reason-header__title,
+  .m2-cw-tips-title,
+  .m3-kp-drill__section-title,
+  .m4-peer-title,
+  .m4-table-title,
+  .m4-summary-title,
+  .m5-city-compare__card-title,
+  .m5-city-compare__table-title,
+  .m5-city-compare__footnote-title,
+  .m6-card-header__title,
+  .m6-training-focus__title,
+  .m6-note-box__title,
+  .m6-suggestion-section__title,
+  .m7-section-title,
+  .m7-block-title,
+  .m7-warnings-section-title {
+    font-weight: 800 !important;
+  }
+}

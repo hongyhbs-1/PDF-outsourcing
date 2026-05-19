@@ -34,8 +34,20 @@
   margin: 8px 0 16px;
 }
 
+/* --- 提升总览：与 P4/P6 的总览小标题保持一致 --- */
+.ip-overview-head {
+  margin-bottom: 8px;
+}
+
+.ip-section-heading--overview {
+  margin-bottom: 0;
+}
+
 /* --- 本阶段介入重点（从学生画像迁移） --- */
 .ip-intervention-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: var(--pm-teal-soft, #d0e8e8);
   color: var(--pm-text-primary);
   font-size: 14px;
@@ -45,8 +57,22 @@
   margin-bottom: 16px;
 }
 
-.ip-intervention-bar strong {
-  color: var(--pm-teal);
+.ip-intervention-bar__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+  padding-left: 8px;
+  border-left: 3px solid var(--pm-teal);
+}
+
+.ip-intervention-bar__text {
+  min-width: 0;
+  color: var(--pm-text-primary);
 }
 
 /* ==========================================================================
@@ -173,12 +199,13 @@
 }
 
 .ip-section-heading {
-  font-size: 17px;
+  font-size: 15px;
+  line-height: 1.25;
   font-weight: 700;
   color: var(--pm-text-primary);
-  margin-bottom: 14px;
-  padding-left: 12px;
-  border-left: 4px solid var(--pm-teal);
+  margin: 0 0 10px;
+  padding-left: 8px;
+  border-left: 3px solid var(--pm-teal);
 }
 
 .ip-milestone {
@@ -365,12 +392,12 @@
 
 .ip-parent-guide__title {
   font-size: 15px;
+  line-height: 1.25;
   font-weight: 700;
-  color: var(--pm-teal);
+  color: var(--pm-text-primary);
   margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 2px solid var(--pm-gradient-accent-bar);
-  border-image: var(--pm-gradient-accent-bar) 1;
+  padding-left: 8px;
+  border-left: 3px solid var(--pm-teal);
 }
 
 .ip-parent-guide__content p {
@@ -402,6 +429,25 @@
     font-size: 22px;
     padding-bottom: 6px;
     margin: 8px 0 14px;
+  }
+
+  .ip-overview-head {
+    margin-bottom: 5px;
+  }
+
+  .ip-intervention-bar {
+    gap: 6px;
+    padding: 6px 10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+
+  .ip-intervention-bar__label,
+  .ip-section-heading,
+  .ip-parent-guide__title {
+    font-size: 13px;
+    padding-left: 6px;
+    border-left-width: 2px;
   }
 
   .ip-roadmap {
@@ -453,10 +499,11 @@
   }
 
   .ip-section-heading {
-    font-size: 16px;
     margin-bottom: 10px;
-    padding-left: 10px;
-    border-left-width: 3px;
+  }
+
+  .ip-section-heading--overview {
+    margin-bottom: 0;
   }
 
   .ip-milestone {
@@ -567,9 +614,7 @@
   }
 
   .ip-parent-guide__title {
-    font-size: 13px;
     margin-bottom: 6px;
-    padding-bottom: 4px;
   }
 
   .ip-parent-guide__content p {

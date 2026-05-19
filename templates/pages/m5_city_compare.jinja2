@@ -242,7 +242,7 @@
       <div class="m5-core-conclusion__text">
         {%- set city_name = meta.city_name | default('本') -%}
         {%- if has_data and overlap_count > 0 -%}
-          你的{{ overlap_count }}个薄弱知识点{% if overlap_names | length > 0 %}（{{ overlap_names | join('、') }}）{% endif %}与{{ city_name }}市高频考点重合，重合度{{ overlap_pct }}%，说明这些知识点同时具备个人短板与城市高频属性。
+          本页先列出你的{{ overlap_count }}个薄弱知识点{% if overlap_names | length > 0 %}（{{ overlap_names | join('、') }}）{% endif %}，再看它们与{{ city_name }}市高频考点的重合度{{ overlap_pct }}%；这些知识点同时具备个人短板与城市高频属性。
         {%- elif has_data -%}
           当前薄弱知识点暂未命中{{ city_name }}市高频考点，说明本次短板与城市高频交集有限。
         {%- else -%}

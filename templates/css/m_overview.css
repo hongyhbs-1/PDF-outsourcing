@@ -23,9 +23,14 @@
   margin-bottom: 20px;
 }
 
-.mov-page--dense .mov-cards {
+.mov-page--dense .mov-overview-grid {
   gap: 10px;
   margin-bottom: 16px;
+}
+
+.mov-page--dense .mov-cards {
+  gap: 10px;
+  margin-bottom: 0;
 }
 
 .mov-page--dense .mov-card {
@@ -62,7 +67,7 @@
 }
 
 .mov-page--dense .mov-hero-title {
-  font-size: 21px;
+  font-size: 20px;
   margin-bottom: 6px;
 }
 
@@ -183,9 +188,8 @@
 
 /* --- 导语 --- */
 .mov-hero {
-  display: flex;
-  gap: 18px;
-  margin-bottom: 32px;
+  display: block;
+  margin-bottom: 16px;
 }
 
 .mov-hero-main,
@@ -197,7 +201,7 @@
 }
 
 .mov-hero-main {
-  flex: 7;
+  width: 100%;
   min-width: 0;
   padding: 18px 20px;
 }
@@ -208,19 +212,31 @@
   padding: 16px 18px;
 }
 
+.mov-overview-head {
+  margin-bottom: 8px;
+}
+
 .mov-hero-kicker {
   display: inline-flex;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--pm-teal-soft, #d0e8e8);
-  color: var(--pm-teal);
-  font-size: 12px;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  max-width: 100%;
+  padding-left: 8px;
+  border-left: 3px solid var(--pm-teal);
+  color: var(--pm-text-primary);
+  font-size: 15px;
+  line-height: 1.25;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin: 0;
+}
+
+.mov-page--dense .mov-overview-head .mov-hero-kicker {
+  margin: 0;
 }
 
 .mov-hero-title {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--pm-text-primary);
   line-height: 1.3;
@@ -278,10 +294,18 @@
 }
 
 .mov-card-title {
-  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  max-width: 100%;
+  font-size: 15px;
+  line-height: 1.25;
   font-weight: 700;
   color: var(--pm-text-primary);
-  margin: 0 0 12px;
+  margin: 0 0 10px;
+  padding-left: 8px;
+  border-left: 3px solid var(--pm-teal);
 }
 
 .mov-profile-grid {
@@ -308,12 +332,20 @@
   color: var(--pm-text-primary);
 }
 
-/* --- 三卡片 --- */
+/* --- 指标卡 + 难度分布 --- */
+.mov-overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(210px, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  margin-bottom: 28px;
+}
+
 .mov-cards {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 0;
 }
 .mov-card {
   background: var(--pm-bg-card);
@@ -358,7 +390,6 @@
 
 /* --- 难度分布扇形图（并入速览右侧） --- */
 .mov-difficulty-aside {
-  flex: 4;
   min-width: 0;
   background: var(--pm-bg-card);
   border: 1px solid var(--pm-border-card);
@@ -369,10 +400,18 @@
   flex-direction: column;
 }
 .mov-difficulty__title {
-  font-size: 13px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  max-width: 100%;
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 700;
   color: var(--pm-text-primary);
-  margin: 0 0 8px;
+  margin: 0 0 10px;
+  padding-left: 8px;
+  border-left: 3px solid var(--pm-teal);
 }
 
 /* 扇形图 */
@@ -565,12 +604,21 @@
   .mov-hero,
   .mov-page--sparse .mov-hero,
   .mov-page--dense .mov-hero {
-    gap: 8px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .mov-overview-grid,
+  .mov-page--dense .mov-overview-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 6px;
     margin-bottom: 8px;
   }
 
   .mov-hero-main,
   .mov-profile-card,
+  .mov-difficulty-aside,
   .mov-page--dense .mov-hero-main,
   .mov-page--dense .mov-profile-card {
     padding: 8px 10px;
@@ -578,11 +626,16 @@
     box-shadow: none;
   }
 
+  .mov-overview-head {
+    margin-bottom: 5px;
+  }
+
   .mov-hero-kicker,
   .mov-page--dense .mov-hero-kicker {
-    margin-bottom: 4px;
-    padding: 2px 7px;
-    font-size: 9px;
+    margin: 0;
+    padding-left: 6px;
+    border-left-width: 2px;
+    font-size: 12px;
   }
 
   .mov-hero-title,
@@ -616,6 +669,8 @@
 
   .mov-card-title {
     margin-bottom: 5px;
+    padding-left: 6px;
+    border-left-width: 2px;
     font-size: 12px;
   }
 
@@ -637,8 +692,9 @@
 
   .mov-cards,
   .mov-page--dense .mov-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
-    margin-bottom: 8px;
+    margin-bottom: 0;
   }
 
   .mov-card,
@@ -682,7 +738,29 @@
 
   .mov-difficulty__title {
     margin-bottom: 5px;
-    font-size: 11px;
+    padding-left: 6px;
+    border-left-width: 2px;
+    font-size: 12px;
+  }
+
+  .mov-pie-wrapper {
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .mov-pie {
+    width: 62px;
+    height: 62px;
+  }
+
+  .mov-pie-legend {
+    gap: 2px;
+  }
+
+  .mov-pie-legend-item,
+  .mov-pie-legend__value {
+    gap: 3px;
+    font-size: 8px;
   }
 
   .mov-difficulty__bar,
@@ -695,6 +773,11 @@
   .mov-page--dense .mov-difficulty__legend {
     gap: 9px;
     font-size: 9px;
+  }
+
+  .mov-papers,
+  .mov-page--dense .mov-papers {
+    padding-top: 0;
   }
 
   .mov-papers__table,

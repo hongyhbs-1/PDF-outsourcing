@@ -212,40 +212,71 @@
 }
 
 /* ==========================================================================
-   8. 元信息区 — 温暖色调
+   8. 学生档案 — 温暖色调信息卡
    ========================================================================== */
 
-.m0-cover-meta {
+.m0-cover-dossier {
   margin-top: var(--cover-gap-student-meta);
-  width: 92mm;
+  width: 116mm;
+  padding: 5mm 7mm;
+  border: 0.35mm solid rgba(31, 111, 120, 0.16);
+  border-radius: 4mm;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 2mm 8mm rgba(18, 52, 77, 0.06);
+  box-sizing: border-box;
+}
+
+.m0-cover-dossier__title {
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+  font-size: 3.6mm;
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-normal);
+  color: var(--pm-navy);
+  letter-spacing: 0.4mm;
+}
+
+.m0-cover-dossier__title::before {
+  content: "";
+  width: 1mm;
+  height: 4.2mm;
+  border-radius: 999px;
+  background: var(--pm-teal);
+}
+
+.m0-cover-meta {
+  margin-top: 4mm;
+  width: 100%;
   display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 6mm;
-  row-gap: 8mm;
-  font-size: var(--fs-meta);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 5mm;
+  row-gap: 3.6mm;
   line-height: var(--lh-normal);
 }
 
+.m0-cover-meta__item {
+  min-width: 0;
+}
+
 .m0-cover-meta__label {
-  text-align: left;
+  display: block;
+  margin-bottom: 1mm;
+  font-size: 3mm;
   font-weight: var(--fw-regular);
   color: var(--pm-text-secondary);
   white-space: nowrap;
 }
 
-.m0-cover-meta__label--short {
-  text-align: justify;
-  text-align-last: justify;
-}
-
-.m0-cover-meta__label--long {
-  letter-spacing: 0;
-}
-
 .m0-cover-meta__value {
+  display: block;
   text-align: left;
+  font-size: 4.2mm;
   font-weight: var(--fw-semibold);
   color: var(--pm-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .m0-cover-meta__value--empty {
@@ -361,9 +392,15 @@
     print-color-adjust: exact;
   }
 
-  .m0-cover-divider {
+  .m0-cover-divider,
+  .m0-cover-dossier,
+  .m0-cover-dossier__title::before {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  .m0-cover-dossier {
+    box-shadow: none;
   }
 }
 

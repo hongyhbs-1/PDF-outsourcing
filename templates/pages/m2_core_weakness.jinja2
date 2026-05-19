@@ -118,10 +118,10 @@
 
   <div class="m2-cw-core-summary">
     <div class="m2-cw-core-summary__label">{{ lb_icon('warning', 'frame-conclusion-icon frame-conclusion-icon--warning') }}本页核心结论</div>
-    <div class="m2-cw-core-summary__grid">
-      <div class="m2-cw-core-summary__item"><strong>{{ lb_icon('module', 'frame-inline-icon') }}短板集中</strong><span>{% if weakness_summary.domains | length > 0 %}{{ weakness_summary.domains[:3] | join('、') }}{% else %}暂无明显集中领域{% endif %}</span></div>
-      <div class="m2-cw-core-summary__item"><strong>{{ lb_icon('target', 'frame-inline-icon frame-inline-icon--warning') }}优先处理</strong><span>P0/P1 共{{ weakness_summary.p0 + weakness_summary.p1 }}个，先补高差距项</span></div>
-      <div class="m2-cw-core-summary__item"><strong>{{ lb_icon('axis', 'frame-inline-icon') }}迁移重点</strong><span>先建立方法链路，再做同类题迁移</span></div>
+    <div class="m2-cw-core-summary__text">
+      <strong>{{ lb_icon('module', 'frame-inline-icon') }}短板集中：</strong>{% if weakness_summary.domains | length > 0 %}{{ weakness_summary.domains[:3] | join('、') }}{% else %}暂无明显集中领域{% endif %}；
+      <strong>{{ lb_icon('target', 'frame-inline-icon frame-inline-icon--warning') }}优先处理：</strong>P0/P1 共{{ weakness_summary.p0 + weakness_summary.p1 }}个，先补高差距项；
+      <strong>{{ lb_icon('axis', 'frame-inline-icon') }}迁移重点：</strong>先建立方法链路，再做同类题迁移。
     </div>
   </div>
 
@@ -129,7 +129,7 @@
 
   {# ===== 3. 导语说明条（仅在有内容时渲染） ===== #}
   {% if s.intro_text %}
-  <div class="m2-cw-note-bar">{{ lb_icon('target', 'frame-inline-icon') }} {{ s.intro_text }}</div>
+  <div class="m2-cw-note-bar"><span class="m2-cw-note-bar__title">{{ lb_icon('target', 'frame-inline-icon') }}短板筛选说明</span><span class="m2-cw-note-bar__text">{{ s.intro_text }}</span></div>
   {% endif %}
 
   {# ===== 4. 表格卡片 ===== #}

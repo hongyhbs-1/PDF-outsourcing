@@ -170,48 +170,76 @@ v1.1 - 2026-01-15
     {# ====================================================================
        2. 学生信息 — 第一视觉焦点
        ==================================================================== #}
-    {% set _student = meta.student_display_name | default('') %}
+    {% set _student = meta.student_display_name | default(empty_placeholder, true) %}
+    {% set _report_generated_at = cover_meta.report_generated_at | default('', true) %}
+    {% set _report_display_time = _report_generated_at | replace('T', ' ') %}
+    {% set _report_date = cover_meta.report_date | default(_report_display_time, true) %}
+    {% set _question_count = cover_meta.question_count | default(none, true) %}
+    {% set _paper_count = cover_meta_raw.paper_count | default(none, true) %}
     <div class="m0-cover-exclusive">
       <div class="m0-cover-exclusive__name">{{ _student }}</div>
       {# 评估时间紧跟姓名，形成"姓名+时间"视觉焦点 #}
-      {% if cover_meta.report_generated_at %}
-      <div class="m0-cover-exclusive__time">{{ cover_meta.report_generated_at }}</div>
+      {% if _report_display_time %}
+      <div class="m0-cover-exclusive__time">{{ _report_display_time }}</div>
       {% endif %}
       <div class="m0-cover-exclusive__label">专属分析</div>
     </div>
 
     {# ====================================================================
-       3. 元信息区 - 城市/年级/报告生成时间/分析题量
+       3. 学生档案 - 城市/年级/学科/题量/日期
        ==================================================================== #}
-    <div class="m0-cover-meta">
-      {# 城市 #}
-      <div class="m0-cover-meta__label m0-cover-meta__label--short">城市</div>
-      <div class="m0-cover-meta__value{% if not cover_meta.city %} m0-cover-meta__value--empty{% endif %}">
-        {{- cover_meta.city | default(empty_placeholder) -}}
-      </div>
+    <section class="m0-cover-dossier" aria-label="学生档案">
+      <div class="m0-cover-dossier__title">学生档案</div>
+      <div class="m0-cover-meta">
+        <div class="m0-cover-meta__item">
+          <div class="m0-cover-meta__label">学生</div>
+          <div class="m0-cover-meta__value{% if not _student or _student == empty_placeholder %} m0-cover-meta__value--empty{% endif %}">
+            {{- _student -}}
+          </div>
+        </div>
 
-      {# 年级 #}
-      <div class="m0-cover-meta__label m0-cover-meta__label--short">年级</div>
-      <div class="m0-cover-meta__value{% if not cover_meta.grade %} m0-cover-meta__value--empty{% endif %}">
-        {{- cover_meta.grade | default(empty_placeholder) -}}
-      </div>
+        <div class="m0-cover-meta__item">
+          <div class="m0-cover-meta__label">城市</div>
+          <div class="m0-cover-meta__value{% if not cover_meta.city %} m0-cover-meta__value--empty{% endif %}">
+            {{- cover_meta.city | default(empty_placeholder, true) -}}
+          </div>
+        </div>
 
-      {# 学科 — 突出显示，体现封面差异化 #}
-      <div class="m0-cover-meta__label m0-cover-meta__label--short">学科</div>
-      <div class="m0-cover-meta__value m0-cover-meta__value--subject">
-        {{- data.subject | default(default_subject) -}}
-      </div>
+        <div class="m0-cover-meta__item">
+          <div class="m0-cover-meta__label">年级</div>
+          <div class="m0-cover-meta__value{% if not cover_meta.grade %} m0-cover-meta__value--empty{% endif %}">
+            {{- cover_meta.grade | default(empty_placeholder, true) -}}
+          </div>
+        </div>
 
-      {# 分析试卷 #}
-      <div class="m0-cover-meta__label m0-cover-meta__label--long">分析试卷</div>
-      <div class="m0-cover-meta__value{% if not cover_meta_raw.paper_count %} m0-cover-meta__value--empty{% endif %}">
-        {%- if cover_meta_raw.paper_count -%}
-          {{ cover_meta_raw.paper_count }} 套
-        {%- else -%}
-          {{ empty_placeholder }}套
-        {%- endif -%}
+        <div class="m0-cover-meta__item">
+          <div class="m0-cover-meta__label">学科</div>
+          <div class="m0-cover-meta__value m0-cover-meta__value--subject">
+            {{- data.subject | default(default_subject, true) -}}
+          </div>
+        </div>
+
+        <div class="m0-cover-meta__item">
+          <div class="m0-cover-meta__label">分析题量</div>
+          <div class="m0-cover-meta__value{% if _question_count is none and _paper_count is none %} m0-cover-meta__value--empty{% endif %}">
+            {%- if _question_count is not none -%}
+              {{ _question_count }}题
+            {%- elif _paper_count is not none -%}
+              {{ _paper_count }}套
+            {%- else -%}
+              {{ empty_placeholder }}
+            {%- endif -%}
+          </div>
+        </div>
+
+        <div class="m0-cover-meta__item">
+          <div class="m0-cover-meta__label">报告日期</div>
+          <div class="m0-cover-meta__value{% if not _report_date %} m0-cover-meta__value--empty{% endif %}">
+            {{- _report_date | default(empty_placeholder, true) -}}
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
     {# ====================================================================
        4. 分隔线

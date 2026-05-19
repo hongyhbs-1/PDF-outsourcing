@@ -166,35 +166,12 @@
        ------------------------------------------------------------------------- #}
     <div class="m8-appendix-title">
       <h1 class="m8-appendix-title__text">
-        {{ lb_icon('paper', 'frame-title-icon') }}{{ safe_value(meta.page_title, '附录：分析依据') }}
+        {{ lb_icon('paper', 'frame-title-icon') }}附录：试卷难度分布与分析依据
       </h1>
       <div class="m8-appendix-title__underline"></div>
     </div>
 
     <div class="module-content-card">
-
-    {# -------------------------------------------------------------------------
-       3.2 模块一：分析范围
-       ------------------------------------------------------------------------- #}
-    <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__titlebar">{{ lb_icon('map', 'frame-inline-icon') }} 分析范围</div>
-      
-      {% if analysis_rows | length > 0 %}
-      <table class="m8-appendix-table m8-appendix-kv-table">
-        <tbody>
-          {% for row in analysis_rows %}
-          <tr>
-            <th>{{ safe_value(row.label) }}</th>
-            <td>{{ safe_value(row.value) }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
-      {# 空数据兜底 #}
-      <div class="m8-appendix-empty">暂无分析范围数据</div>
-      {% endif %}
-    </section>
 
     {# -------------------------------------------------------------------------
        3.3 模块二：难度分布统计
@@ -258,6 +235,49 @@
     {% endif %}
 
     {# -------------------------------------------------------------------------
+       3.5 模块四：指标释义 (双栏紧凑布局)
+       ------------------------------------------------------------------------- #}
+    {% if metric_definitions and metric_definitions | length > 0 %}
+    <section class="m8-appendix-panel">
+      <div class="m8-appendix-panel__titlebar">{{ lb_icon('data', 'frame-inline-icon') }} 指标释义</div>
+
+      <div class="m8-metrics-grid">
+        {% for metric in metric_definitions %}
+        <div class="m8-metric-item">
+          <div class="m8-metric-item__name">{{ safe_value(metric.name) }}</div>
+          <div class="m8-metric-item__desc">{{ safe_value(metric.desc) }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% else %}
+    {# 指标释义无数据时可选择隐藏 #}
+    {% endif %}
+
+    {# -------------------------------------------------------------------------
+       3.2 模块一：分析范围
+       ------------------------------------------------------------------------- #}
+    <section class="m8-appendix-panel">
+      <div class="m8-appendix-panel__titlebar">{{ lb_icon('map', 'frame-inline-icon') }} 分析范围</div>
+      
+      {% if analysis_rows | length > 0 %}
+      <table class="m8-appendix-table m8-appendix-kv-table">
+        <tbody>
+          {% for row in analysis_rows %}
+          <tr>
+            <th>{{ safe_value(row.label) }}</th>
+            <td>{{ safe_value(row.value) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      {# 空数据兜底 #}
+      <div class="m8-appendix-empty">暂无分析范围数据</div>
+      {% endif %}
+    </section>
+
+    {# -------------------------------------------------------------------------
        3.4 模块三：试卷/批次清单
        ------------------------------------------------------------------------- #}
     <section class="m8-appendix-panel">
@@ -301,26 +321,6 @@
       <div class="m8-appendix-empty">暂无试卷数据</div>
       {% endif %}
     </section>
-
-    {# -------------------------------------------------------------------------
-       3.5 模块四：指标释义 (双栏紧凑布局)
-       ------------------------------------------------------------------------- #}
-    {% if metric_definitions and metric_definitions | length > 0 %}
-    <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__titlebar">{{ lb_icon('data', 'frame-inline-icon') }} 指标释义</div>
-
-      <div class="m8-metrics-grid">
-        {% for metric in metric_definitions %}
-        <div class="m8-metric-item">
-          <div class="m8-metric-item__name">{{ safe_value(metric.name) }}</div>
-          <div class="m8-metric-item__desc">{{ safe_value(metric.desc) }}</div>
-        </div>
-        {% endfor %}
-      </div>
-    </section>
-    {% else %}
-    {# 指标释义无数据时可选择隐藏 #}
-    {% endif %}
 
     {% if m8_density != 'dense' %}
     <div class="m8-appendix-usage">

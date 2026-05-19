@@ -76,7 +76,7 @@
 {% endif %}
 
 {# ========================================================================
-   页面结构 — 阅读顺序: 样本档案 → 报告速览(含难度分布) → 试卷清单
+   页面结构 — 对齐样张: 报告速览(含难度分布) → 指标卡 → 试卷清单
    ======================================================================== #}
 <div class="mov-page mov-page--{{ mov_density }}">
 
@@ -87,35 +87,12 @@
 
   <div class="module-content-card">
 
-  {# ---- 第一部分：样本档案 ---- #}
-  <section class="mov-profile-top">
-    <div class="mov-profile-card">
-      <h2 class="mov-card-title">{{ lb_icon('paper', 'frame-card-icon') }}样本档案</h2>
-      <div class="mov-profile-grid">
-        <div class="mov-profile-item">
-          <div class="mov-profile-item__k">学生</div>
-          <div class="mov-profile-item__v">{{ student_name }}</div>
-        </div>
-        <div class="mov-profile-item">
-          <div class="mov-profile-item__k">年级</div>
-          <div class="mov-profile-item__v">{{ student_grade }}</div>
-        </div>
-        <div class="mov-profile-item">
-          <div class="mov-profile-item__k">城市</div>
-          <div class="mov-profile-item__v">{{ city_name }}</div>
-        </div>
-        <div class="mov-profile-item">
-          <div class="mov-profile-item__k">可信度</div>
-          <div class="mov-profile-item__v">{% if paper_count_display >= 6 or big_q_count >= 100 %}高{% elif paper_count_display >= 3 or big_q_count >= 40 %}中{% else %}待补样本{% endif %}</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ---- 第二部分：报告速览 + 难度分布 ---- #}
+  {# ---- 第一部分：报告速览 + 难度分布 ---- #}
+  <div class="mov-overview-head">
+    <h2 class="mov-hero-kicker mov-hero-kicker--overview">{{ lb_icon('data', 'frame-section-icon') }}一、报告速览</h2>
+  </div>
   <section class="mov-hero">
     <div class="mov-hero-main">
-      <div class="mov-hero-kicker">{{ lb_icon('data', 'frame-inline-icon') }}报告速览</div>
       <h2 class="mov-hero-title">先看样本规模，再判断结论可信度</h2>
       <p class="mov-hero-text">
       {% if l3_covered is defined and l3_covered and l3_covered > 0 %}
@@ -135,34 +112,9 @@
         {% endif %}
       </div>
     </div>
-
-    {# ---- 难度分布扇形图（并入速览右侧） ---- #}
-    {% if _diff_items %}
-    <div class="mov-difficulty-aside">
-      <div class="mov-difficulty__title">{{ lb_icon('module', 'frame-inline-icon') }}难度分布</div>
-      <div class="mov-pie-wrapper">
-        {% set colors = {'easy': '#2d8a6e', 'medium': '#d4943a', 'hard': '#c44040'} %}
-        <div class="mov-pie"
-             style="background: conic-gradient(
-               {%- for item in _diff_items -%}
-                 {{ colors[item.level | default('medium')] }} {{ (loop.previtem.ratio | default(0) if loop.previtem is defined else 0) }}% {{ (loop.previtem.ratio | default(0) + item.ratio) if loop.previtem is defined else item.ratio }}%{%- if not loop.last %},{% endif %}
-               {%- endfor -%}
-             );"></div>
-        <div class="mov-pie-legend">
-          {% for item in _diff_items %}
-          <span class="mov-pie-legend-item">
-            <span class="mov-difficulty__dot mov-difficulty__dot--{{ item.level | default('medium') }}"></span>
-            <span class="mov-pie-legend__name">{{ item.name_cn | default('') }}</span>
-            <span class="mov-pie-legend__value">{{ item.count | default(0) }}题 · {{ item.ratio | default(0) }}%</span>
-          </span>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-    {% endif %}
   </section>
 
-
+  <section class="mov-overview-grid">
   <div class="mov-cards">
     <div class="mov-card">
       <div class="mov-card__eyebrow">样本规模</div>
@@ -187,7 +139,31 @@
     </div>
   </div>
 
-  {# ---- 难度分布已移入报告速览区，此处不再单独显示 ---- #}
+    {# ---- 难度分布扇形图（与指标卡并列，匹配样张层级） ---- #}
+    {% if _diff_items %}
+    <div class="mov-difficulty-aside">
+      <div class="mov-difficulty__title">{{ lb_icon('module', 'frame-inline-icon') }}难度分布</div>
+      <div class="mov-pie-wrapper">
+        {% set colors = {'easy': '#2d8a6e', 'medium': '#d4943a', 'hard': '#c44040'} %}
+        <div class="mov-pie"
+             style="background: conic-gradient(
+               {%- for item in _diff_items -%}
+                 {{ colors[item.level | default('medium')] }} {{ (loop.previtem.ratio | default(0) if loop.previtem is defined else 0) }}% {{ (loop.previtem.ratio | default(0) + item.ratio) if loop.previtem is defined else item.ratio }}%{%- if not loop.last %},{% endif %}
+               {%- endfor -%}
+             );"></div>
+        <div class="mov-pie-legend">
+          {% for item in _diff_items %}
+          <span class="mov-pie-legend-item">
+            <span class="mov-difficulty__dot mov-difficulty__dot--{{ item.level | default('medium') }}"></span>
+            <span class="mov-pie-legend__name">{{ item.name_cn | default('') }}</span>
+            <span class="mov-pie-legend__value">{{ item.count | default(0) }}题 · {{ item.ratio | default(0) }}%</span>
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
 
   {# ---- 试卷/批次清单 ---- #}
   {% if _papers and _papers.get('items', []) | length > 0 %}

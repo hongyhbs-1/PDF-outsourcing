@@ -260,6 +260,7 @@
   font-size: var(--cw-font-size-body);
   font-weight: var(--cw-font-weight-medium);
   color: var(--cw-color-text-primary);
+  white-space: nowrap;
 }
 
 /* ------------------------------------------------------------------------
@@ -269,6 +270,7 @@
   display: flex;
   gap: var(--cw-spacing-4);
   align-items: center;
+  flex-wrap: nowrap;
 }
 
 .m4-legend-item {
@@ -278,6 +280,7 @@
   font-size: 12px;
   font-weight: var(--cw-font-weight-medium);
   color: var(--cw-color-text-primary);
+  white-space: nowrap;
 }
 
 .m4-swatch {
@@ -884,11 +887,8 @@
    12. Grid Split Layout (Golden Ratio — chart left, table right)
    ============================================================================ */
 .m4-grid-split {
-  display: grid;
-  grid-template-columns: var(--phi-major) var(--phi-minor);
-  gap: 10px;
+  display: block;
   margin: 0 var(--cw-spacing-6) 8px;
-  align-items: start;
 }
 
 .m4-grid-split__left,
@@ -911,25 +911,29 @@
   margin-bottom: 0;
 }
 
+.m4-grid-split__right {
+  margin-top: 8px;
+}
+
 .m4-grid-split__right .m4-summary-card {
   margin: 8px 0 0;
 }
 
-/* Compact table for narrow (38%) column */
+/* Full-width vertical stack: keep table readable instead of narrow-column compression. */
 .m4-grid-split__right .m4-table thead th,
 .m4-grid-split__right .m4-table tbody td {
-  padding: 4px 5px;
-  font-size: 10.5px;
+  padding: 6px 8px;
+  font-size: 12px;
 }
 
 .m4-grid-split__right .m4-badge {
-  padding: 2px 4px;
-  font-size: 10px;
+  padding: 4px 8px;
+  font-size: 12px;
 }
 
 .m4-grid-split__right .m4-table-footnote {
-  padding: 5px 8px;
-  font-size: 10px;
+  padding: 8px 12px;
+  font-size: 12px;
 }
 
 /* ============================================================================
@@ -956,27 +960,30 @@
   .m4-table-card { margin-left: 0; margin-right: 0; }
   .m4-summary-card { margin-left: 0; margin-right: 0; }
 
-  /* Grid split print overrides */
+  /* Reference PDF uses a vertical full-width stack: overview, details, summary. */
   .m4-grid-split {
+    display: block;
     margin-left: 0;
     margin-right: 0;
-    gap: 6px;
+  }
+  .m4-grid-split__right {
+    margin-top: 6px;
   }
   .m4-grid-split__right .m4-summary-card {
     margin-top: 6px;
   }
   .m4-grid-split__right .m4-table thead th,
   .m4-grid-split__right .m4-table tbody td {
-    padding: 3px 4px;
-    font-size: 9.5px;
+    padding: 4px 6px;
+    font-size: 10.5px;
   }
   .m4-grid-split__right .m4-badge {
-    font-size: 9px;
-    padding: 1px 3px;
+    font-size: 10px;
+    padding: 2px 5px;
   }
   .m4-grid-split__right .m4-table-footnote {
-    padding: 4px 6px;
-    font-size: 10px;
+    padding: 6px 10px;
+    font-size: 10.5px;
   }
 
   .m4-module-domains {
@@ -1067,8 +1074,13 @@
 
   .m4-axis {
     margin-top: 3px;
-    height: 18px;
+    height: 12px;
     font-size: 10px;
+  }
+
+  .m4-axis .m4-t0,
+  .m4-axis .m4-t100 {
+    display: none;
   }
 
   .m4-nodata-merge {

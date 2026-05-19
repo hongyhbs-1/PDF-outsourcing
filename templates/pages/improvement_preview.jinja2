@@ -36,11 +36,16 @@
 
   <div class="module-content-card">
 
-  {# === 0. 本阶段介入重点（从学生画像迁移） === #}
+  {# === 0. 提升总览：与 P4/P6 的总览小标题保持同层级、同位置 === #}
+  <div class="ip-overview-head">
+    <h2 class="ip-section-heading ip-section-heading--overview">{{ lb_icon('growth', 'frame-section-icon frame-section-icon--success') }}一、提升总览</h2>
+  </div>
+
+  {# === 0.1 本阶段介入重点（从学生画像迁移） === #}
   {% if weak_items | length > 0 %}
   <div class="ip-intervention-bar">
-    {{ lb_icon('target', 'frame-inline-icon') }}
-    <strong>本阶段介入重点：</strong>主攻 {{ ip_lead }}{% if weak_items | length > 1 %}，跟进 {{ ip_secondary }}{% endif %}，巩固优势领域
+    <span class="ip-intervention-bar__label">{{ lb_icon('target', 'frame-inline-icon') }}本阶段介入重点：</span>
+    <span class="ip-intervention-bar__text">主攻 {{ ip_lead }}{% if weak_items | length > 1 %}，跟进 {{ ip_secondary }}{% endif %}，巩固优势领域</span>
   </div>
   {% endif %}
 

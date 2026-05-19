@@ -23,6 +23,25 @@ from . import WRAPPER_SELECTORS
 from .math_func import PageLayout
 
 
+# 部分报告页在标题下新增了“本页核心结论”后，DOM 直接子元素从
+# “标题 + 内容卡”变为“标题 + 核心结论 + 内容卡”。黄金排版的通用
+# gap 分配会把核心结论和内容卡整体向下推，导致同一套章节标签页
+# 标题/归纳/主体位置不一致。这里用页级固定节奏覆盖这些页面的
+# direct-child margin，只影响 PDF print typeset，不改变 HTML 结构。
+_COMPACT_CORE_RHYTHM_MM: dict[str, dict[int, float]] = {
+    # P8：标题需要更靠近页眉，核心结论紧跟标题，主体卡片紧跟归纳。
+    "m1": {1: 4.0, 2: 2.0, 3: 0.0},
+    # P10：保留标题的参考下移位置，但取消隐藏 underline 与主体之间的
+    # 大块黄金留白。
+    "m2": {1: 18.0, 2: 0.0, 3: 4.0, 4: 3.0},
+    # P9：六大领域页需要标题→核心结论→纵向主体卡片的参考节奏。
+    "m4": {1: 15.0, 2: 4.0, 3: 4.0},
+    # P13/P14：长核心归纳页使用紧凑的标题→归纳→主体阅读流。
+    "m6": {1: 15.0, 2: 3.0, 3: 3.0},
+    "m7": {1: 16.0, 2: 3.0, 3: 3.0},
+}
+
+
 def _justify_for_ratio(ratio: float) -> str:
     """保持章节页顶部阅读顺序，避免低密度页面内容垂直居中下坠。"""
     return "flex-start"
@@ -70,6 +89,21 @@ def build_css(layouts: Dict[str, PageLayout]) -> str:
             parts.append("  }")
 
         parts.append(f"  {sel} > :last-child {{ margin-bottom: 0; }}")
+        parts.append("}")
+
+    compact_modules = [mid for mid in layouts if mid in _COMPACT_CORE_RHYTHM_MM]
+    if compact_modules:
+        parts.append("")
+        parts.append("/* golden_typeset -- reference-aligned compact core-conclusion rhythm */")
+        parts.append("@media print {")
+        for mod_id in compact_modules:
+            sel = WRAPPER_SELECTORS.get(mod_id)
+            if not sel:
+                continue
+            for child_index, margin_mm in _COMPACT_CORE_RHYTHM_MM[mod_id].items():
+                parts.append(f"  {sel} > :nth-child({child_index}) {{")
+                parts.append(f"    margin-top: {margin_mm:.2f}mm;")
+                parts.append("  }")
         parts.append("}")
 
     # 表格跨页表头重复 (P1-5)

@@ -158,15 +158,18 @@ def layout_page(heights: List[tuple[str, float]],
         hs = [h * scale for h in hs]
         total = sum(hs)
     elif total >= page_h * 0.80:
-        # 接近溢出 -> 预防性压缩: 确保内容 + 黄金间距能在 H 内
-        # 先计算不压缩时的剩余空间
+        # 接近溢出时先按实际 CSS 间距检查是否真的需要压缩。
+        # 注意 CSS 生成阶段只把 top_pad 和 inter gaps 写成各直接子元素
+        # 的 margin-top，并没有给 wrapper 写 bottom_pad。若这里把 bottom_pad
+        # 也计入，会在内容实际可放下时误触发 zoom；Windows Chrome 对 dense
+        # print wrapper 的 zoom 更敏感，可能直接导致 Page.printToPDF 失败。
         raw_ratio = total / page_h
         gaps_preview = golden_gaps(page_h - total, n, content_ratio=raw_ratio)
-        gaps_total = sum(gaps_preview)
-        if total + gaps_total > page_h * 0.98:
-            # 间距+内容接近或超过页面 -> 预防性压缩
+        applied_gaps_total = sum(gaps_preview[:-1])
+        if total + applied_gaps_total > page_h:
+            # 实际写入 CSS 的间距 + 内容超过页面 -> 压缩
             target = page_h * 0.90
-            scale = target / (total + gaps_total)
+            scale = target / (total + applied_gaps_total)
             scale = max(scale, 0.65)  # 不要压缩太多
             hs = [h * scale for h in hs]
             total = sum(hs)
