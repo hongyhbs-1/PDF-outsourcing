@@ -346,7 +346,8 @@ render_payload.module_1_summary 结构示例:
             {# 目标线标签 - 动态定位，target_line_pct 必须为 number 0-100 #}
             {% set target_pct = breakthrough.target_line_pct | default(75) %}
             {% set target_pct_clamped = [0, [target_pct, 100] | min] | max %}
-            <span class="m1-breakthrough-target-label" style="left: {{ target_pct_clamped }}%; transform: translateX(-50%);">
+            {% set target_label_anchor = 'right' if target_pct_clamped >= 92 else ('left' if target_pct_clamped <= 8 else 'center') %}
+            <span class="m1-breakthrough-target-label m1-breakthrough-target-label--{{ target_label_anchor }}" style="left: {{ target_pct_clamped }}%;">
               {{ safe(breakthrough.target_line_text, '目标线' ~ target_pct_clamped ~ '%') }}
             </span>
             

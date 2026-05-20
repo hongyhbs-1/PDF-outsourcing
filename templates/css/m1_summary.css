@@ -670,17 +670,42 @@ body {
 .m1-breakthrough-target-label {
   position: absolute;
   top: 0;
+  z-index: 4;
+  padding: 1px 5px;
   font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  color: var(--color-pill-text);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(31, 111, 120, 0.18);
+  border-radius: var(--radius-full);
   white-space: nowrap;
+}
+
+.m1-breakthrough-target-label--left {
+  transform: translateX(0);
+}
+
+.m1-breakthrough-target-label--center {
+  transform: translateX(-50%);
+}
+
+.m1-breakthrough-target-label--right {
+  transform: translateX(-100%);
 }
 
 .m1-breakthrough-target-line {
   position: absolute;
   top: var(--spacing-16);
-  width: 1px;
+  z-index: 3;
+  width: 2px;
   height: 48px;
-  background: var(--color-line);
+  background: var(--color-pill-text);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.82);
+  transform: translateX(-50%);
+  opacity: 0.86;
+  pointer-events: none;
 }
 
 .m1-progress-row {
@@ -712,7 +737,11 @@ body {
 }
 
 .m1-progress-fill--target {
-  background: var(--color-fill-teal-soft);
+  background: rgba(31, 111, 120, 0.16);
+}
+
+.m1-progress-fill--target .m1-progress-text {
+  color: var(--color-pill-text);
 }
 
 .m1-progress-fill--current {
@@ -732,6 +761,7 @@ body {
   font-weight: var(--font-weight-bold);
   color: var(--color-text-white);
   white-space: nowrap;
+  text-shadow: none;
 }
 
 .m1-progress-value {
@@ -1061,8 +1091,20 @@ body {
   }
 
   .m1-breakthrough-progress {
-    padding-top: 13px;
+    padding-top: 15px;
     margin-bottom: 5px;
+  }
+
+  .m1-breakthrough-target-label {
+    padding: 1px 4px;
+    font-size: 8.5px;
+    border-radius: 8px;
+  }
+
+  .m1-breakthrough-target-line {
+    top: 15px;
+    width: 1.5px;
+    height: 35px;
   }
 
   .m1-progress-track {
@@ -1280,11 +1322,11 @@ body {
   }
 
   .m1-report-page--dense .m1-breakthrough-target-label {
-    font-size: 9px;
+    font-size: 8.5px;
   }
 
   .m1-report-page--dense .m1-breakthrough-target-line {
-    top: 14px;
+    top: 15px;
     height: 39px;
   }
 

@@ -380,8 +380,9 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   </section>
 
   {# ==========================================================================
-     训练重点速览 (Training Focus Summary) - 先判定阶段,再看训练重点
+     综合训练与角色建议模块：训练重点 + 学生/家长/老师建议
      ========================================================================== #}
+  <section class="m6-card m6-card--strong-border m6-recommendation-module">
   {% if weak_items | length > 0 %}
   <div class="m6-training-focus">
     <div class="m6-training-focus__title">{{ lb_icon('target', 'frame-section-icon') }} 训练重点速览</div>
@@ -406,7 +407,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   {% set teacher_card = module.cards.teacher_guidance | default({}) %}
 
   <div class="m6-role-stack">
-  <section class="m6-card m6-card--role m6-card--student">
+  <section class="m6-role-panel m6-role-panel--student">
 
     {# 卡片标题 #}
     <div class="m6-card-header m6-card-header--with-icon">
@@ -453,7 +454,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   {# ==========================================================================
      卡片3:给家长的配合建议 (Parent Guidance Card) - NEW
      ========================================================================== #}
-  <section class="m6-card m6-card--role m6-card--parent">
+  <section class="m6-role-panel m6-role-panel--parent">
 
     {# 卡片标题 #}
     <div class="m6-card-header m6-card-header--with-icon">
@@ -492,7 +493,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   {# ==========================================================================
      卡片4:给老师的教学建议 (Teacher Guidance Card)
      ========================================================================== #}
-  <section class="m6-card m6-card--role m6-card--teacher">
+  <section class="m6-role-panel m6-role-panel--teacher">
 
     {# 卡片标题 #}
     <div class="m6-card-header m6-card-header--with-icon">
@@ -541,6 +542,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 
   </section>
   </div><!-- /.m6-role-stack -->
+  </section><!-- /.m6-recommendation-module -->
 
   </div><!-- /.module-content-card -->
 

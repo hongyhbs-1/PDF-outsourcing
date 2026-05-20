@@ -390,6 +390,9 @@
 }
 
 @media print {
+  /* TOC chapter pages: keep every “本页核心结论” visually consistent in PDF.
+     These values normalize font/color/border without increasing block padding,
+     avoiding the previous Windows Chrome print risk from late global padding bumps. */
   .m1-core-conclusion,
   .m2-cw-core-summary,
   .m3-kp-core-summary,
@@ -397,6 +400,9 @@
   .m5-core-conclusion,
   .m6-core-conclusion,
   .m7-core-conclusion {
+    background: var(--pm-gradient-conclusion) !important;
+    border: 1px solid rgba(31, 111, 120, 0.18) !important;
+    border-radius: 8px !important;
     box-shadow: none !important;
   }
 
@@ -406,14 +412,26 @@
   .m4-core-conclusion__label,
   .m5-core-conclusion__label,
   .m6-core-conclusion__label,
-  .m7-core-conclusion__label,
+  .m7-core-conclusion__label {
+    color: var(--pm-navy, #12344d) !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+  }
+
   .m1-core-conclusion__text,
   .m2-cw-core-summary__text,
   .m3-kp-core-summary__text,
   .m4-core-conclusion__text,
   .m5-core-conclusion__text,
   .m6-core-conclusion__text,
-  .m7-core-conclusion__text,
+  .m7-core-conclusion__text {
+    color: var(--pm-text-primary, #1a2332) !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    line-height: 1.32 !important;
+  }
+
   .m1-section-bar,
   .m2-cw-note-bar__title,
   .m2-cw-legend-title,
