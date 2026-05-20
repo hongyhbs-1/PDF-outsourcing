@@ -165,4 +165,71 @@
     width: auto;
     padding: 0 15mm 0 18mm;
   }
+
+  .mtoc-page--extended {
+    zoom: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mtoc-page--extended .mtoc-title-section {
+    margin-bottom: 10px;
+  }
+
+  .mtoc-page--extended .mtoc-title {
+    font-size: 22px;
+    padding-bottom: 4px;
+    border-bottom-width: 2px;
+  }
+
+  .mtoc-page--extended .mtoc-list {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+  }
+
+  .mtoc-page--extended .mtoc-item {
+    grid-template-columns: 32px max-content minmax(20px, 1fr) 42px;
+    column-gap: 6px;
+    padding: 7px 0;
+  }
+
+  .mtoc-page--extended .mtoc-item__number {
+    font-size: 14px;
+  }
+
+  .mtoc-page--extended .mtoc-item__title {
+    font-size: 14px;
+  }
+
+  .mtoc-page--extended .mtoc-item__page {
+    min-width: 42px;
+    font-size: 13px;
+  }
+
+  .mtoc-page--extended .mtoc-reading-guide {
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+
+  .mtoc-page--extended .mtoc-reading-guide__title {
+    margin-bottom: 5px;
+    font-size: 10px;
+  }
+
+  .mtoc-page--extended .mtoc-reading-guide__items {
+    gap: 4px;
+  }
+
+  .mtoc-page--extended .mtoc-reading-guide__item {
+    gap: 6px;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .mtoc-page--extended .mtoc-reading-guide__num {
+    width: 14px;
+    height: 14px;
+    font-size: 8px;
+  }
 }

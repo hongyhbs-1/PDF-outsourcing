@@ -114,6 +114,7 @@ v1.1 - 2026-01-15
 {% set data = _cover_raw %}
 {% set brand = data.brand | default({}) %}
 {% set cover_meta_raw = data.cover_meta | default({}) %}
+{% set _summary = summary | default({}) %}
 
 {# 字段名映射兼容：支持 report_output 原始字段名 #}
 {% set cover_meta = {
@@ -121,8 +122,12 @@ v1.1 - 2026-01-15
     'grade': cover_meta_raw.grade | default(none),
     'report_generated_at': cover_meta_raw.report_generated_at | default(none),
     'question_count': cover_meta_raw.question_count | default(cover_meta_raw.total_questions | default(none)),
-    'report_date': cover_meta_raw.report_date | default(none)
+    'report_date': cover_meta_raw.report_date | default(none),
+    'exam_name': cover_meta_raw.exam_name | default(meta.exam_name | default(none)),
+    'trend': cover_meta_raw.trend | default(_summary.current_trend | default(none))
 } %}
+{% set trend_map = {'up': '上升', 'down': '下降', 'stable': '稳定'} %}
+{% set cover_trend_label = trend_map[cover_meta.trend] if cover_meta.trend in trend_map else (cover_meta.trend | default(none)) %}
 
 {# 默认值定义 #}
 {% set default_badge_text = "方向比速度重要" %}
@@ -216,6 +221,20 @@ v1.1 - 2026-01-15
           <div class="m0-cover-meta__label">学科</div>
           <div class="m0-cover-meta__value m0-cover-meta__value--subject">
             {{- data.subject | default(default_subject, true) -}}
+          </div>
+        </div>
+
+        <div class="m0-cover-meta__item">
+          <div class="m0-cover-meta__label">考试</div>
+          <div class="m0-cover-meta__value{% if not cover_meta.exam_name %} m0-cover-meta__value--empty{% endif %}">
+            {{- cover_meta.exam_name | default(empty_placeholder, true) -}}
+          </div>
+        </div>
+
+        <div class="m0-cover-meta__item">
+          <div class="m0-cover-meta__label">趋势</div>
+          <div class="m0-cover-meta__value{% if not cover_trend_label %} m0-cover-meta__value--empty{% endif %}">
+            {{- cover_trend_label | default(empty_placeholder, true) -}}
           </div>
         </div>
 

@@ -454,3 +454,149 @@
     font-weight: 800 !important;
   }
 }
+
+/* P8-P14 opinion-doc title/rhythm normalization:
+   the Word feedback marks these chapter titles and inner module titles as blue
+   frame areas. Keep typography and underline treatment consistent across M1-M7
+   without adding risky large print padding. */
+.m1-section-title__text,
+.m2-cw-module-title,
+.m3-kp-drill__title,
+.m4-section-title,
+.m5-city-compare__title,
+.m6-module-title__text,
+.m7-data-reliability__title {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  column-gap: 6px !important;
+  row-gap: 0 !important;
+  padding: 0 !important;
+  border-bottom: 0 !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  line-height: 1.18 !important;
+  color: var(--pm-navy, #12344d) !important;
+}
+
+.m1-section-title__text .frame-title-icon,
+.m2-cw-module-title .frame-title-icon,
+.m3-kp-drill__title .frame-title-icon,
+.m4-section-title .frame-title-icon,
+.m5-city-compare__title .frame-title-icon,
+.m6-module-title__text .frame-title-icon,
+.m7-data-reliability__title .frame-title-icon {
+  flex: 0 0 auto;
+  margin-right: 0 !important;
+}
+
+.m1-section-title__text::after,
+.m2-cw-module-title::after,
+.m3-kp-drill__title::after,
+.m4-section-title::after,
+.m5-city-compare__title::after,
+.m6-module-title__text::after,
+.m7-data-reliability__title::after {
+  content: "" !important;
+  display: block !important;
+  flex: 0 0 calc(100% - var(--frame-title-icon-slot)) !important;
+  width: calc(100% - var(--frame-title-icon-slot)) !important;
+  height: 3px !important;
+  margin: 8px 0 0 var(--frame-title-icon-slot) !important;
+  padding: 0 !important;
+  background: var(--pm-gradient-accent-bar) !important;
+  border-radius: 2px !important;
+}
+
+.m1-section-bar,
+.m2-cw-note-bar__title,
+.m2-cw-legend-title,
+.m2-cw-reason-header__title,
+.m2-cw-tips-title,
+.m3-kp-drill__section-title,
+.m4-peer-title,
+.m4-table-title,
+.m4-summary-title,
+.m5-city-compare__card-title,
+.m5-city-compare__table-title,
+.m5-city-compare__footnote-title,
+.m6-card-header__title,
+.m6-training-focus__title,
+.m6-note-box__title,
+.m6-suggestion-section__title,
+.m7-section-title,
+.m7-block-title,
+.m7-warnings-section-title {
+  line-height: 1.25 !important;
+}
+
+@media print {
+  .m1-section-title__text,
+  .m2-cw-module-title,
+  .m3-kp-drill__title,
+  .m4-section-title,
+  .m5-city-compare__title,
+  .m6-module-title__text,
+  .m7-data-reliability__title {
+    column-gap: 5px !important;
+    font-size: 22px !important;
+    line-height: 1.16 !important;
+  }
+
+  .m1-section-title__text::after,
+  .m2-cw-module-title::after,
+  .m3-kp-drill__title::after,
+  .m4-section-title::after,
+  .m5-city-compare__title::after,
+  .m6-module-title__text::after,
+  .m7-data-reliability__title::after {
+    height: 2px !important;
+    margin-top: 5px !important;
+  }
+
+  .m1-section-bar,
+  .m2-cw-note-bar__title,
+  .m2-cw-legend-title,
+  .m2-cw-reason-header__title,
+  .m2-cw-tips-title,
+  .m3-kp-drill__section-title,
+  .m4-peer-title,
+  .m4-table-title,
+  .m4-summary-title,
+  .m5-city-compare__card-title,
+  .m5-city-compare__table-title,
+  .m5-city-compare__footnote-title,
+  .m6-card-header__title,
+  .m6-training-focus__title,
+  .m6-note-box__title,
+  .m6-suggestion-section__title,
+  .m7-section-title,
+  .m7-block-title,
+  .m7-warnings-section-title {
+    font-size: 12.5px !important;
+    line-height: 1.22 !important;
+  }
+
+  .m1-section-bar,
+  .m2-cw-weakness-card,
+  .m2-cw-reason-section,
+  .m2-cw-tips-box,
+  .m3-kp-drill__intro-panel,
+  .m3-kp-path,
+  .m4-peer-card,
+  .m4-table-card,
+  .m4-summary-card,
+  .m5-city-compare__table-section,
+  .m5-city-compare__card--overlap-wide,
+  .m5-city-compare__footnote,
+  .m6-card,
+  .m7-report-box,
+  .m7-quality-box {
+    margin-bottom: 7px !important;
+  }
+
+  .m6-recommendation-module,
+  .m7-quality-box {
+    margin-bottom: 0 !important;
+  }
+}

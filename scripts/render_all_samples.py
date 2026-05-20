@@ -5,8 +5,8 @@
 用法:
     python scripts/render_all_samples.py
     python scripts/render_all_samples.py 1
-    python scripts/render_all_samples.py 2
-    python scripts/render_all_samples.py 2 --comic-version v2026-04-29-filled-content
+    python scripts/render_all_samples.py 6
+    python scripts/render_all_samples.py 6 --comic-version v2026-04-29-filled-content
 
 注: --comic-version 为旧漫画页兼容参数；学习蓝图方案不再读取漫画图片。
 
@@ -36,10 +36,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="批量渲染样本 HTML + PDF。",
     )
     parser.add_argument(
-        "sample_count",
+        "sample_index",
         nargs="?",
         type=int,
-        help="可选。输入 N 时，只执行前 N 份样本；不输入时执行全部。",
+        help="可选。输入 N 时，只执行排序后的第 N 份样本；不输入时执行全部。",
     )
     parser.add_argument(
         "--comic-version",
@@ -58,12 +58,12 @@ def discover_sample_files(samples_dir: Path = SAMPLES_DIR) -> list[str]:
     return sample_files
 
 
-def select_samples(sample_files: list[str], limit: int | None) -> list[str]:
-    if limit is None:
+def select_samples(sample_files: list[str], sample_index: int | None) -> list[str]:
+    if sample_index is None:
         return sample_files
-    if limit < 1 or limit > len(sample_files):
-        raise ValueError(f"sample_count 必须在 1 到 {len(sample_files)} 之间")
-    return sample_files[:limit]
+    if sample_index < 1 or sample_index > len(sample_files):
+        raise ValueError(f"sample_index 必须在 1 到 {len(sample_files)} 之间")
+    return [sample_files[sample_index - 1]]
 
 
 def resolve_comic_image_root(comic_version: str | None) -> Path | None:
@@ -161,27 +161,33 @@ def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     try:
         sample_files = discover_sample_files()
-        selected_samples = select_samples(sample_files, args.sample_count)
+        selected_samples = select_samples(sample_files, args.sample_index)
         comic_image_root = resolve_comic_image_root(args.comic_version)
     except ValueError as exc:
         print(f"[ERROR] {exc}")
         sys.exit(2)
 
     print("=" * 60)
-    print(f"批量渲染测试 — {len(selected_samples)} / {len(sample_files)} 份样本")
+    if args.sample_index is None:
+        print(f"批量渲染测试 — 全部 {len(selected_samples)} / {len(sample_files)} 份样本")
+    else:
+        print(f"批量渲染测试 — 第 {args.sample_index} / {len(sample_files)} 份样本")
     if args.comic_version is not None:
         print(f"旧漫画图片版本参数已保留兼容，学习蓝图不会读取图片 — {args.comic_version}")
     print("=" * 60)
 
-    results = [
-        render_sample(
-            sample_file,
-            index=index,
-            total=len(selected_samples),
-            comic_image_root=comic_image_root,
+    results = []
+    for selected_index, sample_file in enumerate(selected_samples, start=1):
+        display_index = args.sample_index if args.sample_index is not None else selected_index
+        display_total = len(sample_files) if args.sample_index is not None else len(selected_samples)
+        results.append(
+            render_sample(
+                sample_file,
+                index=display_index,
+                total=display_total,
+                comic_image_root=comic_image_root,
+            )
         )
-        for index, sample_file in enumerate(selected_samples, start=1)
-    ]
     ok_count = print_summary(results, len(selected_samples))
 
     sys.exit(0 if ok_count == len(selected_samples) else 1)

@@ -189,7 +189,7 @@
 /* --- 导语 --- */
 .mov-hero {
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .mov-hero-main,
@@ -229,6 +229,10 @@
   line-height: 1.25;
   font-weight: 700;
   margin: 0;
+}
+
+.mov-hero-kicker--papers {
+  margin-bottom: 10px;
 }
 
 .mov-page--dense .mov-overview-head .mov-hero-kicker {
@@ -357,12 +361,19 @@
 
 .mov-card__eyebrow {
   display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  max-width: 100%;
   padding: 3px 8px;
-  border-radius: 999px;
-  background: var(--pm-bg-muted);
-  color: var(--pm-text-secondary);
-  font-size: 11px;
-  font-weight: 700;
+  border: 1px solid rgba(31, 111, 120, 0.18);
+  border-left: 3px solid var(--pm-teal);
+  border-radius: 6px;
+  background: rgba(31, 111, 120, 0.08);
+  color: var(--pm-teal);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 800;
   margin-bottom: 12px;
 }
 
@@ -405,13 +416,16 @@
   gap: 5px;
   width: fit-content;
   max-width: 100%;
-  font-size: 15px;
-  line-height: 1.25;
-  font-weight: 700;
-  color: var(--pm-text-primary);
-  margin: 0 0 10px;
-  padding-left: 8px;
+  padding: 3px 8px;
+  border: 1px solid rgba(31, 111, 120, 0.18);
   border-left: 3px solid var(--pm-teal);
+  border-radius: 6px;
+  background: rgba(31, 111, 120, 0.08);
+  color: var(--pm-teal);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 800;
+  margin: 0 0 10px;
 }
 
 /* 扇形图 */
@@ -605,15 +619,15 @@
   .mov-page--sparse .mov-hero,
   .mov-page--dense .mov-hero {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 9px;
   }
 
   .mov-overview-grid,
   .mov-page--dense .mov-overview-grid {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    gap: 6px;
-    margin-bottom: 8px;
+    gap: 7px;
+    margin-bottom: 12px;
   }
 
   .mov-hero-main,
@@ -635,7 +649,11 @@
     margin: 0;
     padding-left: 6px;
     border-left-width: 2px;
-    font-size: 12px;
+    font-size: 13px;
+  }
+
+  .mov-hero-kicker--papers {
+    margin-bottom: 6px;
   }
 
   .mov-hero-title,
@@ -710,7 +728,9 @@
   .mov-page--dense .mov-card__eyebrow {
     margin-bottom: 4px;
     padding: 2px 6px;
-    font-size: 8px;
+    border-left-width: 2px;
+    border-radius: 5px;
+    font-size: 10.5px;
   }
 
   .mov-card__num,
@@ -738,9 +758,10 @@
 
   .mov-difficulty__title {
     margin-bottom: 5px;
-    padding-left: 6px;
+    padding: 2px 6px;
     border-left-width: 2px;
-    font-size: 12px;
+    border-radius: 5px;
+    font-size: 10.5px;
   }
 
   .mov-pie-wrapper {

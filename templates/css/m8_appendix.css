@@ -153,6 +153,33 @@
   margin-left: 7px;
 }
 
+.m8-core-conclusion {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: var(--pm-gradient-conclusion);
+  border: 1px solid rgba(31, 111, 120, 0.16);
+  border-radius: 10px;
+  box-shadow: var(--pm-shadow-card);
+}
+
+.m8-core-conclusion__label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--pm-navy);
+}
+
+.m8-core-conclusion__text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--pm-text-primary);
+}
+
 /* -----------------------------------------------------------------------------
    7. 页面标题
    ----------------------------------------------------------------------------- */
@@ -525,6 +552,23 @@
 
   .m8-appendix-title__text {
     font-size: 24px;
+  }
+
+  .m8-core-conclusion {
+    margin-bottom: 7px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    box-shadow: none;
+  }
+
+  .m8-core-conclusion__label {
+    margin-bottom: 2px;
+    font-size: 9.5px;
+  }
+
+  .m8-core-conclusion__text {
+    font-size: 10px;
+    line-height: 1.3;
   }
 
   .m8-appendix-panel + .m8-appendix-panel,

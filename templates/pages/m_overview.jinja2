@@ -81,7 +81,7 @@
 <div class="mov-page mov-page--{{ mov_density }}">
 
   <section class="mov-title-section">
-    <h1 class="mov-title">{{ lb_icon('data', 'frame-title-icon') }}{{ student_name }}数据分析概览</h1>
+    <h1 class="mov-title">{{ lb_icon('data', 'frame-title-icon') }}数据分析概览</h1>
     <div class="mov-title__underline"></div>
   </section>
 
@@ -117,25 +117,25 @@
   <section class="mov-overview-grid">
   <div class="mov-cards">
     <div class="mov-card">
-      <div class="mov-card__eyebrow">样本规模</div>
+      <div class="mov-card__eyebrow">{{ lb_icon('paper', 'frame-inline-icon') }}样本规模</div>
       <div class="mov-card__num">{{ paper_count_display }}</div>
-      <div class="mov-card__label">{{ lb_icon('paper', 'frame-metric-icon') }}分析试卷</div>
+      <div class="mov-card__label">分析试卷</div>
       <div class="mov-card__hint">{{ sample_strength }}</div>
     </div>
     <div class="mov-card">
+      <div class="mov-card__eyebrow">{{ lb_icon('question', 'frame-inline-icon') }}有效大题</div>
       <div class="mov-card__num">{{ big_q_count }}</div>
-      <div class="mov-card__label">{{ lb_icon('question', 'frame-metric-icon') }}有效大题</div>
-      <div class="mov-card__hint">展开 {{ sub_q_count }} 道子题</div>
+      <div class="mov-card__label">展开 {{ sub_q_count }} 道子题</div>
     </div>
     <div class="mov-card">
+      <div class="mov-card__eyebrow">{{ lb_icon('gauge', 'frame-inline-icon') }}整体正确率</div>
       <div class="mov-card__num">{{ accuracy_display }}</div>
-      <div class="mov-card__label">{{ lb_icon('gauge', 'frame-metric-icon') }}整体正确率</div>
-      <div class="mov-card__hint">目标 {{ _summary.target_accuracy_text | default('--') }}</div>
+      <div class="mov-card__label">目标 {{ _summary.target_accuracy_text | default('--') }}</div>
     </div>
     <div class="mov-card">
+      <div class="mov-card__eyebrow">{{ lb_icon('tree', 'frame-inline-icon') }}L3 覆盖</div>
       <div class="mov-card__num">{{ coverage_display }}</div>
-      <div class="mov-card__label">{{ lb_icon('tree', 'frame-metric-icon') }}L3 覆盖</div>
-      <div class="mov-card__hint">{% if coverage_rate is not none %}已覆盖 {{ coverage_rate }}%{% else %}L3 明细待补充{% endif %}</div>
+      <div class="mov-card__label">{% if coverage_rate is not none %}已覆盖 {{ coverage_rate }}%{% else %}L3 明细待补充{% endif %}</div>
     </div>
   </div>
 
@@ -168,7 +168,7 @@
   {# ---- 试卷/批次清单 ---- #}
   {% if _papers and _papers.get('items', []) | length > 0 %}
   <div class="mov-papers">
-    <h2 class="mov-difficulty__title">{{ lb_icon('paper', 'frame-inline-icon') }}试卷/批次清单</h2>
+    <h2 class="mov-hero-kicker mov-hero-kicker--papers">{{ lb_icon('paper', 'frame-section-icon') }}二、试卷/批次清单</h2>
     <table class="mov-papers__table">
       <thead>
         <tr>

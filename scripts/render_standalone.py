@@ -19,6 +19,7 @@ import argparse
 import base64
 import json
 import os
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -141,7 +142,7 @@ _TOC_SEARCH_MAP: list[tuple[str, str]] = [
     ("m10", "十、"),
     ("m11", "十一、"),
 ]
-_TOC_DISPLAY_KEYS = {"m1", "m4", "m2", "m3", "m5", "m6", "m9", "m7", "m8"}
+_TOC_DISPLAY_KEYS = {"m1", "m4", "m2", "m3", "m5", "m6", "m9", "m7", "m8", "m10", "m11"}
 
 _TOC_INJECT_JS = """
 (toc_pages) => {
@@ -443,6 +444,101 @@ def render_html(payload: dict, comic_image_root: Path | None = None, typeset_css
 # PDF 生成 (预分页 + 两阶段 TOC 注入)
 # ---------------------------------------------------------------------------
 
+# Windows system Chrome can fail Page.printToPDF for large contiguous reports
+# while smaller page ranges from the same document succeed. Generate PDFs in
+# deterministic page chunks and merge them so we avoid the failing aggregation
+# path without changing page content, TOC numbering, headers/footers, or rails.
+_PDF_CHUNK_PAGE_COUNT = 15
+
+
+def _is_page_range_exceeds_page_count_error(exc: Exception) -> bool:
+    return "Page range exceeds page count" in str(exc)
+
+
+def _pdf_page_count(pdf_bytes: bytes) -> int:
+    if not HAS_FITZ:
+        return 0
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    try:
+        return doc.page_count
+    finally:
+        doc.close()
+
+
+def _pdf_total_pages_from_footer(pdf_bytes: bytes) -> int | None:
+    """Read Chromium header/footer total page count from a printed chunk."""
+    if not HAS_FITZ:
+        return None
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    try:
+        # The footer template uses “第 <pageNumber> / <totalPages> 页”. One or two
+        # pages are enough; keep this cheap because it runs during PDF generation.
+        for page in list(doc)[:2]:
+            text = page.get_text("text")
+            match = re.search(r"第\s*\d+\s*/\s*(\d+)\s*页", text)
+            if match:
+                return int(match.group(1))
+    finally:
+        doc.close()
+    return None
+
+
+def _merge_pdf_chunks(pdf_chunks: list[bytes]) -> bytes:
+    if len(pdf_chunks) == 1:
+        return pdf_chunks[0]
+    if not HAS_FITZ:
+        raise RuntimeError("PyMuPDF is required to merge segmented PDF chunks")
+
+    merged = fitz.open()
+    try:
+        for pdf_chunk in pdf_chunks:
+            chunk_doc = fitz.open(stream=pdf_chunk, filetype="pdf")
+            try:
+                merged.insert_pdf(chunk_doc)
+            finally:
+                chunk_doc.close()
+        return merged.tobytes()
+    finally:
+        merged.close()
+
+
+def _page_pdf_segmented(page, pdf_kwargs: dict, chunk_pages: int = _PDF_CHUNK_PAGE_COUNT) -> bytes:
+    """Print PDF in stable page ranges and merge the chunks.
+
+    Chromium preserves original pageNumber/totalPages in header/footer even
+    when page_ranges is used, so chunking avoids Windows full-document print
+    failures without changing visible page numbering.
+    """
+    if not HAS_FITZ:
+        return page.pdf(**pdf_kwargs)
+
+    chunks: list[bytes] = []
+    start_page = 1
+    total_pages: int | None = None
+    while True:
+        end_page = start_page + chunk_pages - 1
+        if total_pages is not None:
+            end_page = min(end_page, total_pages)
+        try:
+            chunk = page.pdf(**{**pdf_kwargs, "page_ranges": f"{start_page}-{end_page}"})
+        except Exception as exc:
+            if chunks and _is_page_range_exceeds_page_count_error(exc):
+                break
+            raise
+        chunks.append(chunk)
+
+        if total_pages is None:
+            total_pages = _pdf_total_pages_from_footer(chunk)
+        page_count = _pdf_page_count(chunk)
+        if page_count <= 0 or page_count < chunk_pages:
+            break
+        if total_pages is not None and end_page >= total_pages:
+            break
+        start_page = end_page + 1
+
+    return _merge_pdf_chunks(chunks)
+
+
 def _launch_chromium(playwright):
     try:
         return playwright.chromium.launch(headless=True, args=["--no-sandbox"])
@@ -506,7 +602,7 @@ def _build_final_pdf_bytes(page, pdf_kwargs: dict) -> bytes:
 
     # 2. Pass 1: 生成 PDF, 提取目录页码
     #    排版由 Python 侧 build_typeset_css() 预注入 CSS 完成, 不依赖 JS 运行时测量
-    pdf_bytes = page.pdf(**pdf_kwargs)
+    pdf_bytes = _page_pdf_segmented(page, pdf_kwargs)
     toc_pages = _extract_toc_pages(pdf_bytes)
     if not toc_pages:
         return pdf_bytes
@@ -520,7 +616,7 @@ def _build_final_pdf_bytes(page, pdf_kwargs: dict) -> bytes:
     page.evaluate("() => new Promise(r => requestAnimationFrame(r))")
 
     # 4. Pass 2: 最终 PDF
-    final_bytes = page.pdf(**pdf_kwargs)
+    final_bytes = _page_pdf_segmented(page, pdf_kwargs)
     return apply_progress_rail(final_bytes, toc_pages)
 
 

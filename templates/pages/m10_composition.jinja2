@@ -5,39 +5,66 @@
 
 {% set comp = composition_deep | default({}, true) %}
 {% if comp.enabled | default(false) %}
+{% set so = comp.score_overview | default({}, true) %}
+{% set priority_fixes = comp.priority_fixes | default([], true) %}
+{% set fix_summary = namespace(values=[]) %}
+{% for fix in priority_fixes %}
+  {% if fix is mapping %}
+    {% set _fix_text = fix.description | default(fix.text | default(fix.content | default('', true), true), true) %}
+  {% else %}
+    {% set _fix_text = fix %}
+  {% endif %}
+  {% if _fix_text %}
+    {% set fix_summary.values = fix_summary.values + [_fix_text] %}
+  {% endif %}
+{% endfor %}
+{% set weekly_focus = comp.weekly_focus | default('范文精读、过渡词积累和限时作文', true) %}
 <div class="m10-page">
   <h1 class="m10-title">十、作文精讲</h1>
 
+  <section class="m10-core-conclusion">
+    <div class="m10-core-conclusion__label">本页核心结论</div>
+    <div class="m10-core-conclusion__text">
+      本次作文得分 {{ so.total_score | default('--', true) }}/{{ so.full_score | default('20', true) }}，内容 {{ so.content_score | default('--', true) }}/{{ so.content_full | default('8', true) }}、语言 {{ so.language_score | default('--', true) }}/{{ so.language_full | default('8', true) }}、组织 {{ so.organization_score | default('--', true) }}/{{ so.organization_full | default('4', true) }}；{% if fix_summary.values | length > 0 %}优先修正{{ fix_summary.values | join('、') }}，{% endif %}本周围绕{{ weekly_focus }}完成闭环训练。
+    </div>
+  </section>
+
+  <div class="m10-body">
   {# 1. 成绩概览 #}
-  {% set so = comp.score_overview | default({}, true) %}
   <div class="m10-score-overview">
     <div class="m10-section-title">成绩概览</div>
     <div class="m10-score-row">
       <div>
-        <span class="m10-score-total">{{ so.total_score | default('--') }}</span>
-        <span class="m10-score-full">/{{ so.full_score | default('20') }}</span>
+        <span class="m10-score-total">{{ so.total_score | default('--', true) }}</span>
+        <span class="m10-score-full">/{{ so.full_score | default('20', true) }}</span>
         <span class="m10-score-label">总分</span>
       </div>
-      <div class="m10-score-dim">内容 <strong>{{ so.content_score | default('--') }}</strong>/{{ so.content_full | default('8') }}</div>
-      <div class="m10-score-dim">语言 <strong>{{ so.language_score | default('--') }}</strong>/{{ so.language_full | default('8') }}</div>
-      <div class="m10-score-dim">组织 <strong>{{ so.organization_score | default('--') }}</strong>/{{ so.organization_full | default('4') }}</div>
+      <div class="m10-score-dim">内容 <strong>{{ so.content_score | default('--', true) }}</strong>/{{ so.content_full | default('8', true) }}</div>
+      <div class="m10-score-dim">语言 <strong>{{ so.language_score | default('--', true) }}</strong>/{{ so.language_full | default('8', true) }}</div>
+      <div class="m10-score-dim">组织 <strong>{{ so.organization_score | default('--', true) }}</strong>/{{ so.organization_full | default('4', true) }}</div>
     </div>
   </div>
 
   {# 2. 最该先改的两点 #}
-  {% if comp.priority_fixes | default([]) | length > 0 %}
+  {% if priority_fixes | length > 0 %}
   <div class="m10-section">
     <div class="m10-section-title">本次最该先改的两点</div>
-    {% for fix in comp.priority_fixes %}
+    {% for fix in priority_fixes %}
     <div class="m10-tip-card m10-tip-card--warning">
-      <strong>{{ fix.area | default('') }}:</strong> {{ fix.description | default('') }}
+      {% if fix is mapping %}
+        {% set fix_label = fix.area | default('改进点' ~ loop.index, true) %}
+        {% set fix_desc = fix.description | default(fix.text | default(fix.content | default('', true), true), true) %}
+        <strong>{{ fix_label }}：</strong>{{ fix_desc }}
+      {% else %}
+        <strong>改进点{{ loop.index }}：</strong>{{ fix }}
+      {% endif %}
     </div>
     {% endfor %}
   </div>
   {% endif %}
 
   {# 3. 题目分析 #}
-  {% if comp.topic_analysis | default('') %}
+  {% if comp.topic_analysis | default('', true) %}
   <div class="m10-section">
     <div class="m10-section-title">题目分析</div>
     <p class="m10-analysis">{{ comp.topic_analysis }}</p>
@@ -45,31 +72,31 @@
   {% endif %}
 
   {# 4. 内容分析 #}
-  {% if comp.content_analysis | default('') %}
+  {% if comp.content_analysis | default('', true) %}
   <div class="m10-section">
-    <div class="m10-section-title">内容分析 ({{ so.content_score | default('?') }}/{{ so.content_full | default('8') }})</div>
+    <div class="m10-section-title">内容分析 ({{ so.content_score | default('?', true) }}/{{ so.content_full | default('8', true) }})</div>
     <p class="m10-analysis">{{ comp.content_analysis }}</p>
   </div>
   {% endif %}
 
   {# 5. 语言问题分析 #}
-  {% if comp.language_analysis | default('') %}
+  {% if comp.language_analysis | default('', true) %}
   <div class="m10-section">
-    <div class="m10-section-title">语言问题分析 ({{ so.language_score | default('?') }}/{{ so.language_full | default('8') }})</div>
+    <div class="m10-section-title">语言问题分析 ({{ so.language_score | default('?', true) }}/{{ so.language_full | default('8', true) }})</div>
     <p class="m10-analysis">{{ comp.language_analysis }}</p>
   </div>
   {% endif %}
 
   {# 6. 结构与行文分析 #}
-  {% if comp.organization_analysis | default('') %}
+  {% if comp.organization_analysis | default('', true) %}
   <div class="m10-section">
-    <div class="m10-section-title">结构与行文分析 ({{ so.organization_score | default('?') }}/{{ so.organization_full | default('4') }})</div>
+    <div class="m10-section-title">结构与行文分析 ({{ so.organization_score | default('?', true) }}/{{ so.organization_full | default('4', true) }})</div>
     <p class="m10-analysis">{{ comp.organization_analysis }}</p>
   </div>
   {% endif %}
 
   {# 7. 本周提升建议 #}
-  {% if comp.weekly_suggestion | default('') %}
+  {% if comp.weekly_suggestion | default('', true) %}
   <div class="m10-section">
     <div class="m10-tip-card m10-tip-card--success">
       <div class="m10-section-title">本周提升建议</div>
@@ -79,7 +106,7 @@
   {% endif %}
 
   {# 8. 范文参考 #}
-  {% if comp.reference_essay | default('') %}
+  {% if comp.reference_essay | default('', true) %}
   <div class="m10-section">
     <div class="m10-section-title">范文参考</div>
     <div class="m10-reference">{{ comp.reference_essay }}</div>
@@ -87,14 +114,14 @@
   {% endif %}
 
   {# 9. 问题与亮点一览 #}
-  {% if comp.highlights_and_issues | default([]) | length > 0 %}
-  <div class="m10-section">
+  {% if comp.highlights_and_issues | default([], true) | length > 0 %}
+  <div class="m10-section m10-section--table">
     <div class="m10-section-title">问题与亮点一览</div>
     <table class="m10-table">
       <thead>
         <tr>
-          <th style="width:40px;">#</th>
-          <th style="width:60px;">类型</th>
+          <th class="m10-table__col-index">#</th>
+          <th class="m10-table__col-type">类型</th>
           <th>内容</th>
         </tr>
       </thead>
@@ -103,18 +130,19 @@
         <tr>
           <td>{{ loop.index }}</td>
           <td>
-            {% if item.type | default('') == 'highlight' %}
+            {% if item.type | default('', true) == 'highlight' %}
               <span class="m10-tag--highlight">亮点</span>
             {% else %}
               <span class="m10-tag--issue">问题</span>
             {% endif %}
           </td>
-          <td>{{ item.content | default('') }}</td>
+          <td>{{ item.content | default(item.text | default('', true), true) }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
   {% endif %}
+  </div>
 </div>
 {% endif %}

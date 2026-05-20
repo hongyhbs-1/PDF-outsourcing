@@ -10,6 +10,15 @@
 {% set trend = summary.current_trend | default('stable') %}
 {% set student_name = meta.student_display_name | default('同学') %}
 {% set subject = meta.subject_name | default('') %}
+{% set subject_code = meta.subject | default('') %}
+{% set title_subject = '' if subject and student_name.endswith(subject) else subject %}
+{% if subject == '数学' or subject_code in ['math', 'mathematics'] %}
+  {% set profile_title = (subject | default('学生', true)) ~ '画像分析' %}
+{% elif subject and student_name.endswith(subject) %}
+  {% set profile_title = student_name ~ '画像分析' %}
+{% else %}
+  {% set profile_title = student_name ~ title_subject ~ '画像分析' %}
+{% endif %}
 {% set cover_meta = cover.cover_meta | default({}) %}
 {% set student_grade = cover_meta.grade | default('--') %}
 {% set student_city = meta.city_name | default(cover_meta.city_name | default(cover_meta.city | default('--'))) %}
@@ -115,7 +124,7 @@
 {% endif %}
 
 <div class="sp-page sp-page--{{ sp_density }}">
-  <h1 class="sp-title">{{ lb_icon('profile', 'frame-title-icon') }}{{ student_name }}{{ subject }}画像分析</h1>
+  <h1 class="sp-title">{{ lb_icon('profile', 'frame-title-icon') }}{{ profile_title }}</h1>
 
   <div class="module-content-card">
 

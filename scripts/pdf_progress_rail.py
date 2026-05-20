@@ -66,6 +66,49 @@ COLOR_TAB_SHADOW = "#8896a7"
 
 
 @dataclass(frozen=True)
+class RailColors:
+    active_fill: str
+    active_border: str
+    active_text: str
+    inactive_fill: str
+    inactive_border: str
+    inactive_text: str
+    shadow: str
+
+
+DEFAULT_RAIL_COLORS = RailColors(
+    active_fill=COLOR_TAB_ACTIVE_FILL,
+    active_border=COLOR_TAB_ACTIVE_BORDER,
+    active_text=COLOR_TAB_ACTIVE_TEXT,
+    inactive_fill=COLOR_TAB_INACTIVE_FILL,
+    inactive_border=COLOR_TAB_INACTIVE_BORDER,
+    inactive_text=COLOR_TAB_INACTIVE_TEXT,
+    shadow=COLOR_TAB_SHADOW,
+)
+ENGLISH_RAIL_COLORS = RailColors(
+    active_fill="#4d66d9",
+    active_border="#1d3363",
+    active_text="#FFFFFF",
+    inactive_fill="#dfe7ff",
+    inactive_border="#b8c6f8",
+    inactive_text="#52627f",
+    shadow="#8f9ab6",
+)
+
+
+def rail_colors_for_toc(toc_pages: dict[str, int], is_english_report: bool = False) -> RailColors:
+    return ENGLISH_RAIL_COLORS if (is_english_report or "m10" in toc_pages or "m11" in toc_pages) else DEFAULT_RAIL_COLORS
+
+
+def _doc_looks_like_english_report(doc) -> bool:
+    for page in list(doc)[:2]:
+        text = page.get_text("text")
+        if "英语" in text or "English" in text:
+            return True
+    return False
+
+
+@dataclass(frozen=True)
 class SectionRange:
     key: str
     title: str
@@ -159,7 +202,7 @@ def _tab_rect(page_rect, top: float, index: int, height: float, gap: float, acti
     return fitz.Rect(x0, y0, x1, y0 + height)
 
 
-def _draw_shadow(page, rect) -> None:
+def _draw_shadow(page, rect, colors: RailColors = DEFAULT_RAIL_COLORS) -> None:
     shadow = fitz.Rect(
         rect.x0 + TAB_SHADOW_OFFSET_X,
         rect.y0 + TAB_SHADOW_OFFSET_Y,
@@ -168,8 +211,8 @@ def _draw_shadow(page, rect) -> None:
     )
     page.draw_rect(
         shadow,
-        color=_color(COLOR_TAB_SHADOW),
-        fill=_color(COLOR_TAB_SHADOW),
+        color=_color(colors.shadow),
+        fill=_color(colors.shadow),
         width=0,
         radius=TAB_RADIUS_RATIO,
         fill_opacity=TAB_SHADOW_OPACITY,
@@ -178,10 +221,10 @@ def _draw_shadow(page, rect) -> None:
     )
 
 
-def _draw_tab(page, rect, active: bool) -> None:
-    fill = COLOR_TAB_ACTIVE_FILL if active else COLOR_TAB_INACTIVE_FILL
-    border = COLOR_TAB_ACTIVE_BORDER if active else COLOR_TAB_INACTIVE_BORDER
-    _draw_shadow(page, rect)
+def _draw_tab(page, rect, active: bool, colors: RailColors = DEFAULT_RAIL_COLORS) -> None:
+    fill = colors.active_fill if active else colors.inactive_fill
+    border = colors.active_border if active else colors.inactive_border
+    _draw_shadow(page, rect, colors)
     page.draw_rect(
         rect,
         color=_color(border),
@@ -192,8 +235,8 @@ def _draw_tab(page, rect, active: bool) -> None:
     )
 
 
-def _draw_label(page, rect, text: str, active: bool) -> None:
-    color = COLOR_TAB_ACTIVE_TEXT if active else COLOR_TAB_INACTIVE_TEXT
+def _draw_label(page, rect, text: str, active: bool, colors: RailColors = DEFAULT_RAIL_COLORS) -> None:
+    color = colors.active_text if active else colors.inactive_text
     font_size = _label_font_size(text, rect.height)
     textbox = fitz.Rect(
         rect.x0 + TAB_LABEL_PADDING_X,
@@ -235,6 +278,7 @@ def _draw_progress_rail(
     page,
     ranges: list[SectionRange],
     current: SectionRange | None,
+    colors: RailColors = DEFAULT_RAIL_COLORS,
 ) -> None:
     rect = page.rect
     count = len(ranges)
@@ -243,9 +287,9 @@ def _draw_progress_rail(
     for index, section in enumerate(ranges):
         active = current is not None and section.key == current.key
         tab = _tab_rect(rect, top, index, tab_height, gap, active)
-        _draw_tab(page, tab, active)
+        _draw_tab(page, tab, active, colors)
         # _insert_section_link(page, tab, section)  # 点击跳转已禁用
-        _draw_label(page, tab, section.tab_label, active)
+        _draw_label(page, tab, section.tab_label, active, colors)
 
 
 def _require_fitz() -> None:
@@ -259,6 +303,7 @@ def apply_progress_rail(pdf_bytes: bytes, toc_pages: dict[str, int]) -> bytes:
         return pdf_bytes
 
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    rail_colors = rail_colors_for_toc(toc_pages, is_english_report=_doc_looks_like_english_report(doc))
     ranges = build_section_ranges(toc_pages, len(doc))
     if not ranges:
         doc.close()
@@ -296,7 +341,7 @@ def apply_progress_rail(pdf_bytes: bytes, toc_pages: dict[str, int]) -> bytes:
         for link in page.get_links():
             if link.get('kind') == 1:  # LINK_GOTO
                 page.delete_link(link)
-        _draw_progress_rail(page, ranges, current)
+        _draw_progress_rail(page, ranges, current, rail_colors)
 
     output = doc.tobytes(garbage=4, deflate=True)
     doc.close()

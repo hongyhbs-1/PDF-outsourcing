@@ -19,4 +19,6 @@ WRAPPER_SELECTORS = {
     "m6": "#toc-m6 > .m6-page",
     "m7": "#toc-m7 > .m7-data-reliability",
     "m9": "#toc-m9 > .m9-page",
+    "m10": "#toc-m10 > .m10-page",
+    "m11": "#toc-m11 > .m11-page",
 }

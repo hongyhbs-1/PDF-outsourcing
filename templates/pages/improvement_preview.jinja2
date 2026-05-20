@@ -114,7 +114,7 @@
 
   {# === 2. 提升路线 === #}
   <div class="ip-milestones">
-    <div class="ip-section-heading">{{ lb_icon('growth', 'frame-section-icon frame-section-icon--success') }}提升路线</div>
+    <div class="ip-section-heading">{{ lb_icon('growth', 'frame-section-icon frame-section-icon--success') }}二、提升路线</div>
 
     {% if tier == 'need_major' %}
     <div class="ip-milestone">
@@ -197,7 +197,7 @@
   {# === 3. 具体提升点 === #}
   {% if weak_items | length > 0 %}
   <div class="ip-focus-section">
-    <div class="ip-section-heading">{{ lb_icon('target', 'frame-section-icon') }}提升要点</div>
+    <div class="ip-section-heading">{{ lb_icon('target', 'frame-section-icon') }}三、提升要点</div>
     <div class="ip-focus-grid">
       {% for item in weak_items[:4] %}
       <div class="ip-focus-item">
@@ -309,7 +309,7 @@
 
   {# === 家长行动指南 === #}
   <div class="ip-parent-guide">
-    <div class="ip-parent-guide__title">{{ lb_icon('parent', 'frame-card-icon') }}家长行动指南</div>
+    <div class="ip-parent-guide__title">{{ lb_icon('parent', 'frame-section-icon') }}四、家长行动指南</div>
     <div class="ip-parent-guide__content">
       {% if tier == 'need_major' %}
       <p>1. 每日监督孩子完成 <strong>15 分钟</strong>基础专项训练，确保不中断；</p>

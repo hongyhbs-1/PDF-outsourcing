@@ -1833,5 +1833,134 @@
 }
 
 /* ==========================================================================
+   Section 24: sample_06 dense one-page print alignment
+   ========================================================================== */
+@media print {
+  .m7-data-reliability--dense .m7-core-conclusion {
+    margin-bottom: 4px;
+    padding: 4px 6px;
+  }
+
+  .m7-data-reliability--dense .m7-core-conclusion__label {
+    font-size: 8.6px !important;
+    margin-bottom: 1px;
+    line-height: 1.12 !important;
+  }
+
+  .m7-data-reliability--dense .m7-core-conclusion__text {
+    font-size: 9.2px !important;
+    line-height: 1.1 !important;
+  }
+
+  .m7-data-reliability--dense .m7-overview-card {
+    min-height: 52px;
+    padding: 4px;
+  }
+
+  .m7-data-reliability--dense .m7-overview-card__icon {
+    width: 12px;
+    height: 12px;
+    margin-bottom: 1px;
+  }
+
+  .m7-data-reliability--dense .m7-overview-card__num {
+    font-size: 20px;
+  }
+
+  .m7-data-reliability--dense .m7-overview-card__title,
+  .m7-data-reliability--dense .m7-overview-card__sub,
+  .m7-data-reliability--dense .m7-kp-level-label,
+  .m7-data-reliability--dense .m7-kp-level-unit,
+  .m7-data-reliability--dense .m7-coverage-note {
+    font-size: 7.5px;
+    line-height: 1.08;
+  }
+
+  .m7-data-reliability--dense .m7-coverage-table {
+    font-size: 8px;
+  }
+
+  .m7-data-reliability--dense .m7-coverage-table th,
+  .m7-data-reliability--dense .m7-coverage-table td {
+    padding: 1px 3px;
+    font-size: 8px;
+    line-height: 1.05;
+  }
+
+  .m7-data-reliability--dense .m7-note {
+    margin-top: 2px;
+    padding: 2px 4px;
+    font-size: 7.2px;
+    line-height: 1.08;
+  }
+
+  .m7-data-reliability--dense .m7-quality-box {
+    grid-template-columns: 1.35fr 1fr;
+    gap: 3px;
+    margin-top: 3px;
+  }
+
+  .m7-data-reliability--dense .m7-quality-block {
+    padding: 4px 5px;
+  }
+
+  .m7-data-reliability--dense .m7-quality-block--blue {
+    padding: 4px 5px;
+  }
+
+  .m7-data-reliability--dense .m7-block-title {
+    gap: 3px;
+    font-size: 9px;
+    margin-bottom: 1px;
+  }
+
+  .m7-data-reliability--dense .m7-block-desc {
+    margin-bottom: 2px;
+    font-size: 7.5px;
+    line-height: 1.08;
+  }
+
+  .m7-data-reliability--dense .m7-metric-card,
+  .m7-data-reliability--dense .m7-list-card,
+  .m7-data-reliability--dense .m7-badge-card {
+    padding: 2px 3px;
+    margin-top: 1px;
+  }
+
+  .m7-data-reliability--dense .m7-metric-item + .m7-metric-item {
+    margin-top: 2px;
+  }
+
+  .m7-data-reliability--dense .m7-metric-item__label,
+  .m7-data-reliability--dense .m7-metric-item__value,
+  .m7-data-reliability--dense .m7-metric-item__sub,
+  .m7-data-reliability--dense .m7-list-item__text {
+    font-size: 7.4px;
+    line-height: 1.08;
+  }
+
+  .m7-data-reliability--dense .m7-list-item {
+    gap: 2px;
+    padding: 0;
+  }
+
+  .m7-data-reliability--dense .m7-list-item + .m7-list-item {
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .m7-data-reliability--dense .m7-badge-list {
+    gap: 2px;
+  }
+
+  .m7-data-reliability--dense .m7-badge {
+    min-height: 12px;
+    padding: 1px 2px;
+    font-size: 7.2px;
+    line-height: 1.05;
+  }
+}
+
+/* ==========================================================================
    End of 7_data_reliability.css
    ========================================================================== */

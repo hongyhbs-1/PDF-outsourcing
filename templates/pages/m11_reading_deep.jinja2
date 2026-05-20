@@ -5,60 +5,79 @@
 
 {% set rd = reading_deep | default({}, true) %}
 {% if rd.enabled | default(false) %}
+{% set po = rd.passage_overview | default({}, true) %}
+{% set strategies = rd.reading_strategies | default([], true) %}
 <div class="m11-page">
   <h1 class="m11-title">十一、阅读精讲</h1>
 
+  <section class="m11-core-conclusion">
+    <div class="m11-core-conclusion__label">本页核心结论</div>
+    <div class="m11-core-conclusion__text">
+      本篇阅读为「{{ po.genre | default('--', true) }}」，共 {{ po.question_count | default('--', true) }} 题，正确 {{ po.correct_count | default('--', true) }} 题、错误 {{ po.wrong_count | default('--', true) }} 题；{% if po.title | default('', true) %}本页聚焦 {{ po.title }}，{% endif %}{% if strategies | length > 0 %}重点训练{% for strategy in strategies %}{% if strategy is mapping %}{{ strategy.name | default(strategy.title | default('', true), true) }}{% else %}{{ strategy }}{% endif %}{% if not loop.last %}、{% endif %}{% endfor %}，{% endif %}按 3 天计划完成错题复盘与限时阅读。
+    </div>
+  </section>
+
+  <div class="m11-body">
   {# 1. 本篇阅读概览 #}
-  {% set po = rd.passage_overview | default({}, true) %}
   <div class="m11-overview-card">
     <div class="m11-section-title">本篇阅读概览</div>
     <div class="m11-overview-row">
-      <div>文章类型: <strong>{{ po.genre | default('--') }}</strong></div>
-      <div>题数: <strong>{{ po.question_count | default('--') }}</strong></div>
-      <div>正确: <strong class="m11-correct">{{ po.correct_count | default('--') }}</strong></div>
-      <div>错误: <strong class="m11-wrong">{{ po.wrong_count | default('--') }}</strong></div>
+      <div>文章类型：<strong>{{ po.genre | default('--', true) }}</strong></div>
+      <div>题数：<strong>{{ po.question_count | default('--', true) }}</strong></div>
+      <div>正确：<strong class="m11-correct">{{ po.correct_count | default('--', true) }}</strong></div>
+      <div>错误：<strong class="m11-wrong">{{ po.wrong_count | default('--', true) }}</strong></div>
     </div>
-    {% if po.title | default('') %}
-    <div style="margin-top:8px; font-size:14px; color:var(--color-text-muted);">{{ po.title }}</div>
+    {% if po.title | default('', true) %}
+    <div class="m11-passage-title">{{ po.title }}</div>
     {% endif %}
   </div>
 
   {# 2. 为什么选这篇 #}
-  {% if rd.selection_reason | default('') %}
+  {% if rd.selection_reason | default('', true) %}
   <div class="m11-section">
     <div class="m11-section-title">为什么选这篇</div>
-    <p style="font-size:14px; line-height:1.7; color:var(--color-text-secondary); margin:0;">{{ rd.selection_reason }}</p>
+    <p class="m11-analysis-text">{{ rd.selection_reason }}</p>
   </div>
   {% endif %}
 
   {# 3. 整体问题诊断 #}
-  {% if rd.overall_diagnosis | default('') %}
+  {% if rd.overall_diagnosis | default('', true) %}
   <div class="m11-diagnosis-card">
     <div class="m11-section-title">整体问题诊断</div>
-    <p style="font-size:14px; line-height:1.7; color:var(--color-text-secondary); margin:0;">{{ rd.overall_diagnosis }}</p>
+    <p class="m11-analysis-text">{{ rd.overall_diagnosis }}</p>
   </div>
   {% endif %}
 
   {# 4. 逐题讲解 #}
-  {% if rd.question_analyses | default([]) | length > 0 %}
+  {% if rd.question_analyses | default([], true) | length > 0 %}
   <div class="m11-section">
     <div class="m11-section-title">逐题讲解</div>
     {% for qa in rd.question_analyses %}
     {% set is_wrong = qa.is_correct | default(true) == false %}
+    {% set qa_no = qa.question_no | default(qa.canonical_no | default(loop.index, true), true) %}
     <div class="m11-qa-card {{ 'm11-qa-card--wrong' if is_wrong else 'm11-qa-card--correct' }}">
       <div class="m11-qa-card__title">
-        第{{ qa.question_no | default(loop.index) }}题
+        第{{ qa_no }}题
         {% if is_wrong %}
-          <span class="m11-qa-card__wrong-mark"> (错题)</span>
+          <span class="m11-qa-card__wrong-mark">（错题）</span>
         {% else %}
-          <span class="m11-qa-card__correct-mark"> (正确)</span>
+          <span class="m11-qa-card__correct-mark">（正确）</span>
         {% endif %}
       </div>
-      {% if qa.analysis | default('') %}
+      {% if qa.question_text | default('', true) %}
+      <p class="m11-qa-card__question">{{ qa.question_text }}</p>
+      {% endif %}
+      {% if qa.analysis | default('', true) %}
       <p class="m11-qa-card__analysis">{{ qa.analysis }}</p>
       {% endif %}
-      {% if qa.error_type | default('') %}
-      <div class="m11-qa-card__error-type">错因: {{ qa.error_type }}</div>
+      {% if qa.evidence | default('', true) %}
+      <p class="m11-qa-card__evidence">证据：{{ qa.evidence }}</p>
+      {% endif %}
+      {% if qa.method | default('', true) %}
+      <p class="m11-qa-card__method">方法：{{ qa.method }}</p>
+      {% endif %}
+      {% if qa.error_type | default('', true) %}
+      <div class="m11-qa-card__error-type">错因：{{ qa.error_type }}</div>
       {% endif %}
     </div>
     {% endfor %}
@@ -66,19 +85,23 @@
   {% endif %}
 
   {# 5. 阅读方法 #}
-  {% if rd.reading_strategies | default([]) | length > 0 %}
+  {% if strategies | length > 0 %}
   <div class="m11-section">
     <div class="m11-section-title">阅读方法</div>
-    {% for strategy in rd.reading_strategies %}
+    {% for strategy in strategies %}
     <div class="m11-strategy-card">
-      <strong>{{ strategy.name | default('策略' ~ loop.index) }}:</strong> {{ strategy.description | default('') }}
+      {% if strategy is mapping %}
+        <strong>{{ strategy.name | default('策略' ~ loop.index, true) }}：</strong>{{ strategy.description | default('', true) }}
+      {% else %}
+        <strong>策略{{ loop.index }}：</strong>{{ strategy }}
+      {% endif %}
     </div>
     {% endfor %}
   </div>
   {% endif %}
 
   {# 6. 3天练习建议 #}
-  {% if rd.three_day_plan | default('') %}
+  {% if rd.three_day_plan | default('', true) %}
   <div class="m11-section">
     <div class="m11-suggestion-card">
       <div class="m11-section-title">3天练习建议</div>
@@ -88,10 +111,11 @@
   {% endif %}
 
   {# 7. 鼓励语 #}
-  {% if rd.encouragement | default('') %}
+  {% if rd.encouragement | default('', true) %}
   <div class="m11-section">
     <div class="m11-encouragement">{{ rd.encouragement }}</div>
   </div>
   {% endif %}
+  </div>
 </div>
 {% endif %}

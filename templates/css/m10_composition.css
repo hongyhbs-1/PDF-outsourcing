@@ -1,4 +1,4 @@
-/* ==========================================================================
+/* ============================================================================
    m10_composition.css — M10 作文精讲 (英语专属)
    ========================================================================== */
 
@@ -23,30 +23,63 @@
   color: var(--pm-teal);
   border-bottom: 2px solid var(--pm-teal);
   padding-bottom: 6px;
-  margin-bottom: 16px;
+  margin: 0 0 16px;
+}
+
+/* --- 本页核心结论：与数学正文模块保持同一阅读层级 --- */
+.m10-core-conclusion {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  background: var(--pm-gradient-conclusion);
+  border: 1px solid rgba(31, 111, 120, 0.18);
+  border-radius: 10px;
+  box-shadow: var(--pm-shadow-card, 0 4px 14px rgba(18, 52, 77, 0.08));
+}
+
+.m10-core-conclusion__label {
+  color: var(--pm-navy, #12344d);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.m10-core-conclusion__text {
+  color: var(--pm-text-primary, #1a2332);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* --- 主体内容：作为 golden_typeset 的稳定直接子元素，避免多段内容触发系统 Chrome 打印异常 --- */
+.m10-body {
+  display: flow-root;
 }
 
 /* --- 区块标题 --- */
 .m10-section-title {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--pm-text-primary);
   margin-bottom: 8px;
-  padding-left: 2px;
+  padding-left: 8px;
+  border-left: 3px solid var(--pm-teal);
+  line-height: 1.25;
 }
 
 /* --- 区块容器 --- */
 .m10-section {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   break-inside: avoid;
 }
 
 /* --- 成绩概览 --- */
 .m10-score-overview {
   background: var(--pm-bg-muted);
+  border: 1px solid var(--pm-border-card, rgba(31, 111, 120, 0.12));
   border-radius: var(--pm-radius-badge, 12px);
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
 }
 
 .m10-score-row {
@@ -58,7 +91,7 @@
 
 .m10-score-total {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--pm-teal);
 }
 
@@ -83,11 +116,11 @@
 
 /* --- 提示卡片 (优先修复 / 建议) --- */
 .m10-tip-card {
-  padding: 10px 14px;
+  padding: 9px 12px;
   margin-bottom: 8px;
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 8px 8px 0;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.55;
   break-inside: avoid;
 }
 
@@ -101,10 +134,14 @@
   border-left: 3px solid var(--pm-status-success, #2d8a6e);
 }
 
+.m10-tip-card .m10-section-title {
+  margin-bottom: 6px;
+}
+
 /* --- 分析段落 --- */
 .m10-analysis {
   font-size: 14px;
-  line-height: 1.7;
+  line-height: 1.65;
   color: var(--pm-text-secondary);
   margin: 0;
 }
@@ -113,10 +150,10 @@
 .m10-reference {
   background: var(--pm-bg-muted);
   border-left: 3px solid var(--pm-border-divider);
-  padding: 12px 16px;
-  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.72;
   white-space: pre-wrap;
   color: var(--pm-text-secondary);
 }
@@ -128,18 +165,26 @@
   font-size: 14px;
 }
 
+.m10-table__col-index {
+  width: 40px;
+}
+
+.m10-table__col-type {
+  width: 60px;
+}
+
 .m10-table thead th {
   background: var(--pm-bg-muted);
-  padding: 8px;
+  padding: 7px 8px;
   text-align: left;
-  font-weight: 600;
+  font-weight: 700;
   border-bottom: 1px solid var(--pm-border-card);
 }
 
 .m10-table tbody td {
-  padding: 8px;
+  padding: 7px 8px;
   border-bottom: 1px solid var(--pm-border-card);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .m10-table tbody tr:nth-child(even) {
@@ -152,12 +197,12 @@
 
 .m10-tag--highlight {
   color: var(--pm-status-success, #2d8a6e);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .m10-tag--issue {
   color: var(--pm-status-danger, #c44040);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* --- 打印优化 --- */
@@ -168,5 +213,105 @@
     flex: none;
     padding: 0 15mm 0 18mm;
     box-shadow: none;
+    font-size: 9.2px;
+    line-height: 1.18;
+  }
+
+  .m10-title {
+    font-size: 20px;
+    margin: 6px 0 5px;
+    padding-bottom: 4px;
+  }
+
+  .m10-core-conclusion {
+    margin-bottom: 5px;
+    padding: 5px 7px;
+    border-radius: 6px;
+    box-shadow: none;
+  }
+
+  .m10-core-conclusion__label {
+    font-size: 9.5px;
+    margin-bottom: 2px;
+  }
+
+  .m10-core-conclusion__text {
+    font-size: 9.6px;
+    line-height: 1.2;
+  }
+
+  .m10-section-title {
+    margin-bottom: 3px;
+    padding-left: 5px;
+    border-left-width: 2px;
+    font-size: 10px;
+    line-height: 1.15;
+  }
+
+  .m10-section {
+    margin-bottom: 5px;
+  }
+
+  .m10-score-overview {
+    padding: 5px 7px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+  }
+
+  .m10-score-row {
+    gap: 14px;
+  }
+
+  .m10-score-total {
+    font-size: 18px;
+  }
+
+  .m10-score-label,
+  .m10-score-dim {
+    font-size: 9px;
+  }
+
+  .m10-tip-card {
+    padding: 3px 6px;
+    margin-bottom: 3px;
+    border-left-width: 2px;
+    border-radius: 0 5px 5px 0;
+    font-size: 9px;
+    line-height: 1.18;
+  }
+
+  .m10-tip-card .m10-section-title {
+    margin-bottom: 2px;
+  }
+
+  .m10-analysis {
+    font-size: 9.2px;
+    line-height: 1.2;
+  }
+
+  .m10-reference {
+    padding: 4px 6px;
+    border-left-width: 2px;
+    border-radius: 0 5px 5px 0;
+    font-size: 8.8px;
+    line-height: 1.15;
+  }
+
+  .m10-table {
+    font-size: 8.6px;
+  }
+
+  .m10-table thead th,
+  .m10-table tbody td {
+    padding: 1.5px 4px;
+    line-height: 1.12;
+  }
+
+  .m10-table__col-index {
+    width: 28px;
+  }
+
+  .m10-table__col-type {
+    width: 42px;
   }
 }

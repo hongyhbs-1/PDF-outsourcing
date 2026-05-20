@@ -23,7 +23,10 @@ report_master.jinja2 — 报告主入口模板 (v2)
   {{ combined_css | safe }}
   </style>
 </head>
-<body>
+{% set _report_subject = meta.subject | default('', true) | lower %}
+{% set _report_subject_name = meta.subject_name | default('', true) %}
+{% set _is_english_report = _report_subject == 'english' or '英语' in _report_subject_name %}
+<body{% if _is_english_report %} class="report-theme--english"{% endif %}>
 
   {# ---- 页眉页脚已迁移至 Playwright headerTemplate/footerTemplate (T14 Phase 6) ---- #}
 

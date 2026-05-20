@@ -62,12 +62,17 @@
   align-items: center;
   gap: 5px;
   flex-shrink: 0;
-  font-size: 15px;
-  line-height: 1.25;
-  font-weight: 700;
-  color: var(--pm-text-primary);
-  padding-left: 8px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 3px 8px;
+  border: 1px solid rgba(31, 111, 120, 0.18);
   border-left: 3px solid var(--pm-teal);
+  border-radius: 6px;
+  background: rgba(31, 111, 120, 0.08);
+  color: var(--pm-teal);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 800;
 }
 
 .ip-intervention-bar__text {
@@ -195,7 +200,7 @@
    2. 提升路线卡片
    ========================================================================== */
 .ip-milestones {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .ip-section-heading {
@@ -267,7 +272,7 @@
    3. 具体提升点
    ========================================================================== */
 .ip-focus-section {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .ip-focus-grid {
@@ -312,7 +317,7 @@
 .ip-phase-grid {
   display: flex;
   gap: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .ip-phase-card {
@@ -330,13 +335,21 @@
 }
 
 .ip-phase-card__header {
-  font-size: 15px;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 3px 8px;
+  border: 1px solid rgba(31, 111, 120, 0.18);
+  border-left: 3px solid var(--pm-teal);
+  border-radius: 6px;
+  background: rgba(31, 111, 120, 0.08);
   color: var(--pm-teal);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 800;
   margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 2px solid var(--pm-gradient-accent-bar);
-  border-image: var(--pm-gradient-accent-bar) 1;
 }
 
 .ip-phase-card__body {
@@ -442,12 +455,19 @@
     font-size: 12px;
   }
 
-  .ip-intervention-bar__label,
   .ip-section-heading,
   .ip-parent-guide__title {
     font-size: 13px;
     padding-left: 6px;
     border-left-width: 2px;
+  }
+
+  .ip-intervention-bar__label,
+  .ip-phase-card__header {
+    font-size: 10.5px;
+    padding: 2px 6px;
+    border-left-width: 2px;
+    border-radius: 5px;
   }
 
   .ip-roadmap {
@@ -495,7 +515,7 @@
   }
 
   .ip-milestones {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
   }
 
   .ip-section-heading {
@@ -540,7 +560,7 @@
   }
 
   .ip-focus-section {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   .ip-focus-grid {
@@ -569,7 +589,7 @@
 
   .ip-phase-grid {
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
 
   .ip-phase-card {
@@ -579,10 +599,7 @@
   }
 
   .ip-phase-card__header {
-    font-size: 14px;
     margin-bottom: 6px;
-    padding-bottom: 4px;
-    border-bottom-width: 1px;
   }
 
   .ip-phase-card__body {

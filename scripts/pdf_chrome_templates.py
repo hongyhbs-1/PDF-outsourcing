@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from functools import lru_cache
 import html
 from pathlib import Path
@@ -14,6 +15,38 @@ TEAL = "#1F6F78"
 TEAL_SOFT = "#D0E8E8"
 SAND = "#D9B36A"
 LINE = "#DDE5E8"
+
+
+@dataclass(frozen=True)
+class PdfChromeTheme:
+    background: str
+    text_muted: str
+    text_strong: str
+    accent: str
+    accent_soft: str
+    accent_bar: str
+    line: str
+
+
+DEFAULT_CHROME_THEME = PdfChromeTheme(
+    background="transparent",
+    text_muted=TEXT_MUTED,
+    text_strong=TEXT_STRONG,
+    accent=TEAL,
+    accent_soft=TEAL_SOFT,
+    accent_bar=SAND,
+    line=LINE,
+)
+
+ENGLISH_CHROME_THEME = PdfChromeTheme(
+    background="#eaf1ff",
+    text_muted="#52627f",
+    text_strong="#1d3363",
+    accent="#4d66d9",
+    accent_soft="#dfe7ff",
+    accent_bar="#ffc978",
+    line="#dbe1f3",
+)
 
 MARGIN_TOP = "12mm"
 MARGIN_BOTTOM = "10mm"
@@ -40,6 +73,19 @@ def _meta_value(meta: dict | None, *keys: str, default: str = "") -> str:
         if value not in (None, ""):
             return str(value)
     return default
+
+
+def _is_english_meta(meta: dict | None) -> bool:
+    if not meta:
+        return False
+    subject = _meta_value(meta, "subject").lower()
+    subject_name = _meta_value(meta, "subject_name")
+    report_title = _meta_value(meta, "report_title", "report_name", "left_title")
+    return subject == "english" or "英语" in subject_name or "英语" in report_title
+
+
+def _theme_for_meta(meta: dict | None) -> PdfChromeTheme:
+    return ENGLISH_CHROME_THEME if _is_english_meta(meta) else DEFAULT_CHROME_THEME
 
 
 def _build_header_context(meta: dict | None) -> str:
@@ -74,14 +120,14 @@ def _font_face_css() -> str:
     )
 
 
-def _base_style() -> str:
+def _base_style(theme: PdfChromeTheme) -> str:
     return f"""<style>
 {_font_face_css()}
 #header, #footer {{
   margin: 0 !important;
   box-sizing: border-box !important;
   width: 100% !important;
-  background: transparent !important;
+  background: {theme.background} !important;
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
 }}
@@ -97,7 +143,7 @@ def _base_style() -> str:
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  color: {TEXT_MUTED};
+  color: {theme.text_muted};
   font-size: 8px;
   line-height: 1;
 }}
@@ -109,8 +155,8 @@ def _base_style() -> str:
 }}
 .pw-hf-pill {{
   border-radius: 999px;
-  background: {TEAL_SOFT};
-  color: {TEXT_STRONG};
+  background: {theme.accent_soft};
+  color: {theme.text_strong};
   padding: 1.2mm 3.2mm;
 }}
 </style>"""
@@ -126,33 +172,35 @@ def build_pdf_margins() -> dict[str, str]:
 
 
 def build_header_template(meta: dict | None) -> str:
+    theme = _theme_for_meta(meta)
     title = _escape(_meta_value(meta, "report_short_title", "report_title", default=DEFAULT_TITLE))
     context_text = _escape(_build_header_context(meta))
 
     return (
-        _base_style()
-        + f'<div class="pw-hf-wrap" style="height:{MARGIN_TOP}; padding:{HEADER_PADDING};">'
+        _base_style(theme)
+        + f'<div class="pw-hf-wrap" style="height:{MARGIN_TOP}; padding:{HEADER_PADDING}; background:{theme.background};">'
         + '  <div class="pw-hf-row" style="height:5mm; border-bottom:0.5px solid '
-        + f'{LINE}; padding-bottom:1.1mm;">'
-        + f'    <span class="pw-hf-ellipsis" style="flex:0 0 38%; color:{TEXT_STRONG};">{title}</span>'
-        + f'    <span class="pw-hf-ellipsis" style="flex:1; text-align:right; color:{TEAL};">{context_text}</span>'
+        + f'{theme.line}; padding-bottom:1.1mm;">'
+        + f'    <span class="pw-hf-ellipsis" style="flex:0 0 38%; color:{theme.text_strong};">{title}</span>'
+        + f'    <span class="pw-hf-ellipsis" style="flex:1; text-align:right; color:{theme.accent};">{context_text}</span>'
         + '  </div>'
-        + f'  <div style="width:18mm; height:0.6mm; background:{SAND}; margin-top:-0.3mm;"></div>'
+        + f'  <div style="width:18mm; height:0.6mm; background:{theme.accent_bar}; margin-top:-0.3mm;"></div>'
         + '</div>'
     )
 
 
 def build_footer_template(meta: dict | None) -> str:
+    theme = _theme_for_meta(meta)
     title = _escape(_meta_value(meta, "report_title", "report_name", default=DEFAULT_TITLE))
     report_date = _escape(_meta_value(meta, "report_date", "date"))
     brand = _escape(_meta_value(meta, "brand_name", default=DEFAULT_BRAND))
     date_text = f"报告日期：{report_date}" if report_date else ""
 
     return (
-        _base_style()
-        + f'<div class="pw-hf-wrap" style="height:{MARGIN_BOTTOM}; padding:{FOOTER_PADDING};'
+        _base_style(theme)
+        + f'<div class="pw-hf-wrap" style="height:{MARGIN_BOTTOM}; padding:{FOOTER_PADDING}; background:{theme.background};'
         + ' display:flex; align-items:flex-end;">'
-        + f'  <div class="pw-hf-row" style="height:4.6mm; border-top:0.5px solid {LINE}; padding-top:1mm;">'
+        + f'  <div class="pw-hf-row" style="height:4.6mm; border-top:0.5px solid {theme.line}; padding-top:1mm;">'
         + f'    <span class="pw-hf-ellipsis" style="flex:1;">{brand} · {title}</span>'
         + '    <span class="pw-hf-pill" style="flex:0 0 auto;">'
         + '第 <span class="pageNumber"></span> / <span class="totalPages"></span> 页'

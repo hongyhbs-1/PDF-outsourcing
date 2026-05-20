@@ -145,6 +145,9 @@
   {% set analysis_rows = raw_analysis_rows %}
 {% endif %}
 {% set paper_items = papers.get('items', []) if papers else [] %}
+{% set _subject_code_m8 = meta.subject | default('', true) | lower %}
+{% set _subject_name_m8 = meta.subject_name | default('', true) %}
+{% set _is_english_m8 = _subject_code_m8 == 'english' or '英语' in _subject_name_m8 %}
 {% set metric_count = metric_definitions | length if metric_definitions else 0 %}
 {% if paper_items | length <= 1 and metric_count <= 2 %}
   {% set m8_density = 'sparse' %}
@@ -170,6 +173,15 @@
       </h1>
       <div class="m8-appendix-title__underline"></div>
     </div>
+
+    {% if _is_english_m8 %}
+    <section class="m8-core-conclusion">
+      <div class="m8-core-conclusion__label">{{ lb_icon('paper', 'frame-conclusion-icon') }}本页核心结论</div>
+      <div class="m8-core-conclusion__text">
+        本页用{{ safe_value(papers.total_questions, 0) }}道题、{{ safe_value(papers.total_papers, 0) }}份试卷补充说明分析依据；先看难度分布和指标释义，再看分析范围与试卷/批次清单，用于确认报告结论的数据口径、样本边界和可信来源。
+      </div>
+    </section>
+    {% endif %}
 
     <div class="module-content-card">
 

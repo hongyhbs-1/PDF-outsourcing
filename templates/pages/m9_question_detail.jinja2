@@ -24,6 +24,15 @@ M9: 逐题分析明细 (Question Detail Analysis)
     <div class="m9-title__underline"></div>
   </section>
 
+  {% if has_data %}
+  <section class="m9-core-conclusion">
+    <div class="m9-core-conclusion__label">本页核心结论</div>
+    <div class="m9-core-conclusion__text">
+      本页覆盖{{ papers | length }}份试卷、{{ total_count }}道题，其中{{ wrong_count }}道需重点回看；下方按试卷分组展示题号、难度、知识点与破题点，先用错题定位短板，再用正确题确认稳定项。
+    </div>
+  </section>
+  {% endif %}
+
   <div class="module-content-card">
 
   {# --- 首页概述区 --- #}

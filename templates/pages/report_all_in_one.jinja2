@@ -23,7 +23,11 @@
   {{ combined_css | safe }}
   </style>
 </head>
-<body>
+{% set _report_meta = render_payload.meta | default({}, true) %}
+{% set _report_subject = _report_meta.subject | default('', true) | lower %}
+{% set _report_subject_name = _report_meta.subject_name | default('', true) %}
+{% set _is_english_report = _report_subject == 'english' or '英语' in _report_subject_name %}
+<body{% if _is_english_report %} class="report-theme--english"{% endif %}>
 
   {# ====================================================================== #}
   {# 模块0：封面 #}
