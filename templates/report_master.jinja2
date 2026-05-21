@@ -27,17 +27,26 @@ report_master.jinja2 — 报告主入口模板 (v2)
 {% set _report_subject_name = meta.subject_name | default('', true) %}
 {% set _is_english_report = _report_subject == 'english' or '英语' in _report_subject_name %}
 <body{% if _is_english_report %} class="report-theme--english"{% endif %}>
+{% set _report_variant = report_variant | default('parent', true) %}
+{% set _is_admissions_blueprint = _report_variant == 'admissions_blueprint' %}
+{% set _include_learning_blueprint = _is_admissions_blueprint or _report_variant == 'full' %}
+{% set _include_parent_report = not _is_admissions_blueprint %}
 
   {# ---- 页眉页脚已迁移至 Playwright headerTemplate/footerTemplate (T14 Phase 6) ---- #}
 
+  {% if _include_parent_report %}
   {# ---- M0: cover ---- #}
   <div class="module-page">
     {% include 'pages/m0_cover.jinja2' %}
   </div>
+  {% endif %}
+  {% if _include_learning_blueprint %}
   {# ---- 学习蓝图第 1 页: 学生学情诊断全景 ---- #}
   {% include 'pages/m00_student_diagnostic_blueprint.jinja2' %}
   {# ---- 学习蓝图第 2 页: 补习执行与追踪 ---- #}
   {% include 'pages/m01_tutoring_execution_blueprint.jinja2' %}
+  {% endif %}
+  {% if _include_parent_report %}
   {# ---- 学生画像分析 (第 4 页: 三档分类 + 劣势 + 机构帮助) ---- #}
   <div class="module-page">
     {% include 'pages/student_profile.jinja2' %}
@@ -128,6 +137,7 @@ report_master.jinja2 — 报告主入口模板 (v2)
   <div class="module-page" id="toc-m11">
     {% include 'pages/m11_reading_deep.jinja2' %}
   </div>
+  {% endif %}
   {% endif %}
 
 </body>

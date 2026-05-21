@@ -215,17 +215,17 @@
 
 .metric-row.three {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
   margin-top: 6px;
 }
-.metric-card { border-right: 1px solid #E5EAF0; padding: 2px 4px 3px; text-align: center; }
+.metric-card { min-width: 0; border-right: 1px solid #E5EAF0; padding: 2px 2px 3px; text-align: center; }
 .metric-card:last-child { border-right: 0; }
 .metric-card span { font-size: 9px; color: var(--lb-muted); }
-.metric-card strong { display: block; font-size: 21px; line-height: 1.05; margin: 2px 0; color: var(--lb-title); }
+.metric-card strong { display: block; font-size: 18px; line-height: 1.05; margin: 2px 0; color: var(--lb-title); white-space: nowrap; }
 .metric-card.success strong, .metric-card.success .metric-icon { color: #168A96; }
 .metric-card.warning strong, .metric-card.warning .metric-icon { color: var(--lb-orange); }
-.metric-card em { font-size: 8px; color: var(--lb-muted); font-style: normal; }
+.metric-card em { display: block; font-size: 8px; color: var(--lb-muted); font-style: normal; white-space: nowrap; }
 .small-card-row { display: grid; grid-template-columns: 1fr; gap: 5px; margin-top: 7px; }
 .small-signal { display:grid; grid-template-columns: 20px 1fr; align-items:center; gap:6px; border: 1px solid var(--lb-line); border-radius: 7px; padding: 5px 7px; background: #fff; font-size: 10px; }
 .small-signal span { color: var(--lb-muted); display: block; font-size: 9px; }
@@ -235,11 +235,12 @@
 .ability-map-wrap { display:flex; justify-content:center; align-items:center; }
 .ability-map-svg { width: 100%; max-height: 88mm; }
 .map-rings circle { fill: none; stroke: #DCEAF2; stroke-width: 1; stroke-dasharray: 3 4; }
-.map-spokes line { stroke: #B9D4E4; stroke-width: 1.4; }
+.map-spokes { pointer-events: none; }
+.map-spokes line { stroke: #9DB8CA; stroke-width: 1.15; stroke-linecap: round; stroke-dasharray: 5 5; opacity: .58; }
 .center-person circle:first-child { fill: #fff; stroke: var(--lb-title); stroke-width: 2; }
 .center-person circle:nth-child(2), .center-person path { fill: none; stroke: var(--lb-title); stroke-width: 2; }
 .center-person text { text-anchor: middle; fill: var(--lb-title); font-size: 14px; font-weight: 700; }
-.center-person text:last-child { font-size: 10px; fill: var(--lb-muted); }
+.center-person .ability-axis-label { font-size: 10px; fill: #101828; font-weight: 800; }
 .domain-node polygon { fill: #fff; stroke-width: 2; }
 .domain-node text { text-anchor: middle; font-weight: 700; }
 .domain-name { font-size: 12px; }

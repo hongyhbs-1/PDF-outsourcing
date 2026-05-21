@@ -59,11 +59,16 @@
             <circle cx="300" cy="300" r="178" />
             <circle cx="300" cy="300" r="226" />
           </g>
+          <g class="map-spokes">
+            {% for d in bp.domains %}
+            <line x1="300" y1="300" x2="{{ d.x }}" y2="{{ d.y }}" />
+            {% endfor %}
+          </g>
           <g class="center-person">
             <circle cx="300" cy="300" r="40" />
             <circle cx="300" cy="284" r="14" />
             <path d="M268 326c6-20 20-28 32-28s26 8 32 28" />
-            <text x="300" y="348">{{ bp.meta.ability_axis_label }}</text>
+            <text class="ability-axis-label" x="300" y="348">{{ bp.meta.ability_axis_label }}</text>
           </g>
           {% for d in bp.domains %}
           <g class="domain-node state-{{ d.state }}" transform="translate({{ d.x }}, {{ d.y }})">
@@ -73,11 +78,6 @@
             <text class="domain-state" x="0" y="32">{{ d.state_label }}</text>
           </g>
           {% endfor %}
-          <g class="map-spokes">
-            {% for d in bp.domains %}
-            <line x1="300" y1="300" x2="{{ d.x }}" y2="{{ d.y }}" />
-            {% endfor %}
-          </g>
         </svg>
       </div>
       <div class="map-legend">

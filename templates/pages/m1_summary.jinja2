@@ -149,8 +149,13 @@ render_payload.module_1_summary 结构示例:
 {%- endmacro %}
 
 {#- 圆环图SVG宏（pass_rate 必须为 number 0-100） -#}
-{% macro donut_chart(pass_rate, size=158, stroke_width=20) %}
-  {% set radius = (size - stroke_width) / 2 %}
+{% macro donut_chart(pass_rate, size=158, stroke_width=24) %}
+  {#
+    CSS uses a 24px donut stroke. Leave inner viewBox padding so Chromium PDF
+    does not clip the outer stroke at the four cardinal edges.
+  #}
+  {% set donut_viewbox_padding = 3 %}
+  {% set radius = (size - stroke_width) / 2 - donut_viewbox_padding %}
   {% set circumference = 2 * 3.14159 * radius %}
   {% set safe_rate = pass_rate if pass_rate is defined and pass_rate is not none else 0 %}
   {% set dash_length = (safe_rate / 100) * circumference %}

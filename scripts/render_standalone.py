@@ -400,8 +400,33 @@ def _resolve_comic_image_paths(tier_name: str,
     )
 
 
-def render_html(payload: dict, comic_image_root: Path | None = None, typeset_css: str = "") -> str:
-    """将 JSON payload 渲染为 HTML。"""
+PARENT_REPORT_VARIANT = "parent"
+ADMISSIONS_BLUEPRINT_VARIANT = "admissions_blueprint"
+FULL_REPORT_VARIANT = "full"
+REPORT_VARIANTS = {PARENT_REPORT_VARIANT, ADMISSIONS_BLUEPRINT_VARIANT, FULL_REPORT_VARIANT}
+
+
+def _validate_report_variant(report_variant: str) -> str:
+    if report_variant not in REPORT_VARIANTS:
+        allowed = ", ".join(sorted(REPORT_VARIANTS))
+        raise ValueError(f"report_variant must be one of: {allowed}")
+    return report_variant
+
+
+def render_html(
+    payload: dict,
+    comic_image_root: Path | None = None,
+    typeset_css: str = "",
+    report_variant: str = PARENT_REPORT_VARIANT,
+) -> str:
+    """将 JSON payload 渲染为 HTML。
+
+    report_variant:
+      - parent: 家长版主报告，不包含两页复杂学习蓝图。
+      - admissions_blueprint: 只渲染两页学习蓝图，供招生老师单独使用。
+      - full: 兼容旧版完整报告，包含学习蓝图和主报告。
+    """
+    report_variant = _validate_report_variant(report_variant)
     env = Environment(
         loader=FileSystemLoader(str(TEMPLATE_DIR)),
         autoescape=False,
@@ -414,6 +439,7 @@ def render_html(payload: dict, comic_image_root: Path | None = None, typeset_css
     context = dict(payload)
     context["combined_css"] = load_css() + typeset_css
     context["render_payload"] = payload
+    context["report_variant"] = report_variant
     context.update(build_learning_blueprints(payload))
     context["font_path"] = str(font_path)
     context["logo_path"] = _image_to_data_uri(logo_path)
@@ -620,8 +646,15 @@ def _build_final_pdf_bytes(page, pdf_kwargs: dict) -> bytes:
     return apply_progress_rail(final_bytes, toc_pages)
 
 
-def generate_pdf(output_path: str, payload: dict, comic_image_root=None) -> Path:
+def generate_pdf(
+    output_path: str,
+    payload: dict,
+    comic_image_root=None,
+    report_variant: str = PARENT_REPORT_VARIANT,
+) -> Path:
     """双 Pass 精确排版 → PDF。
+
+    report_variant 与 render_html 一致：家长版默认不包含学习蓝图；招生版只包含学习蓝图两页。
 
     Pass 1: 渲染 HTML → 测量 DOM 高度
     Pass 2: 用测量值生成排版 CSS → 渲染 HTML → 生成 PDF
@@ -632,6 +665,7 @@ def generate_pdf(output_path: str, payload: dict, comic_image_root=None) -> Path
         print("PDF 生成需要 playwright: pip install playwright")
         sys.exit(1)
 
+    report_variant = _validate_report_variant(report_variant)
     _ensure_fontconfig_env()
     pdf_kwargs = _build_pdf_kwargs(payload)
     output = Path(output_path)
@@ -658,7 +692,11 @@ def generate_pdf(output_path: str, payload: dict, comic_image_root=None) -> Path
             # -- Pass 1: 测量 DOM 高度 --
             measured = {}
             if _HAS_GOLDEN:
-                html_pass1 = render_html(payload, comic_image_root=comic_image_root)
+                html_pass1 = render_html(
+                    payload,
+                    comic_image_root=comic_image_root,
+                    report_variant=report_variant,
+                )
                 load_html_via_file(html_pass1)
                 page.emulate_media(media='print')
                 try:
@@ -673,7 +711,12 @@ def generate_pdf(output_path: str, payload: dict, comic_image_root=None) -> Path
             if _HAS_GOLDEN and measured:
                 typeset_css = build_typeset_css(payload, measured=measured)
 
-            html_pass2 = render_html(payload, comic_image_root=comic_image_root, typeset_css=typeset_css)
+            html_pass2 = render_html(
+                payload,
+                comic_image_root=comic_image_root,
+                typeset_css=typeset_css,
+                report_variant=report_variant,
+            )
             load_html_via_file(html_pass2)
             _wait_for_images(page)
 
@@ -699,6 +742,12 @@ def main():
     parser.add_argument("json_file", help="render_payload JSON 文件路径")
     parser.add_argument("-o", "--output", default="output.html", help="输出 HTML 路径")
     parser.add_argument("--pdf", action="store_true", help="同时生成 PDF")
+    parser.add_argument(
+        "--report-variant",
+        choices=sorted(REPORT_VARIANTS),
+        default=PARENT_REPORT_VARIANT,
+        help="输出版本：parent=家长版主报告；admissions_blueprint=招生老师学习蓝图；full=旧版完整报告",
+    )
     args = parser.parse_args()
 
     with open(args.json_file, "r", encoding="utf-8") as f:
@@ -708,13 +757,13 @@ def main():
     if _HAS_GOLDEN:
         typeset_css = build_typeset_css(payload)
 
-    html = render_html(payload, typeset_css=typeset_css)
+    html = render_html(payload, typeset_css=typeset_css, report_variant=args.report_variant)
     Path(args.output).write_text(html, encoding="utf-8")
     print(f"HTML: {args.output}")
 
     if args.pdf:
         pdf_path = args.output.replace(".html", ".pdf")
-        generate_pdf(pdf_path, payload)
+        generate_pdf(pdf_path, payload, report_variant=args.report_variant)
 
 
 if __name__ == "__main__":

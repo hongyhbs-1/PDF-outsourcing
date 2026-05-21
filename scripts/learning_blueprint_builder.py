@@ -459,13 +459,14 @@ def _confidence_info(payload: dict) -> dict:
 def _active_axis_stage(payload: dict, shortlist: list[dict]) -> str:
     total_level = str(_first(_get(payload, "data_reliability.conclusion.total_level"), default=""))
     report_title = str(_first(_get(payload, "meta.report_title"), default=""))
+    has_real_weakness = any(item.get("priority") != "补测" for item in shortlist)
+    needs_more_data = "低" in total_level or "不足" in total_level
     if "追踪" in report_title or "阶段" in report_title:
         return "追踪复测"
-    if "低" in total_level or "不足" in total_level:
-        return "数据进入"
-    has_real_weakness = any(item.get("priority") != "补测" for item in shortlist)
     if has_real_weakness:
         return "老师执行"
+    if needs_more_data:
+        return "数据进入"
     return "AI诊断分析"
 
 
