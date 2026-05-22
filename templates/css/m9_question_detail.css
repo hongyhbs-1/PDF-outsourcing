@@ -353,6 +353,101 @@
     margin-bottom: 10px;
   }
 
+  .m9-page--long .m9-paper-section--continued {
+    break-before: page;
+    page-break-before: always;
+    margin-top: 0;
+  }
+
+  .m9-page--long .m9-core-conclusion__label {
+    font-size: 10px;
+  }
+
+  .m9-page--long .m9-core-conclusion__text {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .m9-page--long .m9-overview {
+    margin-bottom: 9px;
+    padding: 9px 11px;
+  }
+
+  .m9-page--long .m9-overview__stat-num {
+    font-size: 20px;
+  }
+
+  .m9-page--long .m9-overview__stat-label,
+  .m9-page--long .m9-overview__desc {
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+
+  .m9-page--long .m9-paper-title {
+    padding: 7px 10px;
+    margin-bottom: 7px;
+    font-size: 16px;
+  }
+
+  .m9-page--long .m9-table-label {
+    margin: 7px 0 5px;
+    font-size: 14px;
+  }
+
+  .m9-page--long .m9-table {
+    margin-bottom: 7px;
+    font-size: 12px;
+    line-height: 1.32;
+  }
+
+  .m9-page--long .m9-table thead th {
+    font-size: 11.5px;
+  }
+
+  .m9-page--long .m9-table th,
+  .m9-page--long .m9-table td {
+    padding: 3px 5px;
+  }
+
+  .m9-page--long .m9-col-no { width: 54px; }
+  .m9-page--long .m9-col-diff { width: 82px; }
+  .m9-page--long .m9-col-kp { width: 150px; }
+  .m9-page--long .m9-col-tags { width: 150px; }
+  .m9-page--long .m9-table--correct .m9-col-kp { width: 220px; }
+
+  .m9-page--long .m9-table--wrong-lite {
+    font-size: 16px;
+    line-height: 1.28;
+  }
+
+  .m9-page--long .m9-table--wrong-lite thead th {
+    font-size: 13px;
+  }
+
+  .m9-page--long .m9-table--wrong-lite th,
+  .m9-page--long .m9-table--wrong-lite td {
+    padding: 2.5px 5px;
+  }
+
+  .m9-page--long .m9-table--wrong-lite .m9-col-no { width: 56px; }
+  .m9-page--long .m9-table--wrong-lite .m9-col-diff { width: 98px; }
+  .m9-page--long .m9-table--wrong-lite .m9-col-kp { width: auto; }
+
+  .m9-page--long .m9-stars {
+    font-size: 10.5px;
+    letter-spacing: 0.2px;
+  }
+
+  .m9-page--long .m9-table--wrong-lite .m9-stars {
+    font-size: 12.5px;
+    letter-spacing: 0;
+  }
+
+  .m9-page--long .m9-analysis-cell {
+    font-size: 10.5px;
+    line-height: 1.32;
+  }
+
   .m9-paper-title {
     padding: 5px 8px;
     margin-bottom: 5px;

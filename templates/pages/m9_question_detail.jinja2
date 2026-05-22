@@ -10,13 +10,16 @@ M9: 逐题分析明细 (Question Detail Analysis)
 ================================================================================
 #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
+
 {% set qd = question_detail | default({}, true) %}
 {% set papers = qd.papers | default([], true) %}
 {% set total_count = qd.total_count | default(0) %}
 {% set wrong_count = qd.wrong_count | default(0) %}
 {% set has_data = papers | length > 0 and total_count > 0 %}
+{% set is_long_detail = has_data and papers | length > 1 and total_count >= 100 %}
 
-<div class="m9-page">
+<div class="m9-page{% if is_long_detail %} m9-page--long{% endif %}">
 
   {# --- 章节标题 --- #}
   <section class="m9-title-section">
@@ -26,7 +29,7 @@ M9: 逐题分析明细 (Question Detail Analysis)
 
   {% if has_data %}
   <section class="m9-core-conclusion">
-    <div class="m9-core-conclusion__label">本页核心结论</div>
+    <div class="m9-core-conclusion__label">{{ lb_icon('paper', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m9-core-conclusion__text">
       本页覆盖{{ papers | length }}份试卷、{{ total_count }}道题，其中{{ wrong_count }}道需重点回看；下方按试卷分组展示题号、难度、知识点与破题点，先用错题定位短板，再用正确题确认稳定项。
     </div>
@@ -75,24 +78,33 @@ M9: 逐题分析明细 (Question Detail Analysis)
 
   {# --- 逐试卷表格 --- #}
   {% for paper in papers %}
-  <div class="m9-paper-section">
+  <div class="m9-paper-section{% if is_long_detail and not loop.first %} m9-paper-section--continued{% endif %}">
 
     {# --- 试卷标题行 --- #}
     <h3 class="m9-paper-title">{{ paper.paper_name }}（含小题共 {{ paper.total }} 题）</h3>
 
     {# ---- 错题表 ---- #}
     {% if paper.wrong_questions %}
+    {% set wrong_meta = namespace(has_weakness=false, has_analysis=false) %}
+    {% for q in paper.wrong_questions %}
+      {% if q.weakness_tags | default([], true) | length > 0 %}
+        {% set wrong_meta.has_weakness = true %}
+      {% endif %}
+      {% if q.error_analysis or q.key_points %}
+        {% set wrong_meta.has_analysis = true %}
+      {% endif %}
+    {% endfor %}
     <h4 class="m9-table-label m9-table-label--wrong">
       错题诊断（{{ paper.wrong_count }} 题）
     </h4>
-    <table class="m9-table m9-table--wrong">
+    <table class="m9-table m9-table--wrong{% if not wrong_meta.has_weakness and not wrong_meta.has_analysis %} m9-table--wrong-lite{% endif %}">
       <thead>
         <tr>
           <th class="m9-col-no">题号</th>
           <th class="m9-col-diff">难度</th>
           <th class="m9-col-kp">知识点</th>
-          <th class="m9-col-tags">薄弱环节</th>
-          <th class="m9-col-analysis">破题点分析</th>
+          {% if wrong_meta.has_weakness %}<th class="m9-col-tags">薄弱环节</th>{% endif %}
+          {% if wrong_meta.has_analysis %}<th class="m9-col-analysis">破题点分析</th>{% endif %}
         </tr>
       </thead>
       <tbody>
@@ -101,7 +113,8 @@ M9: 逐题分析明细 (Question Detail Analysis)
           <td>{{ q.no }}</td>
           <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
           <td>{{ q.kp_name }}</td>
-          <td>{{ q.weakness_tags | join('、') }}</td>
+          {% if wrong_meta.has_weakness %}<td>{{ q.weakness_tags | default([], true) | join('、') }}</td>{% endif %}
+          {% if wrong_meta.has_analysis %}
           <td class="m9-analysis-cell">
             {% if q.error_analysis %}
             <div class="m9-error-section">
@@ -114,6 +127,7 @@ M9: 逐题分析明细 (Question Detail Analysis)
             </div>
             {% endif %}
           </td>
+          {% endif %}
         </tr>
         {% endfor %}
       </tbody>

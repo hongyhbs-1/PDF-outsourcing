@@ -3,24 +3,29 @@
    条件: page_visibility.m11_reading_deep == true
    ============================================================================== #}
 
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
 {% set rd = reading_deep | default({}, true) %}
 {% if rd.enabled | default(false) %}
 {% set po = rd.passage_overview | default({}, true) %}
 {% set strategies = rd.reading_strategies | default([], true) %}
 <div class="m11-page">
-  <h1 class="m11-title">十一、阅读精讲</h1>
+  <section class="m11-title-section">
+    <h1 class="m11-title">{{ lb_icon('paper', 'frame-title-icon') }}十一、阅读精讲</h1>
+    <div class="m11-title__underline"></div>
+  </section>
 
   <section class="m11-core-conclusion">
-    <div class="m11-core-conclusion__label">本页核心结论</div>
+    <div class="m11-core-conclusion__label">{{ lb_icon('paper', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m11-core-conclusion__text">
       本篇阅读为「{{ po.genre | default('--', true) }}」，共 {{ po.question_count | default('--', true) }} 题，正确 {{ po.correct_count | default('--', true) }} 题、错误 {{ po.wrong_count | default('--', true) }} 题；{% if po.title | default('', true) %}本页聚焦 {{ po.title }}，{% endif %}{% if strategies | length > 0 %}重点训练{% for strategy in strategies %}{% if strategy is mapping %}{{ strategy.name | default(strategy.title | default('', true), true) }}{% else %}{{ strategy }}{% endif %}{% if not loop.last %}、{% endif %}{% endfor %}，{% endif %}按 3 天计划完成错题复盘与限时阅读。
     </div>
   </section>
 
+  <div class="module-content-card m11-content-card">
   <div class="m11-body">
   {# 1. 本篇阅读概览 #}
   <div class="m11-overview-card">
-    <div class="m11-section-title">本篇阅读概览</div>
+    <div class="m11-section-title">{{ lb_icon('data', 'frame-section-icon') }}本篇阅读概览</div>
     <div class="m11-overview-row">
       <div>文章类型：<strong>{{ po.genre | default('--', true) }}</strong></div>
       <div>题数：<strong>{{ po.question_count | default('--', true) }}</strong></div>
@@ -35,7 +40,7 @@
   {# 2. 为什么选这篇 #}
   {% if rd.selection_reason | default('', true) %}
   <div class="m11-section">
-    <div class="m11-section-title">为什么选这篇</div>
+    <div class="m11-section-title">{{ lb_icon('target', 'frame-section-icon') }}为什么选这篇</div>
     <p class="m11-analysis-text">{{ rd.selection_reason }}</p>
   </div>
   {% endif %}
@@ -43,7 +48,7 @@
   {# 3. 整体问题诊断 #}
   {% if rd.overall_diagnosis | default('', true) %}
   <div class="m11-diagnosis-card">
-    <div class="m11-section-title">整体问题诊断</div>
+    <div class="m11-section-title">{{ lb_icon('warning', 'frame-section-icon frame-section-icon--warning') }}整体问题诊断</div>
     <p class="m11-analysis-text">{{ rd.overall_diagnosis }}</p>
   </div>
   {% endif %}
@@ -51,7 +56,7 @@
   {# 4. 逐题讲解 #}
   {% if rd.question_analyses | default([], true) | length > 0 %}
   <div class="m11-section">
-    <div class="m11-section-title">逐题讲解</div>
+    <div class="m11-section-title">{{ lb_icon('question', 'frame-section-icon') }}逐题讲解</div>
     {% for qa in rd.question_analyses %}
     {% set is_wrong = qa.is_correct | default(true) == false %}
     {% set qa_no = qa.question_no | default(qa.canonical_no | default(loop.index, true), true) %}
@@ -87,7 +92,7 @@
   {# 5. 阅读方法 #}
   {% if strategies | length > 0 %}
   <div class="m11-section">
-    <div class="m11-section-title">阅读方法</div>
+    <div class="m11-section-title">{{ lb_icon('target', 'frame-section-icon') }}阅读方法</div>
     {% for strategy in strategies %}
     <div class="m11-strategy-card">
       {% if strategy is mapping %}
@@ -104,7 +109,7 @@
   {% if rd.three_day_plan | default('', true) %}
   <div class="m11-section">
     <div class="m11-suggestion-card">
-      <div class="m11-section-title">3天练习建议</div>
+      <div class="m11-section-title">{{ lb_icon('support', 'frame-section-icon') }}3天练习建议</div>
       <p class="m11-suggestion-text">{{ rd.three_day_plan }}</p>
     </div>
   </div>
@@ -117,5 +122,6 @@
   </div>
   {% endif %}
   </div>
+  </div><!-- /.module-content-card -->
 </div>
 {% endif %}

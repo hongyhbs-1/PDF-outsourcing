@@ -28,6 +28,8 @@ from .math_func import PageLayout
 # gap 分配会把核心结论和内容卡整体向下推，导致同一套章节标签页
 # 标题/归纳/主体位置不一致。这里用页级固定节奏覆盖这些页面的
 # direct-child margin，只影响 PDF print typeset，不改变 HTML 结构。
+_NATURAL_PAGINATION_MODULES = {"m9"}
+
 _COMPACT_CORE_RHYTHM_MM: dict[str, dict[int, float]] = {
     # P8：标题需要更靠近页眉，核心结论紧跟标题，主体卡片紧跟归纳。
     "m1": {1: 4.0, 2: 2.0, 3: 0.0},
@@ -79,10 +81,15 @@ def build_css(layouts: Dict[str, PageLayout]) -> str:
         parts.append(f"    flex-direction: column;")
         parts.append(f"    justify-content: {justify};")
 
-        # 压缩时使用 zoom (影响布局尺寸, 防止溢出)
+        # 压缩时使用 zoom (影响布局尺寸, 防止溢出)。
+        # M9 是逐题长表，必须自然分页；若按整页高度压缩 wrapper，
+        # Chromium 会把 100+ 行表格缩成一页，导致 PDF 正文字号接近不可读。
         if layout.scale < 1.0:
             parts.append(f"    /* scale={layout.scale:.4f} */")
-            parts.append(f"    zoom: {layout.scale:.4f};")
+            if mod_id in _NATURAL_PAGINATION_MODULES:
+                parts.append("    /* natural-pagination: zoom intentionally disabled */")
+            else:
+                parts.append(f"    zoom: {layout.scale:.4f};")
 
         parts.append("  }")
 

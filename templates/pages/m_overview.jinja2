@@ -51,6 +51,11 @@
 {% set conclusion_msg = _conclusion.message | default('') %}
 {% set student_grade = _cm.grade | default('--') %}
 {% set city_name = _meta.city_name | default(_cm.city_name | default(_cm.city | default('--'))) %}
+{% set subject_name = _meta.subject_name | default(_cover.subject | default('--'), true) %}
+{% set exam_name = _cm.exam_name | default(_meta.exam_name | default('--'), true) %}
+{% set trend_raw = _cm.trend | default(_summary.current_trend | default('', true), true) %}
+{% set trend_map = {'up': '上升', 'down': '下降', 'stable': '稳定'} %}
+{% set trend_label = trend_map[trend_raw] if trend_raw in trend_map else (trend_raw | default('--', true)) %}
 {% set paper_count_display = paper_count if paper_count else (_papers.total_papers | default(paper_items | length)) %}
 {% set accuracy_display = _summary.current_accuracy_text | default((accuracy | round(1)) ~ '%', true) %}
 {% set coverage_display = l3_covered ~ '/' ~ l3_total if l3_total else '待补充' %}

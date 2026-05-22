@@ -399,7 +399,7 @@ CSS变量说明：
   <div class="m4-grid-split">
   <div class="m4-grid-split__left">
   <div class="m4-peer-card m4-peer-card--overview">
-    <div class="m4-peer-title">{{ lb_icon('gauge', 'frame-inline-icon') }} 领域达标概览</div>
+    <div class="m4-peer-title">{{ lb_icon('gauge', 'frame-inline-icon') }} 一、领域达标概览</div>
 
   {# ------------------------------------------------------------------------
      图表说明条 (Chart Meta Bar)
@@ -512,7 +512,7 @@ CSS变量说明：
      ------------------------------------------------------------------------ #}
   {% if domains | length > 0 %}
   <div class="m4-table-card m4-peer-card">
-    <div class="m4-table-title m4-peer-title">{{ lb_icon('data', 'frame-inline-icon') }} 领域表现详情</div>
+    <div class="m4-table-title m4-peer-title">{{ lb_icon('data', 'frame-inline-icon') }} 二、领域表现详情</div>
     <table class="m4-table">
       <thead>
         <tr>
@@ -585,7 +585,7 @@ CSS变量说明：
   {% set strong_domains_list = domain_groups.achieved %}
   {% if weak_domains_list | length > 0 or strong_domains_list | length > 0 %}
   <div class="m4-summary-card">
-    <div class="m4-summary-title">{{ summary.title | default('分析小结') }}</div>
+    <div class="m4-summary-title">三、{{ summary.title | default('分析小结') }}</div>
     {% if weak_domains_list | length > 0 or strong_domains_list | length > 0 %}
     <div class="m4-summary-item m4-summary-item--improve">
       <span class="m4-summary-label">教学建议：</span>

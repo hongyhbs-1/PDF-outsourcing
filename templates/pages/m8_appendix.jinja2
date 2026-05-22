@@ -169,19 +169,19 @@
        ------------------------------------------------------------------------- #}
     <div class="m8-appendix-title">
       <h1 class="m8-appendix-title__text">
-        {{ lb_icon('paper', 'frame-title-icon') }}附录：试卷难度分布与分析依据
+        {% set _qd_m8 = question_detail | default({}, true) %}
+        {% set _qd_papers_m8 = _qd_m8.papers | default([], true) %}
+        {{ lb_icon('paper', 'frame-title-icon') }}{% if _qd_papers_m8 | length > 0 and _qd_m8.total_count | default(0) > 0 %}九{% else %}八{% endif %}、附录：试卷难度分布与分析依据
       </h1>
       <div class="m8-appendix-title__underline"></div>
     </div>
 
-    {% if _is_english_m8 %}
     <section class="m8-core-conclusion">
       <div class="m8-core-conclusion__label">{{ lb_icon('paper', 'frame-conclusion-icon') }}本页核心结论</div>
       <div class="m8-core-conclusion__text">
         本页用{{ safe_value(papers.total_questions, 0) }}道题、{{ safe_value(papers.total_papers, 0) }}份试卷补充说明分析依据；先看难度分布和指标释义，再看分析范围与试卷/批次清单，用于确认报告结论的数据口径、样本边界和可信来源。
       </div>
     </section>
-    {% endif %}
 
     <div class="module-content-card">
 
@@ -190,7 +190,7 @@
        ------------------------------------------------------------------------- #}
     {% if difficulty and difficulty.get('items', []) | length > 0 %}
     <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__titlebar">{{ lb_icon('module', 'frame-inline-icon') }} 难度分布统计</div>
+      <div class="m8-appendix-panel__titlebar">{{ lb_icon('module', 'frame-inline-icon') }} 一、难度分布统计</div>
 
       {# 3.3.1 统计表格 #}
       <table class="m8-appendix-table m8-appendix-difficulty-table">
@@ -240,7 +240,7 @@
     {# 难度分布无数据时的占位（可选择隐藏或显示提示） #}
     {#
     <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__titlebar">难度分布统计</div>
+      <div class="m8-appendix-panel__titlebar">一、难度分布统计</div>
       <div class="m8-appendix-empty">暂无难度分布数据</div>
     </section>
     #}
@@ -251,7 +251,7 @@
        ------------------------------------------------------------------------- #}
     {% if metric_definitions and metric_definitions | length > 0 %}
     <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__titlebar">{{ lb_icon('data', 'frame-inline-icon') }} 指标释义</div>
+      <div class="m8-appendix-panel__titlebar">{{ lb_icon('data', 'frame-inline-icon') }} 二、指标释义</div>
 
       <div class="m8-metrics-grid">
         {% for metric in metric_definitions %}
@@ -270,7 +270,7 @@
        3.2 模块一：分析范围
        ------------------------------------------------------------------------- #}
     <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__titlebar">{{ lb_icon('map', 'frame-inline-icon') }} 分析范围</div>
+      <div class="m8-appendix-panel__titlebar">{{ lb_icon('map', 'frame-inline-icon') }} 三、分析范围</div>
       
       {% if analysis_rows | length > 0 %}
       <table class="m8-appendix-table m8-appendix-kv-table">
@@ -293,7 +293,7 @@
        3.4 模块三：试卷/批次清单
        ------------------------------------------------------------------------- #}
     <section class="m8-appendix-panel">
-      <div class="m8-appendix-panel__section-title">{{ lb_icon('paper', 'frame-inline-icon') }} 试卷/批次清单</div>
+      <div class="m8-appendix-panel__section-title">{{ lb_icon('paper', 'frame-inline-icon') }} 四、试卷/批次清单</div>
       
       {% if papers and papers.get('items', []) | length > 0 %}
       <table class="m8-appendix-table m8-appendix-papers-table">
@@ -336,7 +336,7 @@
 
     {% if m8_density != 'dense' %}
     <div class="m8-appendix-usage">
-      <div class="m8-appendix-usage__title">{{ lb_icon('support', 'frame-inline-icon') }} 附录使用说明</div>
+      <div class="m8-appendix-usage__title">{{ lb_icon('support', 'frame-inline-icon') }} 五、附录使用说明</div>
       <div class="m8-appendix-usage__text">
         本附录用于说明分析范围、样本来源和指标口径。阅读正文时，可结合试卷清单确认样本覆盖，再结合指标释义理解各模块中的正确率、目标线和优先级等结论。
       </div>

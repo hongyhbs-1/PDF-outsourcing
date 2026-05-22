@@ -180,7 +180,9 @@ v1.1 - 2026-01-15
     {% set _report_display_time = _report_generated_at | replace('T', ' ') %}
     {% set _report_date = cover_meta.report_date | default(_report_display_time, true) %}
     {% set _question_count = cover_meta.question_count | default(none, true) %}
-    {% set _paper_count = cover_meta_raw.paper_count | default(none, true) %}
+    {% set _appendix_data = appendix | default({}, true) %}
+    {% set _appendix_papers = _appendix_data.papers | default({}, true) %}
+    {% set _paper_count = cover_meta_raw.paper_count | default(_appendix_papers.total_papers | default(none), true) %}
     <div class="m0-cover-exclusive">
       <div class="m0-cover-exclusive__name">{{ _student }}</div>
       {# 评估时间紧跟姓名，形成"姓名+时间"视觉焦点 #}
@@ -191,18 +193,10 @@ v1.1 - 2026-01-15
     </div>
 
     {# ====================================================================
-       3. 学生档案 - 城市/年级/学科/题量/日期
+       3. 封面信息 - 城市/年级/学科/考试/趋势/分析试卷
        ==================================================================== #}
-    <section class="m0-cover-dossier" aria-label="学生档案">
-      <div class="m0-cover-dossier__title">学生档案</div>
+    <section class="m0-cover-dossier" aria-label="封面信息">
       <div class="m0-cover-meta">
-        <div class="m0-cover-meta__item">
-          <div class="m0-cover-meta__label">学生</div>
-          <div class="m0-cover-meta__value{% if not _student or _student == empty_placeholder %} m0-cover-meta__value--empty{% endif %}">
-            {{- _student -}}
-          </div>
-        </div>
-
         <div class="m0-cover-meta__item">
           <div class="m0-cover-meta__label">城市</div>
           <div class="m0-cover-meta__value{% if not cover_meta.city %} m0-cover-meta__value--empty{% endif %}">
@@ -239,22 +233,15 @@ v1.1 - 2026-01-15
         </div>
 
         <div class="m0-cover-meta__item">
-          <div class="m0-cover-meta__label">分析题量</div>
-          <div class="m0-cover-meta__value{% if _question_count is none and _paper_count is none %} m0-cover-meta__value--empty{% endif %}">
-            {%- if _question_count is not none -%}
-              {{ _question_count }}题
-            {%- elif _paper_count is not none -%}
+          <div class="m0-cover-meta__label">分析试卷</div>
+          <div class="m0-cover-meta__value{% if _paper_count is none and _question_count is none %} m0-cover-meta__value--empty{% endif %}">
+            {%- if _paper_count is not none -%}
               {{ _paper_count }}套
+            {%- elif _question_count is not none -%}
+              {{ _question_count }}题
             {%- else -%}
               {{ empty_placeholder }}
             {%- endif -%}
-          </div>
-        </div>
-
-        <div class="m0-cover-meta__item">
-          <div class="m0-cover-meta__label">报告日期</div>
-          <div class="m0-cover-meta__value{% if not _report_date %} m0-cover-meta__value--empty{% endif %}">
-            {{- _report_date | default(empty_placeholder, true) -}}
           </div>
         </div>
       </div>

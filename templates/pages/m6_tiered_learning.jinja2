@@ -300,6 +300,17 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   {% set has_data = current.has_data | default(true) %}
   {% set pass_rate = current.pass_rate | default(0) if has_data else 0 %}
   {% set clamped_rate = ([100, [0, pass_rate] | max] | min) | round(1) %}
+  {% set summary_data = summary | default({}, true) %}
+  {% set stage_target_rate = summary_data.target_accuracy | default(meta.target_accuracy | default(85, true), true) %}
+  {% if stage_card.target_accuracy is defined and stage_card.target_accuracy not in [none, ''] %}
+    {% set stage_target_rate = stage_card.target_accuracy %}
+  {% endif %}
+  {% if current.target_accuracy is defined and current.target_accuracy not in [none, ''] %}
+    {% set stage_target_rate = current.target_accuracy %}
+  {% elif current.target_rate is defined and current.target_rate not in [none, ''] %}
+    {% set stage_target_rate = current.target_rate %}
+  {% endif %}
+  {% set clamped_target_rate = ([100, [0, stage_target_rate | float] | max] | min) | round(1) %}
   {% set above_target = current.above_target | default(false) %}
 
   <section class="m6-card m6-card--strong-border {{ 'm6-status--nodata' if not has_data else ('m6-status--above-target' if above_target else 'm6-status--below-target') }}"
@@ -309,7 +320,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     <div class="m6-card-header">
       <span class="m6-bullet m6-bullet--{{ stage_card.bullet_color | default('blue', true) }}"></span>
       <h2 class="m6-card-header__title">
-        {{ lb_icon('gauge', 'frame-card-icon') }} {{ stage_card.title | default('当前学习阶段判定', true) }}
+        {{ lb_icon('gauge', 'frame-card-icon') }} 一、{{ stage_card.title | default('当前学习阶段判定', true) }}
       </h2>
     </div>
 
@@ -337,29 +348,31 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
       {% endfor %}
     </div>
 
-    {# 进度滑杆 #}
-    <div class="m6-stage-slider">
-      <div class="m6-stage-track">
-        <div class="m6-stage-fill"></div>
+    {# 进度条：与“数学画像分析 / 二、整体分析”的 sp-progress 组件保持一致 #}
+    <div class="m6-stage-progress-panel sp-progress-panel">
+      <div class="sp-progress-panel__meta">
+        <div class="sp-progress-panel__eyebrow">{{ lb_icon('gauge', 'frame-inline-icon') }}阶段位置</div>
+        {% if has_data %}
+        <div class="sp-progress-panel__title">当前 {{ clamped_rate | round(0) | int }}%，目标 {{ clamped_target_rate | round(0) | int }}%，{{ current_stage.name }}</div>
+        <p class="sp-progress-panel__text">{{ current.position_hint | default('先看位置，再看后面的学习建议。', true) }}</p>
+        {% else %}
+        <div class="sp-progress-panel__title">当前数据还不足以判断稳定阶段</div>
+        <p class="sp-progress-panel__text">先补足样本，再判断位置与阶段。</p>
+        {% endif %}
       </div>
 
-      {# 阶段三角标识 #}
-      <div class="m6-stage-marker {{ 'm6-hidden' if not has_data else '' }}"></div>
-
-      {# 当前位置指示器 #}
-      {% if has_data %}
-      <div class="m6-stage-current"></div>
-      <div class="m6-stage-current__hint">
-        {{ current.position_hint | default('(当前位置)', true) }}
+      <div class="sp-progress sp-progress--panel">
+        <div class="sp-progress-track">
+          <div class="sp-progress-fill" style="width:{{ clamped_rate }}%;"></div>
+          <div class="sp-progress-target sp-progress-target--current" style="left:{{ clamped_rate }}%;" title="当前节点"></div>
+        </div>
+        <div class="sp-progress-labels">
+          <span>0%</span>
+          <span>{% if has_data %}当前 {{ clamped_rate | round(0) | int }}%{% else %}当前 暂无数据{% endif %}</span>
+          <span>目标 {{ clamped_target_rate | round(0) | int }}%</span>
+          <span>100%</span>
+        </div>
       </div>
-      <div class="m6-stage-current__kpi">
-        {{ current.pass_rate_text | default('暂无数据', true) }}
-      </div>
-      {% else %}
-      <div class="m6-stage-current__kpi" style="color: var(--color-text-muted);">
-        暂无数据
-      </div>
-      {% endif %}
     </div>
 
     {# 当前阶段特点说明框 #}
@@ -385,7 +398,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   <section class="m6-card m6-card--strong-border m6-recommendation-module">
   {% if weak_items | length > 0 %}
   <div class="m6-training-focus">
-    <div class="m6-training-focus__title">{{ lb_icon('target', 'frame-section-icon') }} 训练重点速览</div>
+    <div class="m6-training-focus__title">{{ lb_icon('target', 'frame-section-icon') }} 二、训练重点速览</div>
     <div class="m6-training-focus__grid">
       {% for item in weak_items[:6] %}
       <div class="m6-training-focus__item">
@@ -414,7 +427,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
       <span class="m6-bullet m6-bullet--{{ student_card.bullet_color | default('blue', true) }}"></span>
       {{ role_icon(student_card.icon | default('student')) }}
       <h2 class="m6-card-header__title">
-        {{ student_card.title | default('给学生的学习建议', true) }}
+        三、{{ student_card.title | default('给学生的学习建议', true) }}
       </h2>
     </div>
 
@@ -461,7 +474,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
       <span class="m6-bullet m6-bullet--{{ parent_card.bullet_color | default('orange', true) }}"></span>
       {{ role_icon(parent_card.icon | default('parent')) }}
       <h2 class="m6-card-header__title">
-        {{ parent_card.title | default('给家长的配合建议', true) }}
+        四、{{ parent_card.title | default('给家长的配合建议', true) }}
       </h2>
     </div>
 
@@ -500,7 +513,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
       <span class="m6-bullet m6-bullet--{{ teacher_card.bullet_color | default('red', true) }}"></span>
       {{ role_icon(teacher_card.icon | default('teacher')) }}
       <h2 class="m6-card-header__title">
-        {{ teacher_card.title | default('给老师的教学建议', true) }}
+        五、{{ teacher_card.title | default('给老师的教学建议', true) }}
       </h2>
     </div>
 

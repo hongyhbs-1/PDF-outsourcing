@@ -197,23 +197,36 @@
   {%- endif -%}
 {% endmacro %}
 
-{# [v1.1] 获取上级名称（按层级规则：L2用domain_name，L3/L4用parent_name） #}
-{% macro get_parent_display(item) %}
-  {%- if item.domain_name -%}
-    {{- item.domain_name -}}
-  {%- elif item.parent_name -%}
-    {{- item.parent_name -}}
-  {%- elif item.parent_l1_name -%}
-    {{- item.parent_l1_name -}}
-  {%- elif item.parent_l2_name -%}
-    {{- item.parent_l2_name -}}
-  {%- elif item.parent_l3_name -%}
-    {{- item.parent_l3_name -}}
-  {%- elif item.parent_name_cn -%}
-    {{- item.parent_name_cn -}}
+{# 将 L1 编码（如 1.00）转成当前学科的领域名；其它编码/文本原样展示 #}
+{% macro display_domain_or_text(value) %}
+  {%- if value is not none and value != "" -%}
+    {%- set text = value | string -%}
+    {%- set key = text.split('.')[0] -%}
+    {%- if key in domain_names and (text == key or text == key ~ '.00') -%}
+      {{- domain_names[key] -}}
+    {%- else -%}
+      {{- text -}}
+    {%- endif -%}
   {%- else -%}
     --
   {%- endif -%}
+{% endmacro %}
+
+{# [v1.1] 获取上级名称（L2用领域名，L3/L4优先用直接上级；L1编码自动转学科领域名） #}
+{% macro get_parent_display(item, level="") %}
+  {%- set parent_value = none -%}
+  {%- if level == "L2" -%}
+    {%- set parent_value = item.domain_name | default(item.parent_l1_name, true) -%}
+  {%- elif level == "L3" -%}
+    {%- set parent_value = item.parent_name | default(item.parent_l2_name, true) -%}
+    {%- if not parent_value -%}{%- set parent_value = item.domain_name | default(item.parent_l1_name, true) -%}{%- endif -%}
+  {%- elif level == "L4" -%}
+    {%- set parent_value = item.parent_name | default(item.parent_l3_name, true) -%}
+    {%- if not parent_value -%}{%- set parent_value = item.parent_l2_name | default(item.domain_name, true) -%}{%- endif -%}
+  {%- else -%}
+    {%- set parent_value = item.domain_name | default(item.parent_name | default(item.parent_l1_name | default(item.parent_l2_name | default(item.parent_l3_name | default(item.parent_name_cn, true), true), true), true), true) -%}
+  {%- endif -%}
+  {{- display_domain_or_text(parent_value) -}}
 {% endmacro %}
 
 {# =============================================================================
@@ -277,7 +290,7 @@
               </td>
 
               {# 上级名称 #}
-              <td class="m3-kp-col-parent">{{ get_parent_display(it) }}</td>
+              <td class="m3-kp-col-parent">{{ get_parent_display(it, level) }}</td>
 
               {# 正确率 #}
               <td class="m3-kp-col-acc">{{ safe_percent(it.accuracy) }}</td>
@@ -333,15 +346,42 @@
   {% if node_delta is not none %}{% set drill_focus.max_gap = (node_delta | abs) ~ '%' %}{% endif %}
 {% endfor %}
 
-{# [v2.0] 六大领域数据 #}
-{% set domain_names = data.domain_names | default({
+{# [v2.0] 六大领域数据：英文报告优先使用英文领域，避免旧样本中的数学兜底名泄漏 #}
+{% set subject_code = meta.subject | default('', true) | lower %}
+{% set subject_name = meta.subject_name | default('', true) %}
+{% set is_english_subject = subject_code == 'english' or '英语' in subject_name %}
+{% set default_domain_names = {
+  "1": "词汇与词法",
+  "2": "语法",
+  "3": "句法与句型",
+  "4": "阅读理解",
+  "5": "写作能力",
+  "6": "语言运用"
+} if is_english_subject else {
   "1": "方程与不等式",
   "2": "函数",
   "3": "数与代数",
   "4": "统计与概率",
   "5": "应用",
   "6": "几何"
-}, true) %}
+} %}
+{% set domain_names = {} %}
+{% for key, name in default_domain_names.items() %}
+  {% set _ = domain_names.update({key: name}) %}
+{% endfor %}
+{% if not is_english_subject %}
+  {% for key, name in (data.domain_names | default({}, true)).items() %}
+    {% set _ = domain_names.update({key: name}) %}
+  {% endfor %}
+{% endif %}
+{% if domains is defined and domains.domain_items is defined %}
+  {% for item in domains.domain_items | default([], true) %}
+    {% set raw_code = item.code | default(item.domain_code | default('', true), true) | string %}
+    {% set key = raw_code.split('.')[0] %}
+    {% set name = item.name_cn | default(item.name | default('', true), true) %}
+    {% if key and name %}{% set _ = domain_names.update({key: name}) %}{% endif %}
+  {% endfor %}
+{% endif %}
 {% set domain_panels = data.domain_panels | default({}, true) %}
 
 {# [v2.0] 固定的六大领域编号列表（确保始终生成6个panel） #}
@@ -358,7 +398,7 @@
   {% set any_items = (l2_items | length > 0) or (l3_items | length > 0) or (l4_items | length > 0) %}
   {% set panel_has_data = panel.has_data | default(false, true) %}
   {% if not any_items and not panel_has_data %}
-    {% set d_name = panel.domain_name | default(domain_names[dk] | default("领域" ~ dk, true), true) %}
+    {% set d_name = domain_names[dk] | default(panel.domain_name | default("领域" ~ dk, true), true) %}
     {% set _ = drill_nodata_names.append(d_name) %}
   {% endif %}
 {% endfor %}
@@ -380,14 +420,14 @@
       </div>
     </section>
 
-    <div class="module-content-card">
+    <div class="module-content-card m3-kp-guide-card">
 
     {# =========================================================================
      # 区块3：介绍面板 + 层级步骤条
      # ========================================================================= #}
     {% if intro_text %}
     <div class="m3-kp-drill__intro-panel">
-      <div class="m3-kp-drill__section-title m3-kp-drill__section-title--guide">{{ lb_icon('tree', 'frame-inline-icon') }} 层级说明</div>
+      <div class="m3-kp-drill__section-title m3-kp-drill__section-title--guide">{{ lb_icon('tree', 'frame-inline-icon') }} 一、层级说明</div>
       {# 说明文字 #}
       <div class="m3-kp-drill__desc">{{ intro_text }}</div>
 
@@ -454,14 +494,14 @@
     {% if path_example and (path_example.nodes is defined and path_example.nodes | length > 0) %}
     <div class="m3-kp-path">
       {# 标题 #}
-      <div class="m3-kp-drill__section-title">{{ lb_icon('map', 'frame-inline-icon') }} {{ path_example.title | default("钻取路径示例", true) }}</div>
+      <div class="m3-kp-drill__section-title">{{ lb_icon('map', 'frame-inline-icon') }} 二、{{ path_example.title | default("钻取路径示例", true) }}</div>
 
       {# 路径节点 #}
       <div class="m3-kp-path__nodes">
         {% for n in path_example.nodes %}
           <div class="m3-kp-path-node m3-kp-path-node--{{ n.theme | default('l1', true) }}">
             <div class="m3-kp-path-node__lvl">({{ n.level | default("L?", true) }})</div>
-            <div class="m3-kp-path-node__name">{{ n.name_cn | default("--", true) }}</div>
+            <div class="m3-kp-path-node__name">{{ display_domain_or_text(n.name_cn | default("--", true)) }}</div>
             <div class="m3-kp-path-node__delta">
               {# [v1.1] 支持 gap_to_target 回退 #}
               {% set node_delta = n.delta_vs_target if n.delta_vs_target is defined else n.gap_to_target | default(none) %}
@@ -480,7 +520,7 @@
 
       {# 说明条 #}
       {% if path_example.note_text %}
-      <div class="m3-kp-path__note">* {{ path_example.note_text }}<br>* 示例，不代表本次诊断结果</div>
+      <div class="m3-kp-path__note">* {{ path_example.note_text }}（示例，不代表本次诊断结果）</div>
       {% endif %}
     </div>
     {% endif %}
@@ -499,9 +539,9 @@
        # 遍历六大领域（固定6个panel，即使某领域无数据也会创建空panel）
        # domain_keys = ["1", "2", "3", "4", "5", "6"]
        # ----------------------------------------------------------------------- #}
-      {% set ns = namespace(first_panel_done=false) %}
-      {# 收集无数据领域名称 #}
+      {# 收集无数据领域名称，同时确定需要渲染的领域；四个有效领域时走 2x2 等高卡片布局 #}
       {% set nodata_names = [] %}
+      {% set render_domain_keys = [] %}
       {% for dk in domain_keys %}
         {% set panel = domain_panels[dk] | default({}, true) %}
         {% set l2_items = panel.l2_items | default([], true) %}
@@ -509,16 +549,19 @@
         {% set l4_items = panel.l4_items | default([], true) %}
         {% set any_items = (l2_items | length > 0) or (l3_items | length > 0) or (l4_items | length > 0) %}
         {% set panel_has_data = panel.has_data | default(false, true) %}
-        {% if not any_items and not panel_has_data %}
-          {% set d_name = panel.domain_name | default(domain_names[dk] | default("领域" ~ dk, true), true) %}
+        {% set should_render_panel = any_items or panel_has_data or (panel.all_achieved | default(false)) %}
+        {% if should_render_panel %}
+          {% set _ = render_domain_keys.append(dk) %}
+        {% else %}
+          {% set d_name = domain_names[dk] | default(panel.domain_name | default("领域" ~ dk, true), true) %}
           {% set _ = nodata_names.append(d_name) %}
         {% endif %}
       {% endfor %}
 
-      {% for dk in domain_keys %}
+      {% macro render_domain_panel(dk) %}
         {# 获取当前领域的数据（如果存在） #}
         {% set panel = domain_panels[dk] | default({}, true) %}
-        {% set d_name = panel.domain_name | default(domain_names[dk] | default("领域" ~ dk, true), true) %}
+        {% set d_name = domain_names[dk] | default(panel.domain_name | default("领域" ~ dk, true), true) %}
         {% set d_code = panel.domain_code | default(dk, true) %}
         {% set panel_has_data = panel.has_data | default(false, true) %}
 
@@ -587,9 +630,16 @@
 
         </div>
         {# === 领域 Panel 结束 === #}
-        {% set ns.first_panel_done = true %}
         {% endif %}
-      {% endfor %}
+      {% endmacro %}
+
+      <div class="m3-kp-drill__panel-card">
+        <div class="m3-kp-drill__panels{% if render_domain_keys | length == 4 %} m3-kp-drill__panels--grid-2x2{% endif %}">
+          {% for dk in render_domain_keys %}
+            {{ render_domain_panel(dk) }}
+          {% endfor %}
+        </div>
+      </div>
 
       {# --- 无数据领域合并汇总块 --- #}
       {% if nodata_names | length > 0 %}

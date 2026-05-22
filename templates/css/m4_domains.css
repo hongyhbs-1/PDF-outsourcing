@@ -205,7 +205,7 @@
   margin: 0 var(--cw-spacing-6) 10px;
   border: 1px solid var(--cw-color-border-card);
   background: var(--cw-color-page-bg);
-  border-radius: var(--cw-radius-0);
+  border-radius: var(--cw-radius-md);
   overflow: hidden;
 }
 
@@ -547,7 +547,7 @@
   margin: 0 var(--cw-spacing-6) 10px;
   border: 1px solid var(--cw-color-border-card);
   background: var(--cw-color-page-bg);
-  border-radius: var(--cw-radius-0);
+  border-radius: var(--cw-radius-md);
   overflow: hidden;
 }
 
@@ -694,7 +694,8 @@
   margin: 0 var(--cw-spacing-6) 8px;
   border: 1px solid var(--cw-color-border-card);
   background: var(--cw-color-page-bg);
-  border-radius: var(--cw-radius-0);
+  border-radius: var(--cw-radius-md);
+  overflow: hidden;
 }
 
 .m4-summary-title {

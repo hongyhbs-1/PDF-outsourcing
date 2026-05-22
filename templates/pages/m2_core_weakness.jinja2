@@ -119,9 +119,9 @@
   <div class="m2-cw-core-summary">
     <div class="m2-cw-core-summary__label">{{ lb_icon('warning', 'frame-conclusion-icon frame-conclusion-icon--warning') }}本页核心结论</div>
     <div class="m2-cw-core-summary__text">
-      <strong>{{ lb_icon('module', 'frame-inline-icon') }}短板集中：</strong>{% if weakness_summary.domains | length > 0 %}{{ weakness_summary.domains[:3] | join('、') }}{% else %}暂无明显集中领域{% endif %}；
-      <strong>{{ lb_icon('target', 'frame-inline-icon frame-inline-icon--warning') }}优先处理：</strong>P0/P1 共{{ weakness_summary.p0 + weakness_summary.p1 }}个，先补高差距项；
-      <strong>{{ lb_icon('axis', 'frame-inline-icon') }}迁移重点：</strong>先建立方法链路，再做同类题迁移。
+      <strong>短板集中：</strong>{% if weakness_summary.domains | length > 0 %}{{ weakness_summary.domains[:3] | join('、') }}{% else %}暂无明显集中领域{% endif %}；
+      <strong>优先处理：</strong>P0/P1 共{{ weakness_summary.p0 + weakness_summary.p1 }}个，先补高差距项；
+      <strong>迁移重点：</strong>先建立方法链路，再做同类题迁移。
     </div>
   </div>
 
@@ -129,7 +129,7 @@
 
   {# ===== 3. 导语说明条（仅在有内容时渲染） ===== #}
   {% if s.intro_text %}
-  <div class="m2-cw-note-bar"><span class="m2-cw-note-bar__title">{{ lb_icon('target', 'frame-inline-icon') }}短板筛选说明</span><span class="m2-cw-note-bar__text">{{ s.intro_text }}</span></div>
+  <div class="m2-cw-note-bar"><span class="m2-cw-note-bar__title">{{ lb_icon('target', 'frame-inline-icon') }}一、短板筛选说明</span><span class="m2-cw-note-bar__text">{{ s.intro_text }}</span></div>
   {% endif %}
 
   {# ===== 4. 表格卡片 ===== #}
@@ -262,7 +262,7 @@
 
     {# ----- 5.1 标题行 ----- #}
     <div class="m2-cw-reason-header">
-      <span class="m2-cw-reason-header__title">{{ lb_icon('data', 'frame-inline-icon') }} {{ safe(reasoning.title, '排序依据说明') }}</span>
+      <span class="m2-cw-reason-header__title">{{ lb_icon('data', 'frame-inline-icon') }} 二、{{ safe(reasoning.title, '排序依据说明') }}</span>
       <span class="m2-cw-reason-header__subtitle">
         {{ safe(reasoning.subtitle_prefix, '') }}"<span class="m2-cw-reason-header__highlight">{{ safe(reasoning.highlight_kp, '') }}</span>"{{ safe(reasoning.subtitle_suffix, '') }}
       </span>
@@ -306,7 +306,7 @@
   {% set tips = s.tips | default([]) %}
   {% if tips | length > 0 %}
   <div class="m2-cw-tips-box">
-    <div class="m2-cw-tips-title">{{ lb_icon('data', 'frame-inline-icon') }} 数据提示</div>
+    <div class="m2-cw-tips-title">{{ lb_icon('data', 'frame-inline-icon') }} 三、数据提示</div>
     {% for tip in tips %}
     <div class="m2-cw-tips-item">* {{ tip }}</div>
     {% endfor %}

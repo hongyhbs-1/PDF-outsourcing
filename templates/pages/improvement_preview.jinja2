@@ -9,6 +9,45 @@
 {% set delta = summary.current_delta | default(0) | float %}
 {% set student_name = meta.student_display_name | default('同学') %}
 {% set subject = meta.subject_name | default('') %}
+{# Roadmap checkpoints must remain below the final target; sample 06 uses target_acc=75. #}
+{% set target_gap = target_acc - acc %}
+{% if target_gap < 0 %}
+  {% set target_gap = 0 %}
+{% endif %}
+{% if target_gap <= 0 %}
+  {% set foundation_acc = acc %}
+{% elif target_acc > 65 and acc < 60 %}
+  {% set foundation_acc = 60 %}
+{% else %}
+  {% set foundation_acc = acc + (target_gap * 0.5) %}
+{% endif %}
+{% set foundation_acc = foundation_acc | round(0, 'ceil') | int %}
+{% if foundation_acc >= target_acc and target_gap >= 2 %}
+  {% set foundation_acc = target_acc - 1 %}
+{% endif %}
+{% if foundation_acc <= acc and target_gap >= 2 %}
+  {% set foundation_acc = acc + 1 %}
+{% endif %}
+{% set boost_acc = ((foundation_acc + target_acc) / 2) | round(0, 'ceil') | int %}
+{% if boost_acc <= foundation_acc and target_acc > foundation_acc and target_gap >= 3 %}
+  {% set boost_acc = foundation_acc + 1 %}
+{% endif %}
+{% if boost_acc >= target_acc and target_acc > foundation_acc and target_gap >= 3 %}
+  {% set boost_acc = target_acc - 1 %}
+{% endif %}
+{% set show_foundation_stage = target_gap >= 2 and foundation_acc > acc and foundation_acc < target_acc %}
+{% set show_boost_stage = target_gap >= 3 and boost_acc > foundation_acc and boost_acc < target_acc %}
+{% set room_boost_acc = (acc + ((target_acc - acc) * 0.55)) | round(0, 'ceil') | int %}
+{% if room_boost_acc <= acc and target_acc > acc and target_gap >= 2 %}
+  {% set room_boost_acc = acc + 1 %}
+{% endif %}
+{% if room_boost_acc >= target_acc and target_acc > acc and target_gap >= 2 %}
+  {% set room_boost_acc = target_acc - 1 %}
+{% endif %}
+{% if room_boost_acc < acc %}
+  {% set room_boost_acc = acc | round(0, 'ceil') | int %}
+{% endif %}
+{% set show_room_boost_stage = target_gap >= 2 and room_boost_acc > acc and room_boost_acc < target_acc %}
 
 {# --- 三档分类 (与 student_profile 保持一致) --- #}
 {% if acc < 60 %}
@@ -58,16 +97,20 @@
       <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
       <div class="ip-stage__desc">起点</div>
     </div>
+    {% if show_foundation_stage %}
     <div class="ip-stage ip-stage--checkpoint">
-      <div class="ip-stage__marker ip-stage__marker--future">60%</div>
+      <div class="ip-stage__marker ip-stage__marker--future">{{ foundation_acc }}%</div>
       <div class="ip-stage__label">{{ lb_icon('flag', 'frame-inline-icon ip-stage-icon--checkpoint') }}阶段性目标</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
+    {% endif %}
+    {% if show_boost_stage %}
     <div class="ip-stage ip-stage--boost">
-      <div class="ip-stage__marker ip-stage__marker--future">75%</div>
+      <div class="ip-stage__marker ip-stage__marker--future">{{ boost_acc }}%</div>
       <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}稳步提升</div>
       <div class="ip-stage__desc">约 120 天</div>
     </div>
+    {% endif %}
     <div class="ip-stage ip-stage--target">
       <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
       <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon ip-stage-icon--target') }}目标达成</div>
@@ -81,11 +124,13 @@
       <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
       <div class="ip-stage__desc">起点</div>
     </div>
+    {% if show_room_boost_stage %}
     <div class="ip-stage ip-stage--boost">
-      <div class="ip-stage__marker ip-stage__marker--future">80%</div>
+      <div class="ip-stage__marker ip-stage__marker--future">{{ room_boost_acc }}%</div>
       <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}快速提升</div>
       <div class="ip-stage__desc">约 30 天</div>
     </div>
+    {% endif %}
     <div class="ip-stage ip-stage--target">
       <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
       <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon ip-stage-icon--target') }}目标达成</div>
@@ -117,6 +162,7 @@
     <div class="ip-section-heading">{{ lb_icon('growth', 'frame-section-icon frame-section-icon--success') }}二、提升路线</div>
 
     {% if tier == 'need_major' %}
+    {% if show_foundation_stage %}
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">第一阶段</div>
@@ -124,9 +170,11 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">基础夯实期</div>
-        <p class="ip-milestone__text">集中补强薄弱领域的基础知识，通过 dida985 每日推送的针对性练习，预计可将正确率从 <strong class="ip-milestone__highlight">{{ acc | int }}%</strong> 提升至 <strong class="ip-milestone__highlight">60%</strong> 左右。</p>
+        <p class="ip-milestone__text">集中补强薄弱领域的基础知识，通过 dida985 每日推送的针对性练习，预计可将正确率从 <strong class="ip-milestone__highlight">{{ acc | int }}%</strong> 提升至 <strong class="ip-milestone__highlight">{{ foundation_acc }}%</strong> 左右。</p>
       </div>
     </div>
+    {% endif %}
+    {% if show_boost_stage %}
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">第二阶段</div>
@@ -134,9 +182,10 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">能力提升期</div>
-        <p class="ip-milestone__text">开始攻克中等难度题型，通过错题精讲和举一反三训练，正确率稳步提升至 <strong class="ip-milestone__highlight">75%</strong> 左右。</p>
+        <p class="ip-milestone__text">开始攻克中等难度题型，通过错题精讲和举一反三训练，正确率稳步提升至 <strong class="ip-milestone__highlight">{{ boost_acc }}%</strong> 左右，进入目标冲刺区间。</p>
       </div>
     </div>
+    {% endif %}
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">第三阶段</div>
@@ -149,6 +198,7 @@
     </div>
 
     {% elif tier == 'room_grow' %}
+    {% if show_room_boost_stage %}
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">第一阶段</div>
@@ -156,9 +206,10 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">薄弱点突破</div>
-        <p class="ip-milestone__text">针对低于目标线的 {{ weak_items | length }} 个薄弱领域进行专项训练，预计可快速提升至 <strong class="ip-milestone__highlight">80%</strong> 左右。</p>
+        <p class="ip-milestone__text">针对低于目标线的 {{ weak_items | length }} 个薄弱领域进行专项训练，预计可快速提升至 <strong class="ip-milestone__highlight">{{ room_boost_acc }}%</strong> 左右。</p>
       </div>
     </div>
+    {% endif %}
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">第二阶段</div>
@@ -216,7 +267,7 @@
     <div class="ip-phase-card">
       <div class="ip-phase-card__header">{{ lb_icon('flag', 'frame-card-icon') }}阶段目标</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">基础正确率达标 <strong>60%</strong></div>
+        <div class="ip-phase-card__item">基础正确率达标 <strong>{{ foundation_acc }}%</strong></div>
         <div class="ip-phase-card__item">薄弱领域减少至 <strong>2 个</strong>以内</div>
         <div class="ip-phase-card__item">错题同类变形正确率 <strong>≥70%</strong></div>
       </div>
@@ -232,7 +283,7 @@
     <div class="ip-phase-card ip-phase-card--accent">
       <div class="ip-phase-card__header">{{ lb_icon('shield', 'frame-card-icon frame-card-icon--success') }}验收标准</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">连续 2 次测评正确率 <strong>≥60%</strong></div>
+        <div class="ip-phase-card__item">连续 2 次测评正确率 <strong>≥{{ foundation_acc }}%</strong></div>
         <div class="ip-phase-card__item">基础知识点覆盖率 <strong>≥80%</strong></div>
         <div class="ip-phase-card__item">错题重做正确率 <strong>≥75%</strong></div>
       </div>

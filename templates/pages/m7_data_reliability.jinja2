@@ -292,7 +292,7 @@
      ==================================================================== #}
   <section class="m7-report-box">
     <div class="m7-report-box__inner">
-      <h2 class="m7-section-title">{{ lb_icon('data', 'frame-section-icon') }} 原始输入识别与数据概览</h2>
+      <h2 class="m7-section-title">{{ lb_icon('data', 'frame-section-icon') }} 一、原始输入识别与数据概览</h2>
 
       <div class="m7-overview-cards">
         {# --- 卡片1: 分析题量 --- #}
@@ -407,7 +407,7 @@
   {% if coverage_table.rows and coverage_table.rows | length > 0 %}
   <section class="m7-report-box m7-report-box--purple">
     <div class="m7-report-box__inner">
-      <h2 class="m7-section-title">{{ lb_icon('tree', 'frame-section-icon') }} 批改归因与L2模块覆盖详情</h2>
+      <h2 class="m7-section-title">{{ lb_icon('tree', 'frame-section-icon') }} 二、批改归因与L2模块覆盖详情</h2>
       <p class="m7-coverage-note">按知识点统计并归因到L2模块，1题可覆盖多个知识点；题量、置信度和分布条共同用于校验批改归因是否稳定。</p>
 
       <table class="m7-coverage-table">
@@ -476,7 +476,7 @@
       <h2 class="m7-block-title">
         <span class="m7-block-title__bullet"></span>
         {{ lb_icon('shield', 'frame-inline-icon') }}
-        <span>报告结论可信度评估</span>
+        <span>三、报告结论可信度评估</span>
       </h2>
       
       <p class="m7-block-desc">
@@ -555,7 +555,7 @@
       <h2 class="m7-block-title">
         <span class="m7-block-title__bullet"></span>
         {{ lb_icon('warning', 'frame-inline-icon frame-inline-icon--warning') }}
-        <span>{{ low_sample.title | default('数据不足提示', true) }}</span>
+        <span>四、{{ low_sample.title | default('数据不足提示', true) }}</span>
       </h2>
       
       <p class="m7-block-desc">
@@ -591,7 +591,7 @@
       <h2 class="m7-block-title">
         <span class="m7-block-title__bullet"></span>
         {{ lb_icon('target', 'frame-inline-icon') }}
-        <span>{{ uncovered_core.title | default('未覆盖的核心考点', true) }}</span>
+        <span>五、{{ uncovered_core.title | default('未覆盖的核心考点', true) }}</span>
       </h2>
       
       <p class="m7-block-desc">
@@ -620,7 +620,7 @@
   {% if m7_density == 'sparse' %}
   <section class="m7-report-box m7-report-box--usage">
     <div class="m7-report-box__inner">
-      <h2 class="m7-section-title">{{ lb_icon('support', 'frame-section-icon') }} 如何使用当前诊断</h2>
+      <h2 class="m7-section-title">{{ lb_icon('support', 'frame-section-icon') }} 六、如何使用当前诊断</h2>
       <div class="m7-usage-grid">
         <div class="m7-usage-item">
           <div class="m7-usage-item__title">先看趋势</div>

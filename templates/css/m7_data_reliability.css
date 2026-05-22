@@ -185,7 +185,8 @@
   margin-bottom: var(--spacing-lg);
   border: 1px solid var(--color-border-blue);
   background: var(--color-surface-muted);
-  border-radius: 2px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
 .m7-report-box--purple {
@@ -1958,6 +1959,54 @@
     padding: 1px 2px;
     font-size: 7.2px;
     line-height: 1.05;
+  }
+}
+
+/* ============================================================================
+   Feedback 4.0: align the third quality module with previous modules
+   ========================================================================== */
+.m7-quality-box {
+  border: 0;
+  background: transparent;
+  overflow: visible;
+  gap: var(--spacing-md);
+}
+
+.m7-quality-block {
+  border: 1px solid var(--color-border-blue);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.m7-quality-block--blue,
+.m7-quality-block--yellow,
+.m7-quality-block--purple {
+  background: var(--color-surface-muted);
+}
+
+.m7-quality-block + .m7-quality-block {
+  margin-top: 0;
+  border-top: 1px solid var(--color-border-blue);
+}
+
+@media print {
+  .m7-quality-box,
+  .m7-data-reliability--dense .m7-quality-box {
+    border: 0;
+    background: transparent;
+    overflow: visible;
+    gap: 4px;
+  }
+
+  .m7-quality-block,
+  .m7-data-reliability--dense .m7-quality-block {
+    border: 1px solid var(--color-border-blue);
+    background: var(--color-surface-muted);
+  }
+
+  .m7-quality-block + .m7-quality-block {
+    margin-top: 0;
+    border-top: 1px solid var(--color-border-blue);
   }
 }
 
