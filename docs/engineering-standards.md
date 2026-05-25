@@ -16,10 +16,13 @@
 │   ├── fonts/        # 字体文件
 │   └── assets/       # 模板用图片（logo 等）
 ├── samples/          # 输入样本数据（JSON）
+│   ├── json/         # 样本 JSON 文件
+│   └── output/       # 渲染输出（.gitignore）
 ├── docs/             # 文档
 ├── prompts/          # 漫画场景 prompt
 ├── static/           # 漫画图片等静态资源
-└── learning_blueprint_two_page_package/  # 独立交付包
+├── vault/            # dev-flow 任务管理（Obsidian vault）
+└── tests/            # 测试文件（待迁移）
 ```
 
 ## 2. 文件命名
@@ -81,8 +84,8 @@ Stage 3: shared_*.css（共享覆盖，最高优先级，最后加载）
 | Jinja2 | 400 行 | 提取 macro |
 
 当前超标文件（待后续优化）：
-- `learning_blueprint_builder.py`（720 行）
-- `m7_data_reliability.css`（1781 行）
+- `learning_blueprint_builder.py`（872 行）
+- `m7_data_reliability.css`（1966 行）
 
 ## 5. 构建产物管理
 
@@ -96,16 +99,29 @@ build/
 # 顶层调试产物
 output*.html
 output*.pdf
+test_fix.html
+v1_output.*
 
 # Python 缓存
 __pycache__/
 *.pyc
+*.pyo
 
 # 样本输出（生成产物）
 samples/output/
+samples/html/
+samples/pdf/
 
 # 脚本临时输出
 scripts/_output/
+
+# AI 工具配置（跨环境不共享）
+.agents/
+.claude/
+.cursor/
+.pi/
+.trellis/
+AGENTS.md
 ```
 
 ### 5.2 输出目录约定
@@ -123,6 +139,8 @@ scripts/_output/
 | 顶层 18 个 output\* 文件（120MB） | 删除 + 加入 .gitignore | 2026-05-12 |
 | `zy_report_icon_enhancements.css` | 重命名为 `shared_icon_enhancements.css` | 2026-05-12 |
 | `zz_chapter_title_underlines.css` | 重命名为 `shared_chapter_underlines.css` | 2026-05-12 |
+| `learning_blueprint_two_page_package/` | 删除（已完成交付） | 2026-05-08 |
+| `docs/漫画图片功能使用说明.md` | 删除（内容已过时） | 2026-05-08 |
 
 ## 7. Git Commit 规范
 

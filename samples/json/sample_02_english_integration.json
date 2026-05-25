@@ -1,0 +1,308 @@
+{
+  "title": "基线定位分析报告（精简版）",
+  "css_path": "static/css/brief_report.css",
+  "header_title": "基线定位分析报告（精简版）",
+  "header_subtitle": "基于高频考点分析的精简诊断报告",
+  "schema_version": "render_payload.v1",
+  "meta": {
+    "report_id": "DIDA985202605248EFD",
+    "source_order_id": "8a826cbd-94f2-4fef-81cd-804c929de9de",
+    "report_date": "2026-05-24",
+    "generated_at": "2026-05-24T17:28:06.703439",
+    "student_display_name": "P11-E2E-001-01",
+    "city_name": "上海",
+    "grade": "九年级",
+    "term": "",
+    "render_template": "brief-report-rem",
+    "render_mode": "brief",
+    "source_report_output_schema_version": "report_output.v5.1"
+  },
+  "sections": {
+    "section_1_high_freq": {
+      "title": "上海英语高频考点题检结果",
+      "header_text": "基于<span class=\"highlight\">P11-E2E-001-01</span>历史练习数据 及<span class=\"highlight\">上海</span>近3年英语高频考点分析",
+      "target": {
+        "target_score": 140,
+        "target_score_text": "冲刺140+分",
+        "target_accuracy": 93.33,
+        "target_accuracy_text": "正确率≥93.33%"
+      },
+      "chart": {
+        "center_label": "达标率",
+        "pass_rate": 75.0,
+        "pass_rate_text": "75.0%",
+        "segments": [
+          {
+            "name": "已达标",
+            "value": 6,
+            "color_hex": "#23ACCC",
+            "icon_url": ""
+          },
+          {
+            "name": "未达标",
+            "value": 2,
+            "color_hex": "#E0F3F7",
+            "icon_url": ""
+          }
+        ]
+      },
+      "high_freq_kp_total": 8,
+      "high_freq_kp_total_text": "8",
+      "note_text": "正确率≥93.33%的知识点，视为达到140+目标要求，得分有保障。"
+    },
+    "section_2_domains": {
+      "title": "六大领域达标总览",
+      "target_accuracy_text": "正确率≥93.33%",
+      "domain_items": [
+        {
+          "code": "1.00",
+          "name_cn": "词汇与词法",
+          "status": "需关注",
+          "status_icon_url": "./img/attention-icon.png",
+          "accuracy": 85.7,
+          "accuracy_text": "85.7%",
+          "progress_pct": 85.7,
+          "progress_style_width": "85.7%",
+          "progress_class": "warning",
+          "delta_vs_target": -7.6,
+          "delta_text": "-7.6%",
+          "delta_class": "red"
+        },
+        {
+          "code": "2.00",
+          "name_cn": "语法",
+          "status": "已达标",
+          "status_icon_url": "./img/achieved-icon-2.png",
+          "accuracy": 100.0,
+          "accuracy_text": "100.0%",
+          "progress_pct": 100.0,
+          "progress_style_width": "100.0%",
+          "progress_class": "blue",
+          "delta_vs_target": 6.7,
+          "delta_text": "+6.7%",
+          "delta_class": "green"
+        },
+        {
+          "code": "6.00",
+          "name_cn": "语言运用",
+          "status": "需加强",
+          "status_icon_url": "./img/need-strengthen-icon.png",
+          "accuracy": 80.0,
+          "accuracy_text": "80.0%",
+          "progress_pct": 80.0,
+          "progress_style_width": "80.0%",
+          "progress_class": "danger",
+          "delta_vs_target": -13.3,
+          "delta_text": "-13.3%",
+          "delta_class": "red"
+        }
+      ],
+      "note_text": "语法表现稳固，语言运用, 词汇与词法需重点突破。"
+    },
+    "section_3_breakthrough": {
+      "title": "学习成果展示",
+      "target_text": "正确率提升至93.3%",
+      "list_title": "",
+      "items": [],
+      "note_text": "当前掌握得非常好，可以迈向下个难度，争取更高分数",
+      "cta_text": "查看完整报告：获取详细知识点分析，制定个性化学习计划",
+      "all_achieved": true
+    },
+    "section_4_coverage": {
+      "title": "题检覆盖情况说明",
+      "stats": {
+        "total_questions": 43,
+        "total_questions_text": "43题",
+        "test_period": "2024-2025",
+        "l2_covered": 5,
+        "l2_total": 20,
+        "l2_covered_text": "5/20"
+      },
+      "summary_text": "本次题检基于上传的 <span class=\"blue\">43题</span> 数据<br />覆盖了 <span class=\"blue\">5/20个L2知识点</span>。诊断结论以有效大题为口径。",
+      "coverage_table": {
+        "rows": [
+          {
+            "code": "1.01",
+            "name_cn": "近义词辨析",
+            "count": 12,
+            "count_text": "12题",
+            "bar": {
+              "width_pct": 60,
+              "style_width": "60%",
+              "class": "blue"
+            },
+            "confidence": "中",
+            "confidence_text": "中",
+            "confidence_badge_class": "warning"
+          },
+          {
+            "code": "6.01",
+            "name_cn": "日常交际用语",
+            "count": 4,
+            "count_text": "4题",
+            "bar": {
+              "width_pct": 20,
+              "style_width": "20%",
+              "class": "danger"
+            },
+            "confidence": "低",
+            "confidence_text": "低",
+            "confidence_badge_class": "gray"
+          },
+          {
+            "code": "1.03",
+            "name_cn": "习惯用语",
+            "count": 2,
+            "count_text": "2题",
+            "bar": {
+              "width_pct": 10,
+              "style_width": "10%",
+              "class": "danger"
+            },
+            "confidence": "低",
+            "confidence_text": "低",
+            "confidence_badge_class": "gray"
+          },
+          {
+            "code": "2.01",
+            "name_cn": "一般时态",
+            "count": 1,
+            "count_text": "1题",
+            "bar": {
+              "width_pct": 5,
+              "style_width": "5%",
+              "class": "danger"
+            },
+            "confidence": "低",
+            "confidence_text": "低",
+            "confidence_badge_class": "gray"
+          },
+          {
+            "code": "6.02",
+            "name_cn": "连接与过渡",
+            "count": 1,
+            "count_text": "1题",
+            "bar": {
+              "width_pct": 5,
+              "style_width": "5%",
+              "class": "danger"
+            },
+            "confidence": "低",
+            "confidence_text": "低",
+            "confidence_badge_class": "gray"
+          }
+        ]
+      },
+      "data_insufficient": {
+        "low_sample": {
+          "title": "题量不足提醒",
+          "items": [
+            {
+              "code": "2.01.01",
+              "name_cn": "一般时态",
+              "count": 1,
+              "display": "一般时态 (1题) 建议补充到15题以上"
+            },
+            {
+              "code": "1.03.03",
+              "name_cn": "习惯用语",
+              "count": 1,
+              "display": "习惯用语 (1题) 建议补充到15题以上"
+            },
+            {
+              "code": "1.03.01",
+              "name_cn": "动词短语",
+              "count": 1,
+              "display": "动词短语 (1题) 建议补充到15题以上"
+            },
+            {
+              "code": "6.02.01",
+              "name_cn": "连接与过渡",
+              "count": 1,
+              "display": "连接与过渡 (1题) 建议补充到15题以上"
+            },
+            {
+              "code": "6.01.01",
+              "name_cn": "日常交际用语",
+              "count": 2,
+              "display": "日常交际用语 (2题) 建议补充到15题以上"
+            },
+            {
+              "code": "6.01.02",
+              "name_cn": "功能表达",
+              "count": 2,
+              "display": "功能表达 (2题) 建议补充到15题以上"
+            },
+            {
+              "code": "1.01.03",
+              "name_cn": "词义推断",
+              "count": 5,
+              "display": "词义推断 (5题) 建议补充到15题以上"
+            },
+            {
+              "code": "1.01.01",
+              "name_cn": "近义词辨析",
+              "count": 7,
+              "display": "近义词辨析 (7题) 建议补充到15题以上"
+            }
+          ]
+        },
+        "uncovered_core": {
+          "title": "未覆盖的核心考点",
+          "items": [
+            {
+              "code": "4.01.01",
+              "name_cn": "细节定位",
+              "count": null,
+              "display": "细节定位 (0题) 建议补充到15题以上"
+            },
+            {
+              "code": "2.06.02",
+              "name_cn": "形副辨析",
+              "count": null,
+              "display": "形副辨析 (0题) 建议补充到15题以上"
+            },
+            {
+              "code": "1.02.02",
+              "name_cn": "后缀",
+              "count": null,
+              "display": "后缀 (0题) 建议补充到15题以上"
+            },
+            {
+              "code": "2.04.01",
+              "name_cn": "名词分类",
+              "count": null,
+              "display": "名词分类 (0题) 建议补充到15题以上"
+            },
+            {
+              "code": "4.01.02",
+              "name_cn": "信息匹配",
+              "count": null,
+              "display": "信息匹配 (0题) 建议补充到15题以上"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "raw_refs": {
+    "source_report_output": {
+      "report_id": "DIDA985202605248EFD",
+      "schema_version": "report_output.v5.1"
+    },
+    "source_files": {
+      "html_template": "精简版报告-index.html",
+      "css": [
+        "精简报告版-common.css",
+        "精简报告版-index.rem.css"
+      ]
+    }
+  },
+  "render": {
+    "meta": {
+      "report_date": "2026-05-24",
+      "student_id": "",
+      "grade": "九年级"
+    }
+  }
+}

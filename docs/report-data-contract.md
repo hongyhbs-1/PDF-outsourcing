@@ -48,6 +48,24 @@
 | M9 | 试卷数 | `question_detail.papers | length` | 模板计算 | `templates/pages/m9_question_detail.jinja2` | 数字 | 否 |
 | M9 | 题号 | `question_detail.papers[].wrong_questions[].no` / `correct_questions[].no` | 模板循环 | `templates/pages/m9_question_detail.jinja2` | 文本 | 是 |
 | M9 | 知识点 | `question_detail.papers[].*.kp_name` | 模板循环 | `templates/pages/m9_question_detail.jinja2` | 文本 | 是 |
+| M10 | 启用开关 | `composition_deep.enabled` | 条件渲染 | `templates/pages/m10_composition.jinja2` | 布尔 | 否 |
+| M10 | 成绩概览 | `composition_deep.score_overview` | 模板直读 | `templates/pages/m10_composition.jinja2` | 分数条 | 否 |
+| M10 | 优先修复 | `composition_deep.priority_fixes` (字符串数组) | 模板循环 | `templates/pages/m10_composition.jinja2` | 列表 | 是 |
+| M10 | 题目分析 | `composition_deep.topic_analysis` | 模板直读 | `templates/pages/m10_composition.jinja2` | 文本 | 是 |
+| M10 | 内容分析 | `composition_deep.content_analysis` | 模板直读 | `templates/pages/m10_composition.jinja2` | 文本 | 是 |
+| M10 | 语言分析 | `composition_deep.language_analysis` | 模板直读 | `templates/pages/m10_composition.jinja2` | 文本 | 是 |
+| M10 | 结构分析 | `composition_deep.organization_analysis` | 模板直读 | `templates/pages/m10_composition.jinja2` | 文本 | 是 |
+| M10 | 周建议 | `composition_deep.weekly_suggestion` | 模板直读 | `templates/pages/m10_composition.jinja2` | 文本 | 是 |
+| M10 | 范文参考 | `composition_deep.reference_essay` | 引用样式渲染 | `templates/pages/m10_composition.jinja2` | 文本 | 是 |
+| M10 | 亮点与问题 | `composition_deep.highlights_and_issues` (数组) | 模板循环 | `templates/pages/m10_composition.jinja2` | 列表 | 是 |
+| M11 | 启用开关 | `reading_deep.enabled` | 条件渲染 | `templates/pages/m11_reading_deep.jinja2` | 布尔 | 否 |
+| M11 | 篇章概览 | `reading_deep.passage_overview` | 模板直读 | `templates/pages/m11_reading_deep.jinja2` | 结构体 | 否 |
+| M11 | 选文理由 | `reading_deep.selection_reason` | 模板直读 | `templates/pages/m11_reading_deep.jinja2` | 文本 | 是 |
+| M11 | 整体诊断 | `reading_deep.overall_diagnosis` | 模板直读 | `templates/pages/m11_reading_deep.jinja2` | 文本 | 是 |
+| M11 | 逐题分析 | `reading_deep.question_analyses` (数组，含 canonical_no/question_text/is_correct/student_answer/correct_answer/analysis/evidence/method) | 模板循环，错题红色边框 | `templates/pages/m11_reading_deep.jinja2` | 卡片列表 | 是 |
+| M11 | 阅读策略 | `reading_deep.reading_strategies` (字符串数组) | 模板循环 | `templates/pages/m11_reading_deep.jinja2` | 列表 | 是 |
+| M11 | 3天练习 | `reading_deep.three_day_plan` | 模板直读 | `templates/pages/m11_reading_deep.jinja2` | 文本 | 是 |
+| M11 | 鼓励语 | `reading_deep.encouragement` | 模板直读 | `templates/pages/m11_reading_deep.jinja2` | 文本 | 是 |
 
 ## 高风险字段
 

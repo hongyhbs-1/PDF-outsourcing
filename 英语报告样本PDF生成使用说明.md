@@ -1,6 +1,6 @@
 # 英语报告样本 PDF 生成使用说明
 
-本文说明如何使用项目内现有脚本渲染 `samples/json/english_*.json` 英语样本，以及为什么部分生成页会出现“缺失数据”。
+本文说明如何使用项目内现有脚本渲染英语样本，以及为什么部分生成页会出现"缺失数据"。
 
 ## 1. 背景
 
@@ -171,12 +171,11 @@ appendix.metric_definitions
 更适合当前 `report_master.jinja2` 完整模板的是原项目已有的英文完整样本：
 
 ```text
-samples/json/sample_04_english_rpt2_dual.json
-samples/json/sample_06_english_long_with_m10m11.json
-samples/json/sample_07_english_4paper_long.json
+samples/json/sample_02_english_integration.json
+samples/json/sample_03_english_separation.json
 ```
 
-这些样本通常包含当前模板需要的完整字段，生成效果会比 `english_*.json` 精简样本更完整。
+这些样本为生产系统 V5.1 sections 格式（brief-report-rem），通过 `render_standalone.py` 的适配层渲染，生成效果会比精简样本更完整。
 
 ## 6. 如果目标是复现原始 parent_report.pdf
 
