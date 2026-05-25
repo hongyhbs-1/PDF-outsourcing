@@ -1,0 +1,731 @@
+/* ============================================================================
+   English subject visual theme
+   ---------------------------------------------------------------------------
+   Keep report structure unchanged, but allow subject-level palette/style swaps.
+   English reports use a cooler indigo/sky palette to distinguish them from the
+   default math-oriented teal/sand styling.
+   ============================================================================ */
+
+body.report-theme--english {
+  --pm-navy-dark:        #13244b;
+  --pm-navy:             #1d3363;
+  --pm-navy-mid:         #28457b;
+  --pm-navy-light:       #4f69c5;
+  --pm-teal:             #4d66d9;
+  --pm-teal-light:       #7291ff;
+  --pm-teal-soft:        #dfe7ff;
+  --pm-sand:             #ffc978;
+  --pm-sand-dark:        #d48d38;
+  --pm-sand-light:       #fff5e2;
+  --pm-sand-pale:        #fffaf0;
+
+  --pm-bg-page:          #eaf1ff;
+  --pm-bg-page-end:      #eaf1ff;
+  --pm-bg-card:          #fbfdff;
+  --pm-bg-card-alt:      #f2f6ff;
+  --pm-bg-muted:         #e6edff;
+  --pm-bg-section:       #dfe8ff;
+
+  --pm-border-card:      #d6def8;
+  --pm-border-light:     #e6ebfb;
+  --pm-border-divider:   #dbe1f3;
+  --pm-border-table:     #d8deef;
+
+  --pm-text-primary:     #1c2742;
+  --pm-text-secondary:   #52627f;
+  --pm-text-muted:       #8f9ab6;
+  --pm-text-light:       #a8b2cc;
+  --pm-text-white:       #ffffff;
+  --pm-text-accent:      #4d66d9;
+  --pm-text-gold:        #d48d38;
+
+  --pm-status-achieved:     #4d66d9;
+  --pm-status-achieved-bg:  #ebf0ff;
+  --pm-status-attention:    #d99441;
+  --pm-status-attention-bg: #fff3e0;
+  --pm-status-improve:      #8b63c9;
+  --pm-status-improve-bg:   #f2ebff;
+  --pm-status-danger:       #da5b67;
+  --pm-status-danger-bg:    #feebee;
+  --pm-status-nodata:       #98a3bf;
+  --pm-status-nodata-bg:    #f1f4fa;
+  --pm-status-success:      #2f8f72;
+  --pm-status-success-bg:   #e7f7f0;
+
+  --pm-bg-teal-faint:    rgba(77, 102, 217, 0.02);
+  --pm-bg-teal-subtle:   rgba(77, 102, 217, 0.05);
+  --pm-bg-teal-light:    rgba(77, 102, 217, 0.10);
+  --pm-bg-teal-soft:     rgba(77, 102, 217, 0.16);
+  --pm-bg-attention-faint:  rgba(217, 148, 65, 0.02);
+  --pm-bg-attention-light:  rgba(217, 148, 65, 0.10);
+  --pm-bg-attention-soft:   rgba(217, 148, 65, 0.15);
+  --pm-bg-danger-faint:     rgba(218, 91, 103, 0.02);
+  --pm-bg-danger-light:     rgba(218, 91, 103, 0.10);
+  --pm-bg-danger-soft:      rgba(218, 91, 103, 0.16);
+  --pm-bg-sand-light:       rgba(212, 141, 56, 0.10);
+  --pm-bg-sand-soft:        rgba(212, 141, 56, 0.16);
+
+  --pm-gradient-hero:        linear-gradient(135deg, #13244b 0%, #4f69c5 100%);
+  --pm-gradient-accent-bar:  linear-gradient(90deg, #8cd4ff 0%, #7291ff 45%, #8b63c9 100%);
+  --pm-gradient-page:        linear-gradient(180deg, #eaf1ff 0%, #eaf1ff 100%);
+  --pm-gradient-progress:    linear-gradient(90deg, #8cd4ff 0%, #4d66d9 100%);
+  --pm-gradient-cta:         linear-gradient(135deg, #1d3363 0%, #4d66d9 100%);
+  --pm-gradient-conclusion:  linear-gradient(90deg, rgba(77, 102, 217, 0.10), rgba(140, 212, 255, 0.10));
+
+  --pm-shadow-card:       0 10px 28px rgba(38, 58, 122, 0.08);
+  --pm-shadow-card-hover: 0 14px 36px rgba(38, 58, 122, 0.12);
+  --pm-shadow-bar:        0 4px 12px rgba(38, 58, 122, 0.10);
+  --pm-shadow-float:      0 18px 44px rgba(38, 58, 122, 0.16);
+}
+
+body.report-theme--english {
+  background: #eaf1ff;
+  page: english-report;
+}
+
+@page english-report {
+  size: A4 portrait;
+  margin-top: 12mm;
+  margin-bottom: 10mm;
+  margin-left: 0;
+  margin-right: 0;
+  background: #eaf1ff;
+}
+
+body.report-theme--english .module-page,
+body.report-theme--english .m0-module-page {
+  page: english-report;
+  background: #eaf1ff;
+}
+
+body.report-theme--english .module-page::before {
+  height: 6px;
+  background: var(--pm-gradient-accent-bar);
+  border-radius: 0 0 4px 4px;
+}
+
+body.report-theme--english .module-content-card {
+  border: 1px solid rgba(114, 145, 255, 0.18);
+  border-radius: 10px;
+}
+
+body.report-theme--english .frame-title-icon {
+  color: #4058d8;
+  background: linear-gradient(135deg, rgba(224, 234, 255, 0.98) 0%, rgba(236, 231, 255, 0.96) 100%);
+  border-color: rgba(114, 145, 255, 0.34);
+}
+
+body.report-theme--english .frame-title-icon--warning,
+body.report-theme--english .frame-title-icon--success {
+  color: #4058d8;
+  background: linear-gradient(135deg, rgba(224, 234, 255, 0.98) 0%, rgba(236, 231, 255, 0.96) 100%);
+  border-color: rgba(114, 145, 255, 0.34);
+}
+
+body.report-theme--english .mtoc-page {
+  background: #eaf1ff;
+}
+
+body.report-theme--english .mtoc-reading-guide {
+  background: rgba(77, 102, 217, 0.04);
+  border-color: rgba(77, 102, 217, 0.14);
+}
+
+body.report-theme--english .m0-cover-page {
+  background:
+    radial-gradient(circle at top right, rgba(140, 212, 255, 0.18), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(77, 102, 217, 0.10), transparent 28%),
+    linear-gradient(180deg, rgba(245, 247, 255, 1) 0%, rgba(255, 255, 255, 1) 42%, rgba(241, 244, 255, 0.95) 100%);
+}
+
+body.report-theme--english .m0-cover-page::after {
+  background: rgba(114, 145, 255, 0.10);
+}
+
+body.report-theme--english .m0-cover-badge {
+  color: #8ea0d4;
+  opacity: 0.48;
+}
+
+body.report-theme--english .learning-blueprint-page {
+  --lb-bg: #f4f7ff;
+  --lb-card: rgba(255, 255, 255, 0.96);
+  --lb-line: #d7e1ff;
+  --lb-line-strong: #c4d1fb;
+  --lb-title: #4d66d9;
+  --lb-deep: #1d3363;
+  --lb-teal: #4d66d9;
+  --lb-teal-2: #7c95ff;
+  --lb-orange: #d99441;
+  --lb-red: #da5b67;
+  --lb-green: #2f8f72;
+  --lb-muted: #8d99b8;
+  --lb-text: #1c2742;
+  --lb-soft-blue: #eef3ff;
+  --lb-soft-orange: #fff5e6;
+  --lb-soft-green: #ecf8f1;
+  --lb-soft-red: #feeff3;
+  background: #eaf1ff;
+}
+
+body.report-theme--english .learning-blueprint-page::before {
+  border-color: rgba(124, 149, 255, 0.34);
+}
+
+body.report-theme--english .lb-header h1 {
+  color: var(--lb-deep);
+}
+
+body.report-theme--english .lb-subtitle,
+body.report-theme--english .lb-slogan,
+body.report-theme--english .lb-banner {
+  color: var(--pm-text-secondary);
+}
+
+body.report-theme--english .lb-subtitle span {
+  background: linear-gradient(90deg, transparent, var(--lb-teal), transparent);
+}
+
+body.report-theme--english .lb-slogan,
+body.report-theme--english .lb-banner {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 245, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.36);
+}
+
+body.report-theme--english .lb-banner {
+  color: var(--lb-title);
+}
+
+body.report-theme--english .lb-panel,
+body.report-theme--english .student-card,
+body.report-theme--english .small-signal,
+body.report-theme--english .engine-card,
+body.report-theme--english .expanded-line,
+body.report-theme--english .stage-card {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(114, 145, 255, 0.26);
+  box-shadow: 0 6px 18px rgba(38, 58, 122, 0.05);
+}
+
+body.report-theme--english .lb-panel h2 {
+  color: var(--lb-deep);
+}
+
+body.report-theme--english .lb-panel h2 b {
+  background: linear-gradient(135deg, #4d66d9 0%, #8b63c9 100%);
+}
+
+body.report-theme--english .metric-card strong,
+body.report-theme--english .small-signal strong,
+body.report-theme--english .engine-card strong,
+body.report-theme--english .expanded-line strong {
+  color: var(--lb-deep);
+}
+
+body.report-theme--english .student-card,
+body.report-theme--english .shortlist-table td,
+body.report-theme--english .drill-row > span,
+body.report-theme--english .focus-row > span,
+body.report-theme--english .exec-task-card,
+body.report-theme--english .support-system-card,
+body.report-theme--english .axis-card {
+  border-color: rgba(114, 145, 255, 0.22);
+  background: rgba(247, 249, 255, 0.94);
+}
+
+body.report-theme--english .shortlist-table th,
+body.report-theme--english .shortlist-table td,
+body.report-theme--english .m10-table thead th,
+body.report-theme--english .m11-overview-card {
+  border-color: rgba(114, 145, 255, 0.20);
+}
+
+body.report-theme--english .path-timeline::before {
+  border-top-color: #7c95ff;
+}
+
+body.report-theme--english .path-timeline::after {
+  border-left-color: #7c95ff;
+}
+
+body.report-theme--english .lb-footer {
+  color: #8090b1;
+}
+
+body.report-theme--english .sp-page,
+body.report-theme--english .ip-page,
+body.report-theme--english .mov-page,
+body.report-theme--english .mtoc-page,
+body.report-theme--english #toc-m1 > .m1-report-page,
+body.report-theme--english #toc-m4 > .m4-module-domains,
+body.report-theme--english #toc-m2 > .m2-core-weakness-module,
+body.report-theme--english #toc-m3 > .m3-kp-drill,
+body.report-theme--english #toc-m5 > .m5-city-compare,
+body.report-theme--english #toc-m6 > .m6-page,
+body.report-theme--english #toc-m9 > .m9-page,
+body.report-theme--english #toc-m7 > .m7-data-reliability,
+body.report-theme--english #toc-m8 > .m8-appendix-page {
+  background: #eaf1ff;
+}
+
+body.report-theme--english .sp-page > .module-content-card,
+body.report-theme--english .ip-page > .module-content-card,
+body.report-theme--english .mov-page > .module-content-card,
+body.report-theme--english #toc-m1 > .m1-report-page > .module-content-card,
+body.report-theme--english #toc-m4 > .m4-module-domains > .module-content-card,
+body.report-theme--english #toc-m2 > .m2-core-weakness-module > .module-content-card,
+body.report-theme--english #toc-m3 > .m3-kp-drill .module-content-card,
+body.report-theme--english #toc-m5 > .m5-city-compare > .module-content-card,
+body.report-theme--english #toc-m6 > .m6-page > .module-content-card,
+body.report-theme--english #toc-m9 > .m9-page > .module-content-card,
+body.report-theme--english #toc-m7 > .m7-data-reliability > .module-content-card,
+body.report-theme--english #toc-m8 > .m8-appendix-page .module-content-card {
+  background: linear-gradient(180deg, rgba(250, 252, 255, 0.99) 0%, rgba(235, 243, 255, 0.98) 100%);
+  border: 1px solid rgba(114, 145, 255, 0.30);
+  box-shadow: 0 12px 28px rgba(38, 58, 122, 0.08);
+}
+
+body.report-theme--english .m1-section-bar,
+body.report-theme--english .m1-summary-banner,
+body.report-theme--english .m1-goal-metric-card,
+body.report-theme--english .m1-breakthrough-card,
+body.report-theme--english .m1-suggestion-callout {
+  background: linear-gradient(180deg, rgba(238, 242, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.22);
+}
+
+body.report-theme--english .m4-peer-card,
+body.report-theme--english .m4-chart-meta-bar,
+body.report-theme--english .m4-chart-box,
+body.report-theme--english .m4-table-card,
+body.report-theme--english .m4-summary-card,
+body.report-theme--english .m4-nodata-merge {
+  background: linear-gradient(180deg, rgba(241, 245, 255, 0.96) 0%, rgba(255, 255, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.22);
+}
+
+body.report-theme--english .m4-table thead th,
+body.report-theme--english .m4-table tbody td,
+body.report-theme--english .m4-chart-row:not(:last-child) {
+  border-color: rgba(114, 145, 255, 0.16);
+}
+
+body.report-theme--english .m2-cw-note-bar,
+body.report-theme--english .m2-cw-legend-row,
+body.report-theme--english .m2-cw-weakness-card,
+body.report-theme--english .m2-cw-table-header,
+body.report-theme--english .m2-cw-reason-card,
+body.report-theme--english .m2-cw-summary-bar,
+body.report-theme--english .m2-cw-tips-box {
+  background: linear-gradient(180deg, rgba(241, 245, 255, 0.96) 0%, rgba(255, 255, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.22);
+}
+
+body.report-theme--english .m2-cw-table-row--p0.m2-cw-table-row--odd,
+body.report-theme--english .m2-cw-table-row--p0.m2-cw-table-row--even {
+  background: rgba(242, 235, 255, 0.72);
+}
+
+body.report-theme--english .m2-cw-table-row--p1.m2-cw-table-row--odd,
+body.report-theme--english .m2-cw-table-row--p1.m2-cw-table-row--even {
+  background: rgba(255, 244, 229, 0.88);
+}
+
+body.report-theme--english .m2-cw-table-row--p2.m2-cw-table-row--odd,
+body.report-theme--english .m2-cw-table-row--p2.m2-cw-table-row--even {
+  background: rgba(238, 242, 255, 0.82);
+}
+
+body.report-theme--english .m5-city-compare__card,
+body.report-theme--english .m5-city-compare__table-section,
+body.report-theme--english .m5-city-compare__footnote {
+  background: linear-gradient(180deg, rgba(241, 245, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.22);
+}
+
+body.report-theme--english .m5-city-compare__table thead,
+body.report-theme--english .m5-city-compare__table th {
+  background: linear-gradient(90deg, rgba(224, 234, 255, 0.98) 0%, rgba(236, 231, 255, 0.96) 100%);
+  color: #253761;
+}
+
+body.report-theme--english .m5-city-compare__table tbody tr:nth-child(odd) {
+  background: rgba(250, 252, 255, 0.96);
+}
+
+body.report-theme--english .m5-city-compare__table tbody tr:nth-child(even) {
+  background: rgba(238, 244, 255, 0.76);
+}
+
+body.report-theme--english .m5-city-compare__table th,
+body.report-theme--english .m5-city-compare__table td,
+body.report-theme--english .m5-city-compare__progress-track {
+  border-color: rgba(114, 145, 255, 0.16);
+}
+
+body.report-theme--english .m5-city-compare__overlap-stat,
+body.report-theme--english .m5-city-compare__overlap-ratio {
+  background: rgba(250, 252, 255, 0.88);
+  border-color: rgba(114, 145, 255, 0.18);
+}
+
+body.report-theme--english .m5-city-compare__progress-fill {
+  background: linear-gradient(90deg, #8cd4ff 0%, #4058d8 58%, #8b63c9 100%);
+}
+
+body.report-theme--english .m5-city-compare__overlap-num,
+body.report-theme--english .m5-city-compare__overlap-stat-value {
+  color: #4058d8;
+}
+
+body.report-theme--english .m5-city-compare__rank-badge--red,
+body.report-theme--english .m5-city-compare__weight-badge--very-high {
+  background: rgba(139, 99, 201, 0.16);
+  border: 1px solid rgba(139, 99, 201, 0.28);
+  color: #5e3fb5;
+}
+
+body.report-theme--english .m5-city-compare__rank-badge--orange,
+body.report-theme--english .m5-city-compare__weight-badge--high {
+  background: rgba(114, 145, 255, 0.18);
+  border: 1px solid rgba(114, 145, 255, 0.30);
+  color: #4058d8;
+}
+
+body.report-theme--english .m5-city-compare__rank-badge--blue,
+body.report-theme--english .m5-city-compare__weight-badge--mid-high,
+body.report-theme--english .m5-city-compare__weight-badge--mid {
+  background: rgba(140, 212, 255, 0.20);
+  border: 1px solid rgba(140, 212, 255, 0.34);
+  color: #2f5fb6;
+}
+
+body.report-theme--english .m5-city-compare__val--danger,
+body.report-theme--english .m5-city-compare__val--warning {
+  color: #6d4bc4;
+}
+
+body.report-theme--english .m5-city-compare__tag {
+  background: rgba(224, 234, 255, 0.88);
+  color: #5f6f95;
+}
+
+body.report-theme--english .m5-city-compare__tag--highlight {
+  background: rgba(114, 145, 255, 0.18);
+  color: #4058d8;
+}
+
+body.report-theme--english .m5-city-compare__tag--warning {
+  background: rgba(139, 99, 201, 0.14);
+  color: #6d4bc4;
+}
+
+body.report-theme--english .m6-card,
+body.report-theme--english .m6-stage-label,
+body.report-theme--english .m6-stage-current,
+body.report-theme--english .m6-note-box,
+body.report-theme--english .m6-summary-box {
+  background: linear-gradient(180deg, rgba(241, 245, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.24);
+}
+
+body.report-theme--english .m7-report-box,
+body.report-theme--english .m7-report-box__inner,
+body.report-theme--english .m7-overview-card,
+body.report-theme--english .m7-quality-box,
+body.report-theme--english .m7-quality-block,
+body.report-theme--english .m7-usage-item,
+body.report-theme--english .m7-note,
+body.report-theme--english .m7-metric-card,
+body.report-theme--english .m7-metric-item,
+body.report-theme--english .m7-list-card,
+body.report-theme--english .m7-list-item,
+body.report-theme--english .m7-badge-card,
+body.report-theme--english .m7-empty-state {
+  background: linear-gradient(180deg, rgba(241, 245, 255, 0.96) 0%, rgba(255, 255, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.22);
+}
+
+body.report-theme--english .m7-coverage-note {
+  background: rgba(250, 252, 255, 0.86);
+  border-color: rgba(114, 145, 255, 0.18);
+}
+
+body.report-theme--english .m7-coverage-table thead th {
+  background: linear-gradient(90deg, rgba(224, 234, 255, 0.98) 0%, rgba(236, 231, 255, 0.96) 100%);
+  color: #253761;
+}
+
+body.report-theme--english .m7-coverage-table tbody tr:nth-child(odd) {
+  background: rgba(250, 252, 255, 0.96);
+}
+
+body.report-theme--english .m7-coverage-table tbody tr:nth-child(even) {
+  background: rgba(238, 244, 255, 0.76);
+}
+
+body.report-theme--english .m7-coverage-table th,
+body.report-theme--english .m7-coverage-table td {
+  border-color: rgba(114, 145, 255, 0.16);
+}
+
+body.report-theme--english .m7-overview-card__icon,
+body.report-theme--english .m7-overview-card__num,
+body.report-theme--english .m7-overview-card__unit,
+body.report-theme--english .m7-metric-item__value,
+body.report-theme--english .m7-status--achieved {
+  color: #4058d8;
+}
+
+body.report-theme--english .m7-kp-level-badge--l1 { background: #1d3363; }
+body.report-theme--english .m7-kp-level-badge--l2 { background: #4058d8; }
+body.report-theme--english .m7-kp-level-badge--l3 { background: #7291ff; }
+body.report-theme--english .m7-kp-level-badge--l4 { background: #8b63c9; }
+
+body.report-theme--english .m7-tag,
+body.report-theme--english .m7-tag--sufficient,
+body.report-theme--english .m7-confidence-badge--green,
+body.report-theme--english .m7-confidence-badge--high {
+  background: rgba(114, 145, 255, 0.16);
+  border: 1px solid rgba(114, 145, 255, 0.28);
+  color: #4058d8;
+}
+
+body.report-theme--english .m7-tag--warning,
+body.report-theme--english .m7-confidence-badge--warning,
+body.report-theme--english .m7-confidence-badge--mid,
+body.report-theme--english .m7-status--attention,
+body.report-theme--english .m7-list-item__count {
+  background: rgba(114, 145, 255, 0.14);
+  color: #4058d8;
+}
+
+body.report-theme--english .m7-tag--error,
+body.report-theme--english .m7-confidence-badge--gray,
+body.report-theme--english .m7-confidence-badge--low,
+body.report-theme--english .m7-status--improve {
+  background: rgba(139, 99, 201, 0.14);
+  color: #6d4bc4;
+}
+
+body.report-theme--english .m7-progress__fill--green,
+body.report-theme--english .m7-progress__fill--high {
+  background: linear-gradient(90deg, #8cd4ff 0%, #4058d8 100%);
+}
+
+body.report-theme--english .m7-progress__fill--warning,
+body.report-theme--english .m7-progress__fill--mid {
+  background: linear-gradient(90deg, #7291ff 0%, #4058d8 100%);
+}
+
+body.report-theme--english .m7-progress__fill--gray,
+body.report-theme--english .m7-progress__fill--low {
+  background: linear-gradient(90deg, #b5a2ef 0%, #8b63c9 100%);
+}
+
+body.report-theme--english .m7-dot--warning,
+body.report-theme--english .m7-severity-dot--medium {
+  background: #7291ff;
+}
+
+body.report-theme--english .m7-dot--info,
+body.report-theme--english .m7-severity-dot--low {
+  background: #4058d8;
+}
+
+body.report-theme--english .m7-dot--error,
+body.report-theme--english .m7-severity-dot--high {
+  background: #8b63c9;
+}
+
+body.report-theme--english .m7-badge,
+body.report-theme--english .m7-severity-pill--high,
+body.report-theme--english .m7-warning-group__badge--high,
+body.report-theme--english .m7-warning-group__count-badge--high,
+body.report-theme--english .m7-warning-group__icon-wrap--high {
+  background: rgba(139, 99, 201, 0.16);
+  color: #5e3fb5;
+}
+
+body.report-theme--english .m7-severity-pill--medium,
+body.report-theme--english .m7-warning-group__badge--medium,
+body.report-theme--english .m7-warning-group__count-badge--medium,
+body.report-theme--english .m7-warning-group__icon-wrap--medium {
+  background: rgba(114, 145, 255, 0.18);
+  color: #4058d8;
+}
+
+body.report-theme--english .m7-severity-pill--low,
+body.report-theme--english .m7-warning-group__badge--low,
+body.report-theme--english .m7-warning-group__count-badge--low,
+body.report-theme--english .m7-warning-group__icon-wrap--low {
+  background: rgba(140, 212, 255, 0.20);
+  color: #2f5fb6;
+}
+
+body.report-theme--english .m7-warning-group--high { border-left-color: #8b63c9; }
+body.report-theme--english .m7-warning-group--medium { border-left-color: #7291ff; }
+body.report-theme--english .m7-warning-group--low { border-left-color: #4058d8; }
+
+body.report-theme--english .sp-hero-unified,
+body.report-theme--english .sp-progress-panel,
+body.report-theme--english .sp-metric-card,
+body.report-theme--english .sp-analysis-card,
+body.report-theme--english .sp-empty-card,
+body.report-theme--english .ip-intervention-bar,
+body.report-theme--english .ip-milestone,
+body.report-theme--english .ip-focus-item,
+body.report-theme--english .ip-phase-card,
+body.report-theme--english .ip-parent-guide,
+body.report-theme--english .mov-hero,
+body.report-theme--english .mov-card,
+body.report-theme--english .mov-difficulty-aside,
+body.report-theme--english .mov-papers,
+body.report-theme--english .mov-conclusion,
+body.report-theme--english .mov-reading-guide,
+body.report-theme--english .mtoc-reading-guide {
+  background: linear-gradient(180deg, rgba(238, 244, 255, 0.96) 0%, rgba(250, 252, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.24);
+}
+
+body.report-theme--english .mtoc-item {
+  border-bottom-color: rgba(114, 145, 255, 0.16);
+}
+
+body.report-theme--english .mtoc-item__dots {
+  border-bottom-color: rgba(114, 145, 255, 0.24);
+}
+
+body.report-theme--english .m3-kp-drill__intro-panel,
+body.report-theme--english .m3-kp-path,
+body.report-theme--english .m3-kp-drill__panel,
+body.report-theme--english .m3-kp-drill__nodata-merge,
+body.report-theme--english .m3-kp-path__note,
+body.report-theme--english .m3-kp-drill__empty-state,
+body.report-theme--english .m3-kp-drill__achieved-state {
+  background: linear-gradient(180deg, rgba(238, 244, 255, 0.96) 0%, rgba(250, 252, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.24);
+}
+
+body.report-theme--english .m3-kp-table thead tr {
+  background: linear-gradient(90deg, rgba(224, 234, 255, 0.98) 0%, rgba(236, 231, 255, 0.96) 100%);
+}
+
+body.report-theme--english .m3-kp-table tbody tr {
+  background: rgba(250, 252, 255, 0.96);
+  border-bottom-color: rgba(114, 145, 255, 0.16);
+}
+
+body.report-theme--english .m3-kp-table tbody tr:nth-child(even) {
+  background: rgba(238, 244, 255, 0.78);
+}
+
+body.report-theme--english .m9-overview,
+body.report-theme--english .m9-paper-title,
+body.report-theme--english .m9-empty-state {
+  background: linear-gradient(180deg, rgba(238, 244, 255, 0.96) 0%, rgba(250, 252, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.24);
+}
+
+body.report-theme--english .m9-table {
+  border-color: rgba(114, 145, 255, 0.22);
+}
+
+body.report-theme--english .m9-table th,
+body.report-theme--english .m9-table td {
+  border-bottom-color: rgba(114, 145, 255, 0.14);
+}
+
+body.report-theme--english .m9-table tbody tr:nth-child(odd) {
+  background: rgba(250, 252, 255, 0.96);
+}
+
+body.report-theme--english .m9-table tbody tr:nth-child(even) {
+  background: rgba(238, 244, 255, 0.76);
+}
+
+body.report-theme--english .m9-table--wrong thead th,
+body.report-theme--english .m9-table--correct thead th {
+  background: linear-gradient(90deg, rgba(224, 234, 255, 0.98) 0%, rgba(236, 231, 255, 0.96) 100%);
+  color: #4058d8;
+  border-bottom-color: rgba(114, 145, 255, 0.28);
+}
+
+body.report-theme--english .m9-table-label--wrong,
+body.report-theme--english .m9-table-label--correct {
+  color: #4058d8;
+}
+
+body.report-theme--english .m9-overview__stat-num,
+body.report-theme--english .m9-overview__stat--danger .m9-overview__stat-num,
+body.report-theme--english .m9-overview__stat--success .m9-overview__stat-num {
+  color: #4058d8;
+}
+
+body.report-theme--english .m9-overview__stat--danger,
+body.report-theme--english .m9-overview__stat--success,
+body.report-theme--english .m9-overview__stat {
+  background: rgba(250, 252, 255, 0.62);
+  border-radius: 8px;
+}
+
+body.report-theme--english .m9-stars {
+  color: #7291ff;
+}
+
+body.report-theme--english .m9-analysis-label {
+  color: #4058d8;
+}
+
+body.report-theme--english .m9-breakpoint-section {
+  border-top-color: rgba(114, 145, 255, 0.18);
+}
+
+body.report-theme--english .m9-paper-title {
+  border-left-color: #7291ff;
+}
+
+body.report-theme--english .m8-appendix-panel,
+body.report-theme--english .m8-metric-item,
+body.report-theme--english .m8-appendix-usage {
+  background: linear-gradient(180deg, rgba(238, 244, 255, 0.96) 0%, rgba(250, 252, 255, 0.98) 100%);
+  border-color: rgba(114, 145, 255, 0.24);
+}
+
+body.report-theme--english .m8-appendix-panel__titlebar,
+body.report-theme--english .m8-appendix-table thead th,
+body.report-theme--english .m8-appendix-kv-table th {
+  background: linear-gradient(90deg, rgba(224, 234, 255, 0.98) 0%, rgba(236, 231, 255, 0.96) 100%);
+  border-color: rgba(114, 145, 255, 0.18);
+}
+
+body.report-theme--english .m8-appendix-table th,
+body.report-theme--english .m8-appendix-table td {
+  border-color: rgba(114, 145, 255, 0.16);
+}
+
+body.report-theme--english .m8-appendix-kv-table td,
+body.report-theme--english .m8-appendix-table-summary {
+  background: rgba(250, 252, 255, 0.96);
+}
+
+body.report-theme--english .m8-appendix-bar-track {
+  background: rgba(224, 234, 255, 0.92);
+}
+
+@media screen {
+  body.report-theme--english .module-page {
+    box-shadow: 0 12px 34px rgba(38, 58, 122, 0.10);
+  }
+}
+
+@media print {
+  body.report-theme--english .module-page {
+    background: #eaf1ff;
+  }
+
+  body.report-theme--english .module-content-card {
+    border: 1px solid rgba(114, 145, 255, 0.18);
+    box-shadow: 0 1px 4px rgba(38, 58, 122, 0.05);
+  }
+}
