@@ -121,9 +121,9 @@ def load_payload(json_path: Path) -> dict:
     if hasattr(render_standalone, "_load_json"):
         payload = render_standalone._load_json(json_path)
         if payload is not None:
-            return payload
+            return render_standalone.normalize_render_payload(payload)
     with open(json_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        return render_standalone.normalize_render_payload(json.load(f))
 
 
 def print_sample_header(*, index: int, total: int, sample_file: str,
