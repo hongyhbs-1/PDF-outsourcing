@@ -37,7 +37,7 @@
   /* ---------- 2.3 字号 (A4适配) ---------- */
   --fs-cover-badge: 4mm;  /* P1-2: 弱化标语，减小字号 */
   --fs-brand-name: 3.7mm;
-  --fs-title: 7mm;  /* P1-1: 标题降为次要位置，缩小字号 */
+  --fs-title: 5.6mm;  /* P1: 报告标题继续降级，避免压过中间信息 */
   --fs-subtitle: 4.5mm;
   --fs-student-name: 16mm;  /* P1-1: 姓名放大为视觉中心 */
   --fs-meta: 5.5mm;
@@ -66,8 +66,8 @@
   /* ---------- 2.7 封面垂直节奏 ---------- */
   --cover-mt-brand: 12mm;
   --cover-gap-brand-student: 14mm;  /* P1 图片1：去掉品牌后让姓名更靠上 */
-  --cover-gap-student-meta: 9mm;
-  --cover-gap-meta-divider: 14mm;
+  --cover-gap-student-meta: 10.5mm;
+  --cover-gap-meta-divider: 15mm;
   --cover-gap-divider-title: 8mm;  /* P1-1: 收紧标题前间距 */
   --cover-gap-title-sub: 8mm;
   --cover-gap-title-badge: 10mm;  /* P1-2: 标语间距收紧 */
@@ -217,12 +217,12 @@
 
 .m0-cover-dossier {
   margin-top: var(--cover-gap-student-meta);
-  width: 92mm;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  width: 104mm;
+  padding: 5.2mm 7mm;
+  border: 0.35mm solid rgba(31, 111, 120, 0.16);
+  border-radius: 7mm;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 3mm 12mm rgba(18, 52, 77, 0.055);
   box-sizing: border-box;
 }
 
@@ -236,38 +236,38 @@
 
 .m0-cover-meta {
   margin: 0 auto;
-  width: 70mm;
+  width: 80mm;
   display: flex;
   flex-direction: column;
-  gap: 4.2mm;
+  gap: 4.5mm;
   line-height: var(--lh-normal);
-  transform: translateX(12mm);
+  transform: none;
 }
 
 .m0-cover-meta__item {
   min-width: 0;
   display: grid;
-  grid-template-columns: 24mm minmax(0, 1fr);
+  grid-template-columns: 25mm minmax(0, 1fr);
   align-items: baseline;
-  column-gap: 5mm;
+  column-gap: 5.8mm;
 }
 
 .m0-cover-meta__label {
   display: block;
   margin-bottom: 0;
-  font-size: 3.8mm;
-  font-weight: var(--fw-medium);
-  color: var(--pm-text-secondary);
+  font-size: 4.3mm;
+  font-weight: var(--fw-semibold);
+  color: var(--pm-teal);
   white-space: nowrap;
-  letter-spacing: 1.2mm;
+  letter-spacing: 1.1mm;
 }
 
 .m0-cover-meta__value {
   display: block;
   text-align: left;
-  font-size: 5mm;
-  font-weight: var(--fw-semibold);
-  color: var(--pm-text-primary);
+  font-size: 6.2mm;
+  font-weight: var(--fw-bold);
+  color: var(--pm-navy-dark);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

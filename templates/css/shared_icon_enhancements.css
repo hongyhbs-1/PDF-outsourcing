@@ -906,3 +906,311 @@
     margin-bottom: 0 !important;
   }
 }
+
+/* ============================================================================
+   Feedback 5.0 math-only refinements: clearer module gaps + unified subsection
+   titles outside child boxes while preserving English-specific density guards.
+   ============================================================================ */
+@media print {
+  body:not(.report-theme--english) .m1-summary-card,
+  body:not(.report-theme--english) .m1-breakthrough-grid,
+  body:not(.report-theme--english) .m2-cw-note-bar,
+  body:not(.report-theme--english) .m2-cw-weakness-card,
+  body:not(.report-theme--english) .m2-cw-reason-section,
+  body:not(.report-theme--english) .m2-cw-tips-box,
+  body:not(.report-theme--english) .m3-kp-guide-card,
+  body:not(.report-theme--english) .m4-peer-card,
+  body:not(.report-theme--english) .m4-table-card,
+  body:not(.report-theme--english) .m4-summary-card,
+  body:not(.report-theme--english) .m5-city-compare__table-section,
+  body:not(.report-theme--english) .m5-city-compare__card--overlap-wide,
+  body:not(.report-theme--english) .m5-city-compare__footnote,
+  body:not(.report-theme--english) .m6-card,
+  body:not(.report-theme--english) .m7-report-box,
+  body:not(.report-theme--english) .m7-quality-box,
+  body:not(.report-theme--english) .m8-appendix-panel,
+  body:not(.report-theme--english) .m8-appendix-usage {
+    margin-bottom: 12px !important;
+  }
+
+  body:not(.report-theme--english) .m1-section-bar,
+  body:not(.report-theme--english) .m2-cw-note-bar__title,
+  body:not(.report-theme--english) .m2-cw-reason-header__title,
+  body:not(.report-theme--english) .m2-cw-tips-title,
+  body:not(.report-theme--english) .m3-kp-drill__section-title,
+  body:not(.report-theme--english) .m4-peer-title,
+  body:not(.report-theme--english) .m4-table-title,
+  body:not(.report-theme--english) .m4-summary-title,
+  body:not(.report-theme--english) .m5-city-compare__card-title,
+  body:not(.report-theme--english) .m5-city-compare__table-title,
+  body:not(.report-theme--english) .m5-city-compare__footnote-title,
+  body:not(.report-theme--english) .m6-card-header__title,
+  body:not(.report-theme--english) .m6-training-focus__title,
+  body:not(.report-theme--english) .m7-section-title,
+  body:not(.report-theme--english) .m7-block-title,
+  body:not(.report-theme--english) .m7-warnings-section-title,
+  body:not(.report-theme--english) .m8-appendix-panel__titlebar,
+  body:not(.report-theme--english) .m8-appendix-panel__section-title,
+  body:not(.report-theme--english) .m8-appendix-usage__title {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin: 0 0 8px !important;
+    padding: 0 0 0 10px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-left: 3px solid var(--pm-teal, #1f6f78) !important;
+    border-bottom: 0 !important;
+    border-radius: 0 !important;
+    color: var(--pm-text-primary, #1a2332) !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    line-height: 1.24 !important;
+    box-shadow: none !important;
+  }
+
+  body:not(.report-theme--english) .m2-cw-note-bar {
+    display: block !important;
+    margin: 0 0 12px !important;
+    padding: 8px 10px !important;
+    border-left: 0 !important;
+  }
+
+  body:not(.report-theme--english) .m2-cw-note-bar__text {
+    display: block !important;
+  }
+
+  body:not(.report-theme--english) .m2-cw-reason-header {
+    align-items: flex-start !important;
+    margin-bottom: 8px !important;
+  }
+
+  body:not(.report-theme--english) .m2-cw-tips-box {
+    margin: 0 0 12px !important;
+  }
+
+  body:not(.report-theme--english) .m4-peer-title,
+  body:not(.report-theme--english) .m4-table-title,
+  body:not(.report-theme--english) .m4-summary-title {
+    padding-top: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  body:not(.report-theme--english) .m4-peer-card,
+  body:not(.report-theme--english) .m4-table-card,
+  body:not(.report-theme--english) .m4-summary-card {
+    padding: 10px 12px 12px !important;
+    overflow: hidden !important;
+  }
+
+  body:not(.report-theme--english) .m5-city-compare__table-section,
+  body:not(.report-theme--english) .m5-city-compare__card--overlap-wide,
+  body:not(.report-theme--english) .m5-city-compare__footnote {
+    padding-top: 10px !important;
+  }
+
+  /* Feedback 5.0 P6-P13 density: the math city-exam page has few rows in
+     sample_01_math_25q, so stretch the main module card to the same visual
+     footprint as the surrounding chapter pages instead of leaving a half-page
+     blank area below the content. */
+  body:not(.report-theme--english) #toc-m5 > .m5-city-compare > .module-content-card {
+    min-height: 145mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__part--data {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide {
+    flex: 1 1 auto !important;
+  }
+
+  body:not(.report-theme--english) .m6-card {
+    margin-bottom: 8px !important;
+  }
+
+  /* Feedback 5.0 P11: remove legacy square/role pictogram markers before
+     section titles; the unified title rule already provides the left accent. */
+  body:not(.report-theme--english) #toc-m6 .m6-card-header > .m6-bullet,
+  body:not(.report-theme--english) #toc-m6 .m6-card-header > .m6-role-icon {
+    display: none !important;
+  }
+
+  body:not(.report-theme--english) .m6-card-header {
+    margin-bottom: 4px !important;
+  }
+
+  body:not(.report-theme--english) .m6-training-focus {
+    margin-bottom: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  body:not(.report-theme--english) .m6-role-panel {
+    padding-top: 5px !important;
+  }
+
+  body:not(.report-theme--english) .m7-quality-block + .m7-quality-block {
+    margin-top: 0 !important;
+  }
+
+  /* Feedback 5.0 P12: m7 sub-section titles already use the shared left
+     accent, so hide the old square bullet to keep title formatting uniform. */
+  body:not(.report-theme--english) #toc-m7 .m7-block-title__bullet {
+    display: none !important;
+  }
+
+  /* Feedback 5.0 P9-P13 title audit: keep subsection titles fully outside
+     their child card borders. The previous negative-margin legend style made
+     titles sit on top of borders on P9-P13; use reserved top margin + absolute
+     title labels instead, so content boxes start cleanly below each label. */
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-column {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-peer-card,
+  body:not(.report-theme--english) #toc-m4 .m4-summary-card,
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__table-section,
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide {
+    position: relative !important;
+    overflow: visible !important;
+    margin-top: 22px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .m6-card,
+  body:not(.report-theme--english) #toc-m6 .m6-role-panel,
+  body:not(.report-theme--english) #toc-m7 .m7-report-box,
+  body:not(.report-theme--english) #toc-m7 .m7-quality-block,
+  body:not(.report-theme--english) #toc-m8 .m8-appendix-panel {
+    position: relative !important;
+    overflow: visible !important;
+    margin-top: 24px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-column > .m3-kp-drill__section-title {
+    position: relative !important;
+    z-index: 2 !important;
+    margin: 0 0 8px !important;
+    background: transparent !important;
+    padding-right: 6px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-peer-card > .m4-peer-title,
+  body:not(.report-theme--english) #toc-m4 .m4-summary-card > .m4-summary-title,
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__table-section > .m5-city-compare__table-title,
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide > .m5-city-compare__card-title {
+    position: absolute !important;
+    top: -23px !important;
+    left: 14px !important;
+    z-index: 3 !important;
+    margin: 0 !important;
+    background: var(--pm-bg-card, #ffffff) !important;
+    padding-right: 6px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m7 .m7-quality-block > .m7-block-title {
+    background: var(--color-surface, var(--pm-bg-card, #ffffff)) !important;
+  }
+
+  body:not(.report-theme--english) #toc-m8 .m8-appendix-panel > .m8-appendix-panel__titlebar,
+  body:not(.report-theme--english) #toc-m8 .m8-appendix-panel > .m8-appendix-panel__section-title {
+    background: var(--appendix-color-page, var(--pm-bg-card, #ffffff)) !important;
+  }
+
+  body:not(.report-theme--english) #toc-m7 .m7-report-box > .m7-report-box__inner {
+    position: static !important;
+  }
+
+  body:not(.report-theme--english) #toc-m7 .m7-report-box__inner > .m7-section-title {
+    position: absolute !important;
+    top: -23px !important;
+    left: 14px !important;
+    z-index: 3 !important;
+    margin: 0 !important;
+    background: var(--color-surface, var(--pm-bg-card, #ffffff)) !important;
+    padding-right: 6px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .m6-recommendation-module > .m6-training-focus > .m6-training-focus__title {
+    position: absolute !important;
+    top: -23px !important;
+    left: 14px !important;
+    z-index: 3 !important;
+    margin: 0 !important;
+    background: var(--color-card-fill, var(--pm-bg-card, #ffffff)) !important;
+    padding-right: 6px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .m6-card > .m6-card-header,
+  body:not(.report-theme--english) #toc-m6 .m6-role-panel > .m6-card-header {
+    position: absolute !important;
+    top: -23px !important;
+    left: 14px !important;
+    z-index: 3 !important;
+    margin: 0 !important;
+    background: var(--color-card-fill, var(--pm-bg-card, #ffffff)) !important;
+    width: fit-content !important;
+    padding-right: 6px !important;
+  }
+
+  /* Feedback 5.1 P11-P13: reserve a slightly taller title lane and place
+     labels 2px inside that lane. This prevents first labels from visually
+     clipping against the parent card edge while keeping them clearly outside
+     each child box. */
+  body:not(.report-theme--english) #toc-m6 .m6-card > .m6-card-header,
+  body:not(.report-theme--english) #toc-m6 .m6-role-panel > .m6-card-header,
+  body:not(.report-theme--english) #toc-m6 .m6-recommendation-module > .m6-training-focus > .m6-training-focus__title,
+  body:not(.report-theme--english) #toc-m7 .m7-report-box__inner > .m7-section-title,
+  body:not(.report-theme--english) #toc-m7 .m7-quality-block > .m7-block-title,
+  body:not(.report-theme--english) #toc-m8 .m8-appendix-panel > .m8-appendix-panel__titlebar,
+  body:not(.report-theme--english) #toc-m8 .m8-appendix-panel > .m8-appendix-panel__section-title {
+    position: absolute !important;
+    top: -22px !important;
+    left: 16px !important;
+    z-index: 3 !important;
+    margin: 0 !important;
+    padding: 0 8px 0 10px !important;
+  }
+
+  /* Feedback 5.2 P11: keep subsection labels completely above their child
+     borders. A small reserved-lane increase plus a larger upward label offset
+     clears the borders without pushing M6 onto an extra page. */
+  body:not(.report-theme--english) #toc-m6 .m6-card,
+  body:not(.report-theme--english) #toc-m6 .m6-role-panel {
+    margin-top: 26px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .m6-card > .m6-card-header,
+  body:not(.report-theme--english) #toc-m6 .m6-role-panel > .m6-card-header,
+  body:not(.report-theme--english) #toc-m6 .m6-recommendation-module > .m6-training-focus > .m6-training-focus__title {
+    top: -26px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .m6-card > .m6-card-header {
+    left: 18px !important;
+    padding: 0 10px 0 0 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .m6-role-panel > .m6-card-header {
+    left: 5px !important;
+    padding: 0 10px 0 0 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .m6-recommendation-module > .m6-training-focus > .m6-training-focus__title {
+    left: 18px !important;
+    padding: 0 10px !important;
+  }
+
+  body:not(.report-theme--english) .m8-appendix-panel__titlebar,
+  body:not(.report-theme--english) .m8-appendix-panel__section-title {
+    height: auto !important;
+    line-height: 1.24 !important;
+  }
+}

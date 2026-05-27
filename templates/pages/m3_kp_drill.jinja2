@@ -336,6 +336,7 @@
 {% set tables = data.tables | default([], true) %}
 {% set path_example = data.path_example | default({}, true) %}
 {% set path_nodes = path_example.nodes | default([], true) %}
+{% set guide_column_count = (1 if intro_text else 0) + (1 if path_nodes | length > 0 else 0) %}
 {% set drill_path_names = [] %}
 {% set drill_focus = namespace(l3='', l4='', max_gap='') %}
 {% for node in path_nodes %}
@@ -420,71 +421,73 @@
       </div>
     </section>
 
-    <div class="module-content-card m3-kp-guide-card">
+    <div class="module-content-card m3-kp-guide-card" data-guide-columns="{{ 'single' if guide_column_count <= 1 else 'double' }}">
 
     {# =========================================================================
      # 区块3：介绍面板 + 层级步骤条
      # ========================================================================= #}
     {% if intro_text %}
-    <div class="m3-kp-drill__intro-panel">
+    <div class="m3-kp-guide-column">
       <div class="m3-kp-drill__section-title m3-kp-drill__section-title--guide">{{ lb_icon('tree', 'frame-inline-icon') }} 一、层级说明</div>
-      {# 说明文字 #}
-      <div class="m3-kp-drill__desc">{{ intro_text }}</div>
+      <div class="m3-kp-drill__intro-panel">
+        {# 说明文字 #}
+        <div class="m3-kp-drill__desc">{{ intro_text }}</div>
 
-      {# 层级步骤条 L1 → L2 → L3 → L4 #}
-      {% if level_guide | length > 0 %}
-      <div class="m3-kp-steps">
-        {% for step in level_guide %}
-          <div class="m3-kp-step m3-kp-step--{{ step.theme | default('l1', true) }}">
-            <div class="m3-kp-step__lvl">{{ step.level | default("L?", true) }}</div>
+        {# 层级步骤条 L1 → L2 → L3 → L4 #}
+        {% if level_guide | length > 0 %}
+        <div class="m3-kp-steps">
+          {% for step in level_guide %}
+            <div class="m3-kp-step m3-kp-step--{{ step.theme | default('l1', true) }}">
+              <div class="m3-kp-step__lvl">{{ step.level | default("L?", true) }}</div>
+              <div class="m3-kp-step__meta">
+                <div class="m3-kp-step__name">{{ lb_icon('tree' if step.level == 'L1' else ('module' if step.level == 'L2' else ('target' if step.level == 'L3' else 'feature')), 'frame-inline-icon') }} {{ step.name | default("--", true) }}</div>
+                <div class="m3-kp-step__desc">{{ step.desc | default("", true) }}</div>
+              </div>
+            </div>
+            {% if not loop.last %}
+              <div class="m3-kp-step-arrow"></div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% else %}
+        {# 层级数据为空时的兜底显示 #}
+        <div class="m3-kp-steps">
+          <div class="m3-kp-step m3-kp-step--l1">
+            <div class="m3-kp-step__lvl">L1</div>
             <div class="m3-kp-step__meta">
-              <div class="m3-kp-step__name">{{ lb_icon('tree' if step.level == 'L1' else ('module' if step.level == 'L2' else ('target' if step.level == 'L3' else 'feature')), 'frame-inline-icon') }} {{ step.name | default("--", true) }}</div>
-              <div class="m3-kp-step__desc">{{ step.desc | default("", true) }}</div>
+              <div class="m3-kp-step__name">{{ lb_icon('tree', 'frame-inline-icon') }} 领域</div>
+              <div class="m3-kp-step__desc">(6项)</div>
             </div>
           </div>
-          {% if not loop.last %}
-            <div class="m3-kp-step-arrow"></div>
+          <div class="m3-kp-step-arrow"></div>
+          <div class="m3-kp-step m3-kp-step--l2">
+            <div class="m3-kp-step__lvl">L2</div>
+            <div class="m3-kp-step__meta">
+              <div class="m3-kp-step__name">{{ lb_icon('module', 'frame-inline-icon') }} 模块</div>
+              <div class="m3-kp-step__desc">(粗粒度)</div>
+            </div>
+          </div>
+          <div class="m3-kp-step-arrow"></div>
+          <div class="m3-kp-step m3-kp-step--l3">
+            <div class="m3-kp-step__lvl">L3</div>
+            <div class="m3-kp-step__meta">
+              <div class="m3-kp-step__name">{{ lb_icon('target', 'frame-inline-icon') }} 知识点</div>
+              <div class="m3-kp-step__desc">(中粒度)</div>
+            </div>
+          </div>
+          {% if l4_items is defined and l4_items | length > 0 %}
+          <div class="m3-kp-step-arrow"></div>
+          <div class="m3-kp-step m3-kp-step--l4">
+            <div class="m3-kp-step__lvl">L4</div>
+            <div class="m3-kp-step__meta">
+              <div class="m3-kp-step__name">{{ lb_icon('feature', 'frame-inline-icon') }} 技能点</div>
+              <div class="m3-kp-step__desc">(细粒度)</div>
+            </div>
+          </div>
           {% endif %}
-        {% endfor %}
-      </div>
-      {% else %}
-      {# 层级数据为空时的兜底显示 #}
-      <div class="m3-kp-steps">
-        <div class="m3-kp-step m3-kp-step--l1">
-          <div class="m3-kp-step__lvl">L1</div>
-          <div class="m3-kp-step__meta">
-            <div class="m3-kp-step__name">{{ lb_icon('tree', 'frame-inline-icon') }} 领域</div>
-            <div class="m3-kp-step__desc">(6项)</div>
-          </div>
-        </div>
-        <div class="m3-kp-step-arrow"></div>
-        <div class="m3-kp-step m3-kp-step--l2">
-          <div class="m3-kp-step__lvl">L2</div>
-          <div class="m3-kp-step__meta">
-            <div class="m3-kp-step__name">{{ lb_icon('module', 'frame-inline-icon') }} 模块</div>
-            <div class="m3-kp-step__desc">(粗粒度)</div>
-          </div>
-        </div>
-        <div class="m3-kp-step-arrow"></div>
-        <div class="m3-kp-step m3-kp-step--l3">
-          <div class="m3-kp-step__lvl">L3</div>
-          <div class="m3-kp-step__meta">
-            <div class="m3-kp-step__name">{{ lb_icon('target', 'frame-inline-icon') }} 知识点</div>
-            <div class="m3-kp-step__desc">(中粒度)</div>
-          </div>
-        </div>
-        {% if l4_items is defined and l4_items | length > 0 %}
-        <div class="m3-kp-step-arrow"></div>
-        <div class="m3-kp-step m3-kp-step--l4">
-          <div class="m3-kp-step__lvl">L4</div>
-          <div class="m3-kp-step__meta">
-            <div class="m3-kp-step__name">{{ lb_icon('feature', 'frame-inline-icon') }} 技能点</div>
-            <div class="m3-kp-step__desc">(细粒度)</div>
-          </div>
         </div>
         {% endif %}
       </div>
-      {% endif %}
     </div>
     {% endif %}
 
@@ -492,41 +495,39 @@
      # 区块4：钻取路径示例（可选）
      # ========================================================================= #}
     {% if path_example and (path_example.nodes is defined and path_example.nodes | length > 0) %}
-    <div class="m3-kp-path">
-      {# 标题 #}
+    <div class="m3-kp-guide-column">
       <div class="m3-kp-drill__section-title">{{ lb_icon('map', 'frame-inline-icon') }} 二、{{ path_example.title | default("钻取路径示例", true) }}</div>
-
-      {# 路径节点 #}
-      <div class="m3-kp-path__nodes">
-        {% for n in path_example.nodes %}
-          <div class="m3-kp-path-node m3-kp-path-node--{{ n.theme | default('l1', true) }}">
-            <div class="m3-kp-path-node__lvl">({{ n.level | default("L?", true) }})</div>
-            <div class="m3-kp-path-node__name">{{ display_domain_or_text(n.name_cn | default("--", true)) }}</div>
-            <div class="m3-kp-path-node__delta">
-              {# [v1.1] 支持 gap_to_target 回退 #}
-              {% set node_delta = n.delta_vs_target if n.delta_vs_target is defined else n.gap_to_target | default(none) %}
-              {% if node_delta is not none %}
-                {{ node_delta }}%
-              {% else %}
-                --
-              {% endif %}
+      <div class="m3-kp-path">
+        {# 路径节点 #}
+        <div class="m3-kp-path__nodes">
+          {% for n in path_example.nodes %}
+            <div class="m3-kp-path-node m3-kp-path-node--{{ n.theme | default('l1', true) }}">
+              <div class="m3-kp-path-node__lvl">({{ n.level | default("L?", true) }})</div>
+              <div class="m3-kp-path-node__name">{{ display_domain_or_text(n.name_cn | default("--", true)) }}</div>
+              <div class="m3-kp-path-node__delta">
+                {# [v1.1] 支持 gap_to_target 回退 #}
+                {% set node_delta = n.delta_vs_target if n.delta_vs_target is defined else n.gap_to_target | default(none) %}
+                {% if node_delta is not none %}
+                  {{ node_delta }}%
+                {% else %}
+                  --
+                {% endif %}
+              </div>
             </div>
-          </div>
-          {% if not loop.last %}
-            <div class="m3-kp-path-arrow">></div>
-          {% endif %}
-        {% endfor %}
-      </div>
+            {% if not loop.last %}
+              <div class="m3-kp-path-arrow">></div>
+            {% endif %}
+          {% endfor %}
+        </div>
 
-      {# 说明条 #}
-      {% if path_example.note_text %}
-      <div class="m3-kp-path__note">* {{ path_example.note_text }}（示例，不代表本次诊断结果）</div>
-      {% endif %}
+        {# 说明条 #}
+        {% if path_example.note_text %}
+        <div class="m3-kp-path__note">* {{ path_example.note_text }}（示例，不代表本次诊断结果）</div>
+        {% endif %}
+      </div>
     </div>
     {% endif %}
     </div><!-- /.module-content-card -->
-
-    <div class="m3-kp-drill__grid">
 
     {# =========================================================================
      # 区块5：钻取表格区域 - v2.0 六大领域分组版
@@ -633,37 +634,42 @@
         {% endif %}
       {% endmacro %}
 
-      <div class="m3-kp-drill__panel-card">
-        <div class="m3-kp-drill__panels{% if render_domain_keys | length == 4 %} m3-kp-drill__panels--grid-2x2{% endif %}">
-          {% for dk in render_domain_keys %}
-            {{ render_domain_panel(dk) }}
-          {% endfor %}
+      {% if render_domain_keys | length > 0 %}
+      <div class="m3-kp-drill__grid">
+        <div class="m3-kp-drill__panel-card">
+          <div class="m3-kp-drill__panels{% if render_domain_keys | length == 4 %} m3-kp-drill__panels--grid-2x2{% endif %}">
+            {% for dk in render_domain_keys %}
+              {{ render_domain_panel(dk) }}
+            {% endfor %}
+          </div>
         </div>
-      </div>
 
-      {# --- 无数据领域合并汇总块 --- #}
-      {% if nodata_names | length > 0 %}
-      <div class="m3-kp-drill__nodata-merge">
-        <span class="m3-kp-drill__nodata-merge__label">数据不充分的领域：</span>
-        {% for name in nodata_names %}
-        <span class="m3-kp-drill__nodata-merge__name">{{ name }}</span>
-        {%- if not loop.last %}、{% endif %}
-        {% endfor %}
-        <span class="m3-kp-drill__nodata-merge__text">
-          — 以上 {{ nodata_names | length }} 个领域答题数据不足，暂未识别到具体的知识点薄弱点。建议补充相关领域的答题记录后再次诊断。
-        </span>
-      </div>
+        {# --- 无数据领域合并汇总块 --- #}
+        {% if nodata_names | length > 0 %}
+        <div class="m3-kp-drill__nodata-merge">
+          <span class="m3-kp-drill__nodata-merge__label">数据不充分的领域：</span>
+          {% for name in nodata_names %}
+          <span class="m3-kp-drill__nodata-merge__name">{{ name }}</span>
+          {%- if not loop.last %}、{% endif %}
+          {% endfor %}
+          <span class="m3-kp-drill__nodata-merge__text">
+            — 以上 {{ nodata_names | length }} 个领域答题数据不足，暂未识别到具体的知识点薄弱点。建议补充相关领域的答题记录后再次诊断。
+          </span>
+        </div>
+        {% endif %}
+      </div><!-- /.m3-kp-drill__grid -->
       {% endif %}
 
     {% else %}
     {# 整体无数据时的兜底显示 #}
-    <div class="m3-kp-drill__panel">
-      <div class="m3-kp-drill__empty-state">
-        暂无短板数据，无法进行知识点钻取分析
+    <div class="m3-kp-drill__grid">
+      <div class="m3-kp-drill__panel">
+        <div class="m3-kp-drill__empty-state">
+          暂无短板数据，无法进行知识点钻取分析
+        </div>
       </div>
-    </div>
-    {% endif %}
     </div><!-- /.m3-kp-drill__grid -->
+    {% endif %}
 
   </div><!-- /.m3-kp-drill__container -->
 </section>
