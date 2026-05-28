@@ -430,8 +430,8 @@
     <div class="m3-kp-guide-column">
       <div class="m3-kp-drill__section-title m3-kp-drill__section-title--guide">{{ lb_icon('tree', 'frame-inline-icon') }} 一、层级说明</div>
       <div class="m3-kp-drill__intro-panel">
-        {# 说明文字 #}
-        <div class="m3-kp-drill__desc">{{ intro_text }}</div>
+        {# 说明文字：与右侧提示条使用同一卡片样式 #}
+        <div class="m3-kp-path__note m3-kp-guide-note">{{ intro_text }}</div>
 
         {# 层级步骤条 L1 → L2 → L3 → L4 #}
         {% if level_guide | length > 0 %}
@@ -498,6 +498,11 @@
     <div class="m3-kp-guide-column">
       <div class="m3-kp-drill__section-title">{{ lb_icon('map', 'frame-inline-icon') }} 二、{{ path_example.title | default("钻取路径示例", true) }}</div>
       <div class="m3-kp-path">
+        {# 说明条：置顶展示 #}
+        {% if path_example.note_text %}
+        <div class="m3-kp-path__note">* {{ path_example.note_text }}（示例，不代表本次诊断结果）</div>
+        {% endif %}
+
         {# 路径节点 #}
         <div class="m3-kp-path__nodes">
           {% for n in path_example.nodes %}
@@ -519,11 +524,6 @@
             {% endif %}
           {% endfor %}
         </div>
-
-        {# 说明条 #}
-        {% if path_example.note_text %}
-        <div class="m3-kp-path__note">* {{ path_example.note_text }}（示例，不代表本次诊断结果）</div>
-        {% endif %}
       </div>
     </div>
     {% endif %}

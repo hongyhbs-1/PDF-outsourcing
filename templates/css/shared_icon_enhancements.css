@@ -911,6 +911,11 @@
    Feedback 5.0 math-only refinements: clearer module gaps + unified subsection
    titles outside child boxes while preserving English-specific density guards.
    ============================================================================ */
+body:not(.report-theme--english) .m1-section-bar--subtle {
+  /* P6 示例：两个模块之间拉开距离，让内容更接近整页高度 */
+  margin-top: 44px;
+}
+
 @media print {
   body:not(.report-theme--english) .m1-summary-card,
   body:not(.report-theme--english) .m1-breakthrough-grid,
@@ -969,6 +974,15 @@
     font-weight: 800 !important;
     line-height: 1.24 !important;
     box-shadow: none !important;
+  }
+
+  body:not(.report-theme--english) .m1-section-bar--subtle {
+    /* P6 示例：两个模块之间拉开距离，让内容更接近整页高度 */
+    margin: 46px 0 8px !important;
+  }
+
+  body:not(.report-theme--english) .m1-report-page--dense .m1-section-bar--subtle {
+    margin: 28px 0 8px !important;
   }
 
   body:not(.report-theme--english) .m2-cw-note-bar {
@@ -1030,6 +1044,87 @@
 
   body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide {
     flex: 1 1 auto !important;
+  }
+
+  /* Feedback 5.3 P2-P13 page-fill spacing: apply the P6 treatment to the
+     remaining math pages as well.  Each page keeps the existing content order,
+     but the main white module area reserves a taller footprint and distributes
+     sibling modules vertically, reducing the large blank lower-half areas. */
+  body:not(.report-theme--english) .sp-page > .module-content-card,
+  body:not(.report-theme--english) .ip-page > .module-content-card,
+  body:not(.report-theme--english) .mov-page > .module-content-card,
+  body:not(.report-theme--english) #toc-m2 > .m2-core-weakness-module > .module-content-card,
+  body:not(.report-theme--english) #toc-m5 > .m5-city-compare > .module-content-card,
+  body:not(.report-theme--english) #toc-m7 > .m7-data-reliability > .module-content-card,
+  body:not(.report-theme--english) #toc-m8 > .m8-appendix-page .module-content-card {
+    min-height: 160mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  /* P5 has no module-content-card; stretch the TOC list/guide in the same way. */
+  body:not(.report-theme--english) .mtoc-page {
+    min-height: 180mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  body:not(.report-theme--english) .mtoc-list {
+    flex: 1 1 auto !important;
+    justify-content: space-evenly !important;
+  }
+
+  body:not(.report-theme--english) .mtoc-title-section {
+    margin-bottom: 28px !important;
+  }
+
+  body:not(.report-theme--english) .mtoc-reading-guide {
+    margin-top: 36px !important;
+  }
+
+  /* P2: make the P6-style module separation visible between “整体情况” and
+     “整体分析”, instead of only stretching the white card footprint. */
+  body:not(.report-theme--english) .sp-page .sp-hero-unified + .sp-section-divider {
+    margin: 30px 0 22px !important;
+  }
+
+  body:not(.report-theme--english) .sp-page .sp-section--analysis {
+    margin-top: 0 !important;
+  }
+
+  /* P4: keep the gap below “二、试卷/批次清单” consistent with the gap below
+     “一、报告速览” before its content module. */
+  body:not(.report-theme--english) .mov-page .mov-hero-kicker--papers {
+    margin-bottom: 14px !important;
+  }
+
+  /* P7 has a single inner wrapper; stretch that wrapper and separate its two
+     stacked groups so the page follows the same module-gap rhythm as P6. */
+  body:not(.report-theme--english) #toc-m4 > .m4-module-domains > .module-content-card {
+    min-height: 160mm !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-grid-split {
+    min-height: 148mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-grid-split__right .m4-summary-card {
+    margin-top: 30px !important;
+  }
+
+  /* P9 guide cards are a two-column grid rather than a vertical stack; increase
+     the shared card footprint so both guide modules occupy the page height. */
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] {
+    min-height: 160mm !important;
+    gap: 16px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .m6-card + .m6-card {
+    margin-top: 28px !important;
   }
 
   body:not(.report-theme--english) .m6-card {
@@ -1113,6 +1208,31 @@
     margin: 0 !important;
     background: var(--pm-bg-card, #ffffff) !important;
     padding-right: 6px !important;
+  }
+
+  /* Feedback 5.4/5.8 P7: align the three subsection labels. P7 moves these
+     labels outside child cards; keep the labels in the same left lane while
+     allowing each title to show its leading pictogram. */
+  body:not(.report-theme--english) #toc-m4 .m4-peer-card,
+  body:not(.report-theme--english) #toc-m4 .m4-summary-card {
+    margin-top: 30px !important;
+  }
+
+  /* Feedback 5.5 P7: the third label sits inside the same right-column flow as
+     the table, so its absolute title lane needs extra top reserve to match the
+     gap between “二、领域表现详情” and the previous overview module. */
+  body:not(.report-theme--english) #toc-m4 .m4-grid-split__right .m4-summary-card {
+    margin-top: 42px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-peer-card > .m4-peer-title,
+  body:not(.report-theme--english) #toc-m4 .m4-summary-card > .m4-summary-title {
+    left: 4px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-peer-card > .m4-peer-title > .frame-inline-icon,
+  body:not(.report-theme--english) #toc-m4 .m4-summary-card > .m4-summary-title > .frame-inline-icon {
+    display: inline-flex !important;
   }
 
   body:not(.report-theme--english) #toc-m7 .m7-quality-block > .m7-block-title {
@@ -1208,9 +1328,203 @@
     padding: 0 10px !important;
   }
 
+  /* Feedback 5.6 P10-P13: several subsection labels still started farther
+     right than the aligned P11 role titles because their absolute title lanes
+     used larger left offsets (14/16/18px). Pull these labels left to the same
+     visual text column while keeping icons and title-lane spacing intact. */
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__table-section > .m5-city-compare__table-title,
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide > .m5-city-compare__card-title,
+  body:not(.report-theme--english) #toc-m7 .m7-report-box__inner > .m7-section-title,
+  body:not(.report-theme--english) #toc-m7 .m7-quality-block > .m7-block-title,
+  body:not(.report-theme--english) #toc-m8 .m8-appendix-panel > .m8-appendix-panel__titlebar,
+  body:not(.report-theme--english) #toc-m8 .m8-appendix-panel > .m8-appendix-panel__section-title {
+    left: 5px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .m6-card > .m6-card-header,
+  body:not(.report-theme--english) #toc-m6 .m6-role-panel > .m6-card-header,
+  body:not(.report-theme--english) #toc-m6 .m6-recommendation-module > .m6-training-focus > .m6-training-focus__title {
+    left: 5px !important;
+  }
+
+  /* Feedback 5.7 p2-p13 opinion document: module separators should use the
+     same rhythm.  The pre-TOC pages previously mixed a visible divider line on
+     P2 with whitespace-only gaps on P3/P4; make P2 spacing-only as well, then
+     normalize the main vertical gaps on the affected math pages. */
+  body:not(.report-theme--english) .sp-page > .module-content-card,
+  body:not(.report-theme--english) .ip-page > .module-content-card,
+  body:not(.report-theme--english) .mov-page > .module-content-card,
+  body:not(.report-theme--english) #toc-m2 > .m2-core-weakness-module > .module-content-card,
+  body:not(.report-theme--english) #toc-m5 > .m5-city-compare > .module-content-card,
+  body:not(.report-theme--english) #toc-m7 > .m7-data-reliability > .module-content-card,
+  body:not(.report-theme--english) #toc-m8 > .m8-appendix-page .module-content-card,
+  body:not(.report-theme--english) #toc-m4 .m4-grid-split {
+    justify-content: flex-start !important;
+  }
+
+  body:not(.report-theme--english) .sp-page .sp-section-divider {
+    height: 0 !important;
+    margin: 18px 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  body:not(.report-theme--english) .sp-page .sp-section--analysis + .sp-section-divider {
+    display: none !important;
+  }
+
+  body:not(.report-theme--english) .ip-intervention-bar,
+  body:not(.report-theme--english) .ip-roadmap,
+  body:not(.report-theme--english) .ip-milestones,
+  body:not(.report-theme--english) .ip-focus-section,
+  body:not(.report-theme--english) .ip-phase-grid {
+    margin-bottom: 18px !important;
+  }
+
+  body:not(.report-theme--english) .ip-summary-bar {
+    margin-top: 0 !important;
+  }
+
+  body:not(.report-theme--english) .ip-parent-guide {
+    margin-top: 18px !important;
+  }
+
+  body:not(.report-theme--english) .mov-hero,
+  body:not(.report-theme--english) .mov-overview-grid {
+    margin-bottom: 18px !important;
+  }
+
+  body:not(.report-theme--english) .mov-papers,
+  body:not(.report-theme--english) .mov-page--dense .mov-papers {
+    padding-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  body:not(.report-theme--english) .m1-section-bar--subtle,
+  body:not(.report-theme--english) .m1-report-page--dense .m1-section-bar--subtle {
+    margin: 24px 0 8px !important;
+  }
+
   body:not(.report-theme--english) .m8-appendix-panel__titlebar,
   body:not(.report-theme--english) .m8-appendix-panel__section-title {
     height: auto !important;
     line-height: 1.24 !important;
+  }
+
+  /* Feedback 5.9 p7-p13 opinion document: keep the physical whitespace
+     between stacked modules consistent on each page.  Some pages use absolute
+     title lanes, so the visible gap is measured from the previous module body
+     to the next title label rather than only from card border to card border. */
+  body:not(.report-theme--english) #toc-m4 .m4-table-card {
+    /* P7: match the gap before “二、领域表现详情” to the gap before “三、分析小结”. */
+    margin-top: 24px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide {
+    /* P10: the note block after “二、高频重合度” should not leave a larger gap
+       than the gap between “一、重合知识点清单” and “二、高频重合度”. */
+    margin-bottom: 0 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .module-content-card > .m6-card.m6-recommendation-module {
+    /* P11: reserve the same visible lane between the stage card and “二、训练重点速览”. */
+    margin-top: 32px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m6 .m6-role-stack {
+    /* P11: role cards use absolute headers; a 6px stack gap produces matching
+       visible title gaps between the three role modules. */
+    gap: 6px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m7 .m7-quality-box {
+    /* P12: align the gap before “三、报告结论可信度评估” with the gap between
+       the previous two report boxes, and keep the right-column pair consistent. */
+    margin-top: 0 !important;
+    row-gap: 12px !important;
+    column-gap: 8px !important;
+  }
+
+  /* Feedback 6.0 p9 opinion document: the two guide modules should read as a
+     matched pair.  Use the same outer fill/border, then let the four internal
+     level/path rows divide the available height so the red-marked inner groups
+     no longer sit compressed at the top of large boxes. */
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-drill__intro-panel,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path {
+    background: var(--color-surface, #ffffff) !important;
+    border-color: var(--color-border, #d8e2e8) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-steps,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path__nodes {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    /* P9: force the left L1-L4 guide cards and right L1-L4 path cards to use
+       the same four equal-height tracks, so every corresponding level has the
+       same top/bottom edge in PDF output. */
+    grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+    grid-auto-rows: minmax(0, 1fr) !important;
+    align-content: stretch !important;
+    gap: 8px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-steps {
+    margin-top: 0 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path__nodes {
+    margin: 0 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path__note,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-guide-note {
+    flex: 0 0 auto !important;
+    margin: 0 0 8px !important;
+    padding: 6px 8px !important;
+    background: var(--color-note-bg, #f0ede6) !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node {
+    min-height: 0 !important;
+    height: 100% !important;
+    padding: 8px 10px !important;
+    border-radius: 8px !important;
+    align-items: center !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step__lvl {
+    width: 34px !important;
+    font-size: 18px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step__name,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node__lvl,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node__name,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node__delta {
+    font-size: 11.2px !important;
+    line-height: 1.25 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step__desc,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-drill__desc,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path__note {
+    font-size: 10.5px !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Feedback 6.1 p11 opinion document: remove the tiny vertical accent bars
+     before the three role suggestion headings only. The page-level and module
+     titles keep their existing accent treatment. */
+  body:not(.report-theme--english) #toc-m6 .m6-role-panel .m6-card-header__title {
+    border-left: 0 !important;
+    padding-left: 0 !important;
   }
 }
