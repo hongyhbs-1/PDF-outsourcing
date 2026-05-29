@@ -416,6 +416,7 @@
 }
 
 .sp-progress-fill {
+  width: var(--sp-progress-current, 0%);
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--pm-sand), var(--pm-teal));
@@ -428,16 +429,92 @@
   top: -3px;
   width: 3px;
   height: 15px;
+  left: var(--sp-progress-current, 0%);
+  transform: translateX(-50%);
   background: var(--pm-status-success, #2d8a6e);
   border-radius: 2px;
 }
 
+.sp-progress-target--current {
+  z-index: 2;
+}
+
+.sp-progress-target--target {
+  top: -2px;
+  height: 13px;
+  left: var(--sp-progress-target, 0%);
+  background: var(--pm-status-attention, #d4943a);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85);
+}
+
+.sp-progress-target--target.sp-progress-target--overlap {
+  top: -3px;
+  width: 7px;
+  height: 15px;
+  z-index: 3;
+  background: linear-gradient(
+    90deg,
+    var(--pm-status-success, #2d8a6e) 0 45%,
+    var(--pm-status-attention, #d4943a) 55% 100%
+  );
+}
+
 .sp-progress-labels {
-  display: flex;
-  justify-content: space-between;
+  position: relative;
+  height: 14px;
+  margin-top: 4px;
   font-size: 9px;
   color: var(--pm-text-muted);
-  margin-top: 3px;
+}
+
+.sp-progress-labels--stacked {
+  height: 26px;
+}
+
+.sp-progress-label {
+  position: absolute;
+  top: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.sp-progress-label--start {
+  left: 0;
+}
+
+.sp-progress-label--current {
+  left: var(--sp-progress-current, 0%);
+  transform: translateX(-50%);
+  font-weight: 700;
+  color: var(--pm-text-secondary);
+}
+
+.sp-progress-label--target {
+  left: var(--sp-progress-target, 0%);
+  transform: translateX(-50%);
+  font-weight: 700;
+  color: var(--pm-status-attention, #d4943a);
+}
+
+.sp-progress-label--edge-start {
+  transform: none;
+}
+
+.sp-progress-label--edge-end {
+  transform: translateX(-100%);
+}
+
+.sp-progress-label--end {
+  left: 100%;
+  transform: translateX(-100%);
+}
+
+.sp-progress-labels--stacked .sp-progress-label--stack-top {
+  top: 0;
+}
+
+.sp-progress-labels--stacked .sp-progress-label--stack-bottom {
+  top: 12px;
 }
 
 .sp-metric-grid {

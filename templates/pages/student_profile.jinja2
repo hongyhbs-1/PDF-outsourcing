@@ -40,6 +40,17 @@
 {# --- 数据完整性判断 --- #}
 {% set has_real_data = acc > 0 %}
 
+{# --- 整体分析进度条：与 M6 当前学习阶段判定保持同一套标记/标签对齐逻辑 --- #}
+{% set sp_current_rate = acc if has_real_data else 0 %}
+{% set sp_clamped_rate = ([100, [0, sp_current_rate] | max] | min) | round(1) %}
+{% set sp_clamped_target_rate = ([100, [0, target_acc] | max] | min) | round(1) %}
+{% set sp_progress_css = (sp_clamped_rate | round(0) | int) if sp_clamped_rate == (sp_clamped_rate | round(0)) else sp_clamped_rate %}
+{% set sp_target_progress_css = (sp_clamped_target_rate | round(0) | int) if sp_clamped_target_rate == (sp_clamped_target_rate | round(0)) else sp_clamped_target_rate %}
+{% set sp_progress_gap = sp_clamped_rate - sp_clamped_target_rate if sp_clamped_rate >= sp_clamped_target_rate else sp_clamped_target_rate - sp_clamped_rate %}
+{% set sp_markers_overlap = sp_progress_gap <= 5 %}
+{% set sp_progress_edge_class = 'sp-progress-label--edge-start' if sp_clamped_rate <= 8 else ('sp-progress-label--edge-end' if sp_clamped_rate >= 92 else '') %}
+{% set sp_target_edge_class = 'sp-progress-label--edge-start' if sp_clamped_target_rate <= 8 else ('sp-progress-label--edge-end' if sp_clamped_target_rate >= 92 else '') %}
+
 {# --- 提取薄弱领域 --- #}
 {% set weak_domains = [] %}
 {% if domains is defined and domains.domain_items is defined %}
@@ -155,7 +166,7 @@
       <h2 class="sp-group-title">{{ lb_icon('gauge', 'frame-section-icon') }}二、整体分析</h2>
     </div>
 
-    <div class="sp-progress-panel">
+    <div class="sp-progress-panel" style="--sp-progress-current: {{ sp_progress_css }}%; --sp-progress-target: {{ sp_target_progress_css }}%;">
       <div class="sp-progress-panel__meta">
         <div class="sp-progress-panel__eyebrow">{{ lb_icon('gauge', 'frame-inline-icon') }}学习情况分析</div>
         {% if has_real_data %}
@@ -169,14 +180,15 @@
 
       <div class="sp-progress sp-progress--panel">
         <div class="sp-progress-track">
-          <div class="sp-progress-fill" style="width:{{ acc }}%;"></div>
-          <div class="sp-progress-target sp-progress-target--current" style="left:{{ acc }}%;" title="当前节点"></div>
+          <div class="sp-progress-fill"></div>
+          <div class="sp-progress-target sp-progress-target--current" title="当前节点"></div>
+          <div class="sp-progress-target sp-progress-target--target{% if sp_markers_overlap %} sp-progress-target--overlap{% endif %}" title="目标节点"></div>
         </div>
-        <div class="sp-progress-labels">
-          <span>0%</span>
-          <span>当前 {{ acc | int }}%</span>
-          <span>目标 {{ target_acc | int }}%</span>
-          <span>100%</span>
+        <div class="sp-progress-labels{% if sp_markers_overlap %} sp-progress-labels--stacked{% endif %}">
+          <span class="sp-progress-label sp-progress-label--start">0%</span>
+          <span class="sp-progress-label sp-progress-label--current{% if sp_progress_edge_class %} {{ sp_progress_edge_class }}{% endif %}{% if sp_markers_overlap %} sp-progress-label--stack-top{% endif %}">{% if has_real_data %}当前 {{ sp_clamped_rate | round(0) | int }}%{% else %}当前 暂无数据{% endif %}</span>
+          <span class="sp-progress-label sp-progress-label--target{% if sp_target_edge_class %} {{ sp_target_edge_class }}{% endif %}{% if sp_markers_overlap %} sp-progress-label--stack-bottom{% endif %}">目标 {{ sp_clamped_target_rate | round(0) | int }}%</span>
+          <span class="sp-progress-label sp-progress-label--end">100%</span>
         </div>
       </div>
     </div>
