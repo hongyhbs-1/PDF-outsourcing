@@ -447,6 +447,7 @@
 }
 
 .m6-stage-progress-panel .sp-progress-fill {
+  width: var(--stage-progress);
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--pm-sand), var(--pm-teal));
@@ -459,16 +460,92 @@
   top: -3px;
   width: 3px;
   height: 15px;
+  left: var(--stage-progress);
+  transform: translateX(-50%);
   background: var(--pm-status-success, #2d8a6e);
   border-radius: 2px;
 }
 
+.m6-stage-progress-panel .sp-progress-target--current {
+  z-index: 2;
+}
+
+.m6-stage-progress-panel .sp-progress-target--target {
+  top: -2px;
+  height: 13px;
+  left: var(--stage-target-progress);
+  background: var(--pm-status-attention, #d4943a);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85);
+}
+
+.m6-stage-progress-panel .sp-progress-target--target.sp-progress-target--overlap {
+  top: -3px;
+  width: 7px;
+  height: 15px;
+  z-index: 3;
+  background: linear-gradient(
+    90deg,
+    var(--pm-status-success, #2d8a6e) 0 45%,
+    var(--pm-status-attention, #d4943a) 55% 100%
+  );
+}
+
 .m6-stage-progress-panel .sp-progress-labels {
-  display: flex;
-  justify-content: space-between;
+  position: relative;
+  height: 14px;
+  margin-top: 4px;
   font-size: 9px;
   color: var(--pm-text-muted);
-  margin-top: 3px;
+}
+
+.m6-stage-progress-panel .sp-progress-labels--stacked {
+  height: 26px;
+}
+
+.m6-stage-progress-panel .sp-progress-label {
+  position: absolute;
+  top: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.m6-stage-progress-panel .sp-progress-label--start {
+  left: 0;
+}
+
+.m6-stage-progress-panel .sp-progress-label--current {
+  left: var(--stage-progress);
+  transform: translateX(-50%);
+  font-weight: 700;
+  color: var(--pm-text-secondary);
+}
+
+.m6-stage-progress-panel .sp-progress-label--target {
+  left: var(--stage-target-progress);
+  transform: translateX(-50%);
+  font-weight: 700;
+  color: var(--pm-status-attention, #d4943a);
+}
+
+.m6-stage-progress-panel .sp-progress-label--edge-start {
+  transform: none;
+}
+
+.m6-stage-progress-panel .sp-progress-label--edge-end {
+  transform: translateX(-100%);
+}
+
+.m6-stage-progress-panel .sp-progress-labels--stacked .sp-progress-label--stack-top {
+  top: 0;
+}
+
+.m6-stage-progress-panel .sp-progress-labels--stacked .sp-progress-label--stack-bottom {
+  top: 12px;
+}
+
+.m6-stage-progress-panel .sp-progress-label--end {
+  left: 100%;
+  transform: translateX(-100%);
 }
 
 /* --------------------------------------------------------------------------
@@ -1097,6 +1174,11 @@
   .m6-card {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+
+  .m6-recommendation-module {
+    break-inside: auto;
+    page-break-inside: auto;
   }
 
   .m6-suggestion-section {

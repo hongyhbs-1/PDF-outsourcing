@@ -311,10 +311,16 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     {% set stage_target_rate = current.target_rate %}
   {% endif %}
   {% set clamped_target_rate = ([100, [0, stage_target_rate | float] | max] | min) | round(1) %}
+  {% set stage_progress_css = (clamped_rate | round(0) | int) if clamped_rate == (clamped_rate | round(0)) else clamped_rate %}
+  {% set stage_target_progress_css = (clamped_target_rate | round(0) | int) if clamped_target_rate == (clamped_target_rate | round(0)) else clamped_target_rate %}
+  {% set stage_progress_gap = clamped_rate - clamped_target_rate if clamped_rate >= clamped_target_rate else clamped_target_rate - clamped_rate %}
+  {% set stage_markers_overlap = stage_progress_gap <= 5 %}
+  {% set stage_progress_edge_class = 'sp-progress-label--edge-start' if clamped_rate <= 8 else ('sp-progress-label--edge-end' if clamped_rate >= 92 else '') %}
+  {% set stage_target_edge_class = 'sp-progress-label--edge-start' if clamped_target_rate <= 8 else ('sp-progress-label--edge-end' if clamped_target_rate >= 92 else '') %}
   {% set above_target = current.above_target | default(false) %}
 
   <section class="m6-card m6-card--strong-border {{ 'm6-status--nodata' if not has_data else ('m6-status--above-target' if above_target else 'm6-status--below-target') }}"
-           style="--stage-progress: {{ clamped_rate }}%;">
+           style="--stage-progress: {{ stage_progress_css }}%; --stage-target-progress: {{ stage_target_progress_css }}%;">
 
     {# 卡片标题 #}
     <div class="m6-card-header">
@@ -363,14 +369,15 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 
       <div class="sp-progress sp-progress--panel">
         <div class="sp-progress-track">
-          <div class="sp-progress-fill" style="width:{{ clamped_rate }}%;"></div>
-          <div class="sp-progress-target sp-progress-target--current" style="left:{{ clamped_rate }}%;" title="当前节点"></div>
+          <div class="sp-progress-fill"></div>
+          <div class="sp-progress-target sp-progress-target--current" title="当前节点"></div>
+          <div class="sp-progress-target sp-progress-target--target{% if stage_markers_overlap %} sp-progress-target--overlap{% endif %}" title="目标节点"></div>
         </div>
-        <div class="sp-progress-labels">
-          <span>0%</span>
-          <span>{% if has_data %}当前 {{ clamped_rate | round(0) | int }}%{% else %}当前 暂无数据{% endif %}</span>
-          <span>目标 {{ clamped_target_rate | round(0) | int }}%</span>
-          <span>100%</span>
+        <div class="sp-progress-labels{% if stage_markers_overlap %} sp-progress-labels--stacked{% endif %}">
+          <span class="sp-progress-label sp-progress-label--start">0%</span>
+          <span class="sp-progress-label sp-progress-label--current{% if stage_progress_edge_class %} {{ stage_progress_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-top{% endif %}">{% if has_data %}当前 {{ clamped_rate | round(0) | int }}%{% else %}当前 暂无数据{% endif %}</span>
+          <span class="sp-progress-label sp-progress-label--target{% if stage_target_edge_class %} {{ stage_target_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-bottom{% endif %}">目标 {{ clamped_target_rate | round(0) | int }}%</span>
+          <span class="sp-progress-label sp-progress-label--end">100%</span>
         </div>
       </div>
     </div>
@@ -427,7 +434,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
       <span class="m6-bullet m6-bullet--{{ student_card.bullet_color | default('blue', true) }}"></span>
       {{ role_icon(student_card.icon | default('student')) }}
       <h2 class="m6-card-header__title">
-        三、{{ student_card.title | default('给学生的学习建议', true) }}
+        1、{{ student_card.title | default('给学生的学习建议', true) }}
       </h2>
     </div>
 
@@ -439,11 +446,13 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     {% endif %}
 
     {# 分组建议列表 #}
+    {% set student_section_no_cn = ['一', '二', '三', '四', '五', '六'] %}
     <div class="m6-suggestion-sections">
       {% for section in student_card.sections | default([]) %}
+      {% set display_no = student_section_no_cn[loop.index0] if loop.index0 < (student_section_no_cn | length) else (section.no | default(loop.index, true)) %}
       <div class="m6-suggestion-section">
         <div class="m6-suggestion-section__header">
-          <span class="m6-suggestion-section__no">{{ section.no | default(loop.index, true) }}</span>
+          <span class="m6-suggestion-section__no">{{ display_no }}</span>
           <span class="m6-suggestion-section__title">{{ section.title | default('--', true) }}</span>
         </div>
         <ul class="m6-suggestion-section__list">
@@ -474,7 +483,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
       <span class="m6-bullet m6-bullet--{{ parent_card.bullet_color | default('orange', true) }}"></span>
       {{ role_icon(parent_card.icon | default('parent')) }}
       <h2 class="m6-card-header__title">
-        四、{{ parent_card.title | default('给家长的配合建议', true) }}
+        2、{{ parent_card.title | default('给家长的配合建议', true) }}
       </h2>
     </div>
 
@@ -513,7 +522,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
       <span class="m6-bullet m6-bullet--{{ teacher_card.bullet_color | default('red', true) }}"></span>
       {{ role_icon(teacher_card.icon | default('teacher')) }}
       <h2 class="m6-card-header__title">
-        五、{{ teacher_card.title | default('给老师的教学建议', true) }}
+        3、{{ teacher_card.title | default('给老师的教学建议', true) }}
       </h2>
     </div>
 

@@ -129,7 +129,10 @@
 
   {# ===== 3. 导语说明条（仅在有内容时渲染） ===== #}
   {% if s.intro_text %}
-  <div class="m2-cw-note-bar"><span class="m2-cw-note-bar__title">{{ lb_icon('target', 'frame-inline-icon') }}一、短板筛选说明</span><span class="m2-cw-note-bar__text">{{ s.intro_text }}</span></div>
+  <div class="m2-cw-section">
+    <div class="m2-cw-note-bar__title">{{ lb_icon('target', 'frame-inline-icon') }}一、短板筛选说明</div>
+    <div class="m2-cw-note-bar"><span class="m2-cw-note-bar__text">{{ s.intro_text }}</span></div>
+  </div>
   {% endif %}
 
   {# ===== 4. 表格卡片 ===== #}
@@ -305,11 +308,13 @@
   {# ===== 6. 数据提示（可选，条件渲染） ===== #}
   {% set tips = s.tips | default([]) %}
   {% if tips | length > 0 %}
-  <div class="m2-cw-tips-box">
+  <div class="m2-cw-section m2-cw-section--tips">
     <div class="m2-cw-tips-title">{{ lb_icon('data', 'frame-inline-icon') }} 三、数据提示</div>
-    {% for tip in tips %}
-    <div class="m2-cw-tips-item">* {{ tip }}</div>
-    {% endfor %}
+    <div class="m2-cw-tips-box">
+      {% for tip in tips %}
+      <div class="m2-cw-tips-item">* {{ tip }}</div>
+      {% endfor %}
+    </div>
   </div>
   {% endif %}
   </div><!-- /.module-content-card -->
