@@ -29,18 +29,15 @@ python -m pytest scripts/test_*.py -v
 ├── scripts/           # Python 渲染引擎和测试
 ├── templates/
 │   ├── pages/         # Jinja2 页面模板（22 个）
-│   ├── css/           # 样式文件（23 个，base + 模块 + shared）
+│   ├── css/           # 样式文件（25 个）
 │   ├── macros/        # Jinja2 宏
 │   ├── fonts/         # 字体文件
 │   └── assets/        # 模板用图片（logo 等）
 ├── samples/
 │   ├── json/          # 输入样本数据（3 个 JSON）
 │   └── output/        # 渲染输出（.gitignore）
-├── static/            # 漫画图片等静态资源
-├── prompts/           # 漫画场景 prompt
 ├── docs/              # 项目文档
-├── vault/             # dev-flow 任务管理
-└── tests/             # 测试文件（待迁移）
+└── vault/             # dev-flow 任务管理
 ```
 
 ## 技术栈
@@ -71,9 +68,7 @@ python -m pytest scripts/test_*.py -v
 | 目录 | `m_toc.jinja2` | 目录 + 页码 |
 | M1 摘要 | `m1_summary.jinja2` | 正确率 + P0 突破项 |
 | M2 短板 | `m2_core_weakness.jinja2` | 核心短板排序表 |
-| 漫画1 | `m2_comic_scene1.jinja2` | 学习困境（按等级显示） |
 | M3 钻取 | `m3_kp_drill.jinja2` | 知识点逐层展开 |
-| 漫画2 | `m3_comic_scene2.jinja2` | 学习成长 |
 | M4 领域 | `m4_domains.jinja2` | 领域达标分析 |
 | M5 考情 | `m5_city_compare.jinja2` | 城市考频对比（英语暂关） |
 | M6 建议 | `m6_tiered_learning.jinja2` | 分层学习建议 |
@@ -103,7 +98,6 @@ python -m pytest scripts/test_*.py -v
 | `docs/需求文档.md` | 项目需求、排版规格 |
 | `docs/engineering-standards.md` | 工程规范（命名、构建、Git commit） |
 | `docs/report-data-contract.md` | 数据对账契约（JSON ↔ 模板） |
-| `prompts/README.md` | 漫画 prompt 版本管理 |
 
 ## 开发约定
 
