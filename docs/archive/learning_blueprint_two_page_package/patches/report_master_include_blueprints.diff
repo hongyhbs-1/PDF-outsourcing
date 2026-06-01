@@ -1,5 +1,0 @@
-*** report_master.jinja2
-@@
- {# After cover page and before main analytical modules #}
-+{% include "m00_student_diagnostic_blueprint.jinja2" %}
-+{% include "m01_tutoring_execution_blueprint.jinja2" %}

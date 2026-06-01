@@ -42,3 +42,5 @@ Thumbs.db
 
 # ACE 工具
 .ace-tool/
+docs/archive/
+docs/images/
