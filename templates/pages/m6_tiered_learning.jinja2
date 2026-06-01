@@ -238,10 +238,76 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 {% set module = module | default(_tl.module | default({})) %}
 {% set stage_card = module.cards.stage_judgement | default({}) %}
 {% set current = stage_card.current | default({}) %}
+{% set has_data = current.has_data | default(true) %}
+{% set summary_data = summary | default({}, true) %}
+{% set current_pass_rate_raw = current.pass_rate | default(none) %}
+{% set summary_pass_rate_raw = summary_data.pass_rate | default(none) %}
+{% set summary_accuracy_raw = summary_data.current_accuracy | default(none) %}
+{# 部分上游样本误把 current_accuracy 写入 stage_judgement.current.pass_rate；当三者同时存在且可判定时，优先使用真正的 L3 达标率。 #}
+{% set use_summary_pass_rate = has_data and summary_pass_rate_raw not in [none, ''] and current_pass_rate_raw not in [none, ''] and summary_accuracy_raw not in [none, ''] and (current_pass_rate_raw | float) == (summary_accuracy_raw | float) and (summary_pass_rate_raw | float) != (current_pass_rate_raw | float) %}
+{% if not has_data %}
+  {% set pass_rate = 0 %}
+{% elif use_summary_pass_rate %}
+  {% set pass_rate = summary_pass_rate_raw %}
+{% elif current_pass_rate_raw not in [none, ''] %}
+  {% set pass_rate = current_pass_rate_raw %}
+{% elif summary_pass_rate_raw not in [none, ''] %}
+  {% set pass_rate = summary_pass_rate_raw %}
+{% else %}
+  {% set pass_rate = 0 %}
+{% endif %}
+{% set clamped_rate = ([100, [0, pass_rate | float] | max] | min) | round(1) %}
+{% set stage_target_rate = summary_data.target_accuracy | default(meta.target_accuracy | default(85, true), true) %}
+{% if stage_card.target_accuracy is defined and stage_card.target_accuracy not in [none, ''] %}
+  {% set stage_target_rate = stage_card.target_accuracy %}
+{% endif %}
+{% if current.target_accuracy is defined and current.target_accuracy not in [none, ''] %}
+  {% set stage_target_rate = current.target_accuracy %}
+{% elif current.target_rate is defined and current.target_rate not in [none, ''] %}
+  {% set stage_target_rate = current.target_rate %}
+{% endif %}
+{% set clamped_target_rate = ([100, [0, stage_target_rate | float] | max] | min) | round(1) %}
+{% set current_stage_key = current.stage_key | default('', true) %}
+{% if not has_data %}
+  {% set display_stage_key = current_stage_key | default('basic', true) %}
+{% elif use_summary_pass_rate or current_stage_key == '' %}
+  {% if clamped_rate < 50 %}
+    {% set display_stage_key = 'basic' %}
+  {% elif clamped_rate < 80 %}
+    {% set display_stage_key = 'improve' %}
+  {% else %}
+    {% set display_stage_key = 'sprint' %}
+  {% endif %}
+{% else %}
+  {% set display_stage_key = current_stage_key %}
+{% endif %}
+{% if display_stage_key == '' %}{% set display_stage_key = 'basic' %}{% endif %}
 {% set current_stage = namespace(name=current.position_hint | default('当前阶段待确认', true)) %}
 {% for stage in stage_card.stages | default([]) %}
-  {% if stage.key == current.stage_key %}{% set current_stage.name = stage.name | default(current_stage.name, true) %}{% endif %}
+  {% if stage.key == display_stage_key %}{% set current_stage.name = stage.name | default(current_stage.name, true) %}{% endif %}
 {% endfor %}
+{% set stage_progress_css = (clamped_rate | round(0) | int) if clamped_rate == (clamped_rate | round(0)) else clamped_rate %}
+{% set stage_target_progress_css = (clamped_target_rate | round(0) | int) if clamped_target_rate == (clamped_target_rate | round(0)) else clamped_target_rate %}
+{% set stage_progress_gap = clamped_rate - clamped_target_rate if clamped_rate >= clamped_target_rate else clamped_target_rate - clamped_rate %}
+{% set stage_gap_display = (stage_progress_gap | round(0) | int) if stage_progress_gap == (stage_progress_gap | round(0)) else (stage_progress_gap | round(1)) %}
+{% set stage_markers_overlap = stage_progress_gap <= 10 or (has_data and clamped_rate >= clamped_target_rate and stage_progress_gap <= 15) %}
+{% set stage_progress_edge_class = 'sp-progress-label--edge-start' if clamped_rate <= 8 else ('sp-progress-label--edge-end' if clamped_rate >= 92 else '') %}
+{% set stage_target_edge_class = 'sp-progress-label--edge-start' if clamped_target_rate <= 8 else ('sp-progress-label--edge-end' if clamped_target_rate >= 92 else '') %}
+{% set above_target = has_data and clamped_rate >= clamped_target_rate %}
+{% if has_data %}
+  {% if above_target %}
+    {% set stage_position_hint = '已达到目标线' if stage_progress_gap == 0 else '已超过目标线' ~ stage_gap_display ~ '个百分点' %}
+  {% else %}
+    {% set stage_position_hint = '距目标线还差' ~ stage_gap_display ~ '个百分点' %}
+  {% endif %}
+{% else %}
+  {% set stage_position_hint = current.position_hint | default('先看位置，再看后面的学习建议。', true) %}
+{% endif %}
+{% set pass_segments = summary_data.pass_segments | default([], true) %}
+{% set pass_achieved = pass_segments[0].value | default(0, true) | int if pass_segments | length > 0 else 0 %}
+{% set pass_pending = pass_segments[1].value | default(0, true) | int if pass_segments | length > 1 else 0 %}
+{% set pass_total = summary_data.high_freq_kp_total | default(pass_achieved + pass_pending, true) | int %}
+{% if pass_total <= 0 %}{% set pass_total = pass_achieved + pass_pending %}{% endif %}
 {% set weak_items = [] %}
 {% if domains is defined and domains.domain_items is defined %}
   {% for item in domains.domain_items %}
@@ -295,29 +361,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   {# ==========================================================================
      卡片1:当前学习阶段判定 (Stage Judgement Card)
      ========================================================================== #}
-  {% set stage_card = module.cards.stage_judgement | default({}) %}
-  {% set current = stage_card.current | default({}) %}
-  {% set has_data = current.has_data | default(true) %}
-  {% set pass_rate = current.pass_rate | default(0) if has_data else 0 %}
-  {% set clamped_rate = ([100, [0, pass_rate] | max] | min) | round(1) %}
-  {% set summary_data = summary | default({}, true) %}
-  {% set stage_target_rate = summary_data.target_accuracy | default(meta.target_accuracy | default(85, true), true) %}
-  {% if stage_card.target_accuracy is defined and stage_card.target_accuracy not in [none, ''] %}
-    {% set stage_target_rate = stage_card.target_accuracy %}
-  {% endif %}
-  {% if current.target_accuracy is defined and current.target_accuracy not in [none, ''] %}
-    {% set stage_target_rate = current.target_accuracy %}
-  {% elif current.target_rate is defined and current.target_rate not in [none, ''] %}
-    {% set stage_target_rate = current.target_rate %}
-  {% endif %}
-  {% set clamped_target_rate = ([100, [0, stage_target_rate | float] | max] | min) | round(1) %}
-  {% set stage_progress_css = (clamped_rate | round(0) | int) if clamped_rate == (clamped_rate | round(0)) else clamped_rate %}
-  {% set stage_target_progress_css = (clamped_target_rate | round(0) | int) if clamped_target_rate == (clamped_target_rate | round(0)) else clamped_target_rate %}
-  {% set stage_progress_gap = clamped_rate - clamped_target_rate if clamped_rate >= clamped_target_rate else clamped_target_rate - clamped_rate %}
-  {% set stage_markers_overlap = stage_progress_gap <= 5 %}
-  {% set stage_progress_edge_class = 'sp-progress-label--edge-start' if clamped_rate <= 8 else ('sp-progress-label--edge-end' if clamped_rate >= 92 else '') %}
-  {% set stage_target_edge_class = 'sp-progress-label--edge-start' if clamped_target_rate <= 8 else ('sp-progress-label--edge-end' if clamped_target_rate >= 92 else '') %}
-  {% set above_target = current.above_target | default(false) %}
+  {# 阶段、达标率、目标线等已在页面顶部统一计算，避免上游 pass_rate/current_accuracy 混用时此处再产生分歧。 #}
 
   <section class="m6-card m6-card--strong-border {{ 'm6-status--nodata' if not has_data else ('m6-status--above-target' if above_target else 'm6-status--below-target') }}"
            style="--stage-progress: {{ stage_progress_css }}%; --stage-target-progress: {{ stage_target_progress_css }}%;">
@@ -333,7 +377,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
     {# 三阶段标签 #}
     <div class="m6-stage-labels">
       {% for stage in stage_card.stages | default([]) %}
-      <div class="m6-stage-label {{ 'm6-stage-label--active' if stage.key == current.stage_key else '' }}">
+      <div class="m6-stage-label {{ 'm6-stage-label--active' if stage.key == display_stage_key else '' }}">
         <div class="m6-stage-label__name">{{ stage.name | default('--', true) }}</div>
         {#<div class="m6-stage-label__desc">({{ stage.desc | default('--', true) }})</div>#}
       </div>
@@ -359,15 +403,15 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
       <div class="sp-progress-panel__meta">
         <div class="sp-progress-panel__eyebrow">{{ lb_icon('gauge', 'frame-inline-icon') }}阶段位置</div>
         {% if has_data %}
-        <div class="sp-progress-panel__title">当前 {{ clamped_rate | round(0) | int }}%，目标 {{ clamped_target_rate | round(0) | int }}%，{{ current_stage.name }}</div>
-        <p class="sp-progress-panel__text">{{ current.position_hint | default('先看位置，再看后面的学习建议。', true) }}</p>
+        <div class="sp-progress-panel__title">达标率 {{ clamped_rate | round(0) | int }}%，目标 {{ clamped_target_rate | round(0) | int }}%，{{ current_stage.name }}</div>
+        <p class="sp-progress-panel__text">{{ stage_position_hint }}</p>
         {% else %}
         <div class="sp-progress-panel__title">当前数据还不足以判断稳定阶段</div>
         <p class="sp-progress-panel__text">先补足样本，再判断位置与阶段。</p>
         {% endif %}
       </div>
 
-      <div class="sp-progress sp-progress--panel">
+      <div class="sp-progress sp-progress--panel{% if stage_markers_overlap %} sp-progress--split-labels{% endif %}">
         <div class="sp-progress-track">
           <div class="sp-progress-fill"></div>
           <div class="sp-progress-target sp-progress-target--current" title="当前节点"></div>
@@ -375,7 +419,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
         </div>
         <div class="sp-progress-labels{% if stage_markers_overlap %} sp-progress-labels--stacked{% endif %}">
           <span class="sp-progress-label sp-progress-label--start">0%</span>
-          <span class="sp-progress-label sp-progress-label--current{% if stage_progress_edge_class %} {{ stage_progress_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-top{% endif %}">{% if has_data %}当前 {{ clamped_rate | round(0) | int }}%{% else %}当前 暂无数据{% endif %}</span>
+          <span class="sp-progress-label sp-progress-label--current{% if stage_progress_edge_class %} {{ stage_progress_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-top{% endif %}">{% if has_data %}达标率 {{ clamped_rate | round(0) | int }}%{% else %}当前 暂无数据{% endif %}</span>
           <span class="sp-progress-label sp-progress-label--target{% if stage_target_edge_class %} {{ stage_target_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-bottom{% endif %}">目标 {{ clamped_target_rate | round(0) | int }}%</span>
           <span class="sp-progress-label sp-progress-label--end">100%</span>
         </div>
@@ -384,13 +428,18 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 
     {# 当前阶段特点说明框 #}
     {% set note = stage_card.note | default({}) %}
+    {% if has_data and use_summary_pass_rate and pass_total > 0 %}
+      {% set stage_note_text = '你目前处在「' ~ current_stage.name ~ '」，在本次覆盖的' ~ pass_total ~ '个知识点中，已有' ~ pass_achieved ~ '/' ~ pass_total ~ '个考点达标，未达标' ~ pass_pending ~ '个。按照下面的建议有计划地练习，一定能稳步提升。' %}
+    {% else %}
+      {% set stage_note_text = note.text | default('', true) %}
+    {% endif %}
     <div class="m6-note-box">
       <div class="m6-note-box__title">
         {{ note.title | default('当前阶段特点:', true) }}
       </div>
       <div class="m6-note-box__text">
-        {% if has_data and note.text %}
-          {{ note.text }}
+        {% if has_data and stage_note_text %}
+          {{ stage_note_text }}
         {% else %}
           <span class="m6-empty-text">数据不足，暂无法给出阶段特点分析。</span>
         {% endif %}

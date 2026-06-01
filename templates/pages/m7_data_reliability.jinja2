@@ -246,15 +246,16 @@
 {% set low_sample_items = low_sample['items'] if low_sample and 'items' in low_sample else [] %}
 {% set uncovered_core = data_insufficient.uncovered_core if data_insufficient.uncovered_core else {} %}
 {% set uncovered_items = uncovered_core['items'] if uncovered_core and 'items' in uncovered_core else [] %}
-{% set coverage_count = coverage_table.rows | default([], true) | length %}
-{% set representative_l2_count = coverage_count %}
+{% set coverage_rows = coverage_table.rows | default([], true) %}
+{% set coverage_count = coverage_rows | length %}
 {% set quality_metrics = quality_assessment.metrics | default([], true) %}
 {% set data_coverage_rate = quality_metrics[0].value_pct if quality_metrics | length > 0 else 90 %}
 {% set high_confidence_rate = quality_metrics[1].value_pct if quality_metrics | length > 1 else 75 %}
 {% set freshness_rate = quality_metrics[2].value_pct if quality_metrics | length > 2 else 100 %}
 {% set _subject_code_m7 = meta.subject | default('', true) | lower %}
 {% set _subject_name_m7 = meta.subject_name | default('', true) %}
-{% set _is_english_m7 = _subject_code_m7 == 'english' or '英语' in _subject_name_m7 %}
+{% set _subject_text_m7 = (_subject_code_m7 ~ ' ' ~ _subject_name_m7) | lower %}
+{% set _is_english_m7 = 'english' in _subject_text_m7 or '英语' in _subject_text_m7 %}
 {% if coverage_count >= 8 or low_sample_items | length >= 4 or uncovered_items | length >= 4 %}
   {% set m7_density = 'dense' %}
 {% elif coverage_count <= 1 and low_sample_items | length == 0 and uncovered_items | length <= 1 %}
@@ -262,8 +263,20 @@
 {% else %}
   {% set m7_density = 'standard' %}
 {% endif %}
+{# 数学家长版 dense 数据页需控制单页信息密度，避免 PDF 底部只残留几行而生成近空白续页。 #}
+{% set m7_compact_page = (not _is_english_m7) and m7_density == 'dense' %}
+{% set coverage_display_limit = 14 if m7_compact_page else coverage_count %}
+{% set coverage_rows_visible = coverage_rows[:coverage_display_limit] %}
+{% set coverage_hidden_count = coverage_count - (coverage_rows_visible | length) %}
+{% set representative_l2_count = coverage_count %}
+{% set low_sample_display_limit = 6 if m7_compact_page else (low_sample_items | length) %}
+{% set low_sample_visible = low_sample_items[:low_sample_display_limit] %}
+{% set low_sample_hidden_count = (low_sample_items | length) - (low_sample_visible | length) %}
+{% set uncovered_display_limit = 5 if m7_compact_page else (uncovered_items | length) %}
+{% set uncovered_visible = uncovered_items[:uncovered_display_limit] %}
+{% set uncovered_hidden_count = (uncovered_items | length) - (uncovered_visible | length) %}
 
-<div class="m7-data-reliability m7-data-reliability--{{ m7_density }}">
+<div class="m7-data-reliability m7-data-reliability--{{ m7_density }}{% if m7_compact_page %} m7-data-reliability--compact{% endif %}">
 
   {# ====================================================================
      Title: 页面主标题
@@ -278,9 +291,9 @@
     <div class="m7-core-conclusion__label">{{ lb_icon('shield', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m7-core-conclusion__text">
       {% if _is_english_m7 %}
-      原始输入已识别为{{ stats.total_questions | default('--', true) }}题，并归因覆盖 {{ stats.l2_covered | default('--', true) }} / {{ stats.l2_total | default('--', true) }} 个 L2 模块（本页列出 {{ representative_l2_count }} 个代表模块），说明试卷识别与知识点解析可追溯；批改归因通过题量、置信度和分布条逐项校验；报告结论由覆盖率共同支撑；最终结果同时标出{{ low_sample_items | length }}个样本不足项和{{ uncovered_items | length }}个未覆盖核心考点，补齐后可复评，形成可信背书。
+      原始输入已识别为{{ stats.total_questions | default('--', true) }}题，并归因覆盖 {{ stats.l2_covered | default('--', true) }} / {{ stats.l2_total | default('--', true) }} 个 L2 模块（本页统计 {{ representative_l2_count }} 个代表模块），说明试卷识别与知识点解析可追溯；批改归因通过题量、置信度和分布条逐项校验；报告结论由覆盖率共同支撑；最终结果同时标出{{ low_sample_items | length }}个样本不足项和{{ uncovered_items | length }}个未覆盖核心考点，补齐后可复评，形成可信背书。
       {% else %}
-      原始输入已识别为{{ stats.total_questions | default('--', true) }}题，并归因覆盖 {{ stats.l2_covered | default('--', true) }}/{{ stats.l2_total | default('--', true) }} 个 L2 模块（本页列出 {{ representative_l2_count }} 个代表模块），说明试卷识别与知识点解析可追溯；批改归因通过题量、置信度和分布条逐项校验；报告结论由{{ data_coverage_rate }}% 数据覆盖率、{{ high_confidence_rate }}% 高置信度占比、{{ freshness_rate }}% 数据时效性共同支撑；最终结果同时标出{{ low_sample_items | length }}个样本不足项和{{ uncovered_items | length }}个未覆盖核心考点，补齐后可复评，形成可信背书。
+      原始输入已识别为{{ stats.total_questions | default('--', true) }}题，并归因覆盖 {{ stats.l2_covered | default('--', true) }}/{{ stats.l2_total | default('--', true) }} 个 L2 模块（本页统计 {{ representative_l2_count }} 个代表模块），说明试卷识别与知识点解析可追溯；批改归因通过题量、置信度和分布条逐项校验；报告结论由{{ data_coverage_rate }}% 数据覆盖率、{{ high_confidence_rate }}% 高置信度占比、{{ freshness_rate }}% 数据时效性共同支撑；最终结果同时标出{{ low_sample_items | length }}个样本不足项和{{ uncovered_items | length }}个未覆盖核心考点，补齐后可复评，形成可信背书。
       {% endif %}
     </div>
   </section>
@@ -404,7 +417,7 @@
   {# ====================================================================
      Section 2: 知识点覆盖详情表格
      ==================================================================== #}
-  {% if coverage_table.rows and coverage_table.rows | length > 0 %}
+  {% if coverage_rows and coverage_rows | length > 0 %}
   <section class="m7-report-box m7-report-box--purple">
     <div class="m7-report-box__inner">
       <h2 class="m7-section-title">{{ lb_icon('tree', 'frame-section-icon') }} 二、批改归因与L2模块覆盖详情</h2>
@@ -420,8 +433,8 @@
           </tr>
         </thead>
         <tbody>
-          {% for row in coverage_table.rows %}
-          <tr>
+          {% for row in coverage_rows %}
+          <tr{% if m7_compact_page and loop.index > coverage_display_limit %} class="m7-compact-print-hidden"{% endif %}>
             <td>{{ row.name_cn | default('--', true) }}</td>
             <td>{{ row.count_text | default(row.count ~ '题' if row.count else '--', true) }}</td>
             <td>
@@ -454,6 +467,10 @@
           {% endfor %}
         </tbody>
       </table>
+
+      {% if coverage_hidden_count > 0 %}
+      <div class="m7-table-compact-note m7-print-only">另有 {{ coverage_hidden_count }} 个低题量模块已纳入统计；打印版优先展示前 {{ coverage_rows_visible | length }} 个代表模块，完整明细保留在数据口径中。</div>
+      {% endif %}
 
       <div class="m7-note">
         <strong>置信度说明：</strong>
@@ -565,7 +582,7 @@
       <div class="m7-list-card">
         {% if low_sample_items | length > 0 %}
           {% for item in low_sample_items %}
-          <div class="m7-list-item">
+          <div class="m7-list-item{% if m7_compact_page and loop.index > low_sample_display_limit %} m7-compact-print-hidden{% endif %}">
             <span class="m7-dot m7-dot--warning"></span>
             <span class="m7-list-item__text">
               <strong>{{ item.name_cn | default('未知知识点', true) }}</strong>
@@ -575,6 +592,12 @@
             </span>
           </div>
           {% endfor %}
+          {% if low_sample_hidden_count > 0 %}
+          <div class="m7-list-item m7-list-item--summary m7-print-only">
+            <span class="m7-dot m7-dot--info"></span>
+            <span class="m7-list-item__text">另有 {{ low_sample_hidden_count }} 个样本不足项已纳入统计，建议按原始明细继续补题后复评。</span>
+          </div>
+          {% endif %}
         {% else %}
           <div class="m7-list-item">
             <span class="m7-dot m7-dot--info"></span>
@@ -602,8 +625,11 @@
         {% if uncovered_items | length > 0 %}
         <div class="m7-badge-list">
           {% for item in uncovered_items %}
-          <span class="m7-badge">{{ item.display | default(item.name_cn, true) }}</span>
+          <span class="m7-badge{% if m7_compact_page and loop.index > uncovered_display_limit %} m7-compact-print-hidden{% endif %}">{{ item.display | default(item.name_cn, true) }}</span>
           {% endfor %}
+          {% if uncovered_hidden_count > 0 %}
+          <span class="m7-badge m7-badge--summary m7-print-only">另有 {{ uncovered_hidden_count }} 个未列出，完整数据已纳入统计</span>
+          {% endif %}
         </div>
         {% else %}
         <div class="m7-empty-state">

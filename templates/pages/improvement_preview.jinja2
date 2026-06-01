@@ -9,6 +9,15 @@
 {% set delta = summary.current_delta | default(0) | float %}
 {% set student_name = meta.student_display_name | default('同学') %}
 {% set subject = meta.subject_name | default('') %}
+{% set target_reached = target_acc > 0 and acc >= target_acc %}
+{% set stretch_acc = ([100, [target_acc + 10, acc + 5] | max] | min) | round(0, 'ceil') | int %}
+{% if stretch_acc <= acc %}
+  {% set stretch_acc = ([100, acc + 1] | min) | round(0, 'ceil') | int %}
+{% endif %}
+{% set stretch_target_acc = ([100, [stretch_acc + 5, acc + 10] | max] | min) | round(0, 'ceil') | int %}
+{% if stretch_target_acc <= stretch_acc %}
+  {% set stretch_target_acc = ([100, stretch_acc + 1] | min) | round(0, 'ceil') | int %}
+{% endif %}
 {# Roadmap checkpoints must remain below the final target; sample 06 uses target_acc=75. #}
 {% set target_gap = target_acc - acc %}
 {% if target_gap < 0 %}
@@ -49,13 +58,13 @@
 {% endif %}
 {% set show_room_boost_stage = target_gap >= 2 and room_boost_acc > acc and room_boost_acc < target_acc %}
 
-{# --- 三档分类 (与 student_profile 保持一致) --- #}
-{% if acc < 60 %}
-  {% set tier = 'need_major' %}
-{% elif acc < 85 %}
-  {% set tier = 'room_grow' %}
-{% else %}
+{# --- 三档分类 (与 student_profile 保持一致)：已达到目标线时进入保持/拔高路径，不再把较低目标线画成后续“目标达成” --- #}
+{% if target_reached or acc >= 85 %}
   {% set tier = 'excellent' %}
+{% elif acc < 60 %}
+  {% set tier = 'need_major' %}
+{% else %}
+  {% set tier = 'room_grow' %}
 {% endif %}
 
 {# --- 提取薄弱领域用于提升点 --- #}
@@ -136,19 +145,19 @@
     </div>
 
     {% else %}
-    {# 优等生路径: 当前→保持→冲刺 #}
+    {# 已达标/优等生路径: 当前→保持→冲刺；所有后续节点都应高于当前水平 #}
     <div class="ip-stage ip-stage--current">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
       <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
-      <div class="ip-stage__desc">优秀</div>
+      <div class="ip-stage__desc">{% if target_reached %}已达标{% else %}优秀{% endif %}</div>
     </div>
     <div class="ip-stage ip-stage--boost">
-      <div class="ip-stage__marker ip-stage__marker--future">90%</div>
+      <div class="ip-stage__marker ip-stage__marker--future">{{ stretch_acc }}%</div>
       <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}稳步拔高</div>
       <div class="ip-stage__desc">约 30 天</div>
     </div>
     <div class="ip-stage ip-stage--target">
-      <div class="ip-stage__marker ip-stage__marker--future">95%</div>
+      <div class="ip-stage__marker ip-stage__marker--future">{{ stretch_target_acc }}%</div>
       <div class="ip-stage__label">{{ lb_icon('trophy', 'frame-inline-icon ip-stage-icon--target') }}冲刺满分</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
@@ -227,7 +236,7 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">细节优化</div>
-        <p class="ip-milestone__text">针对个别偶发失误点进行定向强化，保持高水准的同时进一步提升到 <strong class="ip-milestone__highlight">90%</strong>。</p>
+        <p class="ip-milestone__text">当前已达到 <strong class="ip-milestone__highlight">{{ target_acc | int }}%</strong> 的本次目标线，接下来针对个别偶发失误点进行定向强化，保持高水准的同时进一步提升到 <strong class="ip-milestone__highlight">{{ stretch_acc }}%</strong>。</p>
       </div>
     </div>
     <div class="ip-milestone">
@@ -237,7 +246,7 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">满分冲刺</div>
-        <p class="ip-milestone__text">挑战高难度题型，拓展思维边界，稳定在 <strong class="ip-milestone__highlight">95%</strong> 以上的正确率。</p>
+        <p class="ip-milestone__text">挑战高难度题型，拓展思维边界，稳定在 <strong class="ip-milestone__highlight">{{ stretch_target_acc }}%</strong> 以上的正确率。</p>
       </div>
     </div>
     {% endif %}
@@ -317,7 +326,7 @@
     <div class="ip-phase-card">
       <div class="ip-phase-card__header">{{ lb_icon('flag', 'frame-card-icon') }}阶段目标</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">正确率稳定在 <strong>95%+</strong></div>
+        <div class="ip-phase-card__item">正确率稳定在 <strong>{{ stretch_target_acc }}%+</strong></div>
         <div class="ip-phase-card__item">压轴题得分率 <strong>≥80%</strong></div>
         <div class="ip-phase-card__item">零失误完成基础题</div>
       </div>
@@ -333,7 +342,7 @@
     <div class="ip-phase-card ip-phase-card--accent">
       <div class="ip-phase-card__header">{{ lb_icon('shield', 'frame-card-icon frame-card-icon--success') }}验收标准</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">模拟考试正确率 <strong>≥95%</strong></div>
+        <div class="ip-phase-card__item">模拟考试正确率 <strong>≥{{ stretch_target_acc }}%</strong></div>
         <div class="ip-phase-card__item">高难度题正确率 <strong>≥85%</strong></div>
         <div class="ip-phase-card__item">完成时间 <strong>≤80%</strong> 额定</div>
       </div>
@@ -352,7 +361,7 @@
   </div>
   {% else %}
   <div class="ip-summary-bar">
-    继续保持优秀表现！通过 dida985 的进阶训练，从 {{ acc | int }}% 稳步提升至 <strong>95%+</strong>，追求极致
+    当前已达到 <strong>{{ target_acc | int }}%</strong> 的本次目标线；继续通过 dida985 的进阶训练，从 {{ acc | int }}% 稳步提升至 <strong>{{ stretch_target_acc }}%+</strong>，追求极致
   </div>
   {% endif %}
 

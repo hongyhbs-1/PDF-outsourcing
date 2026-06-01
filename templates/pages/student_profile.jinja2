@@ -10,11 +10,17 @@
 {% set trend = summary.current_trend | default('stable') %}
 {% set student_name = meta.student_display_name | default('同学') %}
 {% set subject = meta.subject_name | default('') %}
-{% set subject_code = meta.subject | default('') %}
-{% set title_subject = '' if subject and student_name.endswith(subject) else subject %}
-{% if subject == '数学' or subject_code in ['math', 'mathematics'] %}
-  {% set profile_title = (subject | default('学生', true)) ~ '画像分析' %}
-{% elif subject and student_name.endswith(subject) %}
+{% set subject_code = meta.subject | default('', true) | lower %}
+{% set subject_label = subject | default('', true) %}
+{% if not subject_label and subject_code in ['math', 'mathematics', '数学'] %}
+  {% set subject_label = '数学' %}
+{% elif not subject_label and subject_code in ['english', 'eng', '英语'] %}
+  {% set subject_label = '英语' %}
+{% endif %}
+{% set title_subject = '' if subject_label and student_name.endswith(subject_label) else subject_label %}
+{% if subject_label in ['数学', '英语'] or subject_code in ['math', 'mathematics', '数学', 'english', 'eng', '英语'] %}
+  {% set profile_title = (subject_label | default('学生', true)) ~ '画像分析' %}
+{% elif subject_label and student_name.endswith(subject_label) %}
   {% set profile_title = student_name ~ '画像分析' %}
 {% else %}
   {% set profile_title = student_name ~ title_subject ~ '画像分析' %}
@@ -25,20 +31,21 @@
 {% set trend_map = {'up': '上升', 'down': '下降', 'stable': '稳定'} %}
 {% set trend_label = trend_map[trend] if trend in trend_map else '稳定' %}
 
-{# --- 三档分类 --- #}
-{% if acc < 60 %}
-  {% set tier = 'need_major' %}
-  {% set tier_label = '需大幅提升' %}
-{% elif acc < 85 %}
-  {% set tier = 'room_grow' %}
-  {% set tier_label = '有提升空间' %}
-{% else %}
+{# --- 数据完整性判断 / 目标达成判断 --- #}
+{% set has_real_data = acc > 0 %}
+{% set target_reached = has_real_data and target_acc > 0 and acc >= target_acc %}
+
+{# --- 三档分类：如果已达到本次目标线，优先按“已达标/优秀”处理，避免出现“当前高于目标仍待追赶”的表述 --- #}
+{% if target_reached or acc >= 85 %}
   {% set tier = 'excellent' %}
   {% set tier_label = '表现优秀' %}
+{% elif acc < 60 %}
+  {% set tier = 'need_major' %}
+  {% set tier_label = '需大幅提升' %}
+{% else %}
+  {% set tier = 'room_grow' %}
+  {% set tier_label = '有提升空间' %}
 {% endif %}
-
-{# --- 数据完整性判断 --- #}
-{% set has_real_data = acc > 0 %}
 
 {# --- 整体分析进度条：与 M6 当前学习阶段判定保持同一套标记/标签对齐逻辑 --- #}
 {% set sp_current_rate = acc if has_real_data else 0 %}
@@ -47,7 +54,7 @@
 {% set sp_progress_css = (sp_clamped_rate | round(0) | int) if sp_clamped_rate == (sp_clamped_rate | round(0)) else sp_clamped_rate %}
 {% set sp_target_progress_css = (sp_clamped_target_rate | round(0) | int) if sp_clamped_target_rate == (sp_clamped_target_rate | round(0)) else sp_clamped_target_rate %}
 {% set sp_progress_gap = sp_clamped_rate - sp_clamped_target_rate if sp_clamped_rate >= sp_clamped_target_rate else sp_clamped_target_rate - sp_clamped_rate %}
-{% set sp_markers_overlap = sp_progress_gap <= 5 %}
+{% set sp_markers_overlap = sp_progress_gap <= 10 or (target_reached and sp_progress_gap <= 15) %}
 {% set sp_progress_edge_class = 'sp-progress-label--edge-start' if sp_clamped_rate <= 8 else ('sp-progress-label--edge-end' if sp_clamped_rate >= 92 else '') %}
 {% set sp_target_edge_class = 'sp-progress-label--edge-start' if sp_clamped_target_rate <= 8 else ('sp-progress-label--edge-end' if sp_clamped_target_rate >= 92 else '') %}
 
@@ -84,7 +91,12 @@
   {% set empty_reason = 'ok' %}
 {% endif %}
 
-{% set gap_to_target = (target_acc - acc) | abs | int %}
+{% set gap_to_target = ((target_acc - acc) | abs) | round(0) | int %}
+{% if target_reached %}
+  {% set target_chip_text = '已达目标线' if gap_to_target == 0 else '已超目标 ' ~ gap_to_target ~ '%' %}
+{% else %}
+  {% set target_chip_text = '距目标 ' ~ gap_to_target ~ '%' %}
+{% endif %}
 {% set lead_focus = weak_domains[0].name_cn | default('核心领域') if weak_domains | length > 0 else '整体稳定性' %}
 {% set secondary_focus = weak_domains[1].name_cn | default('次重点领域') if weak_domains | length > 1 else lead_focus %}
 {% set focus_names = [] %}
@@ -125,12 +137,18 @@
   {% set analysis_gap_text = '离目标还有 ' ~ gap_to_target ~ '% 差距，可通过专项补齐追赶。' %}
   {% set analysis_breakthrough_text = '优先处理 ' ~ focus_summary ~ '，提分效率会高于平均用力。' %}
 {% else %}
-  {% set hero_title = '整体已达标，下一步是稳住优势并继续冲高' %}
-  {% set hero_text = summary.banner_text | default('当前结果已经达到目标线，后续更适合保持强项并验证高难度题的稳定性。', true) %}
+  {% if target_reached %}
+    {% set hero_title = '整体已达标，下一步是稳住优势并继续冲高' %}
+    {% set hero_text = summary.banner_text | default('当前结果已经达到目标线，后续更适合保持强项并验证高难度题的稳定性。', true) %}
+    {% set analysis_gap_text = '已达到目标线，后续关注高分稳定性。' if gap_to_target == 0 else '已超过目标线 ' ~ gap_to_target ~ '%，后续关注高分稳定性。' %}
+  {% else %}
+    {% set hero_title = '整体水平较稳，下一步补齐高分段差距' %}
+    {% set hero_text = summary.banner_text | default('当前基础盘较稳，后续关键在于减少高分段失误并补齐少数薄弱点。', true) %}
+    {% set analysis_gap_text = '离目标还有 ' ~ gap_to_target ~ '% 差距，重点处理高分段失误。' %}
+  {% endif %}
   {% set status_text = tier_label %}
   {% set analysis_level_text = '当前整体已接近或达到目标线，基础盘较稳。' %}
   {% set analysis_state_text = '当前状态较好，重点在于减少偶发失误。' %}
-  {% set analysis_gap_text = '当前重点不是大面积补短板，而是扩大高分稳定性。' %}
   {% set analysis_breakthrough_text = '突破口在高难题验证、细节控制和优势巩固。' %}
 {% endif %}
 
@@ -150,7 +168,7 @@
         {% if has_real_data %}
         <span class="sp-chip sp-chip--tier sp-chip--{{ tier }}">{{ status_text }}</span>
         <span class="sp-chip sp-chip--soft">{{ acc | int }}% 正确率</span>
-        <span class="sp-chip sp-chip--soft">距目标 {{ gap_to_target }}%</span>
+        <span class="sp-chip sp-chip--soft">{{ target_chip_text }}</span>
         <span class="sp-chip sp-chip--soft">先抓 {{ lead_focus }}</span>
         {% else %}
         <span class="sp-chip sp-chip--soft">{{ status_text }}</span>
@@ -170,15 +188,20 @@
       <div class="sp-progress-panel__meta">
         <div class="sp-progress-panel__eyebrow">{{ lb_icon('gauge', 'frame-inline-icon') }}学习情况分析</div>
         {% if has_real_data %}
+        {% if target_reached %}
+        <div class="sp-progress-panel__title">当前 {{ acc | int }}%，已达成 {{ target_acc | int }}% 目标线，继续冲高</div>
+        <p class="sp-progress-panel__text">目标线仅作达标参考，后续重点看高分稳定性与薄弱领域。</p>
+        {% else %}
         <div class="sp-progress-panel__title">当前 {{ acc | int }}%，目标 {{ target_acc | int }}%，先抓 {{ lead_focus }}</div>
         <p class="sp-progress-panel__text">先看位置，再看后面的分析重点。</p>
+        {% endif %}
         {% else %}
         <div class="sp-progress-panel__title">当前数据还不足以判断稳定位置</div>
         <p class="sp-progress-panel__text">先补足样本，再判断位置与差距。</p>
         {% endif %}
       </div>
 
-      <div class="sp-progress sp-progress--panel">
+      <div class="sp-progress sp-progress--panel{% if sp_markers_overlap %} sp-progress--split-labels{% endif %}">
         <div class="sp-progress-track">
           <div class="sp-progress-fill"></div>
           <div class="sp-progress-target sp-progress-target--current" title="当前节点"></div>
@@ -187,7 +210,7 @@
         <div class="sp-progress-labels{% if sp_markers_overlap %} sp-progress-labels--stacked{% endif %}">
           <span class="sp-progress-label sp-progress-label--start">0%</span>
           <span class="sp-progress-label sp-progress-label--current{% if sp_progress_edge_class %} {{ sp_progress_edge_class }}{% endif %}{% if sp_markers_overlap %} sp-progress-label--stack-top{% endif %}">{% if has_real_data %}当前 {{ sp_clamped_rate | round(0) | int }}%{% else %}当前 暂无数据{% endif %}</span>
-          <span class="sp-progress-label sp-progress-label--target{% if sp_target_edge_class %} {{ sp_target_edge_class }}{% endif %}{% if sp_markers_overlap %} sp-progress-label--stack-bottom{% endif %}">目标 {{ sp_clamped_target_rate | round(0) | int }}%</span>
+          <span class="sp-progress-label sp-progress-label--target{% if sp_target_edge_class %} {{ sp_target_edge_class }}{% endif %}{% if sp_markers_overlap %} sp-progress-label--stack-bottom{% endif %}">{% if target_reached %}目标线 {{ sp_clamped_target_rate | round(0) | int }}%{% else %}目标 {{ sp_clamped_target_rate | round(0) | int }}%{% endif %}</span>
           <span class="sp-progress-label sp-progress-label--end">100%</span>
         </div>
       </div>
@@ -198,7 +221,7 @@
         <div class="sp-metric-card__tag">{{ lb_icon('gauge', 'frame-metric-icon') }}当前水平</div>
         <div class="sp-metric-card__value sp-metric-card__value--current">{{ acc | int }}%</div>
         <div class="sp-metric-card__label">整体正确率</div>
-        <div class="sp-metric-card__hint">目标 {{ target_acc | int }}%</div>
+        <div class="sp-metric-card__hint">{% if target_reached %}目标线 {{ target_acc | int }}%（已达成）{% else %}目标 {{ target_acc | int }}%{% endif %}</div>
         <p class="sp-metric-card__insight">{{ analysis_level_text }}</p>
       </div>
       <div class="sp-metric-card">
@@ -209,10 +232,10 @@
         <p class="sp-metric-card__insight">{{ analysis_state_text }}</p>
       </div>
       <div class="sp-metric-card">
-        <div class="sp-metric-card__tag">{{ lb_icon('gap', 'frame-metric-icon frame-metric-icon--warning') }}目标差距</div>
-        <div class="sp-metric-card__value {{ 'sp-metric-card__value--neg' if delta < 0 else 'sp-metric-card__value--pos' }}">{{ gap_to_target }}%</div>
-        <div class="sp-metric-card__label">距目标线</div>
-        <div class="sp-metric-card__hint">先看 {{ lead_focus }}</div>
+        <div class="sp-metric-card__tag">{{ lb_icon('gap', 'frame-metric-icon frame-metric-icon--warning') }}{% if target_reached %}目标达成{% else %}目标差距{% endif %}</div>
+        <div class="sp-metric-card__value {{ 'sp-metric-card__value--pos' if target_reached else ('sp-metric-card__value--neg' if delta < 0 else 'sp-metric-card__value--pos') }}">{{ gap_to_target }}%</div>
+        <div class="sp-metric-card__label">{% if target_reached %}{% if gap_to_target == 0 %}已达目标线{% else %}超目标线{% endif %}{% else %}距目标线{% endif %}</div>
+        <div class="sp-metric-card__hint">{% if target_reached %}继续冲高{% else %}先看 {{ lead_focus }}{% endif %}</div>
         <p class="sp-metric-card__insight">{{ analysis_gap_text }}</p>
       </div>
       <div class="sp-metric-card">

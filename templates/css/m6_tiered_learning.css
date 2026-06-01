@@ -438,6 +438,10 @@
   padding: 0 2px;
 }
 
+.m6-stage-progress-panel .sp-progress.sp-progress--split-labels {
+  padding-top: 16px;
+}
+
 .m6-stage-progress-panel .sp-progress-track {
   height: 9px;
   background: var(--pm-bg-muted);
@@ -499,7 +503,7 @@
 }
 
 .m6-stage-progress-panel .sp-progress-labels--stacked {
-  height: 26px;
+  height: 14px;
 }
 
 .m6-stage-progress-panel .sp-progress-label {
@@ -536,11 +540,11 @@
 }
 
 .m6-stage-progress-panel .sp-progress-labels--stacked .sp-progress-label--stack-top {
-  top: 0;
+  top: -28px;
 }
 
 .m6-stage-progress-panel .sp-progress-labels--stacked .sp-progress-label--stack-bottom {
-  top: 12px;
+  top: 0;
 }
 
 .m6-stage-progress-panel .sp-progress-label--end {
@@ -925,6 +929,14 @@
 
 .m6-role-stack .m6-summary-box {
   padding: 9px 11px;
+  /* P12 feedback: role summaries should align with the content modules below
+     (student columns / parent-teacher checklist rows).  base.css adds a shared
+     24px M6 summary indent for older layouts, so cancel it inside the role
+     stack. */
+  margin-left: 0 !important;
+  margin-right: 0;
+  width: auto;
+  box-sizing: border-box;
 }
 
 .m6-role-stack .m6-summary-box__text,
