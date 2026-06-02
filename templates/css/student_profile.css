@@ -407,6 +407,10 @@
   padding: 0 2px;
 }
 
+.sp-progress.sp-progress--split-labels {
+  padding-top: 16px;
+}
+
 .sp-progress-track {
   height: 9px;
   background: var(--pm-bg-muted);
@@ -468,7 +472,7 @@
 }
 
 .sp-progress-labels--stacked {
-  height: 26px;
+  height: 14px;
 }
 
 .sp-progress-label {
@@ -510,11 +514,11 @@
 }
 
 .sp-progress-labels--stacked .sp-progress-label--stack-top {
-  top: 0;
+  top: -28px;
 }
 
 .sp-progress-labels--stacked .sp-progress-label--stack-bottom {
-  top: 12px;
+  top: 0;
 }
 
 .sp-metric-grid {

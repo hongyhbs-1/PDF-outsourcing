@@ -542,6 +542,35 @@
   line-height: var(--line-height-normal);
 }
 
+.m7-table-compact-note {
+  margin-top: var(--spacing-xs);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-mini);
+  line-height: 1.35;
+}
+
+.m7-print-only {
+  display: none !important;
+}
+
+@media print {
+  .m7-data-reliability--compact .m7-compact-print-hidden {
+    display: none !important;
+  }
+
+  .m7-data-reliability--compact .m7-print-only {
+    display: block !important;
+  }
+
+  .m7-data-reliability--compact .m7-list-item.m7-print-only {
+    display: flex !important;
+  }
+
+  .m7-data-reliability--compact .m7-badge.m7-print-only {
+    display: inline-flex !important;
+  }
+}
+
 /* ==========================================================================
    Section 12: Quality Box Component (综合说明外框)
    ========================================================================== */
