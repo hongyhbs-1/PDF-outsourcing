@@ -658,117 +658,98 @@ body {
 }
 
 /* --------------------------------------------------------------------------
- * 11.2 双层进度条 (Breakthrough Progress)
+ * 11.2 单层目标进度条 (Breakthrough Progress)
  * -------------------------------------------------------------------------- */
 
 .m1-breakthrough-progress {
   position: relative;
-  padding-top: var(--spacing-16);
+  padding: var(--spacing-16) 0 14px;
   margin-bottom: var(--spacing-8);
 }
 
-.m1-breakthrough-target-label {
+.m1-bt-progress-track {
+  height: 16px;
+  background: var(--color-track-blue);
+  border-radius: var(--radius-sm);
+  overflow: visible;
+  position: relative;
+}
+
+.m1-bt-progress-fill {
+  width: var(--m1-bt-current, 0%);
+  height: 100%;
+  border-radius: var(--radius-sm);
+  max-width: 100%;
+}
+
+.m1-bt-progress-fill--p0 {
+  background: var(--color-purple-bar);
+}
+
+.m1-bt-progress-fill--p1 {
+  background: var(--color-primary-teal);
+}
+
+.m1-bt-progress-fill--p2 {
+  background: var(--color-muted);
+}
+
+.m1-bt-progress-marker {
   position: absolute;
-  top: 0;
+  top: -4px;
+  width: 2px;
+  height: 24px;
+  transform: translateX(-50%);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.88);
+  z-index: 3;
+}
+
+.m1-bt-progress-marker--current {
+  left: var(--m1-bt-current, 0%);
+  background: var(--color-primary-teal);
+}
+
+.m1-bt-progress-marker--target {
+  left: var(--m1-bt-target, 0%);
+  background: var(--color-pill-text);
+}
+
+.m1-bt-progress-label {
+  position: absolute;
   z-index: 4;
   padding: 1px 5px;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
-  line-height: 1.2;
-  color: var(--color-pill-text);
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(31, 111, 120, 0.18);
-  border-radius: var(--radius-full);
+  line-height: 1.15;
   white-space: nowrap;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 0 0 1px rgba(31, 111, 120, 0.12);
 }
 
-.m1-breakthrough-target-label--left {
+.m1-bt-progress-label--target {
+  bottom: calc(100% + 3px);
+  left: var(--m1-bt-target, 0%);
+  color: var(--color-pill-text);
+}
+
+.m1-bt-progress-label--current {
+  top: calc(100% + 3px);
+  left: var(--m1-bt-current, 0%);
+  color: var(--color-primary-teal);
+}
+
+.m1-bt-progress-label--left {
   transform: translateX(0);
 }
 
-.m1-breakthrough-target-label--center {
+.m1-bt-progress-label--center {
   transform: translateX(-50%);
 }
 
-.m1-breakthrough-target-label--right {
+.m1-bt-progress-label--right {
   transform: translateX(-100%);
-}
-
-.m1-breakthrough-target-line {
-  position: absolute;
-  top: var(--spacing-16);
-  z-index: 3;
-  width: 2px;
-  height: 48px;
-  background: var(--color-pill-text);
-  border-radius: var(--radius-full);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.82);
-  transform: translateX(-50%);
-  opacity: 0.86;
-  pointer-events: none;
-}
-
-.m1-progress-row {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  margin-bottom: 6px;
-}
-
-.m1-progress-row:last-child {
-  margin-bottom: 0;
-}
-
-.m1-progress-track {
-  flex: 1;
-  height: 18px;
-  background: var(--color-track-blue);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  position: relative;
-}
-
-.m1-progress-fill {
-  height: 100%;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  padding: 0 6px;
-}
-
-.m1-progress-fill--target {
-  background: rgba(31, 111, 120, 0.16);
-}
-
-.m1-progress-fill--target .m1-progress-text {
-  color: var(--color-pill-text);
-}
-
-.m1-progress-fill--current {
-  background: var(--color-purple-bar);
-}
-
-.m1-progress-fill--p1 {
-  background: var(--color-primary-teal);
-}
-
-.m1-progress-fill--p2 {
-  background: var(--color-muted);
-}
-
-.m1-progress-text {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-white);
-  white-space: nowrap;
-  text-shadow: none;
-}
-
-.m1-progress-value {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-secondary);
-  flex-shrink: 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -798,7 +779,7 @@ body {
   font-weight: var(--font-weight-medium);
 }
 
-/* V3-1: 提升空间标签 (sand-dark 主题, 与 delta 颜色一致) */
+/* V3-1: 提升说明标签 (sand-dark 主题, 与 delta 颜色一致) */
 .m1-bt-tag--improve {
   background: rgba(178, 122, 55, 0.10);
   color: var(--color-purple);
@@ -1091,24 +1072,24 @@ body {
   }
 
   .m1-breakthrough-progress {
-    padding-top: 15px;
+    padding: 13px 0 12px;
     margin-bottom: 5px;
   }
 
-  .m1-breakthrough-target-label {
+  .m1-bt-progress-track {
+    height: 13px;
+  }
+
+  .m1-bt-progress-marker {
+    top: -3px;
+    width: 1.5px;
+    height: 19px;
+  }
+
+  .m1-bt-progress-label {
     padding: 1px 4px;
     font-size: 8.5px;
     border-radius: 8px;
-  }
-
-  .m1-breakthrough-target-line {
-    top: 15px;
-    width: 1.5px;
-    height: 35px;
-  }
-
-  .m1-progress-track {
-    height: 14px;
   }
 
   .m1-bt-tags {
@@ -1333,37 +1314,27 @@ body {
   }
 
   .m1-report-page--dense .m1-breakthrough-progress {
-    padding-top: 11px;
+    padding: 10px 0 10px;
     margin-bottom: 3px;
   }
 
-  .m1-report-page--dense .m1-breakthrough-target-label {
+  .m1-report-page--dense .m1-bt-progress-track {
+    height: 10px;
+    border-radius: 5px;
+  }
+
+  .m1-report-page--dense .m1-bt-progress-fill {
+    border-radius: 5px;
+  }
+
+  .m1-report-page--dense .m1-bt-progress-marker {
+    top: -3px;
+    height: 16px;
+  }
+
+  .m1-report-page--dense .m1-bt-progress-label {
     padding: 1px 3px;
     font-size: 7.3px;
-  }
-
-  .m1-report-page--dense .m1-breakthrough-target-line {
-    top: 12px;
-    height: 30px;
-  }
-
-  .m1-report-page--dense .m1-progress-row {
-    gap: 3px;
-    margin-bottom: 2px;
-  }
-
-  .m1-report-page--dense .m1-progress-track {
-    height: 11px;
-    border-radius: 5px;
-  }
-
-  .m1-report-page--dense .m1-progress-fill {
-    padding: 0 3px;
-    border-radius: 5px;
-  }
-
-  .m1-report-page--dense .m1-progress-text {
-    font-size: 7px;
   }
 
   .m1-report-page--dense .m1-bt-tags {

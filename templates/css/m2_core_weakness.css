@@ -359,14 +359,19 @@
   line-height: var(--cw-line-height-tight);
 }
 
+/* P8 调整：知识点内容与表头垂直对应在同一列 */
+.m2-cw-cell--name {
+  text-align: center;
+}
+
 /* ============================================================================
    7. 优先级徽章组件 (Priority Badge)
    ============================================================================ */
 .m2-cw-priority-cell {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  padding-left: var(--cw-spacing-2);
+  padding-left: 0;
 }
 
 .m2-cw-priority-badge {
@@ -678,7 +683,7 @@
   }
 
   .m2-cw-priority-cell {
-    padding-left: 4px;
+    padding-left: 0;
   }
 
   .m2-cw-priority-badge {

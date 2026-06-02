@@ -89,9 +89,78 @@
 {# [v1.2 fix] 使用 .get() 避免与 dict.items() 方法冲突 #}
 {% set items = s.get('items', []) %}
 {% set has_data = s.get('has_data', (items | length) > 0) %}
+
+{# 英语样本里 core_weakness.domain 可能是 1.00 等内部编码；P8 对家长展示必须转成中文领域名。 #}
+{% set subject_code = meta.subject | default('', true) | lower %}
+{% set subject_name = meta.subject_name | default('', true) %}
+{% set is_english_subject = subject_code == 'english' or '英语' in subject_name %}
+{% set default_domain_names = {
+  "1": "词汇与词法",
+  "2": "语法",
+  "3": "句法与句型",
+  "4": "阅读理解",
+  "5": "写作能力",
+  "6": "语言运用"
+} if is_english_subject else {
+  "1": "方程与不等式",
+  "2": "函数",
+  "3": "数与代数",
+  "4": "统计与概率",
+  "5": "应用",
+  "6": "几何"
+} %}
+{% set m2_domain_names = {} %}
+{% for key, name in default_domain_names.items() %}
+  {% set _ = m2_domain_names.update({key: name}) %}
+{% endfor %}
+{% if common is defined and common.domain_names is defined %}
+  {% for key, name in (common.domain_names | default({}, true)).items() %}
+    {% set key_text = key | string %}
+    {% set _ = m2_domain_names.update({key_text: name}) %}
+  {% endfor %}
+{% endif %}
+{% if domains is defined and domains.domain_items is defined %}
+  {% for item in domains.domain_items | default([], true) %}
+    {% set raw_code = item.code | default(item.domain_code | default('', true), true) | string %}
+    {% set key = raw_code.split('.')[0] %}
+    {% set name = item.name_cn | default(item.domain_name | default(item.name | default('', true), true), true) %}
+    {% if key and name %}{% set _ = m2_domain_names.update({key: name}) %}{% endif %}
+  {% endfor %}
+{% endif %}
+
+{% macro display_m2_domain(value, default='-') -%}
+  {%- set text = value | default('', true) | string -%}
+  {%- set key = text.split('.')[0] -%}
+  {%- if text and key in m2_domain_names -%}
+    {{- m2_domain_names[key] -}}
+  {%- elif text -%}
+    {{- text -}}
+  {%- else -%}
+    {{- default -}}
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro display_m2_tag(item) -%}
+  {%- set explicit = item.tag | default('', true) -%}
+  {%- if explicit -%}
+    {{- explicit -}}
+  {%- elif item.tags is defined and item.tags | length > 0 -%}
+    {%- set first_tag = item.tags[0] -%}
+    {{- first_tag.text if first_tag is mapping and first_tag.text is defined else first_tag -}}
+  {%- elif item.distance_class | default('', true) == 'strong' or item.priority_level | default('', true) == 'P0' -%}
+    急需提升
+  {%- elif item.priority_level | default('', true) == 'P1' -%}
+    重点关注
+  {%- elif item.priority_level | default('', true) == 'P2' -%}
+    适时巩固
+  {%- else -%}
+    待持续观察
+  {%- endif -%}
+{%- endmacro %}
+
 {% set weakness_summary = namespace(domains=[], p0=0, p1=0, p2=0) %}
 {% for it in items %}
-  {% set domain_name = it.domain | default('') %}
+  {% set domain_name = display_m2_domain(it.domain | default('', true), '') | trim %}
   {% if domain_name and domain_name not in weakness_summary.domains %}
     {% set weakness_summary.domains = weakness_summary.domains + [domain_name] %}
   {% endif %}
@@ -187,7 +256,7 @@
         </div>
 
         {# 列3：所属领域 #}
-        <div class="m2-cw-cell m2-cw-cell--domain">{{ safe(it.domain, '-') }}</div>
+        <div class="m2-cw-cell m2-cw-cell--domain">{{ display_m2_domain(it.domain | default('', true), '-') }}</div>
 
         {# 列4：正确率 #}
         <div class="m2-cw-cell">{{ safe(it.accuracy_text, '-') }}</div>
@@ -206,13 +275,9 @@
         <div class="m2-cw-cell m2-cw-cell--muted">--</div>
         {% endif %}
 
-        {# 列7：标签（无标签显示 -） #}
+        {# 列7：标签：原始数据缺失时根据优先级/差距给出中文兜底，不展示内部占位符。 #}
         {% set t_class = it.tag_class | default('neutral') %}
-        {% if it.tag %}
-        <span class="m2-cw-cell m2-cw-tag m2-cw-tag--{{ t_class }}">{{ it.tag }}</span>
-        {% else %}
-        <span class="m2-cw-cell m2-cw-cell--muted">-</span>
-        {% endif %}
+        <span class="m2-cw-cell m2-cw-tag m2-cw-tag--{{ t_class }}">{{ display_m2_tag(it) }}</span>
 
       </div>
       {% endfor %}

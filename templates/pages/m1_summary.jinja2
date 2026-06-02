@@ -346,49 +346,36 @@ render_payload.module_1_summary 结构示例:
           {# 知识点名称 #}
           <div class="m1-bt-title">{{ lb_icon('target', 'frame-inline-icon') }} {{ safe(item.name_cn, '未知知识点') }}</div>
           
-          {# 双层进度条 #}
-          <div class="m1-breakthrough-progress">
-            {# 目标线标签 - 动态定位，target_line_pct 必须为 number 0-100 #}
-            {% set target_pct = breakthrough.target_line_pct | default(75) %}
-            {% set target_pct_clamped = [0, [target_pct, 100] | min] | max %}
-            {% set target_label_anchor = 'right' if target_pct_clamped >= 92 else ('left' if target_pct_clamped <= 8 else 'center') %}
-            <span class="m1-breakthrough-target-label m1-breakthrough-target-label--{{ target_label_anchor }}" style="left: {{ target_pct_clamped }}%;">
-              {{ safe(breakthrough.target_line_text, '目标线' ~ target_pct_clamped ~ '%') }}
-            </span>
-            
-            {# 目标线竖线 #}
-            <div class="m1-breakthrough-target-line" style="left: {{ target_pct_clamped }}%;"></div>
-            
-            {# 上层: 目标线填充条 #}
-            <div class="m1-progress-row">
-              <div class="m1-progress-track">
-                <div class="m1-progress-fill m1-progress-fill--target" style="width: {{ target_pct_clamped }}%;">
-                  {# delta_vs_target_text 建议控制长度，避免溢出 #}
-                  <span class="m1-progress-text">{{ safe(item.delta_vs_target_text | default(item.gap_to_target_text), '--') }}</span>
-                </div>
-              </div>
-            </div>
-            
-            {# 下层: 当前水平条 - accuracy 必须为 number #}
-            <div class="m1-progress-row">
-              <div class="m1-progress-track">
-                {% set current_pct = item.accuracy | default(0) %}
-                {% set current_pct_clamped = [0, [current_pct, 100] | min] | max %}
-                {% set priority = item.priority_level | default('P0') %}
-                <div class="m1-progress-fill
-                  {% if priority == 'P0' %}m1-progress-fill--current
-                  {% elif priority == 'P1' %}m1-progress-fill--p1
-                  {% else %}m1-progress-fill--p2
-                  {% endif %}"
-                  style="width: {{ current_pct_clamped }}%;">
-                </div>
-              </div>
+          {# 单层进度条：同时标注“当前/目标”，避免用负数表达提升空间 #}
+          {% set target_pct = item.target_line_pct | default(breakthrough.target_line_pct | default(75), true) | float %}
+          {% set target_pct_clamped = ([100, [0, target_pct] | max] | min) | round(1) %}
+          {% set current_pct = item.accuracy | default(0, true) | float %}
+          {% set current_pct_clamped = ([100, [0, current_pct] | max] | min) | round(1) %}
+          {% set current_pct_display = (current_pct_clamped | round(0) | int) if current_pct_clamped == (current_pct_clamped | round(0)) else current_pct_clamped %}
+          {% set target_pct_display = (target_pct_clamped | round(0) | int) if target_pct_clamped == (target_pct_clamped | round(0)) else target_pct_clamped %}
+          {% set gap_to_target_pct = target_pct_clamped - current_pct_clamped %}
+          {% set gap_abs_pct = (gap_to_target_pct if gap_to_target_pct >= 0 else -gap_to_target_pct) | round(1) %}
+          {% set gap_display = (gap_abs_pct | round(0) | int) if gap_abs_pct == (gap_abs_pct | round(0)) else gap_abs_pct %}
+          {% set current_label_anchor = 'right' if current_pct_clamped >= 92 else ('left' if current_pct_clamped <= 8 else 'center') %}
+          {% set target_label_anchor = 'right' if target_pct_clamped >= 92 else ('left' if target_pct_clamped <= 8 else 'center') %}
+          {% set priority = item.priority_level | default('P0') %}
+          <div class="m1-breakthrough-progress" style="--m1-bt-current: {{ current_pct_clamped }}%; --m1-bt-target: {{ target_pct_clamped }}%;">
+            <div class="m1-bt-progress-track" aria-label="当前 {{ current_pct_display }}%，目标 {{ target_pct_display }}%">
+              <div class="m1-bt-progress-fill
+                {% if priority == 'P0' %}m1-bt-progress-fill--p0
+                {% elif priority == 'P1' %}m1-bt-progress-fill--p1
+                {% else %}m1-bt-progress-fill--p2
+                {% endif %}"></div>
+              <div class="m1-bt-progress-marker m1-bt-progress-marker--current" title="当前 {{ current_pct_display }}%"></div>
+              <div class="m1-bt-progress-marker m1-bt-progress-marker--target" title="目标 {{ target_pct_display }}%"></div>
+              <span class="m1-bt-progress-label m1-bt-progress-label--target m1-bt-progress-label--{{ target_label_anchor }}">目标 {{ target_pct_display }}%</span>
+              <span class="m1-bt-progress-label m1-bt-progress-label--current m1-bt-progress-label--{{ current_label_anchor }}">当前 {{ current_pct_display }}%</span>
             </div>
           </div>
 
-          {# 标签组：先讲提升空间，再补充城市考频参考，避免“上海TOP”歧义 #}
+          {# 标签组：用正向表述讲清还需提升多少，再补充城市考频参考 #}
           <div class="m1-bt-tags">
-            <span class="m1-bt-tag m1-bt-tag--improve">提升空间 {{ safe(item.gap_to_target_text | default(item.delta_vs_target_text), '--') }}</span>
+            <span class="m1-bt-tag m1-bt-tag--improve">{% if gap_to_target_pct > 0 %}还需提升 {{ gap_display }}%{% elif gap_to_target_pct < 0 %}已超目标 {{ gap_display }}%{% else %}已达目标{% endif %}</span>
             {% if item.city_tag_left is defined and item.city_tag_left %}
               <span class="m1-bt-tag m1-bt-tag--evidence">城市考频参考：{{ item.city_tag_left | replace('TOP', '前') | replace('Top', '前') | replace('top', '前') }}{% if item.city_tag_right is defined and item.city_tag_right %} · {{ item.city_tag_right }}{% endif %}</span>
             {% elif item.city_tag_right is defined and item.city_tag_right %}
