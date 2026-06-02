@@ -11,7 +11,7 @@ dida985 学情诊断报告 PDF 排版引擎。Python + Jinja2 + Playwright，将
 pip install jinja2 playwright
 playwright install chromium
 
-# 渲染单个样本
+# 渲染单个样本（HTML + PDF）
 python scripts/render_standalone.py samples/json/sample_01_math.json -o output.html --pdf
 
 # 批量渲染全部样本
@@ -20,7 +20,10 @@ python scripts/render_all_samples.py
 # 指定样本编号渲染
 python scripts/render_all_samples.py 1
 
-# 运行测试（57 个）
+# 渲染场景报告
+python ./scripts/render_all_samples.py 4 --学科 数学 --模式 场景
+
+# 运行测试
 python -m pytest scripts/test_*.py -v
 ```
 ## 目录结构
