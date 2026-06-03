@@ -15,6 +15,7 @@
     报告模式: samples/output/<样本名>/<样本名>.html / .pdf
     场景模式: samples/output/<样本名>/<样本名>_admissions_blueprint.html / .pdf
 """
+
 import argparse
 import json
 import sys
@@ -28,7 +29,8 @@ OUTPUT_DIR = PROJECT_DIR / "samples" / "output"
 
 # 将 scripts/ 加入 path 以便 import render_standalone
 sys.path.insert(0, str(SCRIPT_DIR))
-import render_standalone
+from adapters import adapt_payload  # noqa: E402
+import render_standalone  # noqa: E402
 
 SUBJECT_CHOICES = ("数学", "英语")
 MODE_CHOICES = ("场景", "报告")
@@ -67,8 +69,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def discover_sample_files(samples_dir: Path = SAMPLES_DIR) -> list[str]:
     sample_files = sorted(
-        path.name for path in samples_dir.glob("*.json")
-        if path.is_file()
+        path.name for path in samples_dir.glob("*.json") if path.is_file()
     )
     if not sample_files:
         raise ValueError(f"未找到 JSON 样本文件: {samples_dir}")
@@ -94,7 +95,9 @@ def normalize_subject(value: object) -> str:
 
 def payload_subject(payload: dict) -> str:
     meta = payload.get("meta", {}) if isinstance(payload.get("meta", {}), dict) else {}
-    cover = payload.get("cover", {}) if isinstance(payload.get("cover", {}), dict) else {}
+    cover = (
+        payload.get("cover", {}) if isinstance(payload.get("cover", {}), dict) else {}
+    )
     for value in (
         meta.get("subject_name"),
         meta.get("subject"),
@@ -109,7 +112,9 @@ def payload_subject(payload: dict) -> str:
     return ""
 
 
-def validate_payload_subject(payload: dict, requested_subject: str, sample_file: str) -> None:
+def validate_payload_subject(
+    payload: dict, requested_subject: str, sample_file: str
+) -> None:
     actual_subject = payload_subject(payload)
     if actual_subject and actual_subject != requested_subject:
         raise ValueError(
@@ -121,14 +126,21 @@ def load_payload(json_path: Path) -> dict:
     if hasattr(render_standalone, "_load_json"):
         payload = render_standalone._load_json(json_path)
         if payload is not None:
-            return render_standalone.normalize_render_payload(payload)
+            return adapt_payload(payload)
     with open(json_path, "r", encoding="utf-8") as f:
-        return render_standalone.normalize_render_payload(json.load(f))
+        return adapt_payload(json.load(f))
 
 
-def print_sample_header(*, index: int, total: int, sample_file: str,
-                        mode: str, subject: str,
-                        html_path: Path, pdf_path: Path) -> None:
+def print_sample_header(
+    *,
+    index: int,
+    total: int,
+    sample_file: str,
+    mode: str,
+    subject: str,
+    html_path: Path,
+    pdf_path: Path,
+) -> None:
     print(f"\n{'─' * 50}")
     print(f"  [{index}/{total}] {sample_file}")
     print(f"  学科: {subject} | 模式: {mode}")
@@ -137,8 +149,9 @@ def print_sample_header(*, index: int, total: int, sample_file: str,
     print(f"{'─' * 50}")
 
 
-def render_sample(sample_file: str, *, index: int, total: int,
-                  subject: str, mode: str) -> dict:
+def render_sample(
+    sample_file: str, *, index: int, total: int, subject: str, mode: str
+) -> dict:
     json_path = SAMPLES_DIR / sample_file
     stem = json_path.stem
     out_dir = OUTPUT_DIR / stem
@@ -192,7 +205,12 @@ def render_sample(sample_file: str, *, index: int, total: int,
     except Exception as e:
         elapsed = time.time() - t0
         print(f"  [FAIL] {e}")
-        return {"sample": sample_file, "status": "fail", "error": str(e), "time": elapsed}
+        return {
+            "sample": sample_file,
+            "status": "fail",
+            "error": str(e),
+            "time": elapsed,
+        }
 
 
 def print_summary(results: list[dict], total: int) -> int:
@@ -201,7 +219,11 @@ def print_summary(results: list[dict], total: int) -> int:
     print("=" * 60)
     ok_count = 0
     for r in results:
-        icon = "OK" if r["status"] == "ok" else ("SKIP" if r["status"] == "skip" else "FAIL")
+        icon = (
+            "OK"
+            if r["status"] == "ok"
+            else ("SKIP" if r["status"] == "skip" else "FAIL")
+        )
         t = f"{r.get('time', 0):.1f}s" if "time" in r else "-"
         print(f"  [{icon:>4}] {r['sample']:45s} {t}")
         if r["status"] == "ok":
@@ -227,7 +249,9 @@ def main(argv: list[str] | None = None) -> None:
 
     print("=" * 60)
     if args.sample_index is None:
-        print(f"批量渲染测试 — 全部 {len(selected_samples)} / {len(sample_files)} 份样本")
+        print(
+            f"批量渲染测试 — 全部 {len(selected_samples)} / {len(sample_files)} 份样本"
+        )
     else:
         print(f"批量渲染测试 — 第 {args.sample_index} / {len(sample_files)} 份样本")
     print(f"学科: {args.subject} | 模式: {args.mode}")
@@ -235,8 +259,14 @@ def main(argv: list[str] | None = None) -> None:
 
     results = []
     for selected_index, sample_file in enumerate(selected_samples, start=1):
-        display_index = args.sample_index if args.sample_index is not None else selected_index
-        display_total = len(sample_files) if args.sample_index is not None else len(selected_samples)
+        display_index = (
+            args.sample_index if args.sample_index is not None else selected_index
+        )
+        display_total = (
+            len(sample_files)
+            if args.sample_index is not None
+            else len(selected_samples)
+        )
         results.append(
             render_sample(
                 sample_file,
