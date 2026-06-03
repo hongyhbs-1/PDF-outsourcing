@@ -18,9 +18,12 @@ min-height 扣除:
   外层 .module-page::before 渐变条占 ~5px，min-height 需扣除 6px 避免溢出生成空白页
 """
 from __future__ import annotations
-from typing import Dict
+from typing import Dict, Optional, TYPE_CHECKING
 from . import WRAPPER_SELECTORS
 from .math_func import PageLayout
+
+if TYPE_CHECKING:
+    from .layout_profile import LayoutProfile
 
 
 # 部分报告页在标题下新增了“本页核心结论”后，DOM 直接子元素从
@@ -60,9 +63,25 @@ def _justify_for_ratio(ratio: float) -> str:
     return "flex-start"
 
 
-def build_css(layouts: Dict[str, PageLayout]) -> str:
+def build_css(layouts: Dict[str, PageLayout],
+               layout_profile: Optional[LayoutProfile] = None) -> str:
     parts: list[str] = []
     parts.append("/* golden_typeset -- 数学排版引擎 */")
+
+    # Inject :root CSS variables from LayoutProfile when provided
+    if layout_profile is not None:
+        lp = layout_profile
+        parts.append("")
+        parts.append("/* golden_typeset -- LayoutProfile variables */")
+        parts.append(":root {")
+        parts.append(f"  --typography-scale: {lp.typography_scale:.2f};")
+        parts.append(f"  --padding-scale: {lp.padding_scale:.2f};")
+        parts.append(f"  --grid-columns: {lp.grid_columns};")
+        parts.append(f"  --grid-gap: {lp.grid_gap_mm:.1f}mm;")
+        for var_name, var_value in lp.css_overrides.items():
+            if var_name not in ("--typography-scale", "--padding-scale", "--grid-columns", "--grid-gap"):
+                parts.append(f"  {var_name}: {var_value};")
+        parts.append("}")
 
     for mod_id, layout in layouts.items():
         sel = WRAPPER_SELECTORS.get(mod_id)

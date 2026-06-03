@@ -26,11 +26,15 @@ from pdf_utils import (
 try:
     from golden_typeset.payload_analyzer import measure_dom_heights
     from golden_typeset.engine import build_typeset_css
+    from golden_typeset.data_profile import compute_data_profile
+    from golden_typeset.layout_profile import compute_layout_profile
     _HAS_GOLDEN = True
 except ImportError:
     try:
         from scripts.golden_typeset.payload_analyzer import measure_dom_heights
         from scripts.golden_typeset.engine import build_typeset_css
+        from scripts.golden_typeset.data_profile import compute_data_profile
+        from scripts.golden_typeset.layout_profile import compute_layout_profile
         _HAS_GOLDEN = True
     except ImportError:
         _HAS_GOLDEN = False
@@ -102,7 +106,17 @@ def generate_pdf(
             # -- Pass 2: 精确排版 + PDF 生成 --
             typeset_css = ""
             if _HAS_GOLDEN and measured:
-                typeset_css = build_typeset_css(payload, measured=measured)
+                layout_profile = None
+                try:
+                    dp = compute_data_profile(payload)
+                    layout_profile = compute_layout_profile(dp)
+                except Exception:
+                    layout_profile = None
+                typeset_css = build_typeset_css(
+                    payload,
+                    measured=measured,
+                    layout_profile=layout_profile,
+                )
 
             html_pass2 = render_html(
                 payload,
