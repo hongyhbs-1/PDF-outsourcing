@@ -76,9 +76,7 @@ body.report-theme--english {
   --pm-shadow-card-hover: 0 14px 36px rgba(38, 58, 122, 0.12);
   --pm-shadow-bar:        0 4px 12px rgba(38, 58, 122, 0.10);
   --pm-shadow-float:      0 18px 44px rgba(38, 58, 122, 0.16);
-}
 
-body.report-theme--english {
   background: #eaf1ff;
   page: english-report;
 }

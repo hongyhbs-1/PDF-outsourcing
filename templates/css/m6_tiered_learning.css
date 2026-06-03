@@ -645,9 +645,6 @@
   font-size: var(--font-size-body);
   color: var(--color-text-secondary);
   line-height: var(--line-height-normal);
-  /* P1: 长文本换行保护 */
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 /* ============================================================================
@@ -666,9 +663,6 @@
   color: var(--color-text-primary);
   line-height: var(--line-height-normal);
   margin: 0;
-  /* P1: 长文本换行保护 */
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 .m6-summary-box--student,
@@ -735,9 +729,6 @@
   color: var(--color-text-secondary);
   line-height: var(--line-height-loose);
   margin-bottom: var(--spacing-xs);
-  /* P1: 长文本换行保护 */
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 .m6-suggestion-section__item:last-child {
@@ -760,9 +751,6 @@
   color: var(--color-text-primary);
   line-height: var(--line-height-normal);
   margin-bottom: var(--spacing-md);
-  /* P1: 长文本换行保护 */
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 /* 红色强调文字 */

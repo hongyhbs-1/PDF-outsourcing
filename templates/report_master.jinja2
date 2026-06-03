@@ -109,7 +109,8 @@ report_master.jinja2 — 报告主入口模板 (v2)
   {% set _qd = question_detail | default({}, true) %}
   {% set _qd_papers = _qd.papers | default([], true) %}
   {% set _qd_total = _qd.total_count | default(0) %}
-  {% if _qd_papers | length > 0 and _qd_total > 0 %}
+  {% set _show_question_detail = _qd_papers | length > 0 and _qd_total > 0 %}
+  {% if _show_question_detail %}
   <div class="module-page" id="toc-m9">
     {% include 'pages/m9_question_detail.jinja2' %}
   </div>

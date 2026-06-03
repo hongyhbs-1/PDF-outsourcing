@@ -93,7 +93,8 @@
 
     {% set _qd_toc = question_detail | default({}, true) %}
     {% set _qd_papers_toc = _qd_toc.papers | default([], true) %}
-    {% if _qd_papers_toc | length > 0 and _qd_toc.total_count | default(0) > 0 %}
+    {% set _show_question_detail_toc = _qd_papers_toc | length > 0 and _qd_toc.total_count | default(0) > 0 %}
+    {% if _show_question_detail_toc %}
     <li class="mtoc-item">
       <span class="mtoc-item__number">七</span>
       <span class="mtoc-item__title">逐题分析明细</span>
@@ -103,7 +104,7 @@
     {% endif %}
 
     <li class="mtoc-item">
-      <span class="mtoc-item__number">{% if _qd_papers_toc | length > 0 and _qd_toc.total_count | default(0) > 0 %}八{% else %}七{% endif %}</span>
+      <span class="mtoc-item__number">{% if _show_question_detail_toc %}八{% else %}七{% endif %}</span>
       <span class="mtoc-item__title">数据覆盖与可信度说明</span>
       <span class="mtoc-item__dots"></span>
       <span class="mtoc-item__page" data-toc-key="m7">{{ _pages.get('m7', '') }}</span>
@@ -148,7 +149,7 @@
         <span class="mtoc-reading-guide__num">2</span>
         <span>重点关注<strong>核心短板清单</strong>中的 P0 级知识点，这些是提分最快的突破口。</span>
       </div>
-      {% if _qd_papers_toc | length > 0 and _qd_toc.total_count | default(0) > 0 %}
+      {% if _show_question_detail_toc %}
       <div class="mtoc-reading-guide__item">
         <span class="mtoc-reading-guide__num">3</span>
         <span>对照<strong>逐题分析明细</strong>逐题回顾错题，理解薄弱环节的具体表现。</span>

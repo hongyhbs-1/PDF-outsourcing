@@ -418,6 +418,7 @@ def _brief_report_summary(sections: dict) -> dict:
     segments = chart.get("segments") or []
     pass_rate = chart.get("pass_rate", 0)
     target_accuracy = target.get("target_accuracy", 85)
+    current_delta = round(float(pass_rate or 0) - float(target_accuracy or 0), 1)
     return {
         "banner_text": high_freq.get("note_text", "基于高频考点分析生成诊断摘要。"),
         "target_score_text": target.get("target_score_text", "--"),
@@ -425,8 +426,8 @@ def _brief_report_summary(sections: dict) -> dict:
         "target_accuracy_text": target.get("target_accuracy_text", "--"),
         "current_accuracy": pass_rate,
         "current_accuracy_text": chart.get("pass_rate_text", "--"),
-        "current_delta": round(float(pass_rate or 0) - float(target_accuracy or 0), 1),
-        "current_delta_text": f"{round(float(pass_rate or 0) - float(target_accuracy or 0), 1):+g}%",
+        "current_delta": current_delta,
+        "current_delta_text": f"{current_delta:+g}%",
         "current_trend": "stable",
         "pass_rate": pass_rate,
         "pass_rate_text": chart.get("pass_rate_text", "--"),
@@ -729,6 +730,7 @@ def render_html(
 
     font_path = FONTS_DIR / "NotoSansSC-Variable.ttf"
     logo_path = ASSETS_DIR / "logo_dida985.png"
+    logo_data_uri = _image_to_data_uri(logo_path)
 
     context = dict(payload)
     orientation_css = _LANDSCAPE_PRINT_CSS if landscape else ""
@@ -737,22 +739,19 @@ def render_html(
     context["report_variant"] = report_variant
     context.update(build_learning_blueprints(payload))
     context["font_path"] = str(font_path)
-    context["logo_path"] = _image_to_data_uri(logo_path)
+    context["logo_path"] = logo_data_uri
     # Kept for compatibility with older templates/debug output. Opening comic
     # pages are now replaced by the dynamic learning blueprint pages.
     context["tier_name"] = _select_tier_name(payload)
 
     # 将封面 logo 路径也转为 Data URI (同因: page.set_content() 无法加载 file://)
-    logo_data_uri = _image_to_data_uri(logo_path)
     cover = context.get("cover", context.get("module_0_cover", {}))
     brand = cover.get("brand", {}) if isinstance(cover, dict) else {}
     if logo_data_uri and isinstance(brand, dict):
         brand["logo_url"] = logo_data_uri
 
     # page_visibility 兜底
-    if "page_visibility" not in context:
-        context["page_visibility"] = {}
-    pv = context["page_visibility"]
+    pv = context.setdefault("page_visibility", {})
     pv.setdefault("m5_city_compare", True)
     pv.setdefault("m10_composition", False)
     pv.setdefault("m11_reading_deep", False)

@@ -180,20 +180,6 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
    宏定义 (Macros)
    ============================================================================ #}
 
-{#- 安全获取嵌套属性,带默认值 -#}
-{% macro safe_get(obj, key, default='') %}
-  {{- obj[key] if obj and key in obj and obj[key] is not none else default -}}
-{% endmacro %}
-
-{#- 安全获取数值,带默认值和边界处理 -#}
-{% macro safe_number(value, default=0, min_val=0, max_val=100) %}
-  {%- if value is not none and value is number -%}
-    {{- [max_val, [min_val, value] | max] | min -}}
-  {%- else -%}
-    {{- default -}}
-  {%- endif -%}
-{% endmacro %}
-
 {#- SVG勾选图标 -#}
 {% macro check_svg(color_class='blue') %}
 <svg class="m6-check-icon--svg m6-check-icon--{{ color_class }}" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
