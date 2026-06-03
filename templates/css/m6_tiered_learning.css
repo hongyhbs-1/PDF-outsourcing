@@ -442,6 +442,15 @@
   padding-top: 16px;
 }
 
+.m6-stage-progress-panel .sp-progress.sp-progress--dual-axis {
+  /* 文档要求：汉字放进度条上面，数字百分比放进度条下面。 */
+  padding-top: 20px;
+}
+
+.m6-stage-progress-panel .sp-progress.sp-progress--dual-axis.sp-progress--split-labels {
+  padding-top: 22px;
+}
+
 .m6-stage-progress-panel .sp-progress-track {
   height: 9px;
   background: var(--pm-bg-muted);
@@ -513,6 +522,68 @@
   white-space: nowrap;
 }
 
+.m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-labels {
+  height: 26px;
+  z-index: 4;
+}
+
+.m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-label--current,
+.m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-label--target {
+  display: inline-block;
+  z-index: 5;
+}
+
+.m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-label--start,
+.m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-label--end {
+  top: 12px;
+  font-size: 8px;
+  opacity: 0.72;
+}
+
+.m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-label__name {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-label__value {
+  display: block;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.m6-stage-progress-panel .sp-progress--dual-axis.sp-progress--split-labels .sp-progress-label--stack-top {
+  top: 0;
+  transform: translateX(12px);
+  text-align: left;
+}
+
+.m6-stage-progress-panel .sp-progress--dual-axis.sp-progress--split-labels .sp-progress-label--stack-bottom {
+  top: 0;
+  transform: translateX(calc(-100% - 10px));
+  text-align: right;
+}
+
+.m6-stage-progress-panel .sp-progress--dual-axis.sp-progress--split-labels.sp-progress--current-before-target .sp-progress-label--stack-top {
+  transform: translateX(calc(-100% - 10px));
+  text-align: right;
+}
+
+.m6-stage-progress-panel .sp-progress--dual-axis.sp-progress--split-labels.sp-progress--current-before-target .sp-progress-label--stack-bottom {
+  transform: translateX(12px);
+  text-align: left;
+}
+
+.m6-stage-progress-panel .sp-progress--dual-axis.sp-progress--split-labels .sp-progress-label--stack-top .sp-progress-label__name,
+.m6-stage-progress-panel .sp-progress--dual-axis.sp-progress--split-labels .sp-progress-label--stack-bottom .sp-progress-label__name {
+  /* 保持“达标率/当前”和“目标/目标线”在同一条上移后的水平基线。 */
+  bottom: 24px;
+}
+
 .m6-stage-progress-panel .sp-progress-label--start {
   left: 0;
 }
@@ -574,9 +645,6 @@
   font-size: var(--font-size-body);
   color: var(--color-text-secondary);
   line-height: var(--line-height-normal);
-  /* P1: 长文本换行保护 */
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 /* ============================================================================
@@ -595,9 +663,6 @@
   color: var(--color-text-primary);
   line-height: var(--line-height-normal);
   margin: 0;
-  /* P1: 长文本换行保护 */
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 .m6-summary-box--student,
@@ -664,9 +729,6 @@
   color: var(--color-text-secondary);
   line-height: var(--line-height-loose);
   margin-bottom: var(--spacing-xs);
-  /* P1: 长文本换行保护 */
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 .m6-suggestion-section__item:last-child {
@@ -689,9 +751,6 @@
   color: var(--color-text-primary);
   line-height: var(--line-height-normal);
   margin-bottom: var(--spacing-md);
-  /* P1: 长文本换行保护 */
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 /* 红色强调文字 */

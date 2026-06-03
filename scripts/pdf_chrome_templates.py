@@ -38,16 +38,6 @@ DEFAULT_CHROME_THEME = PdfChromeTheme(
     line=LINE,
 )
 
-ENGLISH_CHROME_THEME = PdfChromeTheme(
-    background="#eaf1ff",
-    text_muted="#52627f",
-    text_strong="#1d3363",
-    accent="#4d66d9",
-    accent_soft="#dfe7ff",
-    accent_bar="#ffc978",
-    line="#dbe1f3",
-)
-
 MARGIN_TOP = "12mm"
 MARGIN_BOTTOM = "10mm"
 MARGIN_LEFT = "0mm"
@@ -75,17 +65,9 @@ def _meta_value(meta: dict | None, *keys: str, default: str = "") -> str:
     return default
 
 
-def _is_english_meta(meta: dict | None) -> bool:
-    if not meta:
-        return False
-    subject = _meta_value(meta, "subject").lower()
-    subject_name = _meta_value(meta, "subject_name")
-    report_title = _meta_value(meta, "report_title", "report_name", "left_title")
-    return subject == "english" or "英语" in subject_name or "英语" in report_title
-
-
 def _theme_for_meta(meta: dict | None) -> PdfChromeTheme:
-    return ENGLISH_CHROME_THEME if _is_english_meta(meta) else DEFAULT_CHROME_THEME
+    """Keep PDF chrome subject-neutral; body pages handle subject palettes."""
+    return DEFAULT_CHROME_THEME
 
 
 def _build_header_context(meta: dict | None) -> str:

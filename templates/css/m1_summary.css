@@ -638,6 +638,10 @@ body {
   margin: 0 var(--page-padding-x);
 }
 
+.m1-breakthrough-grid--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 /* --------------------------------------------------------------------------
  * 11.1 突破项卡片 (Breakthrough Card)
  * -------------------------------------------------------------------------- */
@@ -655,6 +659,23 @@ body {
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   margin-bottom: var(--spacing-8);
+}
+
+.m1-breakthrough-card--all-achieved {
+  border: 1px solid rgba(35, 172, 204, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(208, 232, 232, 0.42),
+    rgba(255, 255, 255, 0.96)
+  );
+}
+
+.m1-bt-achieved-text {
+  margin: 4px 0 10px;
+  font-size: 16px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.5;
+  color: var(--color-text-primary);
 }
 
 /* --------------------------------------------------------------------------
@@ -779,11 +800,35 @@ body {
   font-weight: var(--font-weight-medium);
 }
 
-/* V3-1: 提升说明标签 (sand-dark 主题, 与 delta 颜色一致) */
-.m1-bt-tag--improve {
-  background: rgba(178, 122, 55, 0.10);
-  color: var(--color-purple);
+/* P6 建议：突破项下方改为“绿格子 + 文字”，不再使用胶囊标签承载提升幅度。 */
+.m1-bt-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.m1-bt-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
   font-weight: var(--font-weight-medium);
+  line-height: 1.28;
+}
+
+.m1-bt-note-square {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  margin-top: 4px;
+  background: var(--color-primary-teal);
+  border-radius: 2px;
+}
+
+.m1-bt-note--improve {
+  color: var(--color-text-primary);
 }
 
 /* ============================================================================
@@ -1101,6 +1146,23 @@ body {
     font-size: 9px;
   }
 
+  .m1-bt-notes {
+    gap: 2px;
+    margin-top: 1px;
+  }
+
+  .m1-bt-note {
+    gap: 4px;
+    font-size: 9.5px;
+    line-height: 1.18;
+  }
+
+  .m1-bt-note-square {
+    width: 5px;
+    height: 5px;
+    margin-top: 3px;
+  }
+
   .m1-suggestion-callout {
     margin: 7px 0 0;
     padding: 7px 10px;
@@ -1344,6 +1406,23 @@ body {
   .m1-report-page--dense .m1-bt-tag {
     padding: 1px 3px;
     font-size: 7.3px;
+  }
+
+  .m1-report-page--dense .m1-bt-notes {
+    gap: 1px;
+  }
+
+  .m1-report-page--dense .m1-bt-note {
+    gap: 3px;
+    font-size: 7.6px;
+    line-height: 1.12;
+  }
+
+  .m1-report-page--dense .m1-bt-note-square {
+    width: 4px;
+    height: 4px;
+    margin-top: 2.5px;
+    border-radius: 1px;
   }
 
   .m1-report-page--dense .m1-suggestion-callout {

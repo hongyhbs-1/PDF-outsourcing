@@ -411,6 +411,15 @@
   padding-top: 24px;
 }
 
+.sp-progress.sp-progress--dual-axis {
+  /* Keep marker text above the bar and percentages below it. */
+  padding-top: 20px;
+}
+
+.sp-progress.sp-progress--dual-axis.sp-progress--split-labels {
+  padding-top: 22px;
+}
+
 .sp-progress-track {
   height: 9px;
   background: var(--pm-bg-muted);
@@ -500,6 +509,64 @@
 .sp-progress-label__value {
   font-size: 9px;
   font-weight: 800;
+}
+
+.sp-progress--dual-axis .sp-progress-labels {
+  height: 30px;
+  z-index: 4;
+}
+
+.sp-progress--dual-axis .sp-progress-label--current,
+.sp-progress--dual-axis .sp-progress-label--target {
+  display: inline-block;
+  z-index: 5;
+}
+
+.sp-progress--dual-axis .sp-progress-label--start,
+.sp-progress--dual-axis .sp-progress-label--end {
+  top: 13px;
+  font-size: 8px;
+  opacity: 0.72;
+}
+
+.sp-progress--dual-axis .sp-progress-label__name {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+}
+
+.sp-progress--dual-axis .sp-progress-label__value {
+  display: block;
+  line-height: 1.05;
+}
+
+.sp-progress--dual-axis.sp-progress--split-labels .sp-progress-label--stack-top {
+  top: 0;
+  transform: translateX(12px);
+  text-align: left;
+}
+
+.sp-progress--dual-axis.sp-progress--split-labels .sp-progress-label--stack-bottom {
+  top: 0;
+  transform: translateX(calc(-100% - 10px));
+  text-align: right;
+}
+
+.sp-progress--dual-axis.sp-progress--split-labels.sp-progress--current-before-target .sp-progress-label--stack-top {
+  transform: translateX(calc(-100% - 10px));
+  text-align: right;
+}
+
+.sp-progress--dual-axis.sp-progress--split-labels.sp-progress--current-before-target .sp-progress-label--stack-bottom {
+  transform: translateX(12px);
+  text-align: left;
+}
+
+.sp-progress--dual-axis.sp-progress--split-labels .sp-progress-label--stack-top .sp-progress-label__name,
+.sp-progress--dual-axis.sp-progress--split-labels .sp-progress-label--stack-bottom .sp-progress-label__name {
+  /* Keep 当前/达标率 and 目标/目标线 on the same raised horizontal baseline. */
+  bottom: 24px;
 }
 
 .sp-progress-label--start {

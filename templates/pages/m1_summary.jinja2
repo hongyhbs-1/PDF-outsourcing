@@ -88,6 +88,7 @@ render_payload.module_1_summary 结构示例:
 {% set breakthrough = _data.breakthrough | default(breakthrough | default({})) %}
 {% set suggestion = _data.suggestion | default(suggestion | default({})) %}
 {% set bt_items = breakthrough['items'] | default([]) %}
+{% set all_achieved_breakthrough_text = '你已碾压当前难度题目，建议立即飞升位阶追求高分' %}
 {% set pass_stats = namespace(total=0, achieved=0, pending=0) %}
 {% for seg in summary.pass_segments | default([]) %}
   {% set seg_value = seg.value | default(0) | int %}
@@ -98,6 +99,7 @@ render_payload.module_1_summary 结构示例:
     {% set pass_stats.achieved = pass_stats.achieved + seg_value %}
   {% endif %}
 {% endfor %}
+{% set breakthrough_all_achieved = breakthrough.all_achieved | default(false) or (bt_items | length == 0 and pass_stats.total > 0 and pass_stats.pending == 0) %}
 {% if bt_items | length >= 6 %}
   {% set m1_density = 'dense' %}
 {% else %}
@@ -112,11 +114,6 @@ render_payload.module_1_summary 结构示例:
 {#- 空值安全输出宏 -#}
 {% macro safe(value, default='--') -%}
   {{ value if value is defined and value is not none and value != '' else default }}
-{%- endmacro %}
-
-{#- 数值安全输出宏（保证返回数值用于计算） -#}
-{% macro safe_num(value, default=0) -%}
-  {{ value if value is defined and value is not none else default }}
 {%- endmacro %}
 
 {#- 百分比安全输出宏 -#}
@@ -183,6 +180,36 @@ render_payload.module_1_summary 结构示例:
   </div>
 {% endmacro %}
 
+{% set target_line_text = safe(summary.target_accuracy_text, '目标线') %}
+{% if breakthrough_all_achieved %}
+  {% if pass_stats.total > 0 %}
+    {% set core_pass_detail = '在已分析的' ~ pass_stats.total ~ '个知识点中，已全部达到' ~ target_line_text ~ '；' ~ all_achieved_breakthrough_text ~ '。' %}
+    {% set banner_pass_detail = '已分析的' ~ pass_stats.total ~ '个知识点已全部达标。' ~ all_achieved_breakthrough_text ~ '。' %}
+  {% else %}
+    {% set core_pass_detail = '当前没有需优先补齐的突破项；' ~ all_achieved_breakthrough_text ~ '。' %}
+    {% set banner_pass_detail = '当前没有需优先补齐的突破项。' ~ all_achieved_breakthrough_text ~ '。' %}
+  {% endif %}
+{% elif pass_stats.total > 0 %}
+  {% set core_pass_detail = '在已分析的' ~ pass_stats.total ~ '个知识点中，' ~ pass_stats.achieved ~ '个已达到' ~ target_line_text ~ '，' ~ pass_stats.pending ~ '个需重点补齐；优先补齐当前未达标知识点，比平均用力更容易缩小目标差距。' %}
+  {% set banner_pass_detail = '已分析的' ~ pass_stats.total ~ '个知识点中，' ~ pass_stats.achieved ~ '个达标、' ~ pass_stats.pending ~ '个需重点补齐。' %}
+{% else %}
+  {% set core_pass_detail = '优先补齐当前未达标知识点，比平均用力更容易缩小目标差距。' %}
+  {% set banner_pass_detail = '' %}
+{% endif %}
+
+{% set chart_note_text = '' %}
+{% if summary.high_freq_kp_total is defined and summary.pass_segments is defined and summary.pass_segments | length >= 2 %}
+  {% set high_freq_total = summary.high_freq_kp_total | default(0) | int %}
+  {% if breakthrough_all_achieved %}
+    {% if high_freq_total > 0 %}
+      {% set chart_note_text = '上传试卷包含L3级知识点' ~ summary.high_freq_kp_total ~ '个，当前已全部超过目标正确率，建议升级题目难度继续冲高。' %}
+    {% else %}
+      {% set chart_note_text = '当前没有需优先补齐的突破项，建议升级题目难度继续冲高。' %}
+    {% endif %}
+  {% else %}
+    {% set chart_note_text = '上传试卷包含L3级知识点' ~ summary.high_freq_kp_total ~ '个，其中' ~ summary.pass_segments[0].value ~ '个超过目标正确率，' ~ summary.pass_segments[1].value ~ '个暂时未达到' %}
+  {% endif %}
+{% endif %}
 
 {# ============================================================================
    HTML 主体结构
@@ -201,7 +228,7 @@ render_payload.module_1_summary 结构示例:
   <section class="m1-core-conclusion">
     <div class="m1-core-conclusion__label">{{ lb_icon('target', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m1-core-conclusion__text">
-      三级知识点（L3）达标率 {{ safe_pct(summary.pass_rate_text, '0%') }}（= 达标的知识点/总知识点）：{% if pass_stats.total > 0 %}在已分析的{{ pass_stats.total }}个知识点中，{{ pass_stats.achieved }}个已达到{{ safe(summary.target_accuracy_text, '目标线') }}，{{ pass_stats.pending }}个需重点补齐；{% endif %}优先补齐当前未达标知识点，比平均用力更容易缩小目标差距。
+      三级知识点（L3）达标率 {{ safe_pct(summary.pass_rate_text, '0%') }}（= 达标的知识点/总知识点）：{{ core_pass_detail }}
     </div>
   </section>
 
@@ -233,15 +260,18 @@ render_payload.module_1_summary 结构示例:
         {% if summary.pass_segments is defined and summary.pass_segments %}
           <div class="m1-donut-legend">
             {% for seg in summary.pass_segments %}
+              {% set seg_value = seg.value | default(0) | int %}
+              {% if not (breakthrough_all_achieved and seg_value == 0) %}
               <div class="m1-legend-item">
                 <div class="m1-legend-icon {% if seg.icon == 'check' %}m1-legend-icon--pass{% else %}m1-legend-icon--fail{% endif %}"
                      {% if seg.color_hex is defined %}style="background: {{ seg.color_hex }};"{% endif %}>
                   {% if seg.icon == 'check' %}✓{% else %}—{% endif %}
                 </div>
                 <span class="m1-legend-text">
-                  {{ safe_num(seg.value, 0) }}个知识点
+                  {{ seg_value }}个知识点
                 </span>
               </div>
+              {% endif %}
             {% endfor %}
           </div>
         {% else %}
@@ -318,14 +348,12 @@ render_payload.module_1_summary 结构示例:
 
     {# 摘要说明放在本卡片底部，避免与“本页核心结论”重复挤在顶部 #}
     <div class="m1-summary-banner">
-      整体正确率看所有答题表现；三级知识点（L3）达标率看细分知识点是否达标。{{ safe_pct(summary.pass_rate_text, '0%') }}表示三级知识点（L3）达标率（= 达标的知识点/总知识点）：{% if pass_stats.total > 0 %}已分析的{{ pass_stats.total }}个知识点中，{{ pass_stats.achieved }}个达标、{{ pass_stats.pending }}个需重点补齐。{% endif %}达标指正确率达到或超过本次设定的{{ safe(summary.target_accuracy_text, '目标线') }}。
+      整体正确率看所有答题表现；三级知识点（L3）达标率看细分知识点是否达标。{{ safe_pct(summary.pass_rate_text, '0%') }}表示三级知识点（L3）达标率（= 达标的知识点/总知识点）：{{ banner_pass_detail }}达标指正确率达到或超过本次设定的{{ target_line_text }}。
     </div>
   </div>
 
   {% if summary.high_freq_kp_total is defined and summary.pass_segments is defined and summary.pass_segments | length >= 2 %}
-  <p class="m1-chart-note">
-    上传试卷包含L3级知识点{{ summary.high_freq_kp_total }}个，其中{{ summary.pass_segments[0].value }}个超过目标正确率，{{ summary.pass_segments[1].value }}个暂时未达到
-  </p>
+  <p class="m1-chart-note">{{ chart_note_text }}</p>
   {% endif %}
 
   {# 关键发现已合并到整体学情总结中 #}
@@ -339,7 +367,18 @@ render_payload.module_1_summary 结构示例:
     {{ lb_icon('target', 'frame-section-icon') }} 二、优先突破
   </div>
   
-  {% if bt_items | length > 0 %}
+  {% if breakthrough_all_achieved %}
+    <div class="m1-breakthrough-grid m1-breakthrough-grid--single">
+      <div class="m1-breakthrough-card m1-breakthrough-card--all-achieved">
+        <div class="m1-bt-title">{{ lb_icon('rocket', 'frame-inline-icon') }} 高分冲刺模板</div>
+        <div class="m1-bt-achieved-text">{{ all_achieved_breakthrough_text }}</div>
+        <div class="m1-bt-tags">
+          <span class="m1-bt-tag m1-bt-tag--strong">升级难度</span>
+          <span class="m1-bt-tag m1-bt-tag--evidence">追求高分</span>
+        </div>
+      </div>
+    </div>
+  {% elif bt_items | length > 0 %}
     <div class="m1-breakthrough-grid">
       {% for item in bt_items %}
         <div class="m1-breakthrough-card">
@@ -373,13 +412,22 @@ render_payload.module_1_summary 结构示例:
             </div>
           </div>
 
-          {# 标签组：用正向表述讲清还需提升多少，再补充城市考频参考 #}
-          <div class="m1-bt-tags">
-            <span class="m1-bt-tag m1-bt-tag--improve">{% if gap_to_target_pct > 0 %}还需提升 {{ gap_display }}%{% elif gap_to_target_pct < 0 %}已超目标 {{ gap_display }}%{% else %}已达目标{% endif %}</span>
+          {# 建议文档 P6：将“还需提升”从胶囊标签改为绿格子 + 文字；有城市考频时独立成第二行 #}
+          <div class="m1-bt-notes">
+            <div class="m1-bt-note m1-bt-note--improve">
+              <span class="m1-bt-note-square"></span>
+              <span>{% if gap_to_target_pct > 0 %}还需提升 {{ gap_display }}%{% elif gap_to_target_pct < 0 %}已超目标 {{ gap_display }}%{% else %}已达目标{% endif %}</span>
+            </div>
             {% if item.city_tag_left is defined and item.city_tag_left %}
-              <span class="m1-bt-tag m1-bt-tag--evidence">城市考频参考：{{ item.city_tag_left | replace('TOP', '前') | replace('Top', '前') | replace('top', '前') }}{% if item.city_tag_right is defined and item.city_tag_right %} · {{ item.city_tag_right }}{% endif %}</span>
+              <div class="m1-bt-note m1-bt-note--evidence">
+                <span class="m1-bt-note-square"></span>
+                <span>城市考频参考：{{ item.city_tag_left | replace('TOP', '前') | replace('Top', '前') | replace('top', '前') }}{% if item.city_tag_right is defined and item.city_tag_right %} · {{ item.city_tag_right }}{% endif %}</span>
+              </div>
             {% elif item.city_tag_right is defined and item.city_tag_right %}
-              <span class="m1-bt-tag m1-bt-tag--evidence">{{ item.city_tag_right }}</span>
+              <div class="m1-bt-note m1-bt-note--evidence">
+                <span class="m1-bt-note-square"></span>
+                <span>{{ item.city_tag_right }}</span>
+              </div>
             {% endif %}
           </div>
         </div>

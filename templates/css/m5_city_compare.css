@@ -243,12 +243,6 @@
   gap: var(--cc-spacing-2);
 }
 
-/* .m5-city-compare__card-note::before {
-  content: "√";
-  color: var(--cc-text-muted);
-  flex-shrink: 0;
-} */
-
 /* ----------------------
     6.3 Right Card: Overlap Visual
     ---------------------- */
@@ -899,91 +893,9 @@
     line-height: 1.16;
   }
 
-  .m5-city-compare--long .m5-city-compare__title {
-    font-size: 20px;
-    margin: 7px 0 6px;
-    padding-bottom: 5px;
-  }
-
   .m5-city-compare--long .m5-city-compare__part {
     margin-bottom: 4px;
   }
-
-  .m5-city-compare--long .m5-city-compare__intro {
-    font-size: 9px;
-    line-height: 1.2;
-    margin-top: 2px;
-  }
-
-  .m5-city-compare--long .m5-city-compare__table-section,
-  .m5-city-compare--long .m5-city-compare__part--advice,
-  .m5-city-compare--long .m5-city-compare__footnote {
-    padding: 4px 6px;
-    margin-bottom: 4px;
-  }
-
-  .m5-city-compare--long .m5-city-compare__cards {
-    gap: 4px;
-    margin-bottom: 4px;
-  }
-
-  .m5-city-compare--long .m5-city-compare__card {
-    padding: 4px 6px;
-  }
-
-  .m5-city-compare--long .m5-city-compare__card-title,
-  .m5-city-compare--long .m5-city-compare__table-title,
-  .m5-city-compare--long .m5-city-compare__advice-title {
-    margin-bottom: 4px;
-    font-size: 12px;
-  }
-
-  .m5-city-compare--long .m5-city-compare__card-highlight {
-    font-size: 12px;
-  }
-
-  .m5-city-compare--long .m5-city-compare__intro,
-  .m5-city-compare--long .m5-city-compare__overlap-subtitle,
-  .m5-city-compare--long .m5-city-compare__overlap-ratio {
-    font-size: 9px;
-    line-height: 1.22;
-  }
-
-  .m5-city-compare--long .m5-city-compare__overlap-num {
-    font-size: 18px;
-  }
-
-  .m5-city-compare--long .m5-city-compare__table {
-    font-size: 8px;
-    line-height: 1.12;
-  }
-
-  .m5-city-compare--long .m5-city-compare__table th,
-  .m5-city-compare--long .m5-city-compare__table td {
-    padding: 2px 4px;
-  }
-
-  .m5-city-compare--long .m5-city-compare__rank-badge {
-    min-width: 16px;
-    height: 14px;
-    font-size: 8px;
-  }
-
-  .m5-city-compare--long .m5-city-compare__tag,
-  .m5-city-compare--long .m5-city-compare__weight-badge {
-    padding: 1px 3px;
-    font-size: 8px;
-  }
-
-  .m5-city-compare--long .m5-city-compare__advice-item,
-  .m5-city-compare--long .m5-city-compare__table-note,
-  .m5-city-compare--long .m5-city-compare__footnote-text,
-  .m5-city-compare--long .m5-city-compare__footnote-line {
-    font-size: 8px !important;
-    line-height: 1.18;
-  }
-
-
 
   .m5-city-compare--long .m5-city-compare__title {
     font-size: 18px;
@@ -1142,5 +1054,111 @@
 @media screen and (max-width: 800px) {
   .m5-city-compare__cards {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 英语 P12：15 条城市考点不应触发过度压缩；保留单页容量，但排版节奏靠近数学 M5。 */
+@media print {
+  body.report-theme--english #toc-m5 .m5-city-compare--long {
+    font-size: 10px !important;
+    line-height: 1.22 !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__part {
+    margin-bottom: 8px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__table-section {
+    padding: 8px 10px !important;
+    margin-bottom: 8px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__card--overlap-wide {
+    padding: 8px 10px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__card-title,
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__table-title {
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__table {
+    font-size: 10.2px !important;
+    line-height: 1.24 !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__table th,
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__table td {
+    padding: 5px 6px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__kp-name {
+    line-height: 1.24 !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__rank-badge {
+    min-width: 22px !important;
+    height: 20px !important;
+    font-size: 10px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__tags {
+    gap: 2px !important;
+    margin-top: 2px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__tag,
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__weight-badge {
+    padding: 1px 4px !important;
+    font-size: 9px !important;
+    line-height: 1.15 !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__overlap-layout {
+    grid-template-columns: 105px minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__overlap-num {
+    font-size: 30px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__overlap-subtitle,
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__overlap-ratio {
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__progress {
+    margin-bottom: 6px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__progress-track {
+    height: 6px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__overlap-stats {
+    gap: 5px !important;
+    margin-bottom: 5px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__overlap-stat {
+    padding: 5px 6px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__overlap-stat-label {
+    font-size: 9px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__overlap-stat-value {
+    font-size: 11px !important;
+  }
+
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__table-note,
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__footnote-text,
+  body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__footnote-line {
+    font-size: 9px !important;
+    line-height: 1.25 !important;
   }
 }

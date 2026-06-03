@@ -76,9 +76,7 @@ body.report-theme--english {
   --pm-shadow-card-hover: 0 14px 36px rgba(38, 58, 122, 0.12);
   --pm-shadow-bar:        0 4px 12px rgba(38, 58, 122, 0.10);
   --pm-shadow-float:      0 18px 44px rgba(38, 58, 122, 0.16);
-}
 
-body.report-theme--english {
   background: #eaf1ff;
   page: english-report;
 }
@@ -96,6 +94,26 @@ body.report-theme--english .module-page,
 body.report-theme--english .m0-module-page {
   page: english-report;
   background: #eaf1ff;
+}
+
+@page report-cover {
+  size: A4 portrait;
+  margin-top: 12mm;
+  margin-bottom: 10mm;
+  margin-left: 0;
+  margin-right: 0;
+  background: #f8f5ef;
+}
+
+body.report-theme--english .module-page--cover {
+  page: report-cover;
+  background: #f8f5ef;
+}
+
+body.report-theme--english .module-page.module-page--cover::before {
+  height: 5px;
+  background: linear-gradient(90deg, #e2c48f 0%, #1f6f78 100%);
+  border-radius: 0 0 3px 3px;
 }
 
 body.report-theme--english .module-page::before {
@@ -132,19 +150,38 @@ body.report-theme--english .mtoc-reading-guide {
 }
 
 body.report-theme--english .m0-cover-page {
+  --pm-navy-dark:        #0a2234;
+  --pm-navy:             #12344d;
+  --pm-navy-mid:         #1a3a52;
+  --pm-navy-light:       #204a67;
+  --pm-teal:             #1f6f78;
+  --pm-teal-light:       #2a8f8f;
+  --pm-teal-soft:        #d0e8e8;
+  --pm-sand:             #e2c48f;
+  --pm-sand-dark:        #b27a37;
+  --pm-sand-light:       #f7f0e3;
+  --pm-sand-pale:        #faf6ee;
+  --pm-bg-page:          #f8f5ef;
+  --pm-bg-card:          #ffffff;
+  --pm-text-primary:     #1a2332;
+  --pm-text-secondary:   #4a5568;
+  --pm-text-muted:       #8896a7;
+  --pm-text-light:       #a0aec0;
+  --pm-status-nodata:    #9ca3af;
+  --pm-gradient-accent-bar: linear-gradient(90deg, #e2c48f 0%, #1f6f78 100%);
   background:
-    radial-gradient(circle at top right, rgba(140, 212, 255, 0.18), transparent 30%),
-    radial-gradient(circle at bottom left, rgba(77, 102, 217, 0.10), transparent 28%),
-    linear-gradient(180deg, rgba(245, 247, 255, 1) 0%, rgba(255, 255, 255, 1) 42%, rgba(241, 244, 255, 0.95) 100%);
+    radial-gradient(circle at top right, rgba(226, 196, 143, 0.18), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(31, 111, 120, 0.08), transparent 24%),
+    linear-gradient(180deg, #f8f5ef 0%, #ffffff 40%);
 }
 
 body.report-theme--english .m0-cover-page::after {
-  background: rgba(114, 145, 255, 0.10);
+  background: rgba(226, 196, 143, 0.08);
 }
 
 body.report-theme--english .m0-cover-badge {
-  color: #8ea0d4;
-  opacity: 0.48;
+  color: var(--pm-text-light);
+  opacity: 0.4;
 }
 
 body.report-theme--english .learning-blueprint-page {

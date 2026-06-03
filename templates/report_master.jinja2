@@ -31,12 +31,27 @@ report_master.jinja2 — 报告主入口模板 (v2)
 {% set _is_admissions_blueprint = _report_variant == 'admissions_blueprint' %}
 {% set _include_learning_blueprint = _is_admissions_blueprint or _report_variant == 'full' %}
 {% set _include_parent_report = not _is_admissions_blueprint %}
+{% set pv = page_visibility | default({}, true) %}
+
+{% set _comp_page = composition_deep | default({}, true) %}
+{% set _m10_page = m10 | default({}, true) %}
+{% set _comp_facts_page = composition_facts | default({}, true) %}
+{% set _comp_items_page = _comp_facts_page.get('items', []) if _comp_facts_page is mapping else [] %}
+{% set _has_m10_data = _m10_page.visible | default(false) or _comp_page.score_overview | default({}, true) or _comp_page.topic_analysis | default('', true) or _comp_page.data_ready | default(false) or (_comp_items_page | length > 0) %}
+{% set _show_m10_composition = pv.m10_composition | default(false) or _has_m10_data %}
+
+{% set _rd_page = reading_deep | default({}, true) %}
+{% set _m11_page = m11 | default({}, true) %}
+{% set _reading_facts_page = reading_passage_facts | default({}, true) %}
+{% set _reading_passages_page = _reading_facts_page.passages | default([], true) %}
+{% set _has_m11_data = _m11_page.visible | default(false) or _rd_page.status | default('', true) == 'success' or _rd_page.content | default({}, true) or _rd_page.result | default({}, true) or (_reading_passages_page | length > 0) %}
+{% set _show_m11_reading_deep = pv.m11_reading_deep | default(false) or _has_m11_data %}
 
   {# ---- 页眉页脚已迁移至 Playwright headerTemplate/footerTemplate (T14 Phase 6) ---- #}
 
   {% if _include_parent_report %}
   {# ---- M0: cover ---- #}
-  <div class="module-page">
+  <div class="module-page module-page--cover">
     {% include 'pages/m0_cover.jinja2' %}
   </div>
   {% endif %}
@@ -81,7 +96,6 @@ report_master.jinja2 — 报告主入口模板 (v2)
   </div>
 
   {# ---- M5: city_compare (page_visibility 控制) ---- #}
-  {% set pv = page_visibility | default({}, true) %}
   {% if pv.m5_city_compare | default(true) %}
   <div class="module-page" id="toc-m5">
     {% include 'pages/m5_city_compare.jinja2' %}
@@ -95,7 +109,8 @@ report_master.jinja2 — 报告主入口模板 (v2)
   {% set _qd = question_detail | default({}, true) %}
   {% set _qd_papers = _qd.papers | default([], true) %}
   {% set _qd_total = _qd.total_count | default(0) %}
-  {% if _qd_papers | length > 0 and _qd_total > 0 %}
+  {% set _show_question_detail = _qd_papers | length > 0 and _qd_total > 0 %}
+  {% if _show_question_detail %}
   <div class="module-page" id="toc-m9">
     {% include 'pages/m9_question_detail.jinja2' %}
   </div>
@@ -125,15 +140,15 @@ report_master.jinja2 — 报告主入口模板 (v2)
   </div>
   {% endif %}
 
-  {# ---- M10: composition (英语专属, 默认 false) ---- #}
-  {% if pv.m10_composition | default(false) %}
+  {# ---- M10: composition (英语专属；有作文数据时自动显示) ---- #}
+  {% if _show_m10_composition %}
   <div class="module-page" id="toc-m10">
     {% include 'pages/m10_composition.jinja2' %}
   </div>
   {% endif %}
 
-  {# ---- M11: reading_deep (英语专属, 默认 false) ---- #}
-  {% if pv.m11_reading_deep | default(false) %}
+  {# ---- M11: reading_deep (英语专属；有阅读精讲数据时自动显示) ---- #}
+  {% if _show_m11_reading_deep %}
   <div class="module-page" id="toc-m11">
     {% include 'pages/m11_reading_deep.jinja2' %}
   </div>
