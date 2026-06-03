@@ -8,8 +8,12 @@ payload_analyzer.py — payload → [(key, natural_height)]
 回退：如果无法测量（无 Playwright），使用经验估算。
 """
 from __future__ import annotations
+from typing import TYPE_CHECKING
 from . import WRAPPER_SELECTORS
 from .math_func import content_height, F_BODY, F_SMALL, F_TABLE, ROW_TABLE, ROW_ANALYSIS, ROW_CHECKLIST
+
+if TYPE_CHECKING:
+    from scripts.contracts.render_payload import RenderPayload
 
 # ---------------------------------------------------------------------------
 # Generic helpers
@@ -166,7 +170,7 @@ _ESTIMATORS = {
 # 主接口
 # ---------------------------------------------------------------------------
 
-def analyze_with_measured(payload: dict, measured: dict[str, list[tuple[str, float]]]) -> dict[str, list[tuple[str, float]]]:
+def analyze_with_measured(payload: RenderPayload, measured: dict[str, list[tuple[str, float]]]) -> dict[str, list[tuple[str, float]]]:
     """优先使用 DOM 测量值，回退到估算。"""
     results = {}
     for mid in WRAPPER_SELECTORS:

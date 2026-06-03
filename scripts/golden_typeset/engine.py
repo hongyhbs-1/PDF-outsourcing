@@ -14,13 +14,16 @@ payload → 分析 → 排版 → CSS
     css = build_typeset_css(payload)
 """
 from __future__ import annotations
-from typing import Dict, Optional
+from typing import Dict, Optional, TYPE_CHECKING
 from .math_func import PageLayout, layout_page
 from .payload_analyzer import ANALYZERS, analyze_with_measured
 from .css_builder import build_css
 
+if TYPE_CHECKING:
+    from scripts.contracts.render_payload import RenderPayload
 
-def build_typeset_css(payload: dict,
+
+def build_typeset_css(payload: RenderPayload,
                       measured: Optional[dict[str, list[tuple[str, float]]]] = None
                       ) -> str:
     """生成排版 CSS。

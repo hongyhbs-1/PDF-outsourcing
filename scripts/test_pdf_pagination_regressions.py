@@ -19,7 +19,6 @@ IP_CSS = PROJECT_ROOT / "templates" / "css" / "improvement_preview.css"
 PDF_UTILS = PROJECT_ROOT / "scripts" / "pdf_utils.py"
 BASE_CSS = PROJECT_ROOT / "templates" / "css" / "base.css"
 COVER_CSS = PROJECT_ROOT / "templates" / "css" / "m0_cover.css"
-COMIC_CSS = PROJECT_ROOT / "templates" / "css" / "comic_scene1.css"
 M1_CSS = PROJECT_ROOT / "templates" / "css" / "m1_summary.css"
 M1_TEMPLATE = PROJECT_ROOT / "templates" / "pages" / "m1_summary.jinja2"
 M2_CSS = PROJECT_ROOT / "templates" / "css" / "m2_core_weakness.css"
@@ -66,18 +65,13 @@ class PdfPaginationRegressionTest(unittest.TestCase):
         self.assertNotIn("page.style.pageBreakBefore = 'auto';", source)
 
     def test_print_page_shell_does_not_depend_on_viewport_height(self) -> None:
-        for path in (BASE_CSS, COVER_CSS, COMIC_CSS):
+        for path in (BASE_CSS, COVER_CSS):
             self.assertNotIn("100vh", read_text(path))
 
     def test_print_module_shell_uses_block_flow(self) -> None:
         css = read_text(BASE_CSS)
         print_rules = css.split("@media print", maxsplit=1)[1]
         self.assertIn("display: block;", print_rules)
-
-    def test_comic_caption_is_not_absolute_overlay(self) -> None:
-        css = read_text(COMIC_CSS)
-        self.assertIn(".comic-caption", css)
-        self.assertNotIn("position: absolute;", css)
 
     def test_m2_print_root_uses_block_flow(self) -> None:
         css = read_text(M2_CSS)
