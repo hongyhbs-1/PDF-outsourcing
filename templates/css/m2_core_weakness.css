@@ -147,12 +147,12 @@
    ============================================================================ */
 .m2-cw-module-title {
   display: inline-block;
-  font-size: var(--cw-font-size-h1);
-  font-weight: var(--cw-font-weight-bold);
-  color: var(--cw-color-text-primary);
+  font-size: var(--vh-h0-font-size);
+  font-weight: var(--vh-h0-font-weight);
+  color: var(--vh-h0-color);
   padding: var(--cw-spacing-5) var(--cw-spacing-6) 0;
   margin: 0;
-  line-height: var(--cw-line-height-tight);
+  line-height: var(--vh-h0-line-height);
 }
 
 .m2-cw-module-title::after {
@@ -179,16 +179,16 @@
 
 .m2-cw-core-summary__label {
   color: var(--cw-color-p0);
-  font-size: 12px;
-  font-weight: var(--cw-font-weight-bold);
-  margin-bottom: var(--cw-spacing-2);
+  font-size: var(--vh-h3-font-size);
+  font-weight: var(--vh-h3-font-weight);
+  margin-bottom: var(--vh-gap-sm);
 }
 
 .m2-cw-core-summary__text {
-  color: var(--cw-color-text-primary);
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.5;
+  color: var(--vh-h2-color);
+  font-size: var(--vh-h2-font-size);
+  font-weight: var(--vh-h2-font-weight);
+  line-height: var(--vh-h2-line-height);
 }
 
 .m2-cw-core-summary__text strong {
@@ -444,14 +444,14 @@
 }
 
 .m2-cw-reason-header__title {
-  font-size: var(--cw-font-size-h2);
-  font-weight: var(--cw-font-weight-bold);
-  color: var(--cw-color-text-primary);
+  font-size: var(--vh-h1-font-size);
+  font-weight: var(--vh-h1-font-weight);
+  color: var(--vh-h1-color);
 }
 
 .m2-cw-reason-header__subtitle {
-  font-size: var(--cw-font-size-body);
-  color: var(--cw-color-text-secondary);
+  font-size: var(--vh-body-font-size);
+  color: var(--vh-body-color);
 }
 
 .m2-cw-reason-header__highlight {
@@ -478,9 +478,9 @@
 }
 
 .m2-cw-reason-card__label {
-  font-size: var(--cw-font-size-body);
-  color: var(--cw-color-text-secondary);
-  margin-bottom: var(--cw-spacing-2);
+  font-size: var(--vh-body-font-size);
+  color: var(--vh-body-color);
+  margin-bottom: var(--vh-gap-sm);
 }
 
 .m2-cw-reason-card__value {
@@ -532,17 +532,17 @@
 }
 
 .m2-cw-tips-title {
-  font-size: var(--cw-font-size-body);
-  font-weight: var(--cw-font-weight-bold);
-  color: var(--cw-color-text-primary);
-  margin-bottom: var(--cw-spacing-2);
+  font-size: var(--vh-body-font-size);
+  font-weight: var(--vh-h2-font-weight);
+  color: var(--vh-h2-color);
+  margin-bottom: var(--vh-gap-sm);
 }
 
 .m2-cw-tips-item {
-  font-size: var(--cw-font-size-body);
-  color: var(--cw-color-text-secondary);
-  line-height: var(--cw-line-height-normal);
-  margin-bottom: var(--cw-spacing-1);
+  font-size: var(--vh-body-font-size);
+  color: var(--vh-body-color);
+  line-height: var(--vh-body-line-height);
+  margin-bottom: var(--vh-gap-xs);
 }
 
 .m2-cw-tips-item:last-child {

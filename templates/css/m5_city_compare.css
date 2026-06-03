@@ -136,10 +136,10 @@
   margin: var(--cc-spacing-6) 0;
   padding-bottom: var(--cc-spacing-3);
   border-bottom: 2px solid var(--cc-accent-teal);
-  font-size: var(--cc-font-size-h1);
-  font-weight: var(--cc-font-weight-bold);
-  line-height: var(--cc-line-height-tight);
-  color: var(--cc-text-primary);
+  font-size: var(--vh-h0-font-size);
+  font-weight: var(--vh-h0-font-weight);
+  line-height: var(--vh-h0-line-height);
+  color: var(--vh-h0-color);
 }
 
 /* ============================================================
@@ -159,9 +159,9 @@
 
 .m5-city-compare__intro {
   margin: var(--cc-spacing-2) 0 0;
-  font-size: var(--cc-font-size-body);
-  line-height: var(--cc-line-height-relaxed);
-  color: var(--cc-text-secondary);
+  font-size: var(--vh-body-font-size);
+  line-height: var(--vh-body-line-height);
+  color: var(--vh-body-color);
 }
 
 .m5-core-conclusion {
@@ -178,16 +178,16 @@
   align-items: center;
   gap: 4px;
   color: var(--cc-accent-primary);
-  font-size: 12px;
-  font-weight: var(--cc-font-weight-bold);
-  margin-bottom: 3px;
+  font-size: var(--vh-h3-font-size);
+  font-weight: var(--vh-h3-font-weight);
+  margin-bottom: var(--vh-gap-xs);
 }
 
 .m5-core-conclusion__text {
-  color: var(--cc-text-primary);
-  font-size: 14px;
-  font-weight: var(--cc-font-weight-bold);
-  line-height: 1.45;
+  color: var(--vh-h2-color);
+  font-size: var(--vh-h2-font-size);
+  font-weight: var(--vh-h2-font-weight);
+  line-height: var(--vh-h2-line-height);
 }
 
 
@@ -221,9 +221,9 @@
    6.2 Left Card: Analysis
    ---------------------- */
 .m5-city-compare__card-title {
-  font-size: var(--cc-font-size-h3);
-  font-weight: var(--cc-font-weight-bold);
-  color: var(--cc-text-primary);
+  font-size: var(--vh-h1-font-size);
+  font-weight: var(--vh-h1-font-weight);
+  color: var(--vh-h1-color);
   margin-bottom: var(--cc-spacing-4);
 }
 
@@ -282,10 +282,10 @@
 }
 
 .m5-city-compare__overlap-subtitle {
-  font-size: 13px;
-  font-weight: var(--cc-font-weight-medium);
-  color: var(--cc-text-secondary);
-  line-height: 1.6;
+  font-size: var(--vh-h2-font-size);
+  font-weight: var(--vh-h2-font-weight);
+  color: var(--vh-h2-color);
+  line-height: var(--vh-h2-line-height);
   margin-bottom: var(--cc-spacing-4);
 }
 
@@ -358,9 +358,9 @@
 }
 
 .m5-city-compare__table-title {
-  font-size: var(--cc-font-size-h3);
-  font-weight: var(--cc-font-weight-bold);
-  color: var(--cc-text-primary);
+  font-size: var(--vh-h1-font-size);
+  font-weight: var(--vh-h1-font-weight);
+  color: var(--vh-h1-color);
   margin-bottom: var(--cc-spacing-4);
 }
 
@@ -562,9 +562,9 @@
    SECTION 8: Advice (融入背景，无框)
    ============================================================ */
 .m5-city-compare__advice-title {
-  font-size: var(--cc-font-size-h3);
-  font-weight: var(--cc-font-weight-bold);
-  color: var(--cc-text-primary);
+  font-size: var(--vh-h1-font-size);
+  font-weight: var(--vh-h1-font-weight);
+  color: var(--vh-h1-color);
   margin-bottom: var(--cc-spacing-3);
 }
 

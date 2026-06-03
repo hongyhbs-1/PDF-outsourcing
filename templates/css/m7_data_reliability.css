@@ -134,9 +134,9 @@
    Section 3: Page Title Component
    ========================================================================== */
 .m7-data-reliability__title {
-  font-size: var(--font-size-h1);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
+  font-size: var(--vh-h0-font-size);
+  font-weight: var(--vh-h0-font-weight);
+  line-height: var(--vh-h0-line-height);
   margin: 0 0 var(--spacing-lg) 0;
   display: inline-block;
   position: relative;
@@ -166,16 +166,16 @@
   align-items: center;
   gap: 5px;
   color: var(--color-accent);
-  font-size: 12px;
-  font-weight: var(--font-weight-bold);
-  margin-bottom: 4px;
+  font-size: var(--vh-h3-font-size);
+  font-weight: var(--vh-h3-font-weight);
+  margin-bottom: var(--vh-gap-xs);
 }
 
 .m7-core-conclusion__text {
-  color: var(--color-text-primary);
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.45;
+  color: var(--vh-h2-color);
+  font-size: var(--vh-h2-font-size);
+  font-weight: var(--vh-h2-font-weight);
+  line-height: var(--vh-h2-line-height);
 }
 
 /* ==========================================================================
@@ -203,9 +203,9 @@
 
 /* V3-5: 首标题与页眉保持 20px 间距 (原 0) */
 .m7-section-title {
-  font-size: var(--font-size-h2);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
+  font-size: var(--vh-h1-font-size);
+  font-weight: var(--vh-h1-font-weight);
+  color: var(--vh-h1-color);
   margin: 20px 0 var(--spacing-md) 0;
 }
 
@@ -613,8 +613,8 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  font-size: var(--font-size-h2);
-  font-weight: var(--font-weight-bold);
+  font-size: var(--vh-h1-font-size);
+  font-weight: var(--vh-h1-font-weight);
   margin: 0 0 var(--spacing-sm) 0;
 }
 
