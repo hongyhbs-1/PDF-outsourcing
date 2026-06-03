@@ -5,7 +5,7 @@ total=False 表示所有字段可选 — 模板用 | default() 兜底。
 """
 
 from __future__ import annotations
-from typing import TypedDict, Optional
+from typing import TypedDict
 
 
 # ---------------------------------------------------------------------------
@@ -370,6 +370,10 @@ class RenderPayload(TypedDict, total=False):
     # --- 英语专属模块 ---
     composition_deep: CompositionDeepData
     reading_deep: ReadingDeepData
+
+    # --- 英语专属模块（模板别名） ---
+    m10: CompositionDeepData               # 模板用 m10 | default({}, true)
+    m11: ReadingDeepData                   # 模板用 m11 | default({}, true)
 
     # --- 透传字段（适配器可能设置，模板不直接消费但 builder 需要）---
     section_2_domains: dict             # 英语 brief 需要的别名

@@ -1,4 +1,8 @@
-"""HTML 渲染服务 — RenderPayload → 完整 HTML。
+"""HTML 渲染服务 — RenderPayload -> 完整 HTML。
+
+.. deprecated::
+    此模块为 templates_v2 时代遗留，仅供 v2 管线内部使用。
+    新功能请使用 ``renderer.py`` 中的 ``render_html()``。
 
 CSS 拼接 (base.css + m*.css) 和 Jinja2 渲染逻辑从
 templates_v2/_scripts/render_smoke_test.py 和 tests_v2/test_e2e_render.py 提取。

@@ -9,7 +9,6 @@ import base64
 import sys
 from pathlib import Path
 
-from adapters import adapt_payload
 from learning_blueprint_builder import build_learning_blueprints
 
 try:
@@ -29,9 +28,6 @@ CSS_DIR = TEMPLATE_DIR / "css"
 PAGES_DIR = TEMPLATE_DIR / "pages"
 FONTS_DIR = TEMPLATE_DIR / "fonts"
 ASSETS_DIR = TEMPLATE_DIR / "assets"
-STATIC_DIR = PROJECT_DIR / "static"
-DEFAULT_COMIC_IMAGE_ROOT = STATIC_DIR / "comic"
-COMIC_IMAGE_SUFFIX = ".png"
 TIER_NEED_MAJOR_MAX = 60
 TIER_ROOM_GROW_MAX = 85
 
@@ -164,7 +160,7 @@ def _image_to_data_uri(path: Path) -> str:
 
 
 # ---------------------------------------------------------------------------
-# 等级选择 + 漫画图片
+# 等级选择
 # ---------------------------------------------------------------------------
 
 
@@ -180,47 +176,6 @@ def _select_tier_name(payload: dict) -> str:
     return "优等生"
 
 
-def _comic_image_candidates(image_root: Path, scene: str, tier_name: str) -> list[Path]:
-    return [image_root / scene / f"{tier_name}-中文{COMIC_IMAGE_SUFFIX}"]
-
-
-def _select_comic_image_path(
-    image_root: Path, scene: str, tier_name: str, *, require_existing: bool
-) -> Path:
-    candidates = _comic_image_candidates(image_root, scene, tier_name)
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    if require_existing:
-        paths = ", ".join(str(candidate) for candidate in candidates)
-        raise FileNotFoundError(f"漫画图片不存在: {paths}")
-    return candidates[0]
-
-
-def _resolve_comic_image_paths(
-    tier_name: str, comic_image_root: Path | None = None
-) -> tuple[Path, Path]:
-    """解析场景1/2漫画图片路径。指定版本目录时必须图片存在。"""
-    image_root = (
-        DEFAULT_COMIC_IMAGE_ROOT if comic_image_root is None else comic_image_root
-    )
-    require_existing = comic_image_root is not None
-    return (
-        _select_comic_image_path(
-            image_root,
-            "scene1",
-            tier_name,
-            require_existing=require_existing,
-        ),
-        _select_comic_image_path(
-            image_root,
-            "scene2",
-            tier_name,
-            require_existing=require_existing,
-        ),
-    )
-
-
 # ---------------------------------------------------------------------------
 # 核心: HTML 渲染
 # ---------------------------------------------------------------------------
@@ -228,12 +183,13 @@ def _resolve_comic_image_paths(
 
 def render_html(
     payload: dict,
-    comic_image_root: Path | None = None,
     typeset_css: str = "",
     report_variant: str = PARENT_REPORT_VARIANT,
     landscape: bool = False,
 ) -> str:
     """将 JSON payload 渲染为 HTML。
+
+    payload 应已由调用方通过 adapt_payload() 适配。
 
     report_variant:
       - parent: 家长版主报告，不包含两页复杂学习蓝图。
@@ -241,10 +197,9 @@ def render_html(
       - full: 兼容旧版完整报告，包含学习蓝图和主报告。
     """
     report_variant = _validate_report_variant(report_variant)
-    payload = adapt_payload(payload)
     env = Environment(
         loader=FileSystemLoader(str(TEMPLATE_DIR)),
-        autoescape=False,
+        autoescape=True,
     )
     template = env.get_template("report_master.jinja2")
 
@@ -269,14 +224,5 @@ def render_html(
     brand = cover.get("brand", {}) if isinstance(cover, dict) else {}
     if logo_data_uri and isinstance(brand, dict):
         brand["logo_url"] = logo_data_uri
-
-    # page_visibility 兜底
-    if "page_visibility" not in context:
-        context["page_visibility"] = {}
-    pv = context["page_visibility"]
-    pv.setdefault("m5_city_compare", True)
-    pv.setdefault("m10_composition", False)
-    pv.setdefault("m11_reading_deep", False)
-    pv.setdefault("show_teacher_supplement", False)
 
     return template.render(**context)

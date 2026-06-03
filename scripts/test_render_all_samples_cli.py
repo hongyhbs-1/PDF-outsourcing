@@ -8,7 +8,6 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import render_all_samples
-from renderer import _resolve_comic_image_paths
 
 
 class RenderAllSamplesCliTest(unittest.TestCase):
@@ -60,47 +59,6 @@ class RenderAllSamplesCliTest(unittest.TestCase):
     def test_select_samples_rejects_out_of_range_value(self) -> None:
         with self.assertRaises(ValueError):
             render_all_samples.select_samples(["a.json"], 2)
-
-    def test_parse_args_accepts_comic_version_with_sample_count(self) -> None:
-        args = render_all_samples.parse_args(
-            ["2", "--comic-version", "v2026-04-29-filled-content"],
-        )
-
-        self.assertEqual(args.sample_count, 2)
-        self.assertEqual(args.comic_version, "v2026-04-29-filled-content")
-
-    def test_resolve_comic_image_root_returns_none(self) -> None:
-        # Legacy no-op: comic_version flag accepted but ignored
-        result = render_all_samples.resolve_comic_image_root("v2026-04-29-filled-content")
-        self.assertIsNone(result)
-
-    def test_resolve_comic_image_root_returns_none_for_missing_version(self) -> None:
-        # Legacy no-op: even missing versions just return None
-        result = render_all_samples.resolve_comic_image_root("missing-version")
-        self.assertIsNone(result)
-
-    def test_version_comic_images_must_exist_for_both_scenes(self) -> None:
-        with TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            (root / "scene1").mkdir()
-            (root / "scene1" / "中等生-中文.png").write_bytes(b"scene1")
-            (root / "scene2").mkdir()
-
-            with self.assertRaises(FileNotFoundError):
-                _resolve_comic_image_paths("中等生", root)
-
-    def test_version_comic_images_only_check_png_files(self) -> None:
-        with TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            (root / "scene1").mkdir()
-            (root / "scene2").mkdir()
-
-            with self.assertRaises(FileNotFoundError) as error:
-                _resolve_comic_image_paths("中等生", root)
-
-        message = str(error.exception)
-        self.assertIn("中等生-中文.png", message)
-        self.assertNotIn("中等生-中文.jpg", message)
 
 
 if __name__ == "__main__":

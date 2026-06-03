@@ -9,7 +9,6 @@ import sys
 import tempfile
 from pathlib import Path
 
-from adapters import adapt_payload
 from renderer import (
     render_html,
     PARENT_REPORT_VARIANT,
@@ -40,11 +39,12 @@ except ImportError:
 def generate_pdf(
     output_path: str,
     payload: dict,
-    comic_image_root=None,
     report_variant: str = PARENT_REPORT_VARIANT,
     landscape: bool = False,
 ) -> Path:
     """双 Pass 精确排版 → PDF。
+
+    payload 应已由调用方通过 adapt_payload() 适配。
 
     report_variant 与 render_html 一致：家长版默认不包含学习蓝图；招生版只包含学习蓝图两页。
 
@@ -58,7 +58,6 @@ def generate_pdf(
         sys.exit(1)
 
     report_variant = _validate_report_variant(report_variant)
-    payload = adapt_payload(payload)
     landscape = bool(landscape or report_variant == ADMISSIONS_BLUEPRINT_VARIANT)
     _ensure_fontconfig_env()
     pdf_kwargs = _build_pdf_kwargs(payload, landscape=landscape)
@@ -88,7 +87,6 @@ def generate_pdf(
             if _HAS_GOLDEN:
                 html_pass1 = render_html(
                     payload,
-                    comic_image_root=comic_image_root,
                     report_variant=report_variant,
                     landscape=landscape,
                 )
@@ -108,7 +106,6 @@ def generate_pdf(
 
             html_pass2 = render_html(
                 payload,
-                comic_image_root=comic_image_root,
                 typeset_css=typeset_css,
                 report_variant=report_variant,
                 landscape=landscape,
