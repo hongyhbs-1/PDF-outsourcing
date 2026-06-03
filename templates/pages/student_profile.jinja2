@@ -55,6 +55,7 @@
 {% set sp_target_progress_css = (sp_clamped_target_rate | round(0) | int) if sp_clamped_target_rate == (sp_clamped_target_rate | round(0)) else sp_clamped_target_rate %}
 {% set sp_progress_gap = sp_clamped_rate - sp_clamped_target_rate if sp_clamped_rate >= sp_clamped_target_rate else sp_clamped_target_rate - sp_clamped_rate %}
 {% set sp_markers_overlap = sp_progress_gap <= 10 or (target_reached and sp_progress_gap <= 15) %}
+{% set sp_progress_order_class = 'sp-progress--current-before-target' if sp_clamped_rate < sp_clamped_target_rate else 'sp-progress--current-after-target' %}
 {% set sp_progress_edge_class = 'sp-progress-label--edge-start' if sp_clamped_rate <= 8 else ('sp-progress-label--edge-end' if sp_clamped_rate >= 92 else '') %}
 {% set sp_target_edge_class = 'sp-progress-label--edge-start' if sp_clamped_target_rate <= 8 else ('sp-progress-label--edge-end' if sp_clamped_target_rate >= 92 else '') %}
 
@@ -69,6 +70,9 @@
 {% endif %}
 
 {% set weak_count = weak_domains | length %}
+{% set domain_count = domains.domain_items | default([]) | length %}
+{% set all_achieved_breakthrough_text = '你已碾压当前难度题目，建议立即飞升位阶追求高分' %}
+{% set profile_all_achieved = has_real_data and domain_count > 0 and weak_count == 0 %}
 {% if weak_count >= 4 %}
   {% set sp_density = 'dense' %}
 {% elif not has_real_data or weak_count <= 1 %}
@@ -78,7 +82,6 @@
 {% endif %}
 
 {# --- 判断空数据原因 --- #}
-{% set domain_count = domains.domain_items | default([]) | length %}
 {% if not has_real_data and domain_count == 0 %}
   {% set empty_reason = 'no_data' %}
   {% set empty_message = '当前未采集到有效的答题数据，暂时无法生成稳定的学生画像。可能原因：尚未完成测评、答题记录未同步、或数据仍在处理中。' %}
@@ -110,6 +113,17 @@
   {% set focus_summary = lead_focus ~ '、' ~ secondary_focus %}
 {% else %}
   {% set focus_summary = lead_focus %}
+{% endif %}
+{% if profile_all_achieved %}
+  {% set profile_focus_chip = '立即飞升位阶' %}
+  {% set breakthrough_metric_value = '冲高' %}
+  {% set breakthrough_metric_label = '高分挑战' %}
+  {% set breakthrough_metric_hint = '立即升级难度' %}
+{% else %}
+  {% set profile_focus_chip = '先抓 ' ~ lead_focus %}
+  {% set breakthrough_metric_value = weak_count if has_real_data else domain_count %}
+  {% set breakthrough_metric_label = '待突破领域' if has_real_data else '已采集领域' %}
+  {% set breakthrough_metric_hint = '先补最弱项' if has_real_data else '继续补样本' %}
 {% endif %}
 
 {% if not has_real_data %}
@@ -149,7 +163,11 @@
   {% set status_text = tier_label %}
   {% set analysis_level_text = '当前整体已接近或达到目标线，基础盘较稳。' %}
   {% set analysis_state_text = '当前状态较好，重点在于减少偶发失误。' %}
-  {% set analysis_breakthrough_text = '突破口在高难题验证、细节控制和优势巩固。' %}
+  {% if profile_all_achieved %}
+    {% set analysis_breakthrough_text = all_achieved_breakthrough_text %}
+  {% else %}
+    {% set analysis_breakthrough_text = '突破口在高难题验证、细节控制和优势巩固。' %}
+  {% endif %}
 {% endif %}
 
 <div class="sp-page sp-page--{{ sp_density }}">
@@ -169,7 +187,7 @@
         <span class="sp-chip sp-chip--tier sp-chip--{{ tier }}">{{ status_text }}</span>
         <span class="sp-chip sp-chip--soft">{{ acc | int }}% 正确率</span>
         <span class="sp-chip sp-chip--soft">{{ target_chip_text }}</span>
-        <span class="sp-chip sp-chip--soft">先抓 {{ lead_focus }}</span>
+        <span class="sp-chip sp-chip--soft">{{ profile_focus_chip }}</span>
         {% else %}
         <span class="sp-chip sp-chip--soft">{{ status_text }}</span>
         <span class="sp-chip sp-chip--soft">已采集 {{ domain_count }} 个领域</span>
@@ -201,7 +219,7 @@
         {% endif %}
       </div>
 
-      <div class="sp-progress sp-progress--panel{% if sp_markers_overlap %} sp-progress--split-labels{% endif %}">
+      <div class="sp-progress sp-progress--panel sp-progress--dual-axis {{ sp_progress_order_class }}{% if sp_markers_overlap %} sp-progress--split-labels{% endif %}">
         <div class="sp-progress-track">
           <div class="sp-progress-fill"></div>
           <div class="sp-progress-target sp-progress-target--current" title="当前节点"></div>
@@ -240,9 +258,9 @@
       </div>
       <div class="sp-metric-card">
         <div class="sp-metric-card__tag">{{ lb_icon('target', 'frame-metric-icon') }}突破口</div>
-        <div class="sp-metric-card__value">{{ weak_count if has_real_data else domain_count }}</div>
-        <div class="sp-metric-card__label">{{ '待突破领域' if has_real_data else '已采集领域' }}</div>
-        <div class="sp-metric-card__hint">{{ '先补最弱项' if has_real_data else '继续补样本' }}</div>
+        <div class="sp-metric-card__value">{{ breakthrough_metric_value }}</div>
+        <div class="sp-metric-card__label">{{ breakthrough_metric_label }}</div>
+        <div class="sp-metric-card__hint">{{ breakthrough_metric_hint }}</div>
         <p class="sp-metric-card__insight">{{ analysis_breakthrough_text }}</p>
       </div>
     </div>
@@ -261,7 +279,7 @@
         <div class="sp-empty-card sp-empty-card--good">
           <div class="sp-empty-card__title">未识别到明显薄弱领域</div>
           <p class="sp-empty-card__text">当前各领域表现均在目标线附近或以上，暂未检测到突出的薄弱环节，整体较为均衡。</p>
-          <div class="sp-empty-card__action">可继续关注 M4 中的“需关注”项目，作为下一步巩固方向。</div>
+          <div class="sp-empty-card__action">{{ all_achieved_breakthrough_text }}</div>
         </div>
         {% else %}
         <div class="sp-weak-list">

@@ -17,9 +17,27 @@
 {# toc_pages: 由渲染器注入 (Jinja2层), 格式 {"m1": 4, "m4": 6, ...} #}
 {% set _pages = toc_pages | default({}) %}
 {% set _pv_toc = page_visibility | default({}, true) %}
-{% set _comp_toc = composition_deep | default({}, true) %}
-{% set _rd_toc = reading_deep | default({}, true) %}
-{% set _has_english_deep_toc = (_pv_toc.m10_composition | default(false) and _comp_toc.enabled | default(false)) or (_pv_toc.m11_reading_deep | default(false) and _rd_toc.enabled | default(false)) %}
+{% set _show_m10_toc = _show_m10_composition | default(none) %}
+{% set _show_m11_toc = _show_m11_reading_deep | default(none) %}
+{% if _show_m10_toc is none or _show_m11_toc is none %}
+  {% set _comp_toc = composition_deep | default({}, true) %}
+  {% set _m10_toc = m10 | default({}, true) %}
+  {% set _comp_facts_toc = composition_facts | default({}, true) %}
+  {% set _comp_items_toc = _comp_facts_toc.get('items', []) if _comp_facts_toc is mapping else [] %}
+  {% set _rd_toc = reading_deep | default({}, true) %}
+  {% set _m11_toc = m11 | default({}, true) %}
+  {% set _reading_facts_toc = reading_passage_facts | default({}, true) %}
+  {% set _reading_passages_toc = _reading_facts_toc.passages | default([], true) %}
+  {% set _has_m10_toc_data = _m10_toc.visible | default(false) or _comp_toc.score_overview | default({}, true) or _comp_toc.topic_analysis | default('', true) or _comp_toc.data_ready | default(false) or (_comp_items_toc | length > 0) %}
+  {% set _has_m11_toc_data = _m11_toc.visible | default(false) or _rd_toc.status | default('', true) == 'success' or _rd_toc.content | default({}, true) or _rd_toc.result | default({}, true) or (_reading_passages_toc | length > 0) %}
+  {% if _show_m10_toc is none %}
+    {% set _show_m10_toc = _pv_toc.m10_composition | default(false) or _has_m10_toc_data %}
+  {% endif %}
+  {% if _show_m11_toc is none %}
+    {% set _show_m11_toc = _pv_toc.m11_reading_deep | default(false) or _has_m11_toc_data %}
+  {% endif %}
+{% endif %}
+{% set _has_english_deep_toc = _show_m10_toc or _show_m11_toc %}
 
 <div class="mtoc-page{% if _has_english_deep_toc %} mtoc-page--extended{% endif %}">
 
@@ -98,7 +116,7 @@
       <span class="mtoc-item__page" data-toc-key="m8">{{ _pages.get('m8', '') }}</span>
     </li>
 
-    {% if _pv_toc.m10_composition | default(false) and _comp_toc.enabled | default(false) %}
+    {% if _show_m10_toc %}
     <li class="mtoc-item">
       <span class="mtoc-item__number">十</span>
       <span class="mtoc-item__title">作文精讲</span>
@@ -107,7 +125,7 @@
     </li>
     {% endif %}
 
-    {% if _pv_toc.m11_reading_deep | default(false) and _rd_toc.enabled | default(false) %}
+    {% if _show_m11_toc %}
     <li class="mtoc-item">
       <span class="mtoc-item__number">十一</span>
       <span class="mtoc-item__title">阅读精讲</span>

@@ -1747,6 +1747,16 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
     background: var(--pm-bg-card, #fbfdff) !important;
   }
 
+  body.report-theme--english #toc-m5 .m5-city-compare__table-section > .m5-city-compare__table-title,
+  body.report-theme--english #toc-m5 .m5-city-compare__card--overlap-wide > .m5-city-compare__card-title {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding-left: 10px !important;
+    border-left: 3px solid var(--pm-teal, #4d66d9) !important;
+    color: var(--pm-text-primary, #1c2742) !important;
+  }
+
   body.report-theme--english #toc-m7 .m7-report-box > .m7-report-box__inner {
     position: static !important;
   }

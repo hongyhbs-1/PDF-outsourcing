@@ -566,7 +566,7 @@
         <div class="m3-kp-steps">
           {% for step in level_guide %}
             <div class="m3-kp-step m3-kp-step--{{ step.theme | default('l1', true) }}">
-              <div class="m3-kp-step__lvl">{{ level_label(step.level | default('', true)) }}</div>
+              <div class="m3-kp-step__lvl">{{ step.level | default("L?", true) }}</div>
               <div class="m3-kp-step__meta">
                 <div class="m3-kp-step__name">{{ lb_icon('tree' if step.level == 'L1' else ('module' if step.level == 'L2' else ('target' if step.level == 'L3' else 'feature')), 'frame-inline-icon') }} {{ step.name | default("--", true) }}</div>
                 <div class="m3-kp-step__desc">{{ step.desc | default("", true) }}</div>
@@ -581,7 +581,7 @@
         {# 层级数据为空时的兜底显示 #}
         <div class="m3-kp-steps">
           <div class="m3-kp-step m3-kp-step--l1">
-            <div class="m3-kp-step__lvl">领域</div>
+            <div class="m3-kp-step__lvl">L1</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('tree', 'frame-inline-icon') }} 领域</div>
               <div class="m3-kp-step__desc">(6项)</div>
@@ -589,7 +589,7 @@
           </div>
           <div class="m3-kp-step-arrow"></div>
           <div class="m3-kp-step m3-kp-step--l2">
-            <div class="m3-kp-step__lvl">模块</div>
+            <div class="m3-kp-step__lvl">L2</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('module', 'frame-inline-icon') }} 模块</div>
               <div class="m3-kp-step__desc">(粗粒度)</div>
@@ -597,7 +597,7 @@
           </div>
           <div class="m3-kp-step-arrow"></div>
           <div class="m3-kp-step m3-kp-step--l3">
-            <div class="m3-kp-step__lvl">知识点</div>
+            <div class="m3-kp-step__lvl">L3</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('target', 'frame-inline-icon') }} 知识点</div>
               <div class="m3-kp-step__desc">(中粒度)</div>
@@ -606,7 +606,7 @@
           {% if l4_items is defined and l4_items | length > 0 %}
           <div class="m3-kp-step-arrow"></div>
           <div class="m3-kp-step m3-kp-step--l4">
-            <div class="m3-kp-step__lvl">技能点</div>
+            <div class="m3-kp-step__lvl">L4</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('feature', 'frame-inline-icon') }} 技能点</div>
               <div class="m3-kp-step__desc">(细粒度)</div>
@@ -635,7 +635,7 @@
         <div class="m3-kp-path__nodes">
           {% for n in path_example.nodes %}
             <div class="m3-kp-path-node m3-kp-path-node--{{ n.theme | default('l1', true) }}">
-              <div class="m3-kp-path-node__lvl">{{ level_label(n.level | default('', true)) }}</div>
+              <div class="m3-kp-path-node__lvl">({{ n.level | default("L?", true) }})</div>
               <div class="m3-kp-path-node__name">{{ display_domain_or_text(n.name_cn | default("--", true)) }}</div>
               <div class="m3-kp-path-node__delta">
                 {# [v1.1] 支持 gap_to_target 回退 #}

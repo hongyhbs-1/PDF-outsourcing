@@ -566,11 +566,50 @@ def _normalize_brief_report_payload(payload: dict) -> dict:
     return normalized
 
 
+_SAMPLE_STUDENT_SUFFIX_RE = re.compile(
+    r"^(.+?)-(?:ENG|ENGLISH|MATH|MATHEMATICS)-\d{8}_\d{6}$",
+    re.IGNORECASE,
+)
+
+
+def _normalize_student_display_name(value: object) -> str:
+    """Collapse synthetic sample IDs such as WO6-ENG-20260531_192939 to WO6."""
+    text = str(value or "").strip()
+    match = _SAMPLE_STUDENT_SUFFIX_RE.match(text)
+    if match and match.group(1).strip():
+        return match.group(1).strip()
+    return text
+
+
+def _replace_string_values(value: object, old: str, new: str) -> object:
+    if isinstance(value, str):
+        return value.replace(old, new)
+    if isinstance(value, list):
+        return [_replace_string_values(item, old, new) for item in value]
+    if isinstance(value, dict):
+        return {key: _replace_string_values(item, old, new) for key, item in value.items()}
+    return value
+
+
+def _normalize_student_display_fields(payload: dict) -> dict:
+    meta_raw = payload.get("meta")
+    if not isinstance(meta_raw, dict):
+        return payload
+
+    original_name = str(meta_raw.get("student_display_name") or "").strip()
+    display_name = _normalize_student_display_name(original_name)
+    if not original_name or display_name == original_name:
+        return payload
+
+    normalized = _replace_string_values(payload, original_name, display_name)
+    return normalized if isinstance(normalized, dict) else payload
+
+
 def normalize_render_payload(payload: dict) -> dict:
     """Normalize supported sample payload variants before rendering."""
     if _is_brief_report_payload(payload):
-        return _normalize_brief_report_payload(payload)
-    return payload
+        payload = _normalize_brief_report_payload(payload)
+    return _normalize_student_display_fields(payload)
 
 
 def _comic_image_candidates(image_root: Path, scene: str,
@@ -620,6 +659,10 @@ _LANDSCAPE_PRINT_CSS = """
 }
 
 @page english-report {
+  size: A4 landscape;
+}
+
+@page report-cover {
   size: A4 landscape;
 }
 

@@ -299,6 +299,19 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   }
 
+  body.report-theme--english #toc-m11 > .m11-page--single-page-fit {
+    zoom: 0.92 !important;
+  }
+
+  body.report-theme--english #toc-m11 > .m11-page--single-page-fit .m11-content-card {
+    overflow: visible !important;
+  }
+
+  body.report-theme--english #toc-m11 .m11-section--qa-list {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
   .m10-section-title,
   .m11-section-title {
     gap: 4px;

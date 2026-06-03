@@ -1,14 +1,81 @@
 {# ==============================================================================
    m11_reading_deep.jinja2 — M11 阅读精讲 (英语专属)
-   条件: page_visibility.m11_reading_deep == true
+   条件: page_visibility.m11_reading_deep == true，或 payload 中存在阅读精讲数据
    ============================================================================== #}
 
 {% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
 {% set rd = reading_deep | default({}, true) %}
-{% if rd.enabled | default(false) %}
-{% set po = rd.passage_overview | default({}, true) %}
+{% set m11_data = m11 | default({}, true) %}
+{% set rd_content = rd.content | default(rd.result | default({}, true), true) %}
+{% set reading_facts = reading_passage_facts | default({}, true) %}
+{% set reading_passages = reading_facts.passages | default([], true) %}
+{% set passage_overview = rd.passage_overview | default({}, true) %}
+{% set m11_overview = m11_data.overview | default({}, true) %}
+{% set content_overview = rd_content.score_overview | default({}, true) %}
+{% set passage = m11_data.passage | default({}, true) %}
+{% set question_analyses = rd.question_analyses | default([], true) %}
+{% if question_analyses | length == 0 and m11_data.questions | default([], true) | length > 0 %}
+  {% set question_analyses = m11_data.questions | default([], true) %}
+{% endif %}
+{% if question_analyses | length == 0 and rd_content.question_analysis | default([], true) | length > 0 %}
+  {% set question_analyses = rd_content.question_analysis | default([], true) %}
+{% endif %}
 {% set strategies = rd.reading_strategies | default([], true) %}
-<div class="m11-page">
+{% set strategy_text = m11_data.reading_strategy | default(rd_content.reading_strategy | default('', true), true) %}
+{% if strategies | length == 0 and strategy_text %}
+  {% set strategies = [strategy_text] %}
+{% endif %}
+{% set practice_plan = m11_data.practice_plan | default(rd_content.practice_plan | default([], true), true) %}
+{% set three_day_plan = rd.three_day_plan | default('', true) %}
+{% if not three_day_plan and practice_plan %}
+  {% if practice_plan is string %}
+    {% set three_day_plan = practice_plan %}
+  {% else %}
+    {% set three_day_plan = practice_plan | join('；') %}
+  {% endif %}
+{% endif %}
+{% set genre = passage_overview.genre | default(passage.type | default(rd_content.passage_type | default('--', true), true), true) %}
+{% set passage_title = passage_overview.title | default(passage.topic | default(rd_content.passage_topic | default('', true), true), true) %}
+{% set question_count = passage_overview.question_count | default(m11_overview.total | default(content_overview.total | default('--', true), true), true) %}
+{% set correct_count = passage_overview.correct_count | default(m11_overview.correct | default(content_overview.correct | default('--', true), true), true) %}
+{% set wrong_count = passage_overview.wrong_count | default('', true) %}
+{% if not wrong_count and m11_overview.total is defined and m11_overview.correct is defined %}
+  {% set wrong_count = (m11_overview.total | int) - (m11_overview.correct | int) %}
+{% endif %}
+{% if not wrong_count and content_overview.total is defined and content_overview.correct is defined %}
+  {% set wrong_count = (content_overview.total | int) - (content_overview.correct | int) %}
+{% endif %}
+{% if not wrong_count %}
+  {% set wrong_count = '--' %}
+{% endif %}
+{% set accuracy_text = passage_overview.accuracy | default(m11_overview.accuracy | default(content_overview.accuracy | default('', true), true), true) %}
+{% set selection_reason = rd.selection_reason | default(m11_data.selection_reason_text | default(m11_data.selection_reason | default('', true), true), true) %}
+{% set overall_diagnosis = rd.overall_diagnosis | default(m11_overview.one_line | default(content_overview.one_line | default('', true), true), true) %}
+{% set diagnosis = m11_data.diagnosis | default(rd_content.diagnosis | default({}, true), true) %}
+{% set encouragement = rd.encouragement | default(m11_data.encouragement | default(rd_content.encouragement | default('', true), true), true) %}
+{% set core_passage_title = passage_title %}
+{% if core_passage_title | length > 24 %}
+  {% set core_passage_title = core_passage_title[:24] ~ '…' %}
+{% endif %}
+{% set core_strategy_summary = namespace(items=[]) %}
+{% for strategy in strategies %}
+  {% if strategy is mapping %}
+    {% set strategy_label = strategy.name | default(strategy.title | default(strategy.description | default('', true), true), true) %}
+  {% else %}
+    {% set strategy_label = strategy %}
+  {% endif %}
+  {% if strategy_label %}
+    {% if strategy_label | length > 24 %}
+      {% set strategy_label = strategy_label[:24] ~ '…' %}
+    {% endif %}
+    {% set core_strategy_summary.items = core_strategy_summary.items + [strategy_label] %}
+  {% endif %}
+{% endfor %}
+{% set has_reading_deep_data = rd.status | default('', true) == 'success' or rd.content | default({}, true) or rd.result | default({}, true) %}
+{% set has_reading_data = has_reading_deep_data or m11_data.visible | default(false) or (question_analyses | length > 0) or (reading_passages | length > 0) %}
+{% set single_page_fit_class = ' m11-page--single-page-fit' if question_analyses | length <= 5 else '' %}
+{% if has_reading_data %}
+<div class="m11-page{{ single_page_fit_class }}">
   <section class="m11-title-section">
     <h1 class="m11-title">{{ lb_icon('paper', 'frame-title-icon') }}十一、阅读精讲</h1>
     <div class="m11-title__underline"></div>
@@ -17,7 +84,7 @@
   <section class="m11-core-conclusion">
     <div class="m11-core-conclusion__label">{{ lb_icon('paper', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m11-core-conclusion__text">
-      本篇阅读为「{{ po.genre | default('--', true) }}」，共 {{ po.question_count | default('--', true) }} 题，正确 {{ po.correct_count | default('--', true) }} 题、错误 {{ po.wrong_count | default('--', true) }} 题；{% if po.title | default('', true) %}本页聚焦 {{ po.title }}，{% endif %}{% if strategies | length > 0 %}重点训练{% for strategy in strategies %}{% if strategy is mapping %}{{ strategy.name | default(strategy.title | default('', true), true) }}{% else %}{{ strategy }}{% endif %}{% if not loop.last %}、{% endif %}{% endfor %}，{% endif %}按 3 天计划完成错题复盘与限时阅读。
+      本篇阅读为「{{ genre }}」，共 {{ question_count }} 题，正确 {{ correct_count }} 题、错误 {{ wrong_count }} 题{% if accuracy_text %}（{{ accuracy_text }}）{% endif %}；{% if core_passage_title %}本页聚焦 {{ core_passage_title }}，{% endif %}{% if core_strategy_summary.items | length > 0 %}重点训练{{ core_strategy_summary.items | join('、') }}，{% endif %}按练习计划完成错题复盘与限时阅读。
     </div>
   </section>
 
@@ -27,39 +94,54 @@
   <div class="m11-overview-card">
     <div class="m11-section-title">{{ lb_icon('data', 'frame-section-icon') }}本篇阅读概览</div>
     <div class="m11-overview-row">
-      <div>文章类型：<strong>{{ po.genre | default('--', true) }}</strong></div>
-      <div>题数：<strong>{{ po.question_count | default('--', true) }}</strong></div>
-      <div>正确：<strong class="m11-correct">{{ po.correct_count | default('--', true) }}</strong></div>
-      <div>错误：<strong class="m11-wrong">{{ po.wrong_count | default('--', true) }}</strong></div>
+      <div>文章类型：<strong>{{ genre }}</strong></div>
+      <div>题数：<strong>{{ question_count }}</strong></div>
+      <div>正确：<strong class="m11-correct">{{ correct_count }}</strong></div>
+      <div>错误：<strong class="m11-wrong">{{ wrong_count }}</strong></div>
     </div>
-    {% if po.title | default('', true) %}
-    <div class="m11-passage-title">{{ po.title }}</div>
+    {% if passage_title %}
+    <div class="m11-passage-title">{{ passage_title }}</div>
     {% endif %}
   </div>
 
   {# 2. 为什么选这篇 #}
-  {% if rd.selection_reason | default('', true) %}
+  {% if selection_reason | default('', true) %}
   <div class="m11-section">
     <div class="m11-section-title">{{ lb_icon('target', 'frame-section-icon') }}为什么选这篇</div>
-    <p class="m11-analysis-text">{{ rd.selection_reason }}</p>
+    <p class="m11-analysis-text">{{ selection_reason }}</p>
   </div>
   {% endif %}
 
   {# 3. 整体问题诊断 #}
-  {% if rd.overall_diagnosis | default('', true) %}
+  {% if overall_diagnosis | default('', true) or diagnosis.problems | default([], true) | length > 0 or diagnosis.highlights | default([], true) | length > 0 %}
   <div class="m11-diagnosis-card">
     <div class="m11-section-title">{{ lb_icon('warning', 'frame-section-icon frame-section-icon--warning') }}整体问题诊断</div>
-    <p class="m11-analysis-text">{{ rd.overall_diagnosis }}</p>
+    {% if overall_diagnosis | default('', true) %}
+    <p class="m11-analysis-text">{{ overall_diagnosis }}</p>
+    {% endif %}
+    {% if diagnosis.problems | default([], true) | length > 0 %}
+      {% for item in diagnosis.problems %}
+      <p class="m11-analysis-text"><strong>问题{{ loop.index }}：</strong>{% if item is mapping %}{{ item.pattern | default(item.text | default('', true), true) }}{% if item.which_questions | default('', true) %}（涉及题目：{{ item.which_questions }}）{% endif %}{% if item.why_important | default('', true) %} — {{ item.why_important }}{% endif %}{% else %}{{ item }}{% endif %}</p>
+      {% endfor %}
+    {% endif %}
+    {% if diagnosis.highlights | default([], true) | length > 0 %}
+      {% for item in diagnosis.highlights %}
+      <p class="m11-analysis-text"><strong>亮点{{ loop.index }}：</strong>{% if item is mapping %}{{ item.point | default(item.text | default('', true), true) }}{% if item.evidence | default('', true) %}（证据：{{ item.evidence }}）{% endif %}{% else %}{{ item }}{% endif %}</p>
+      {% endfor %}
+    {% endif %}
   </div>
   {% endif %}
 
   {# 4. 逐题讲解 #}
-  {% if rd.question_analyses | default([], true) | length > 0 %}
-  <div class="m11-section">
+  {% if question_analyses | default([], true) | length > 0 %}
+  <div class="m11-section m11-section--qa-list">
     <div class="m11-section-title">{{ lb_icon('question', 'frame-section-icon') }}逐题讲解</div>
-    {% for qa in rd.question_analyses %}
+    {% for qa in question_analyses %}
     {% set is_wrong = qa.is_correct | default(true) == false %}
     {% set qa_no = qa.question_no | default(qa.canonical_no | default(loop.index, true), true) %}
+    {% set qa_evidence = qa.evidence | default('', true) %}
+    {% set qa_method = qa.method | default(qa.correct_thinking | default(qa.tip | default('', true), true), true) %}
+    {% set qa_error = qa.error_type | default(qa.mistake | default('', true), true) %}
     <div class="m11-qa-card {{ 'm11-qa-card--wrong' if is_wrong else 'm11-qa-card--correct' }}">
       <div class="m11-qa-card__title">
         第{{ qa_no }}题
@@ -72,17 +154,20 @@
       {% if qa.question_text | default('', true) %}
       <p class="m11-qa-card__question">{{ qa.question_text }}</p>
       {% endif %}
+      {% if qa.student_answer | default('', true) or qa.correct_answer | default('', true) %}
+      <p class="m11-qa-card__analysis">学生答案：{{ qa.student_answer | default('--', true) }}；正确答案：{{ qa.correct_answer | default('--', true) }}</p>
+      {% endif %}
       {% if qa.analysis | default('', true) %}
       <p class="m11-qa-card__analysis">{{ qa.analysis }}</p>
       {% endif %}
-      {% if qa.evidence | default('', true) %}
-      <p class="m11-qa-card__evidence">证据：{{ qa.evidence }}</p>
+      {% if qa_evidence %}
+      <p class="m11-qa-card__evidence">证据：{% if qa_evidence is string %}{{ qa_evidence }}{% else %}{{ qa_evidence | join('；') }}{% endif %}</p>
       {% endif %}
-      {% if qa.method | default('', true) %}
-      <p class="m11-qa-card__method">方法：{{ qa.method }}</p>
+      {% if qa_method %}
+      <p class="m11-qa-card__method">方法：{{ qa_method }}</p>
       {% endif %}
-      {% if qa.error_type | default('', true) %}
-      <div class="m11-qa-card__error-type">错因：{{ qa.error_type }}</div>
+      {% if qa_error %}
+      <div class="m11-qa-card__error-type">错因：{{ qa_error }}</div>
       {% endif %}
     </div>
     {% endfor %}
@@ -105,20 +190,20 @@
   </div>
   {% endif %}
 
-  {# 6. 3天练习建议 #}
-  {% if rd.three_day_plan | default('', true) %}
+  {# 6. 练习建议 #}
+  {% if three_day_plan | default('', true) %}
   <div class="m11-section">
     <div class="m11-suggestion-card">
-      <div class="m11-section-title">{{ lb_icon('support', 'frame-section-icon') }}3天练习建议</div>
-      <p class="m11-suggestion-text">{{ rd.three_day_plan }}</p>
+      <div class="m11-section-title">{{ lb_icon('support', 'frame-section-icon') }}练习建议</div>
+      <p class="m11-suggestion-text">{{ three_day_plan }}</p>
     </div>
   </div>
   {% endif %}
 
   {# 7. 鼓励语 #}
-  {% if rd.encouragement | default('', true) %}
+  {% if encouragement | default('', true) %}
   <div class="m11-section">
-    <div class="m11-encouragement">{{ rd.encouragement }}</div>
+    <div class="m11-encouragement">{{ encouragement }}</div>
   </div>
   {% endif %}
   </div>

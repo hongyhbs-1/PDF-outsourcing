@@ -291,6 +291,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 {% set stage_progress_gap = clamped_rate - clamped_target_rate if clamped_rate >= clamped_target_rate else clamped_target_rate - clamped_rate %}
 {% set stage_gap_display = (stage_progress_gap | round(0) | int) if stage_progress_gap == (stage_progress_gap | round(0)) else (stage_progress_gap | round(1)) %}
 {% set stage_markers_overlap = stage_progress_gap <= 10 or (has_data and clamped_rate >= clamped_target_rate and stage_progress_gap <= 15) %}
+{% set stage_progress_order_class = 'sp-progress--current-before-target' if clamped_rate < clamped_target_rate else 'sp-progress--current-after-target' %}
 {% set stage_progress_edge_class = 'sp-progress-label--edge-start' if clamped_rate <= 8 else ('sp-progress-label--edge-end' if clamped_rate >= 92 else '') %}
 {% set stage_target_edge_class = 'sp-progress-label--edge-start' if clamped_target_rate <= 8 else ('sp-progress-label--edge-end' if clamped_target_rate >= 92 else '') %}
 {% set above_target = has_data and clamped_rate >= clamped_target_rate %}
@@ -411,7 +412,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
         {% endif %}
       </div>
 
-      <div class="sp-progress sp-progress--panel{% if stage_markers_overlap %} sp-progress--split-labels{% endif %}">
+      <div class="sp-progress sp-progress--panel sp-progress--dual-axis {{ stage_progress_order_class }}{% if stage_markers_overlap %} sp-progress--split-labels{% endif %}">
         <div class="sp-progress-track">
           <div class="sp-progress-fill"></div>
           <div class="sp-progress-target sp-progress-target--current" title="当前节点"></div>
@@ -419,8 +420,8 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
         </div>
         <div class="sp-progress-labels{% if stage_markers_overlap %} sp-progress-labels--stacked{% endif %}">
           <span class="sp-progress-label sp-progress-label--start">0%</span>
-          <span class="sp-progress-label sp-progress-label--current{% if stage_progress_edge_class %} {{ stage_progress_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-top{% endif %}">{% if has_data %}达标率 {{ clamped_rate | round(0) | int }}%{% else %}当前 暂无数据{% endif %}</span>
-          <span class="sp-progress-label sp-progress-label--target{% if stage_target_edge_class %} {{ stage_target_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-bottom{% endif %}">目标 {{ clamped_target_rate | round(0) | int }}%</span>
+          <span class="sp-progress-label sp-progress-label--current{% if stage_progress_edge_class %} {{ stage_progress_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-top{% endif %}"><span class="sp-progress-label__name">达标率</span><span class="sp-progress-label__value">{% if has_data %}{{ clamped_rate | round(0) | int }}%{% else %}暂无数据{% endif %}</span></span>
+          <span class="sp-progress-label sp-progress-label--target{% if stage_target_edge_class %} {{ stage_target_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-bottom{% endif %}"><span class="sp-progress-label__name">目标</span><span class="sp-progress-label__value">{{ clamped_target_rate | round(0) | int }}%</span></span>
           <span class="sp-progress-label sp-progress-label--end">100%</span>
         </div>
       </div>

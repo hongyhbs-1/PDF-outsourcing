@@ -1,25 +1,104 @@
 {# ==============================================================================
    m10_composition.jinja2 — M10 作文精讲 (英语专属)
-   条件: page_visibility.m10_composition == true
+   条件: page_visibility.m10_composition == true，或 payload 中存在作文数据
    ============================================================================== #}
 
 {% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
 {% set comp = composition_deep | default({}, true) %}
-{% if comp.enabled | default(false) %}
+{% set m10_data = m10 | default({}, true) %}
+{% set comp_facts = composition_facts | default({}, true) %}
+{% set comp_items = comp_facts.get('items', []) if comp_facts is mapping else [] %}
+{% set comp_selection = composition_deep_selection | default({}, true) %}
+{% set selected_ns = namespace(item=comp_selection.selected_essay | default({}, true)) %}
+{% if not selected_ns.item and comp_items | length > 0 %}
+  {% for item in comp_items %}
+    {% if not selected_ns.item and item.has_student_answer | default(false) %}
+      {% set selected_ns.item = item %}
+    {% endif %}
+  {% endfor %}
+  {% if not selected_ns.item %}
+    {% set selected_ns.item = comp_items[0] %}
+  {% endif %}
+{% endif %}
+{% set selected_essay = selected_ns.item | default({}, true) %}
+{% set a_round = selected_essay.a_round | default({}, true) %}
+{% set a_summary = a_round.summary | default({}, true) %}
+{% set m10_score = m10_data.score | default({}, true) %}
+{% set m10_score_content = m10_score.content | default({}, true) %}
+{% set m10_score_language = m10_score.language | default({}, true) %}
+{% set m10_score_organization = m10_score.organization | default({}, true) %}
 {% set so = comp.score_overview | default({}, true) %}
+{% set has_m10_score_data = m10_data.visible | default(false) or m10_score.one_line | default('', true) or m10_score.breakdown | default('', true) %}
+{% set score_fallback = m10_score if has_m10_score_data else {} %}
+{% set score_content_fallback = m10_score_content if has_m10_score_data else {} %}
+{% set score_language_fallback = m10_score_language if has_m10_score_data else {} %}
+{% set score_organization_fallback = m10_score_organization if has_m10_score_data else {} %}
+{% set total_score = so.total_score | default(score_fallback.total | default('--', true), true) %}
+{% set full_score = so.full_score | default('20', true) %}
+{% set content_score = so.content_score | default(score_content_fallback.score | default('--', true), true) %}
+{% set content_full = so.content_full | default(score_content_fallback.max | default('8', true), true) %}
+{% set language_score = so.language_score | default(score_language_fallback.score | default('--', true), true) %}
+{% set language_full = so.language_full | default(score_language_fallback.max | default('8', true), true) %}
+{% set organization_score = so.organization_score | default(score_organization_fallback.score | default('--', true), true) %}
+{% set organization_full = so.organization_full | default(score_organization_fallback.max | default('4', true), true) %}
 {% set priority_fixes = comp.priority_fixes | default([], true) %}
+{% if priority_fixes | length == 0 and m10_score.fix_first | default([], true) | length > 0 %}
+  {% set priority_fixes = m10_score.fix_first | default([], true) %}
+{% endif %}
+{% if priority_fixes | length == 0 and a_summary.suggestions | default([], true) | length > 0 %}
+  {% set priority_fixes = a_summary.suggestions[:2] %}
+{% endif %}
 {% set fix_summary = namespace(values=[]) %}
 {% for fix in priority_fixes %}
   {% if fix is mapping %}
-    {% set _fix_text = fix.description | default(fix.text | default(fix.content | default('', true), true), true) %}
+    {% set fix_text = fix.description | default(fix.text | default(fix.content | default(fix.area | default('', true), true), true), true) %}
   {% else %}
-    {% set _fix_text = fix %}
+    {% set fix_text = fix %}
   {% endif %}
-  {% if _fix_text %}
-    {% set fix_summary.values = fix_summary.values + [_fix_text] %}
+  {% if fix_text %}
+    {% set fix_summary.values = fix_summary.values + [fix_text] %}
   {% endif %}
 {% endfor %}
+{% set strengths = a_summary.strengths | default(comp_facts.stable_strengths | default([], true), true) %}
+{% set weaknesses = a_summary.weaknesses | default(comp_facts.recurring_weaknesses | default([], true), true) %}
+{% set suggestions = a_summary.suggestions | default(comp_facts.priority_improvements | default([], true), true) %}
+{% set m10_topic = m10_data.topic | default({}, true) %}
+{% set m10_content = m10_data.content | default({}, true) %}
+{% set m10_language = m10_data.language | default({}, true) %}
+{% set m10_organization = m10_data.organization | default({}, true) %}
+{% set m10_reference = m10_data.reference | default({}, true) %}
+{% set topic_analysis = comp.topic_analysis | default(m10_topic.analysis | default('', true), true) %}
+{% set content_analysis = comp.content_analysis | default(m10_content.analysis | default('', true), true) %}
+{% if not content_analysis and strengths | length > 0 %}
+  {% set content_analysis = strengths | join('；') %}
+{% endif %}
+{% set language_analysis = comp.language_analysis | default(m10_language.analysis | default('', true), true) %}
+{% if not language_analysis and weaknesses | length > 0 %}
+  {% set language_analysis = weaknesses | join('；') %}
+{% endif %}
+{% set organization_analysis = comp.organization_analysis | default(m10_organization.analysis | default('', true), true) %}
+{% if not organization_analysis and a_round.encouragement | default('', true) %}
+  {% set organization_analysis = a_round.encouragement %}
+{% endif %}
 {% set weekly_focus = comp.weekly_focus | default('范文精读、过渡词积累和限时作文', true) %}
+{% set m10_prescription = m10_data.prescription | default([], true) %}
+{% set weekly_suggestion = comp.weekly_suggestion | default('', true) %}
+{% if not weekly_suggestion and m10_prescription | length > 0 %}
+  {% set weekly_suggestion = m10_prescription[0].text | default(m10_prescription[0], true) %}
+{% endif %}
+{% if not weekly_suggestion and suggestions | length > 0 %}
+  {% set weekly_suggestion = suggestions | join('；') %}
+{% endif %}
+{% set reference_essay = comp.reference_essay | default(m10_reference.text | default('', true), true) %}
+{% if not reference_essay and a_round.corrected_version | default('', true) %}
+  {% set reference_essay = a_round.corrected_version %}
+{% endif %}
+{% set highlights_and_issues = comp.highlights_and_issues | default([], true) %}
+{% set has_comp_analysis_data = comp.score_overview | default({}, true) or comp.topic_analysis | default('', true) or comp.data_ready | default(false) %}
+{% set has_selected_essay_data = selected_essay.question_text | default('', true) or selected_essay.student_answer | default('', true) or a_round.encouragement | default('', true) %}
+{% set has_composition_data = has_comp_analysis_data or m10_data.visible | default(false) or has_selected_essay_data or (comp_items | length > 0) %}
+{% if has_composition_data %}
+{% set has_score = total_score not in ['--', '', none] %}
 <div class="m10-page">
   <section class="m10-title-section">
     <h1 class="m10-title">{{ lb_icon('paper', 'frame-title-icon') }}十、作文精讲</h1>
@@ -29,7 +108,7 @@
   <section class="m10-core-conclusion">
     <div class="m10-core-conclusion__label">{{ lb_icon('target', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m10-core-conclusion__text">
-      本次作文得分 {{ so.total_score | default('--', true) }}/{{ so.full_score | default('20', true) }}，内容 {{ so.content_score | default('--', true) }}/{{ so.content_full | default('8', true) }}、语言 {{ so.language_score | default('--', true) }}/{{ so.language_full | default('8', true) }}、组织 {{ so.organization_score | default('--', true) }}/{{ so.organization_full | default('4', true) }}；{% if fix_summary.values | length > 0 %}优先修正{{ fix_summary.values | join('、') }}，{% endif %}本周围绕{{ weekly_focus }}完成闭环训练。
+      {% if has_score %}本次作文得分 {{ total_score }}/{{ full_score }}，内容 {{ content_score }}/{{ content_full }}、语言 {{ language_score }}/{{ language_full }}、组织 {{ organization_score }}/{{ organization_full }}；{% else %}本次已采集作文{% if selected_essay.canonical_no | default('', true) %}（第{{ selected_essay.canonical_no }}题）{% endif %}，当前先依据题目、作答与教师点评给出专项诊断；{% endif %}{% if fix_summary.values | length > 0 %}优先修正{{ fix_summary.values | join('、') }}，{% endif %}本周围绕{{ weekly_focus }}完成闭环训练。
     </div>
   </section>
 
@@ -40,13 +119,13 @@
     <div class="m10-section-title">{{ lb_icon('gauge', 'frame-section-icon') }}成绩概览</div>
     <div class="m10-score-row">
       <div>
-        <span class="m10-score-total">{{ so.total_score | default('--', true) }}</span>
-        <span class="m10-score-full">/{{ so.full_score | default('20', true) }}</span>
+        <span class="m10-score-total">{{ total_score }}</span>
+        <span class="m10-score-full">/{{ full_score }}</span>
         <span class="m10-score-label">总分</span>
       </div>
-      <div class="m10-score-dim">内容 <strong>{{ so.content_score | default('--', true) }}</strong>/{{ so.content_full | default('8', true) }}</div>
-      <div class="m10-score-dim">语言 <strong>{{ so.language_score | default('--', true) }}</strong>/{{ so.language_full | default('8', true) }}</div>
-      <div class="m10-score-dim">组织 <strong>{{ so.organization_score | default('--', true) }}</strong>/{{ so.organization_full | default('4', true) }}</div>
+      <div class="m10-score-dim">内容 <strong>{{ content_score }}</strong>/{{ content_full }}</div>
+      <div class="m10-score-dim">语言 <strong>{{ language_score }}</strong>/{{ language_full }}</div>
+      <div class="m10-score-dim">组织 <strong>{{ organization_score }}</strong>/{{ organization_full }}</div>
     </div>
   </div>
 
@@ -68,58 +147,76 @@
   </div>
   {% endif %}
 
-  {# 3. 题目分析 #}
-  {% if comp.topic_analysis | default('', true) %}
+  {# 3. 作文题目 / 题目分析 #}
+  {% if selected_essay.question_text | default('', true) %}
+  <div class="m10-section">
+    <div class="m10-section-title">{{ lb_icon('paper', 'frame-section-icon') }}作文题目</div>
+    <p class="m10-analysis">{{ selected_essay.question_text }}</p>
+  </div>
+  {% endif %}
+
+  {% if selected_essay.student_answer | default('', true) %}
+  <div class="m10-section">
+    <div class="m10-section-title">{{ lb_icon('paper', 'frame-section-icon') }}学生作答</div>
+    <div class="m10-reference">{{ selected_essay.student_answer }}</div>
+  </div>
+  {% elif selected_essay.question_text | default('', true) %}
+  <div class="m10-section">
+    <div class="m10-tip-card m10-tip-card--warning"><strong>作答状态：</strong>本题未采集到学生作答，建议补做后再结合本页训练建议复盘。</div>
+  </div>
+  {% endif %}
+
+  {% if topic_analysis | default('', true) %}
   <div class="m10-section">
     <div class="m10-section-title">{{ lb_icon('paper', 'frame-section-icon') }}题目分析</div>
-    <p class="m10-analysis">{{ comp.topic_analysis }}</p>
+    <p class="m10-analysis">{{ topic_analysis }}</p>
   </div>
   {% endif %}
 
   {# 4. 内容分析 #}
-  {% if comp.content_analysis | default('', true) %}
+  {% if content_analysis | default('', true) %}
   <div class="m10-section">
-    <div class="m10-section-title">{{ lb_icon('data', 'frame-section-icon') }}内容分析 ({{ so.content_score | default('?', true) }}/{{ so.content_full | default('8', true) }})</div>
-    <p class="m10-analysis">{{ comp.content_analysis }}</p>
+    <div class="m10-section-title">{{ lb_icon('data', 'frame-section-icon') }}内容分析 ({{ content_score }}/{{ content_full }})</div>
+    <p class="m10-analysis">{{ content_analysis }}</p>
   </div>
   {% endif %}
 
   {# 5. 语言问题分析 #}
-  {% if comp.language_analysis | default('', true) %}
+  {% if language_analysis | default('', true) %}
   <div class="m10-section">
-    <div class="m10-section-title">{{ lb_icon('warning', 'frame-section-icon frame-section-icon--warning') }}语言问题分析 ({{ so.language_score | default('?', true) }}/{{ so.language_full | default('8', true) }})</div>
-    <p class="m10-analysis">{{ comp.language_analysis }}</p>
+    <div class="m10-section-title">{{ lb_icon('warning', 'frame-section-icon frame-section-icon--warning') }}语言问题分析 ({{ language_score }}/{{ language_full }})</div>
+    <p class="m10-analysis">{{ language_analysis }}</p>
   </div>
   {% endif %}
 
   {# 6. 结构与行文分析 #}
-  {% if comp.organization_analysis | default('', true) %}
+  {% if organization_analysis | default('', true) %}
   <div class="m10-section">
-    <div class="m10-section-title">{{ lb_icon('module', 'frame-section-icon') }}结构与行文分析 ({{ so.organization_score | default('?', true) }}/{{ so.organization_full | default('4', true) }})</div>
-    <p class="m10-analysis">{{ comp.organization_analysis }}</p>
+    <div class="m10-section-title">{{ lb_icon('module', 'frame-section-icon') }}结构与行文分析 ({{ organization_score }}/{{ organization_full }})</div>
+    <p class="m10-analysis">{{ organization_analysis }}</p>
   </div>
   {% endif %}
 
   {# 7. 本周提升建议 #}
-  {% if comp.weekly_suggestion | default('', true) %}
+  {% if weekly_suggestion | default('', true) %}
   <div class="m10-section">
     <div class="m10-tip-card m10-tip-card--success">
       <div class="m10-section-title">{{ lb_icon('support', 'frame-section-icon') }}本周提升建议</div>
-      <p class="m10-analysis">{{ comp.weekly_suggestion }}</p>
+      <p class="m10-analysis">{{ weekly_suggestion }}</p>
     </div>
   </div>
   {% endif %}
 
-  {# 8. 范文参考 #}
-  {% if comp.reference_essay | default('', true) %}
+  {# 8. 范文参考 / 修正版本 #}
+  {% if reference_essay | default('', true) %}
   <div class="m10-section">
     <div class="m10-section-title">{{ lb_icon('paper', 'frame-section-icon') }}范文参考</div>
-    <div class="m10-reference">{{ comp.reference_essay }}</div>
+    <div class="m10-reference">{{ reference_essay }}</div>
   </div>
   {% endif %}
 
   {# 9. 问题与亮点一览 #}
-  {% if comp.highlights_and_issues | default([], true) | length > 0 %}
+  {% if highlights_and_issues | length > 0 or strengths | length > 0 or weaknesses | length > 0 %}
   <div class="m10-section m10-section--table">
     <div class="m10-section-title">{{ lb_icon('data', 'frame-section-icon') }}问题与亮点一览</div>
     <table class="m10-table">
@@ -131,7 +228,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for item in comp.highlights_and_issues %}
+        {% for item in highlights_and_issues %}
         <tr>
           <td>{{ loop.index }}</td>
           <td>
@@ -142,6 +239,22 @@
             {% endif %}
           </td>
           <td>{{ item.content | default(item.text | default('', true), true) }}</td>
+        </tr>
+        {% endfor %}
+        {% set row_base = highlights_and_issues | length %}
+        {% for item in strengths %}
+        <tr>
+          <td>{{ row_base + loop.index }}</td>
+          <td><span class="m10-tag--highlight">亮点</span></td>
+          <td>{{ item }}</td>
+        </tr>
+        {% endfor %}
+        {% set row_base_weak = row_base + (strengths | length) %}
+        {% for item in weaknesses %}
+        <tr>
+          <td>{{ row_base_weak + loop.index }}</td>
+          <td><span class="m10-tag--issue">问题</span></td>
+          <td>{{ item }}</td>
         </tr>
         {% endfor %}
       </tbody>

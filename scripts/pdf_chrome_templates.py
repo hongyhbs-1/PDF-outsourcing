@@ -38,15 +38,9 @@ DEFAULT_CHROME_THEME = PdfChromeTheme(
     line=LINE,
 )
 
-ENGLISH_CHROME_THEME = PdfChromeTheme(
-    background="#eaf1ff",
-    text_muted="#52627f",
-    text_strong="#1d3363",
-    accent="#4d66d9",
-    accent_soft="#dfe7ff",
-    accent_bar="#ffc978",
-    line="#dbe1f3",
-)
+# Keep the PDF chrome subject-neutral so cover/header/footer framing matches the
+# math parent report; English-specific palette is applied inside body pages only.
+ENGLISH_CHROME_THEME = DEFAULT_CHROME_THEME
 
 MARGIN_TOP = "12mm"
 MARGIN_BOTTOM = "10mm"
