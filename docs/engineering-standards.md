@@ -69,7 +69,7 @@ Stage 2: sorted(其余 *.css)（模块样式，字母序）
 Stage 3: shared_*.css（共享覆盖，最高优先级，最后加载）
 ```
 
-**关键约束**：Stage 2 必须保持 `sorted()` 字母序，不能改为按前缀分组。因为 `comic_*`/`improvement_*` 在字母序中排在 `m*` 之前，改变顺序会影响 CSS cascade 优先级。
+**关键约束**：Stage 2 必须保持 `sorted()` 字母序，不能改为按前缀分组。因为 `improvement_*` 等前缀在字母序中排在 `m*` 之前，改变顺序会影响 CSS cascade 优先级。
 
 `html_renderer.py` 只加载 `base.css` + `m*.css`，不加载 shared 覆盖。这是既定行为。
 
