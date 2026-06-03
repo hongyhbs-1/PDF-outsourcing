@@ -14,55 +14,55 @@
  * ----------------------------------------------------------------------------- */
 .m3-kp-drill {
   /* === 1.1 页面/容器色 === */
-  --color-page-bg: var(--pm-bg-page, #f8f5ef);           /* 页面整体底色 — 与全局统一 */
-  --color-surface: var(--pm-bg-card, #ffffff);           /* 白色内容底 */
-  --color-panel-bg: var(--pm-bg-muted, #f3f0ea);          /* 浅灰面板底（表格/容器内浅底） */
+  --color-page-bg: var(--pm-bg-page, var(--cc-page-bg));           /* 页面整体底色 — 与全局统一 */
+  --color-surface: var(--pm-bg-card, var(--cc-card-bg));           /* 白色内容底 */
+  --color-panel-bg: var(--pm-bg-muted, var(--cc-bg-muted));          /* 浅灰面板底（表格/容器内浅底） */
   --color-table-body-bg: var(--pm-bg-card-alt, #faf8f4);     /* 表格内容行底（轻微暖灰） */
   --color-note-bg: var(--pm-bg-section, #f0ede6);           /* 底部说明条背景 */
 
   /* === 1.2 分割/边框色 === */
-  --color-border: var(--pm-border-card, #d8e2e8);            /* 外框/主边框（浅蓝灰） */
-  --color-divider: var(--pm-border-light, #e4e8ec);           /* 表格行分割线 */
-  --color-top-divider: var(--pm-teal-soft, #d0e8e8);       /* 页眉下方细分割线（浅青） */
+  --color-border: var(--pm-border-card, var(--cc-card-border));            /* 外框/主边框（浅蓝灰） */
+  --color-divider: var(--pm-border-light, var(--cc-table-border));           /* 表格行分割线 */
+  --color-top-divider: var(--pm-teal-soft, var(--cc-accent-line));       /* 页眉下方细分割线（浅青） */
 
   /* === 1.3 文本色 === */
-  --color-text-primary: var(--pm-text-primary, #1a2332);      /* 标题/强调主文字（深蓝黑） */
-  --color-text-body: var(--pm-text-secondary, #4a5568);         /* 正文/表格主文字（深灰蓝） */
-  --color-text-muted: var(--pm-text-muted, #8896a7);        /* 次级提示文字 */
-  --color-text-note: var(--pm-text-secondary, #4a5568);         /* 说明条文字 */
+  --color-text-primary: var(--pm-text-primary, var(--cc-text-primary));      /* 标题/强调主文字（深蓝黑） */
+  --color-text-body: var(--pm-text-secondary, var(--cc-text-secondary));         /* 正文/表格主文字（深灰蓝） */
+  --color-text-muted: var(--pm-text-muted, var(--cc-text-muted));        /* 次级提示文字 */
+  --color-text-note: var(--pm-text-secondary, var(--cc-text-secondary));         /* 说明条文字 */
 
   /* === 1.4 强调/功能色 === */
-  --color-accent: var(--pm-teal, #1f6f78);            /* 标题下划线/品牌强调蓝 */
-  --color-danger: var(--pm-status-danger, #c44040);            /* 负向差距、P0 */
-  --color-info: var(--pm-teal, #1f6f78);              /* P1 标签蓝 */
-  --color-success: var(--pm-status-success, #2d8a6e);           /* 正向差距（绿色） */
+  --color-accent: var(--pm-teal, var(--cc-accent-primary));            /* 标题下划线/品牌强调蓝 */
+  --color-danger: var(--pm-status-danger, var(--cc-danger-red));            /* 负向差距、P0 */
+  --color-info: var(--pm-teal, var(--cc-accent-primary));              /* P1 标签蓝 */
+  --color-success: var(--pm-status-success, var(--cc-success-green));           /* 正向差距（绿色） */
   --color-neutral: var(--pm-status-nodata, #9ca3af);           /* 中性/无数据 */
 
   /* === 1.5 层级卡片底色 (L1~L4) === */
   --level-l1-bg: var(--pm-sand-light, #f7f0e3);             /* L1 卡片底（米黄） */
-  --level-l2-bg: var(--pm-teal-soft, #d0e8e8);             /* L2 卡片底（浅青） */
-  --level-l3-bg: var(--pm-bg-muted, #f3f0ea);             /* L3 卡片底（暖灰） */
+  --level-l2-bg: var(--pm-teal-soft, var(--cc-accent-line));             /* L2 卡片底（浅青） */
+  --level-l3-bg: var(--pm-bg-muted, var(--cc-bg-muted));             /* L3 卡片底（暖灰） */
   --level-l4-bg: var(--pm-status-improve-bg, #f4eaf0);             /* L4 卡片底（浅粉紫） */
 
   /* === 1.6 层级标签文字色 === */
   --level-l1-text: var(--pm-sand-dark, #b27a37);           /* L1 橙 */
-  --level-l2-text: var(--pm-teal, #1f6f78);           /* L2 青 */
-  --level-l3-text: var(--pm-navy, #12344d);           /* L3 蓝黑 */
+  --level-l2-text: var(--pm-teal, var(--cc-accent-primary));           /* L2 青 */
+  --level-l3-text: var(--pm-navy, var(--cc-info-blue));           /* L3 蓝黑 */
   --level-l4-text: var(--pm-status-improve, #8b4c6a);           /* L4 粉紫 */
 
   /* === 1.7 表头底色（按区块主题） === */
-  --table-l2-head-bg: var(--pm-teal-soft, #d0e8e8);
-  --table-l3-head-bg: var(--pm-bg-muted, #f3f0ea);
+  --table-l2-head-bg: var(--pm-teal-soft, var(--cc-accent-line));
+  --table-l3-head-bg: var(--pm-bg-muted, var(--cc-bg-muted));
   --table-l4-head-bg: var(--pm-status-improve-bg, #f4eaf0);
 
   /* === 1.8 表头文字色（按区块主题） === */
-  --table-l2-head-text: var(--pm-teal, #1f6f78);
-  --table-l3-head-text: var(--pm-navy, #12344d);
+  --table-l2-head-text: var(--pm-teal, var(--cc-accent-primary));
+  --table-l3-head-text: var(--pm-navy, var(--cc-info-blue));
   --table-l4-head-text: var(--pm-status-improve, #8b4c6a);
 
   /* === 1.9 箭头/连接符 === */
-  --color-arrow: var(--pm-text-muted, #8896a7);             /* 钻取路径示例中的">"箭头 */
-  --color-step-arrow: var(--pm-border-light, #e4e8ec);        /* 顶部步骤条的填充箭头 */
+  --color-arrow: var(--pm-text-muted, var(--cc-text-muted));             /* 钻取路径示例中的">"箭头 */
+  --color-step-arrow: var(--pm-border-light, var(--cc-table-border));        /* 顶部步骤条的填充箭头 */
 
   /* === 1.10 字体 === */
   --font-family-base: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
@@ -329,7 +329,7 @@
   border-radius: var(--radius-badge);
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-bold);
-  color: #FFFFFF;
+  color: var(--cc-card-bg);
 }
 
 .m3-kp-drill__domain-badge--l1 {
@@ -556,7 +556,7 @@
 }
 
 .m3-kp-delta--mild {
-  color: var(--pm-status-attention, #d4943a); /* 橙色，中等差距 */
+  color: var(--pm-status-attention, var(--cc-warning-orange)); /* 橙色，中等差距 */
   font-weight: var(--font-weight-medium);
 }
 
@@ -793,7 +793,7 @@
   height: 32px;
   border-radius: 50%;
   background: var(--color-success);
-  color: #FFFFFF;
+  color: var(--cc-card-bg);
   font-size: 18px;
   font-weight: var(--font-weight-bold);
   flex-shrink: 0;

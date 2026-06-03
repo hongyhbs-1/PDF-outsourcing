@@ -65,7 +65,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: var(--pm-navy, #12344d);
+  color: var(--pm-navy, var(--cc-info-blue));
   font-size: 12px;
   font-weight: 800;
 }
@@ -73,7 +73,7 @@
 .m10-core-conclusion__text,
 .m11-core-conclusion__text {
   margin: 0;
-  color: var(--pm-text-primary, #1a2332);
+  color: var(--pm-text-primary, var(--cc-text-primary));
   font-size: 14px;
   font-weight: 800;
   line-height: 1.45;
@@ -247,11 +247,11 @@
 }
 
 .m11-qa-card__wrong-mark {
-  color: var(--pm-status-danger, #c44040);
+  color: var(--pm-status-danger, var(--cc-danger-red));
 }
 
 .m11-qa-card__correct-mark {
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
 }
 
 .m11-encouragement {

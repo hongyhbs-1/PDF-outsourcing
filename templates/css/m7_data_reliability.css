@@ -14,30 +14,30 @@
    ========================================================================== */
 :root {
   /* ----- 1.1 Base Colors (Premium Navy/Teal/Sand tokens) ----- */
-  --color-bg: var(--pm-bg-page, #f8f5ef);                    /* 页面主背景色 */
-  --color-text-primary: var(--pm-text-primary, #1a2332);          /* 主文字颜色 */
-  --color-text-secondary: var(--pm-text-secondary, #4a5568);        /* 次级文字颜色 */
+  --color-bg: var(--pm-bg-page, var(--cc-page-bg));                    /* 页面主背景色 */
+  --color-text-primary: var(--pm-text-primary, var(--cc-text-primary));          /* 主文字颜色 */
+  --color-text-secondary: var(--pm-text-secondary, var(--cc-text-secondary));        /* 次级文字颜色 */
   --color-card: var(--pm-bg-card-alt, #faf8f4);                  /* 卡片背景色 */
-  --color-accent: var(--pm-teal, #1f6f78);                /* 强调色 */
+  --color-accent: var(--pm-teal, var(--cc-accent-primary));                /* 强调色 */
 
   /* ----- 1.2 Label Colors (标注色) ----- */
   --color-label-purple: var(--pm-sand-dark, #b27a37);          /* 紫色→沙棕标注 */
-  --color-label-orange: var(--pm-status-attention, #d4943a);          /* 橙色标注 */
-  --color-label-blue: var(--pm-teal, #1f6f78);            /* 蓝色→青色标注 */
-  --color-label-red: var(--pm-status-danger, #c44040);             /* 红色标注 */
+  --color-label-orange: var(--pm-status-attention, var(--cc-warning-orange));          /* 橙色标注 */
+  --color-label-blue: var(--pm-teal, var(--cc-accent-primary));            /* 蓝色→青色标注 */
+  --color-label-red: var(--pm-status-danger, var(--cc-danger-red));             /* 红色标注 */
 
   /* ----- 1.3 Module-Specific Colors (本模块专用) ----- */
-  --color-progress-cyan: var(--pm-teal, #1f6f78);         /* 进度条填充/标题下划线 */
-  --color-title-blue: var(--pm-navy, #12344d);            /* 蓝色→藏蓝标题文字 */
-  --color-border-blue: var(--pm-teal-soft, #d0e8e8);           /* 数据概览外框线 */
+  --color-progress-cyan: var(--pm-teal, var(--cc-accent-primary));         /* 进度条填充/标题下划线 */
+  --color-title-blue: var(--pm-navy, var(--cc-info-blue));            /* 蓝色→藏蓝标题文字 */
+  --color-border-blue: var(--pm-teal-soft, var(--cc-accent-line));           /* 数据概览外框线 */
   --color-border-purple: var(--pm-status-improve-bg, #f4eaf0);         /* 表格/综合盒子外框线 */
-  --color-surface: var(--pm-bg-card, #ffffff);               /* 白色卡片底 */
-  --color-surface-muted: var(--pm-bg-muted, #f3f0ea);         /* 模块浅底 */
-  --color-table-head: var(--pm-bg-muted, #f3f0ea);            /* 表头底色 */
-  --color-divider: var(--pm-border-light, #e4e8ec);               /* 行分割线 */
-  --color-bar-track: var(--pm-bg-muted, #f3f0ea);             /* 条形图轨道底 */
-  --color-tag-bg: var(--pm-teal-soft, #d0e8e8);                /* 标签底色 */
-  --color-icon-muted: var(--pm-teal, #1f6f78);            /* 概览卡片图标色：PDF中需保持清晰 */
+  --color-surface: var(--pm-bg-card, var(--cc-card-bg));               /* 白色卡片底 */
+  --color-surface-muted: var(--pm-bg-muted, var(--cc-bg-muted));         /* 模块浅底 */
+  --color-table-head: var(--pm-bg-muted, var(--cc-bg-muted));            /* 表头底色 */
+  --color-divider: var(--pm-border-light, var(--cc-table-border));               /* 行分割线 */
+  --color-bar-track: var(--pm-bg-muted, var(--cc-bg-muted));             /* 条形图轨道底 */
+  --color-tag-bg: var(--pm-teal-soft, var(--cc-accent-line));                /* 标签底色 */
+  --color-icon-muted: var(--pm-teal, var(--cc-accent-primary));            /* 概览卡片图标色：PDF中需保持清晰 */
 
   /* ----- 1.4 Section Backgrounds (三段彩底) ----- */
   --color-section-blue-bg: var(--pm-status-achieved-bg, #e6f3f3);       /* 整体数据质量评估背景 */
@@ -45,8 +45,8 @@
   --color-section-purple-bg: var(--pm-status-improve-bg, #f4eaf0);     /* 未覆盖的核心考点背景 */
 
   /* ----- 1.5 Bar Gradient Colors ----- */
-  --color-bar-orange-from: var(--pm-status-attention, #d4943a);       /* 中置信度条渐变起始 */
-  --color-bar-orange-to: var(--pm-status-attention, #d4943a);         /* 中置信度条渐变结束 */
+  --color-bar-orange-from: var(--pm-status-attention, var(--cc-warning-orange));       /* 中置信度条渐变起始 */
+  --color-bar-orange-to: var(--pm-status-attention, var(--cc-warning-orange));         /* 中置信度条渐变结束 */
   --color-badge-purple-bg: var(--pm-sand-dark, #b27a37);       /* 核心考点徽章底色 */
   
   /* ----- 1.6 Typography ----- */
@@ -330,16 +330,16 @@
   border-radius: var(--radius-sm);
   font-size: var(--font-size-mini);
   font-weight: var(--font-weight-bold);
-  color: #FFFFFF;
+  color: var(--cc-card-bg);
   flex-shrink: 0;
 }
 
 .m7-kp-level-badge--l1 {
-  background: var(--pm-navy, #12344d);
+  background: var(--pm-navy, var(--cc-info-blue));
 }
 
 .m7-kp-level-badge--l2 {
-  background: var(--pm-teal, #1f6f78);
+  background: var(--pm-teal, var(--cc-accent-primary));
 }
 
 .m7-kp-level-badge--l3 {
@@ -347,7 +347,7 @@
 }
 
 .m7-kp-level-badge--l4 {
-  background: var(--pm-status-attention, #d4943a);
+  background: var(--pm-status-attention, var(--cc-warning-orange));
 }
 
 .m7-kp-level-label {
@@ -1063,17 +1063,17 @@
 
 .m7-warning-group__badge--high {
   background: var(--color-label-red);
-  color: #FFFFFF;
+  color: var(--cc-card-bg);
 }
 
 .m7-warning-group__badge--medium {
   background: var(--color-label-orange);
-  color: #FFFFFF;
+  color: var(--cc-card-bg);
 }
 
 .m7-warning-group__badge--low {
   background: var(--color-label-blue);
-  color: #FFFFFF;
+  color: var(--cc-card-bg);
 }
 
 .m7-warning-group__count-badge {

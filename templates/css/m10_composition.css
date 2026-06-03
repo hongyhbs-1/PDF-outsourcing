@@ -37,7 +37,7 @@
 }
 
 .m10-core-conclusion__label {
-  color: var(--pm-navy, #12344d);
+  color: var(--pm-navy, var(--cc-info-blue));
   font-size: 12px;
   font-weight: 800;
   line-height: 1.25;
@@ -45,7 +45,7 @@
 }
 
 .m10-core-conclusion__text {
-  color: var(--pm-text-primary, #1a2332);
+  color: var(--pm-text-primary, var(--cc-text-primary));
   font-size: 14px;
   font-weight: 800;
   line-height: 1.45;
@@ -126,12 +126,12 @@
 
 .m10-tip-card--warning {
   background: var(--pm-status-attention-bg, #fef3e2);
-  border-left: 3px solid var(--pm-status-attention, #d4943a);
+  border-left: 3px solid var(--pm-status-attention, var(--cc-warning-orange));
 }
 
 .m10-tip-card--success {
   background: var(--pm-status-success-bg, #e8f5f0);
-  border-left: 3px solid var(--pm-status-success, #2d8a6e);
+  border-left: 3px solid var(--pm-status-success, var(--cc-success-green));
 }
 
 .m10-tip-card .m10-section-title {
@@ -196,12 +196,12 @@
 }
 
 .m10-tag--highlight {
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
   font-weight: 700;
 }
 
 .m10-tag--issue {
-  color: var(--pm-status-danger, #c44040);
+  color: var(--pm-status-danger, var(--cc-danger-red));
   font-weight: 700;
 }
 

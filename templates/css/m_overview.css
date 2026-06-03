@@ -446,18 +446,18 @@
   fill: rgba(31, 111, 120, 0.08);
 }
 .mov-pie__slice {
-  fill: var(--pm-status-attention, #d4943a);
+  fill: var(--pm-status-attention, var(--cc-warning-orange));
   stroke: none;
   shape-rendering: geometricPrecision;
 }
 .mov-pie__slice--easy {
-  fill: var(--pm-status-success, #2d8a6e);
+  fill: var(--pm-status-success, var(--cc-success-green));
 }
 .mov-pie__slice--medium {
-  fill: var(--pm-status-attention, #d4943a);
+  fill: var(--pm-status-attention, var(--cc-warning-orange));
 }
 .mov-pie__slice--hard {
-  fill: var(--pm-status-danger, #c44040);
+  fill: var(--pm-status-danger, var(--cc-danger-red));
 }
 .mov-pie__center {
   fill: var(--pm-bg-card, #fff);
@@ -490,13 +490,13 @@
   border-radius: 50%;
 }
 .mov-difficulty__dot--easy {
-  background: var(--pm-status-success, #2d8a6e);
+  background: var(--pm-status-success, var(--cc-success-green));
 }
 .mov-difficulty__dot--medium {
-  background: var(--pm-status-attention, #d4943a);
+  background: var(--pm-status-attention, var(--cc-warning-orange));
 }
 .mov-difficulty__dot--hard {
-  background: var(--pm-status-danger, #c44040);
+  background: var(--pm-status-danger, var(--cc-danger-red));
 }
 
 /* --- 试卷/批次清单 --- */
@@ -558,7 +558,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--pm-teal-soft, #d0e8e8);
+  background: var(--pm-teal-soft, var(--cc-accent-line));
   border: 1px solid rgba(31, 111, 120, 0.15);
   border-radius: var(--pm-radius-pill, 999px);
   padding: 8px 20px;
@@ -568,7 +568,7 @@
 }
 .mov-conclusion__badge svg {
   flex-shrink: 0;
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
 }
 
 .mov-reading-guide {

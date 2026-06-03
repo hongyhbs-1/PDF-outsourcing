@@ -103,11 +103,11 @@
 }
 
 .m9-overview__stat--danger .m9-overview__stat-num {
-  color: var(--pm-status-danger, #c44040);
+  color: var(--pm-status-danger, var(--cc-danger-red));
 }
 
 .m9-overview__stat--success .m9-overview__stat-num {
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
 }
 
 .m9-overview__stat-label {
@@ -188,11 +188,11 @@
 }
 
 .m9-table-label--wrong {
-  color: var(--pm-status-danger, #c44040);
+  color: var(--pm-status-danger, var(--cc-danger-red));
 }
 
 .m9-table-label--correct {
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
 }
 
 /* ==========================================================================
@@ -235,14 +235,14 @@
 /* --- 错题表头 --- */
 .m9-table--wrong thead th {
   background: var(--pm-status-danger-bg, #fde8e8);
-  color: var(--pm-status-danger, #c44040);
+  color: var(--pm-status-danger, var(--cc-danger-red));
   border-bottom: 2px solid rgba(196, 64, 64, 0.2);
 }
 
 /* --- 正确题表头 --- */
 .m9-table--correct thead th {
   background: var(--pm-status-success-bg, #e8f5f0);
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
   border-bottom: 2px solid rgba(45, 138, 110, 0.2);
 }
 

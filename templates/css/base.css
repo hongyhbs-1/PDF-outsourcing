@@ -430,6 +430,23 @@
   --phi-minor: 38.2%;
   --phi-2thirds: 66.667%;
   --phi-1third: 33.333%;
+
+  /* English theme accent colors (T006 P4) */
+  --cc-english-accent: #4058d8;
+  --cc-english-accent-soft: #4d66d9;
+  --cc-english-accent-light: #7291ff;
+  --cc-english-improve: #8b63c9;
+  --cc-english-page-bg: #eaf1ff;
+
+  /* LayoutProfile tokens (T006) — 由 golden_typeset 动态覆盖 */
+  --typography-scale: 1.00;
+  --padding-scale: 1.00;
+  --grid-columns: 1;
+  --grid-gap: 5mm;
+  --module-padding: 16px 20px;
+  --section-gap: 12px;
+  --card-padding: 14px 18px;
+  --table-row-height: 7mm;
 }
 
 /* --- 页面设置 --- */

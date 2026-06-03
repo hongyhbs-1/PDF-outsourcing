@@ -9,7 +9,7 @@
   --chapter-title-underline-height: 3px;
   --chapter-title-underline-gap: 6px;
   --chapter-title-underline-radius: 2px;
-  --chapter-title-underline-fill: var(--pm-gradient-accent-bar, linear-gradient(90deg, #d9b36a 0%, #1f6f78 100%));
+  --chapter-title-underline-fill: var(--pm-gradient-accent-bar, linear-gradient(90deg, #d9b36a 0%, var(--cc-accent-primary) 100%));
   --chapter-title-icon-slot: 30px;
 }
 

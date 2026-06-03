@@ -17,45 +17,45 @@
   /* --------------------------------------------------------------------------
      1.1 基础色 (Base Colors - from dida985 spec)
      -------------------------------------------------------------------------- */
-  --color-bg: var(--pm-bg-page, #f8f5ef);                     /* 页面背景 */
-  --color-text-primary: var(--pm-text-primary, #1a2332);           /* 主文字 */
-  --color-text-secondary: var(--pm-text-secondary, #4a5568);         /* 次级文字 */
+  --color-bg: var(--pm-bg-page, var(--cc-page-bg));                     /* 页面背景 */
+  --color-text-primary: var(--pm-text-primary, var(--cc-text-primary));           /* 主文字 */
+  --color-text-secondary: var(--pm-text-secondary, var(--cc-text-secondary));         /* 次级文字 */
   --color-card: var(--pm-bg-card-alt, #faf8f4);                   /* 卡片背景 */
 
   /* --------------------------------------------------------------------------
      1.2 标注色 (Label Colors)
      -------------------------------------------------------------------------- */
   --color-label-purple: var(--pm-sand-dark, #b27a37);           /* 紫色标注 */
-  --color-label-orange: var(--pm-status-attention, #d4943a);           /* 橙色标注 */
-  --color-label-blue: var(--pm-teal, #1f6f78);             /* 蓝色标注 */
-  --color-label-red: var(--pm-status-danger, #c44040);              /* 红色标注 */
+  --color-label-orange: var(--pm-status-attention, var(--cc-warning-orange));           /* 橙色标注 */
+  --color-label-blue: var(--pm-teal, var(--cc-accent-primary));             /* 蓝色标注 */
+  --color-label-red: var(--pm-status-danger, var(--cc-danger-red));              /* 红色标注 */
 
   /* --------------------------------------------------------------------------
      1.3 强调色 (Accent Colors)
      -------------------------------------------------------------------------- */
-  --color-accent: var(--pm-teal, #1f6f78);                 /* 标题下划线/关键数字 */
+  --color-accent: var(--pm-teal, var(--cc-accent-primary));                 /* 标题下划线/关键数字 */
   --color-line-accent-cyan: var(--pm-teal-light, #2a8f8f);       /* 模块标题下划线（青色） */
-  --color-blue-deep: var(--pm-navy, #12344d);              /* 深蓝（进度条/阶段高亮） */
+  --color-blue-deep: var(--pm-navy, var(--cc-info-blue));              /* 深蓝（进度条/阶段高亮） */
 
   /* --------------------------------------------------------------------------
      1.4 派生色 (Derived Colors)
      -------------------------------------------------------------------------- */
-  --color-page-bg: var(--pm-bg-page, #f8f5ef);                /* 页面画布 — 与全局统一 */
-  --color-border-light: var(--pm-border-card, #d8e2e8);           /* 卡片边框/分割线 */
-  --color-border-strong: var(--pm-teal, #1f6f78);          /* 加强边框（Card1） */
-  --color-track-gray: var(--pm-bg-muted, #f3f0ea);             /* 进度条轨道灰 */
-  --color-card-fill: var(--pm-bg-card, #ffffff);              /* 卡片浅底 */
-  --color-text-muted: var(--pm-text-muted, #8896a7);             /* 页眉小字灰 */
+  --color-page-bg: var(--pm-bg-page, var(--cc-page-bg));                /* 页面画布 — 与全局统一 */
+  --color-border-light: var(--pm-border-card, var(--cc-card-border));           /* 卡片边框/分割线 */
+  --color-border-strong: var(--pm-teal, var(--cc-accent-primary));          /* 加强边框（Card1） */
+  --color-track-gray: var(--pm-bg-muted, var(--cc-bg-muted));             /* 进度条轨道灰 */
+  --color-card-fill: var(--pm-bg-card, var(--cc-card-bg));              /* 卡片浅底 */
+  --color-text-muted: var(--pm-text-muted, var(--cc-text-muted));             /* 页眉小字灰 */
   --color-endpoint-border: var(--pm-border-divider, #e0ddd6);        /* 进度条端点边框 */
 
   /* --------------------------------------------------------------------------
      1.5 角色色 (Role Colors) - NEW
      -------------------------------------------------------------------------- */
-  --color-role-student: var(--pm-teal, #1f6f78);           /* 学生 - 蓝色 */
+  --color-role-student: var(--pm-teal, var(--cc-accent-primary));           /* 学生 - 蓝色 */
   --color-role-student-bg: rgba(31, 111, 120, 0.08);
-  --color-role-parent: var(--pm-status-attention, #d4943a);            /* 家长 - 橙色 */
+  --color-role-parent: var(--pm-status-attention, var(--cc-warning-orange));            /* 家长 - 橙色 */
   --color-role-parent-bg: rgba(212, 148, 58, 0.08);
-  --color-role-teacher: var(--pm-status-danger, #c44040);           /* 老师 - 红色 */
+  --color-role-teacher: var(--pm-status-danger, var(--cc-danger-red));           /* 老师 - 红色 */
   --color-role-teacher-bg: rgba(196, 64, 64, 0.06);
 
   /* --------------------------------------------------------------------------
@@ -475,7 +475,7 @@
   height: 15px;
   left: var(--stage-progress);
   transform: translateX(-50%);
-  background: var(--pm-status-success, #2d8a6e);
+  background: var(--pm-status-success, var(--cc-success-green));
   border-radius: 2px;
 }
 
@@ -487,7 +487,7 @@
   top: -2px;
   height: 13px;
   left: var(--stage-target-progress);
-  background: var(--pm-status-attention, #d4943a);
+  background: var(--pm-status-attention, var(--cc-warning-orange));
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85);
 }
 
@@ -498,8 +498,8 @@
   z-index: 3;
   background: linear-gradient(
     90deg,
-    var(--pm-status-success, #2d8a6e) 0 45%,
-    var(--pm-status-attention, #d4943a) 55% 100%
+    var(--pm-status-success, var(--cc-success-green)) 0 45%,
+    var(--pm-status-attention, var(--cc-warning-orange)) 55% 100%
   );
 }
 
@@ -599,7 +599,7 @@
   left: var(--stage-target-progress);
   transform: translateX(-50%);
   font-weight: 700;
-  color: var(--pm-status-attention, #d4943a);
+  color: var(--pm-status-attention, var(--cc-warning-orange));
 }
 
 .m6-stage-progress-panel .sp-progress-label--edge-start {
@@ -884,7 +884,7 @@
 .m6-training-focus {
   background: transparent;
   border: 0;
-  border-bottom: 1px solid var(--color-border-light, #d8e2e8);
+  border-bottom: 1px solid var(--color-border-light, var(--cc-card-border));
   border-radius: 0;
   padding: 0 0 14px;
   margin-bottom: 14px;
@@ -898,7 +898,7 @@
   color: var(--color-text-primary, #101828);
   margin-bottom: 10px;
   padding-left: 10px;
-  border-left: 3px solid var(--pm-teal, #1f6f78);
+  border-left: 3px solid var(--pm-teal, var(--cc-accent-primary));
 }
 
 .m6-training-focus__grid {
@@ -933,7 +933,7 @@
 }
 
 .m6-training-focus__delta--neg {
-  color: var(--pm-status-danger, #c44040);
+  color: var(--pm-status-danger, var(--cc-danger-red));
 }
 
 .m6-training-focus__note {

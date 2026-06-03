@@ -31,40 +31,40 @@
    ============================================================================ */
 :root {
   /* ---------- 基础色 ---------- */
-  --cw-color-page-bg: var(--pm-bg-page, #f8f5ef);
-  --cw-color-text-primary: var(--pm-text-primary, #1a2332);
-  --cw-color-text-secondary: var(--pm-text-secondary, #4a5568);
-  --cw-color-text-muted: var(--pm-text-muted, #8896a7);
-  --cw-color-text-meta: var(--pm-text-muted, #8896a7);
+  --cw-color-page-bg: var(--pm-bg-page, var(--cc-page-bg));
+  --cw-color-text-primary: var(--pm-text-primary, var(--cc-text-primary));
+  --cw-color-text-secondary: var(--pm-text-secondary, var(--cc-text-secondary));
+  --cw-color-text-muted: var(--pm-text-muted, var(--cc-text-muted));
+  --cw-color-text-meta: var(--pm-text-muted, var(--cc-text-muted));
 
   /* ---------- 分割线/边框 ---------- */
-  --cw-color-divider-top: var(--pm-border-light, #e4e8ec);
-  --cw-color-border-card: var(--pm-border-card, #d8e2e8);
+  --cw-color-divider-top: var(--pm-border-light, var(--cc-table-border));
+  --cw-color-border-card: var(--pm-border-card, var(--cc-card-border));
 
   /* ---------- 强调色 ---------- */
-  --cw-color-accent-teal: var(--pm-teal, #1f6f78);
-  --cw-color-accent-primary: var(--pm-teal, #1f6f78);
+  --cw-color-accent-teal: var(--pm-teal, var(--cc-accent-primary));
+  --cw-color-accent-primary: var(--pm-teal, var(--cc-accent-primary));
 
   /* ---------- 优先级色 ---------- */
   --cw-color-p0: var(--pm-sand-dark, #b27a37);
-  --cw-color-p1: var(--pm-status-attention, #d4943a);
+  --cw-color-p1: var(--pm-status-attention, var(--cc-warning-orange));
   --cw-color-p2: var(--pm-teal-light, #2a8f8f);
 
   /* ---------- 数值强调色 ---------- */
   --cw-color-gap-strong: var(--pm-sand-dark, #b27a37);
-  --cw-color-gap-mild: var(--pm-status-success, #2d8a6e);
+  --cw-color-gap-mild: var(--pm-status-success, var(--cc-success-green));
 
   /* ---------- 标签色 ---------- */
-  --cw-color-tag-core: var(--pm-teal, #1f6f78);
-  --cw-color-tag-exam: var(--pm-navy, #12344d);
-  --cw-color-tag-highfreq: var(--pm-status-success, #2d8a6e);
-  --cw-color-tag-neutral: var(--pm-text-muted, #8896a7);  /* v1.1 新增：无标签时的中性色 */
+  --cw-color-tag-core: var(--pm-teal, var(--cc-accent-primary));
+  --cw-color-tag-exam: var(--pm-navy, var(--cc-info-blue));
+  --cw-color-tag-highfreq: var(--pm-status-success, var(--cc-success-green));
+  --cw-color-tag-neutral: var(--pm-text-muted, var(--cc-text-muted));  /* v1.1 新增：无标签时的中性色 */
 
   /* ---------- 背景色 ---------- */
   --cw-color-bg-note: var(--pm-bg-section, #f0ede6);
-  --cw-color-bg-tips: var(--pm-bg-muted, #f3f0ea);
-  --cw-color-bg-summary: var(--pm-bg-muted, #f3f0ea);
-  --cw-color-bg-header: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-bg-tips: var(--pm-bg-muted, var(--cc-bg-muted));
+  --cw-color-bg-summary: var(--pm-bg-muted, var(--cc-bg-muted));
+  --cw-color-bg-header: var(--pm-bg-muted, var(--cc-bg-muted));
 
   /* ---------- 表格行底色（按优先级分组 + 斑马纹） ---------- */
   --cw-color-row-p0-a: var(--pm-sand-light, #f7f0e3);
@@ -72,12 +72,12 @@
   --cw-color-row-p1-a: var(--pm-status-attention-bg, #fef3e2);
   --cw-color-row-p1-b: var(--pm-sand-pale, #faf6ee);
   --cw-color-row-p2-a: var(--pm-status-achieved-bg, #e6f3f3);
-  --cw-color-row-p2-b: var(--pm-bg-muted, #f3f0ea);
+  --cw-color-row-p2-b: var(--pm-bg-muted, var(--cc-bg-muted));
 
   /* ---------- 原因卡片色 ---------- */
   --cw-color-card-purple: var(--pm-sand-dark, #b27a37);
-  --cw-color-card-green: var(--pm-status-success, #2d8a6e);
-  --cw-color-card-blue: var(--pm-teal, #1f6f78);
+  --cw-color-card-green: var(--pm-status-success, var(--cc-success-green));
+  --cw-color-card-blue: var(--pm-teal, var(--cc-accent-primary));
 
   /* ---------- 字体 ---------- */
   --cw-font-family: "SimHei", "Microsoft YaHei", "PingFang SC", sans-serif;
@@ -213,7 +213,7 @@
   padding: var(--cw-spacing-3) var(--cw-spacing-4);
   margin: 0 var(--cw-spacing-6) var(--cw-spacing-4);
   border: 1px solid var(--cw-color-border-card);
-  border-left: 1.5mm solid var(--pm-teal, #1f6f78);
+  border-left: 1.5mm solid var(--pm-teal, var(--cc-accent-primary));
   border-radius: var(--cw-radius-sm);
   overflow: hidden;
 }
@@ -553,8 +553,8 @@
    11. 状态类与空态 (Status Classes & Empty State)
    ============================================================================ */
 /* 通用状态类 - 可用于扩展 */
-.m2-cw-status--achieved { color: var(--pm-status-achieved, #1f6f78); }
-.m2-cw-status--attention { color: var(--pm-status-attention, #d4943a); }
+.m2-cw-status--achieved { color: var(--pm-status-achieved, var(--cc-accent-primary)); }
+.m2-cw-status--attention { color: var(--pm-status-attention, var(--cc-warning-orange)); }
 .m2-cw-status--improve { color: var(--pm-status-improve, #8b4c6a); }
 .m2-cw-status--nodata { color: var(--cw-color-text-muted); }
 
@@ -783,7 +783,7 @@
 .m2-cw-empty-guidance {
   margin: 24px 20px;
   padding: 32px 28px;
-  background: var(--pm-teal-soft, #d0e8e8);
+  background: var(--pm-teal-soft, var(--cc-accent-line));
   border-radius: var(--pm-radius-card-sm, 16px);
   text-align: center;
   border: 1px solid rgba(31, 111, 120, 0.15);
@@ -798,13 +798,13 @@
 .m2-cw-empty-guidance__title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--pm-navy, #12344d);
+  color: var(--pm-navy, var(--cc-info-blue));
   margin-bottom: 16px;
 }
 
 .m2-cw-empty-guidance__reason {
   font-size: 14px;
-  color: var(--pm-text-secondary, #4a5568);
+  color: var(--pm-text-secondary, var(--cc-text-secondary));
   line-height: 1.7;
   margin-bottom: 12px;
   text-align: left;
@@ -815,7 +815,7 @@
 
 .m2-cw-empty-guidance__action {
   font-size: 14px;
-  color: var(--pm-teal, #1f6f78);
+  color: var(--pm-teal, var(--cc-accent-primary));
   line-height: 1.7;
   font-weight: 500;
   text-align: left;
@@ -826,12 +826,12 @@
   padding: 10px 16px;
   background: rgba(31, 111, 120, 0.08);
   border-radius: 8px;
-  border-left: 3px solid var(--pm-teal, #1f6f78);
+  border-left: 3px solid var(--pm-teal, var(--cc-accent-primary));
 }
 
 .m2-cw-empty-guidance__stats {
   font-size: 12px;
-  color: var(--pm-text-muted, #8896a7);
+  color: var(--pm-text-muted, var(--cc-text-muted));
   margin-top: 8px;
 }
 

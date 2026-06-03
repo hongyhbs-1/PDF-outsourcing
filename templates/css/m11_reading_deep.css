@@ -37,7 +37,7 @@
 }
 
 .m11-core-conclusion__label {
-  color: var(--pm-navy, #12344d);
+  color: var(--pm-navy, var(--cc-info-blue));
   font-size: 12px;
   font-weight: 800;
   line-height: 1.25;
@@ -45,7 +45,7 @@
 }
 
 .m11-core-conclusion__text {
-  color: var(--pm-text-primary, #1a2332);
+  color: var(--pm-text-primary, var(--cc-text-primary));
   font-size: 14px;
   font-weight: 800;
   line-height: 1.45;
@@ -101,11 +101,11 @@
 }
 
 .m11-overview-row .m11-correct {
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
 }
 
 .m11-overview-row .m11-wrong {
-  color: var(--pm-status-danger, #c44040);
+  color: var(--pm-status-danger, var(--cc-danger-red));
 }
 
 .m11-passage-title {
@@ -117,7 +117,7 @@
 /* --- 诊断卡片 --- */
 .m11-diagnosis-card {
   background: var(--pm-status-attention-bg, #fef3e2);
-  border-left: 3px solid var(--pm-status-attention, #d4943a);
+  border-left: 3px solid var(--pm-status-attention, var(--cc-warning-orange));
   padding: 10px 14px;
   margin-bottom: 14px;
   border-radius: 0 8px 8px 0;
@@ -135,12 +135,12 @@
 
 .m11-qa-card--wrong {
   background: var(--pm-status-danger-bg, #fde8e8);
-  border-left: 3px solid var(--pm-status-danger, #c44040);
+  border-left: 3px solid var(--pm-status-danger, var(--cc-danger-red));
 }
 
 .m11-qa-card--correct {
   background: var(--pm-status-success-bg, #e8f5f0);
-  border-left: 3px solid var(--pm-status-success, #2d8a6e);
+  border-left: 3px solid var(--pm-status-success, var(--cc-success-green));
 }
 
 .m11-qa-card__title {
@@ -149,11 +149,11 @@
 }
 
 .m11-qa-card__wrong-mark {
-  color: var(--pm-status-danger, #c44040);
+  color: var(--pm-status-danger, var(--cc-danger-red));
 }
 
 .m11-qa-card__correct-mark {
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
 }
 
 .m11-qa-card__question,
@@ -182,7 +182,7 @@
 
 /* --- 策略卡片 --- */
 .m11-strategy-card {
-  background: var(--pm-teal-soft, #d0e8e8);
+  background: var(--pm-teal-soft, var(--cc-accent-line));
   padding: 8px 12px;
   margin-bottom: 6px;
   border-radius: var(--pm-radius-badge, 12px);
@@ -194,7 +194,7 @@
 /* --- 建议卡片 --- */
 .m11-suggestion-card {
   background: var(--pm-status-success-bg, #e8f5f0);
-  border-left: 3px solid var(--pm-status-success, #2d8a6e);
+  border-left: 3px solid var(--pm-status-success, var(--cc-success-green));
   padding: 10px 14px;
   margin-bottom: 14px;
   border-radius: 0 8px 8px 0;

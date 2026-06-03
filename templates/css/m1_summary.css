@@ -23,56 +23,56 @@
   /* --------------------------------------------------------------------------
    * 1.2 基础背景色
    * -------------------------------------------------------------------------- */
-  --color-page-bg: var(--pm-bg-page, #f8f5ef);           /* 页面底色 */
-  --color-card-bg: var(--pm-bg-card, #ffffff);            /* 卡片白底 */
-  --color-section-bar: var(--pm-bg-muted, #f3f0ea);       /* 分区标题条背景 */
+  --color-page-bg: var(--pm-bg-page, var(--cc-page-bg));           /* 页面底色 */
+  --color-card-bg: var(--pm-bg-card, var(--cc-card-bg));            /* 卡片白底 */
+  --color-section-bar: var(--pm-bg-muted, var(--cc-bg-muted));       /* 分区标题条背景 */
   --color-banner-bg: var(--pm-bg-section, #f0ede6);       /* 摘要条/建议条灰底 */
-  --color-row-bg: var(--pm-bg-muted, #f3f0ea);            /* KPI行/小卡片底色 */
+  --color-row-bg: var(--pm-bg-muted, var(--cc-bg-muted));            /* KPI行/小卡片底色 */
 
   /* --------------------------------------------------------------------------
    * 1.3 主色系 (青蓝)
    * -------------------------------------------------------------------------- */
-  --color-primary-teal: var(--pm-teal, #1f6f78);      /* 圆环主段、列表方块、强调色 */
+  --color-primary-teal: var(--pm-teal, var(--cc-accent-primary));      /* 圆环主段、列表方块、强调色 */
   --color-primary-teal-2: var(--pm-teal-light, #2a8f8f);    /* 章节标题下划线 */
-  --color-teal-light: var(--pm-teal-soft, #d0e8e8);        /* 圆环浅段/未达标色 */
-  --color-track-blue: var(--pm-bg-muted, #f3f0ea);        /* 进度条轨道浅蓝 */
-  --color-fill-teal-soft: var(--pm-teal-soft, #d0e8e8);    /* 目标线填充条 */
+  --color-teal-light: var(--pm-teal-soft, var(--cc-accent-line));        /* 圆环浅段/未达标色 */
+  --color-track-blue: var(--pm-bg-muted, var(--cc-bg-muted));        /* 进度条轨道浅蓝 */
+  --color-fill-teal-soft: var(--pm-teal-soft, var(--cc-accent-line));    /* 目标线填充条 */
 
   /* --------------------------------------------------------------------------
    * 1.4 信息胶囊色
    * -------------------------------------------------------------------------- */
-  --color-pill-bg: var(--pm-teal-soft, #d0e8e8);           /* 指标值胶囊底色 */
-  --color-pill-text: var(--pm-navy, #12344d);              /* 指标值文字蓝色 */
+  --color-pill-bg: var(--pm-teal-soft, var(--cc-accent-line));           /* 指标值胶囊底色 */
+  --color-pill-text: var(--pm-navy, var(--cc-info-blue));              /* 指标值文字蓝色 */
 
   /* --------------------------------------------------------------------------
    * 1.5 紫色强调 (P0/突破项)
    * -------------------------------------------------------------------------- */
   --color-purple: var(--pm-sand-dark, #b27a37);            /* P0标题: warm gold */
-  --color-purple-bar: var(--pm-teal, #1f6f78);        /* 当前水平条: teal */
-  --color-purple-arrow: var(--pm-status-success, #2d8a6e);      /* 趋势箭头上升色: green */
+  --color-purple-bar: var(--pm-teal, var(--cc-accent-primary));        /* 当前水平条: teal */
+  --color-purple-arrow: var(--pm-status-success, var(--cc-success-green));      /* 趋势箭头上升色: green */
 
   /* --------------------------------------------------------------------------
    * 1.6 状态色
    * -------------------------------------------------------------------------- */
-  --color-success: var(--pm-status-success, #2d8a6e);           /* 达标/成功 */
-  --color-warning: var(--pm-status-attention, #d4943a);           /* 警告/注意 */
-  --color-danger: var(--pm-status-danger, #c44040);            /* 危险/需改进 */
+  --color-success: var(--pm-status-success, var(--cc-success-green));           /* 达标/成功 */
+  --color-warning: var(--pm-status-attention, var(--cc-warning-orange));           /* 警告/注意 */
+  --color-danger: var(--pm-status-danger, var(--cc-danger-red));            /* 危险/需改进 */
   --color-muted: var(--pm-status-nodata, #9ca3af);             /* 无数据/禁用 */
 
   /* --------------------------------------------------------------------------
    * 1.7 分割线/边框
    * -------------------------------------------------------------------------- */
-  --color-divider: var(--pm-border-light, #e4e8ec);           /* 页眉横线 */
+  --color-divider: var(--pm-border-light, var(--cc-table-border));           /* 页眉横线 */
   --color-line: var(--pm-border-divider, #e0ddd6);              /* 目标线竖线 */
-  --color-border-light: var(--pm-border-card, #d8e2e8);      /* 浅边框 */
+  --color-border-light: var(--pm-border-card, var(--cc-card-border));      /* 浅边框 */
 
   /* --------------------------------------------------------------------------
    * 1.8 文本色
    * -------------------------------------------------------------------------- */
-  --color-text-primary: var(--pm-text-primary, #1a2332);      /* 主标题/正文 */
-  --color-text-secondary: var(--pm-text-secondary, #4a5568);    /* 次级正文/说明 */
-  --color-text-muted: var(--pm-text-muted, #8896a7);        /* 页眉小字/弱化信息 */
-  --color-text-white: #FFFFFF;        /* 白色文字 */
+  --color-text-primary: var(--pm-text-primary, var(--cc-text-primary));      /* 主标题/正文 */
+  --color-text-secondary: var(--pm-text-secondary, var(--cc-text-secondary));    /* 次级正文/说明 */
+  --color-text-muted: var(--pm-text-muted, var(--cc-text-muted));        /* 页眉小字/弱化信息 */
+  --color-text-white: var(--cc-card-bg);        /* 白色文字 */
 
   /* --------------------------------------------------------------------------
    * 1.9 字体系统
@@ -532,7 +532,7 @@ body {
 .m1-goal-metric-gap--above,
 .m1-goal-metric-gap--on {
   color: var(--color-success);
-  background: var(--pm-bg-teal-soft, #d0e8e8);
+  background: var(--pm-bg-teal-soft, var(--cc-accent-line));
 }
 
 /* --------------------------------------------------------------------------
@@ -967,7 +967,7 @@ body {
 /* 圆环图例动态说明 */
 .m1-chart-note {
   font-size: 3.5mm;
-  color: var(--pm-text-muted, #8896a7);
+  color: var(--pm-text-muted, var(--cc-text-muted));
   text-align: center;
   margin: 4px 0 0;
   line-height: 1.4;

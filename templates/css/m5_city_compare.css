@@ -23,20 +23,20 @@
      ---------------------- */
   --cc-page-bg: var(--pm-bg-page, #f8f5ef);
   --cc-bg-muted: var(--pm-bg-muted, #f3f0ea);
-  
+
   /* ----------------------
      1.2 Accent & Brand
      ---------------------- */
   --cc-accent-teal: var(--pm-teal-light, #2a8f8f);          /* 主标题下划线 */
   --cc-accent-line: var(--pm-border-light, #e4e8ec);          /* 页眉分割线 */
   --cc-accent-primary: var(--pm-teal, #1f6f78);       /* 强调色（来自用色说明） */
-  
+
   /* ----------------------
      1.3 Card & Border
      ---------------------- */
   --cc-card-border: var(--pm-border-card, #d8e2e8);          /* 卡片/表格边框 */
   --cc-card-bg: var(--pm-bg-card, #ffffff);
-  
+
   /* ----------------------
      1.4 Functional Colors
      ---------------------- */
@@ -46,7 +46,7 @@
   --cc-warning-orange: var(--pm-status-attention, #d4943a);       /* 橙色等级块/中等提示 */
   --cc-dot-gray: var(--pm-text-muted, #8896a7);             /* 未填充点 */
   --cc-success-green: var(--pm-status-success, #2d8a6e);        /* 正值（可选） */
-  
+
   /* ----------------------
      1.5 Text Colors
      ---------------------- */
@@ -54,7 +54,7 @@
   --cc-text-secondary: var(--pm-text-secondary, #4a5568);
   --cc-text-muted: var(--pm-text-muted, #8896a7);
   --cc-text-light: var(--pm-text-light, #a0aec0);
-  
+
   /* ----------------------
      1.6 Table Colors
      ---------------------- */

@@ -31,13 +31,13 @@
 }
 
 .frame-title-icon--success {
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
   background: rgba(45, 138, 110, 0.10);
   border-color: rgba(45, 138, 110, 0.20);
 }
 
 .frame-title-icon--warning {
-  color: var(--pm-status-attention, #d4943a);
+  color: var(--pm-status-attention, var(--cc-warning-orange));
   background: rgba(212, 148, 58, 0.12);
   border-color: rgba(212, 148, 58, 0.24);
 }
@@ -49,7 +49,7 @@
 }
 
 .frame-section-icon--success {
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
 }
 
 .frame-card-icon,
@@ -72,14 +72,14 @@
 
 .frame-card-icon--success,
 .frame-inline-icon--success {
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
 }
 
 .frame-card-icon--warning,
 .frame-inline-icon--warning,
 .frame-metric-icon--warning,
 .frame-conclusion-icon--warning {
-  color: var(--pm-status-attention, #d4943a);
+  color: var(--pm-status-attention, var(--cc-warning-orange));
 }
 
 .frame-conclusion-icon {
@@ -123,7 +123,7 @@
 .m11-core-conclusion .frame-conclusion-icon {
   flex: 0 0 auto;
   box-sizing: border-box;
-  color: var(--pm-teal, #1f6f78) !important;
+  color: var(--pm-teal, var(--cc-accent-primary)) !important;
   background: rgba(31, 111, 120, 0.08) !important;
   border-radius: 5px !important;
 }
@@ -381,7 +381,7 @@
     align-items: center !important;
     gap: 4px !important;
     margin: 0 0 5px !important;
-    color: var(--pm-navy, #12344d) !important;
+    color: var(--pm-navy, var(--cc-info-blue)) !important;
     font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
     font-size: 13px !important;
     font-weight: 800 !important;
@@ -400,7 +400,7 @@
   .m10-core-conclusion__text,
   .m11-core-conclusion__text {
     margin: 0 !important;
-    color: var(--pm-text-primary, #1a2332) !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
     font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
     font-size: 16px !important;
     font-weight: 800 !important;
@@ -444,7 +444,7 @@
     align-items: center !important;
     gap: 4px !important;
     margin: 0 0 5px !important;
-    color: var(--pm-navy, #12344d) !important;
+    color: var(--pm-navy, var(--cc-info-blue)) !important;
     font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
     font-size: 13px !important;
     font-weight: 800 !important;
@@ -463,7 +463,7 @@
   .module-page .m10-core-conclusion__text,
   .module-page .m11-core-conclusion__text {
     margin: 0 !important;
-    color: var(--pm-text-primary, #1a2332) !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
     font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
     font-size: 16px !important;
     font-weight: 800 !important;
@@ -493,7 +493,7 @@
     font-size: 16px !important;
     font-weight: 800 !important;
     line-height: 1.28 !important;
-    color: var(--pm-text-primary, #1a2332) !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
   }
 }
 
@@ -537,7 +537,7 @@
     align-items: center !important;
     gap: 4px !important;
     margin: 0 0 3px !important;
-    color: var(--pm-navy, #12344d) !important;
+    color: var(--pm-navy, var(--cc-info-blue)) !important;
     font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
     font-size: 11px !important;
     font-weight: 800 !important;
@@ -556,7 +556,7 @@
   .m10-core-conclusion__text,
   .m11-core-conclusion__text {
     margin: 0 !important;
-    color: var(--pm-text-primary, #1a2332) !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
     font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
     font-size: 13px !important;
     font-weight: 800 !important;
@@ -601,7 +601,7 @@
     align-items: center !important;
     gap: 4px !important;
     margin: 0 0 3px !important;
-    color: var(--pm-navy, #12344d) !important;
+    color: var(--pm-navy, var(--cc-info-blue)) !important;
     font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
     font-size: 11px !important;
     font-weight: 800 !important;
@@ -620,7 +620,7 @@
   .module-page .m10-core-conclusion__text,
   .module-page .m11-core-conclusion__text {
     margin: 0 !important;
-    color: var(--pm-text-primary, #1a2332) !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
     font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
     font-size: 13px !important;
     font-weight: 800 !important;
@@ -672,7 +672,7 @@
   font-size: 28px !important;
   font-weight: 800 !important;
   line-height: 1.18 !important;
-  color: var(--pm-navy, #12344d) !important;
+  color: var(--pm-navy, var(--cc-info-blue)) !important;
 }
 
 .m1-section-title__text .frame-title-icon,
@@ -801,7 +801,7 @@
    Feedback 4.0 final polish: unified module borders and readable gaps
    ============================================================================ */
 .module-content-card {
-  border: 1px solid var(--pm-border-card, #d8e2e8) !important;
+  border: 1px solid var(--pm-border-card, var(--cc-card-border)) !important;
   box-shadow: var(--pm-shadow-card, 0 4px 14px rgba(18, 52, 77, 0.08)) !important;
 }
 
@@ -855,7 +855,7 @@
 
 @media print {
   .module-content-card {
-    border: 1px solid var(--pm-border-card, #d8e2e8) !important;
+    border: 1px solid var(--pm-border-card, var(--cc-card-border)) !important;
     box-shadow: none !important;
   }
 
@@ -966,10 +966,10 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
     padding: 0 0 0 10px !important;
     background: transparent !important;
     border: 0 !important;
-    border-left: 3px solid var(--pm-teal, #1f6f78) !important;
+    border-left: 3px solid var(--pm-teal, var(--cc-accent-primary)) !important;
     border-bottom: 0 !important;
     border-radius: 0 !important;
-    color: var(--pm-text-primary, #1a2332) !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
     font-size: 12.5px !important;
     font-weight: 800 !important;
     line-height: 1.24 !important;
@@ -1206,7 +1206,7 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
     left: 14px !important;
     z-index: 3 !important;
     margin: 0 !important;
-    background: var(--pm-bg-card, #ffffff) !important;
+    background: var(--pm-bg-card, var(--cc-card-bg)) !important;
     padding-right: 6px !important;
   }
 
@@ -1236,12 +1236,12 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
   }
 
   body:not(.report-theme--english) #toc-m7 .m7-quality-block > .m7-block-title {
-    background: var(--color-surface, var(--pm-bg-card, #ffffff)) !important;
+    background: var(--color-surface, var(--pm-bg-card, var(--cc-card-bg))) !important;
   }
 
   body:not(.report-theme--english) #toc-m8 .m8-appendix-panel > .m8-appendix-panel__titlebar,
   body:not(.report-theme--english) #toc-m8 .m8-appendix-panel > .m8-appendix-panel__section-title {
-    background: var(--appendix-color-page, var(--pm-bg-card, #ffffff)) !important;
+    background: var(--appendix-color-page, var(--pm-bg-card, var(--cc-card-bg))) !important;
   }
 
   body:not(.report-theme--english) #toc-m7 .m7-report-box > .m7-report-box__inner {
@@ -1254,7 +1254,7 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
     left: 14px !important;
     z-index: 3 !important;
     margin: 0 !important;
-    background: var(--color-surface, var(--pm-bg-card, #ffffff)) !important;
+    background: var(--color-surface, var(--pm-bg-card, var(--cc-card-bg))) !important;
     padding-right: 6px !important;
   }
 
@@ -1264,7 +1264,7 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
     left: 14px !important;
     z-index: 3 !important;
     margin: 0 !important;
-    background: var(--color-card-fill, var(--pm-bg-card, #ffffff)) !important;
+    background: var(--color-card-fill, var(--pm-bg-card, var(--cc-card-bg))) !important;
     padding-right: 6px !important;
   }
 
@@ -1275,7 +1275,7 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
     left: 14px !important;
     z-index: 3 !important;
     margin: 0 !important;
-    background: var(--color-card-fill, var(--pm-bg-card, #ffffff)) !important;
+    background: var(--color-card-fill, var(--pm-bg-card, var(--cc-card-bg))) !important;
     width: fit-content !important;
     padding-right: 6px !important;
   }
@@ -1393,7 +1393,7 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
     margin: 0 !important;
     padding: 1px 7px !important;
     border-radius: 999px !important;
-    background: var(--pm-bg-card, #ffffff) !important;
+    background: var(--pm-bg-card, var(--cc-card-bg)) !important;
     color: var(--pm-text-muted) !important;
     line-height: 1.2 !important;
     white-space: nowrap !important;
@@ -1470,8 +1470,8 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
      no longer sit compressed at the top of large boxes. */
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-drill__intro-panel,
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path {
-    background: var(--color-surface, #ffffff) !important;
-    border-color: var(--color-border, #d8e2e8) !important;
+    background: var(--color-surface, var(--cc-card-bg)) !important;
+    border-color: var(--color-border, var(--cc-card-border)) !important;
     display: flex !important;
     flex-direction: column !important;
     min-height: 0 !important;
@@ -1505,7 +1505,7 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
     flex: 0 0 auto !important;
     margin: 0 0 8px !important;
     padding: 6px 8px !important;
-    background: var(--color-note-bg, #f0ede6) !important;
+    background: var(--color-note-bg, var(--pm-bg-section)) !important;
     border: 0 !important;
     border-radius: 6px !important;
   }
@@ -1753,7 +1753,7 @@ body:not(.report-theme--english) .m1-section-bar--subtle {
     align-items: center !important;
     gap: 4px !important;
     padding-left: 10px !important;
-    border-left: 3px solid var(--pm-teal, #4d66d9) !important;
+    border-left: 3px solid var(--pm-teal, var(--cc-english-accent-soft)) !important;
     color: var(--pm-text-primary, #1c2742) !important;
   }
 

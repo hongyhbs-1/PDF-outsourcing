@@ -48,7 +48,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--pm-teal-soft, #d0e8e8);
+  background: var(--pm-teal-soft, var(--cc-accent-line));
   color: var(--pm-text-primary);
   font-size: 14px;
   line-height: 1.5;
@@ -129,7 +129,7 @@
 }
 
 .ip-stage--current {
-  --ip-stage-color: var(--pm-teal, #1f6f78);
+  --ip-stage-color: var(--pm-teal, var(--cc-accent-primary));
   --ip-stage-ring: rgba(31, 111, 120, 0.20);
 }
 .ip-stage--checkpoint {
@@ -137,11 +137,11 @@
   --ip-stage-ring: rgba(74, 132, 189, 0.18);
 }
 .ip-stage--boost {
-  --ip-stage-color: var(--pm-status-attention, #d4943a);
+  --ip-stage-color: var(--pm-status-attention, var(--cc-warning-orange));
   --ip-stage-ring: rgba(212, 148, 58, 0.20);
 }
 .ip-stage--target {
-  --ip-stage-color: var(--pm-status-success, #2d8a6e);
+  --ip-stage-color: var(--pm-status-success, var(--cc-success-green));
   --ip-stage-ring: rgba(45, 138, 110, 0.20);
 }
 .ip-stage--current .ip-stage__marker,
@@ -192,13 +192,13 @@
   transform: translateX(-50%);
   padding: 1px 7px;
   border-radius: 999px;
-  background: var(--pm-bg-card, #ffffff);
+  background: var(--pm-bg-card, var(--cc-card-bg));
   color: var(--ip-stage-color, var(--pm-text-secondary));
   font-size: 11px;
   line-height: 1.2;
   font-weight: 800;
   white-space: nowrap;
-  box-shadow: 0 0 0 2px var(--pm-bg-card, #ffffff);
+  box-shadow: 0 0 0 2px var(--pm-bg-card, var(--cc-card-bg));
   z-index: 3;
 }
 
@@ -321,7 +321,7 @@
 .ip-focus-item__gain {
   font-size: 22px;
   font-weight: 700;
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
 }
 
 .ip-focus-item__label {
@@ -349,7 +349,7 @@
 }
 
 .ip-phase-card--accent {
-  background: var(--pm-teal-soft, #d0e8e8);
+  background: var(--pm-teal-soft, var(--cc-accent-line));
   border-color: rgba(31, 111, 120, 0.15);
 }
 
@@ -389,7 +389,7 @@
   content: "✓";
   position: absolute;
   left: 0;
-  color: var(--pm-status-success, #2d8a6e);
+  color: var(--pm-status-success, var(--cc-success-green));
   font-weight: 700;
   font-size: 12px;
 }
@@ -416,7 +416,7 @@
 /* --- 家长行动指南 --- */
 .ip-parent-guide {
   margin-top: 20px;
-  background: var(--pm-teal-soft, #d0e8e8);
+  background: var(--pm-teal-soft, var(--cc-accent-line));
   border: 1px solid rgba(31, 111, 120, 0.15);
   border-radius: var(--pm-radius-badge, 12px);
   padding: 16px 20px;

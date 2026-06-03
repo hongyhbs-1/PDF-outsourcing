@@ -20,7 +20,7 @@
 :root {
   /* ---------- 2.1 Premium 封面专用色 ---------- */
   --cover-bg:            var(--pm-bg-page);
-  --cover-bg-end:        #ffffff;
+  --cover-bg-end:        var(--cc-card-bg);
   --cover-text:          var(--pm-text-primary);
   --cover-text-secondary: var(--pm-text-muted);
   --cover-brand-blue:    var(--pm-navy);
@@ -87,7 +87,7 @@
   background:
     radial-gradient(circle at top right, rgba(226, 196, 143, 0.18), transparent 28%),
     radial-gradient(circle at bottom left, rgba(31, 111, 120, 0.08), transparent 24%),
-    linear-gradient(180deg, var(--pm-bg-page) 0%, #ffffff 40%);
+    linear-gradient(180deg, var(--pm-bg-page) 0%, var(--cc-card-bg) 40%);
   color: var(--cover-text);
   font-family: var(--font-family-base);
   position: relative;
@@ -159,7 +159,7 @@
   justify-content: center;
   background: linear-gradient(135deg, var(--logo-blue) 50%, var(--logo-green) 50%);
   border-radius: 50%;
-  color: #FFFFFF;
+  color: var(--cc-card-bg);
   font-size: 5mm;
   font-weight: var(--fw-bold);
 }

@@ -38,35 +38,35 @@
    ----------------------------------------------------------------------------- */
 .m8-appendix-page {
   /* 2.1 基础色（Premium Navy/Teal/Sand） */
-  --appendix-color-bg: var(--pm-bg-page, #f8f5ef);
-  --appendix-color-text-primary: var(--pm-text-primary, #1a2332);
-  --appendix-color-text-secondary: var(--pm-text-secondary, #4a5568);
+  --appendix-color-bg: var(--pm-bg-page, var(--cc-page-bg));
+  --appendix-color-text-primary: var(--pm-text-primary, var(--cc-text-primary));
+  --appendix-color-text-secondary: var(--pm-text-secondary, var(--cc-text-secondary));
   --appendix-color-card: var(--pm-bg-card-alt, #faf8f4);
 
   /* 2.2 标注色 */
   --appendix-color-label-purple: var(--pm-sand-dark, #b27a37);
-  --appendix-color-label-orange: var(--pm-status-attention, #d4943a);
-  --appendix-color-label-blue: var(--pm-teal, #1f6f78);
-  --appendix-color-label-red: var(--pm-status-danger, #c44040);
+  --appendix-color-label-orange: var(--pm-status-attention, var(--cc-warning-orange));
+  --appendix-color-label-blue: var(--pm-teal, var(--cc-accent-primary));
+  --appendix-color-label-red: var(--pm-status-danger, var(--cc-danger-red));
 
   /* 2.3 强调色 */
-  --appendix-color-accent: var(--pm-teal, #1f6f78);
+  --appendix-color-accent: var(--pm-teal, var(--cc-accent-primary));
 
   /* 2.4 本页专用扩展色 */
-  --appendix-color-page: var(--pm-bg-card, #ffffff);
+  --appendix-color-page: var(--pm-bg-card, var(--cc-card-bg));
   --appendix-color-surface-muted: var(--pm-bg-section, #f0ede6);
-  --appendix-color-surface-subtle: var(--pm-bg-muted, #f3f0ea);
-  --appendix-color-border-table: var(--pm-border-light, #e4e8ec);
-  --appendix-color-panel-border: var(--pm-border-card, #d8e2e8);
+  --appendix-color-surface-subtle: var(--pm-bg-muted, var(--cc-bg-muted));
+  --appendix-color-border-table: var(--pm-border-light, var(--cc-table-border));
+  --appendix-color-panel-border: var(--pm-border-card, var(--cc-card-border));
 
   /* 2.5 本页强调色与进度条填充色 */
-  --appendix-color-accent-cyan: var(--pm-teal, #1f6f78);
-  --appendix-color-bar-orange: var(--pm-status-attention, #d4943a);
+  --appendix-color-accent-cyan: var(--pm-teal, var(--cc-accent-primary));
+  --appendix-color-bar-orange: var(--pm-status-attention, var(--cc-warning-orange));
   --appendix-color-bar-purple: var(--pm-sand-dark, #b27a37);
 
   /* 2.6 状态色 */
-  --appendix-color-status-blue: var(--pm-status-achieved, #1f6f78);
-  --appendix-color-status-orange: var(--pm-status-attention, #d4943a);
+  --appendix-color-status-blue: var(--pm-status-achieved, var(--cc-accent-primary));
+  --appendix-color-status-orange: var(--pm-status-attention, var(--cc-warning-orange));
   --appendix-color-status-purple: var(--pm-status-improve, #8b4c6a);
   
   /* 2.7 字体 */
