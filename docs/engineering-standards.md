@@ -19,8 +19,6 @@
 │   ├── json/         # 样本 JSON 文件
 │   └── output/       # 渲染输出（.gitignore）
 ├── docs/             # 文档
-├── prompts/          # 漫画场景 prompt
-├── static/           # 漫画图片等静态资源
 ├── vault/            # dev-flow 任务管理（Obsidian vault）
 └── tests/            # 测试文件（待迁移）
 ```
@@ -189,7 +187,6 @@ AGENTS.md
 | m4/m5/m6 CSS 拆分 | 3h | m7 试点成功 |
 | 模板命名统一 | 2h | A 项完成 |
 | 入口脚本拆分 | 1h | 无 |
-| static/ → assets/comics/ | 0.5h | 可与模板命名同步 |
 | CSS/模板代码风格规范 | 1h | CSS 拆分完成 |
 
 ### 核心原则

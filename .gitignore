@@ -44,4 +44,5 @@ Thumbs.db
 .ace-tool/
 docs/archive/
 docs/images/
+prompts/
 static/
