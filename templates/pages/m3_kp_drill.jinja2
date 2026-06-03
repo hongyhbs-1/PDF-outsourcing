@@ -197,12 +197,132 @@
   {%- endif -%}
 {% endmacro %}
 
+{# 将内部层级名转换成家长可读中文标签 #}
+{% macro level_label(level) -%}
+  {%- if level == "L1" -%}领域
+  {%- elif level == "L2" -%}模块
+  {%- elif level == "L3" -%}知识点
+  {%- elif level == "L4" -%}技能点
+  {%- else -%}{{ level | default("层级", true) }}
+  {%- endif -%}
+{%- endmacro %}
+
+{# 友好百分比：整数不保留 .0，非整数保留 1 位 #}
+{% macro format_percent_value(value, default="--") -%}
+  {%- if value is not none -%}
+    {%- set v = value | float -%}
+    {%- if v == (v | round(0)) -%}{{ v | int }}%{%- else -%}{{ "%.1f" | format(v) }}%{%- endif -%}
+  {%- else -%}
+    {{ default }}
+  {%- endif -%}
+{%- endmacro %}
+
+{# 距目标线改为正向说明：差/超，不再裸露负数 #}
+{% macro render_gap_text(delta) -%}
+  {%- if delta is none -%}
+    --
+  {%- elif delta < 0 -%}
+    差{{ format_percent_value(0 - delta, "") }}
+  {%- elif delta > 0 -%}
+    超{{ format_percent_value(delta, "") }}
+  {%- else -%}
+    达标
+  {%- endif -%}
+{%- endmacro %}
+
+{# 进度条宽度分桶，避免在 M3 中使用 inline style #}
+{% macro progress_width_class(value) -%}
+  {%- set v = value | default(0, true) | float -%}
+  {%- if v >= 97.5 -%}m3-kp-progress-fill--w100
+  {%- elif v >= 92.5 -%}m3-kp-progress-fill--w95
+  {%- elif v >= 87.5 -%}m3-kp-progress-fill--w90
+  {%- elif v >= 82.5 -%}m3-kp-progress-fill--w85
+  {%- elif v >= 77.5 -%}m3-kp-progress-fill--w80
+  {%- elif v >= 72.5 -%}m3-kp-progress-fill--w75
+  {%- elif v >= 67.5 -%}m3-kp-progress-fill--w70
+  {%- elif v >= 62.5 -%}m3-kp-progress-fill--w65
+  {%- elif v >= 57.5 -%}m3-kp-progress-fill--w60
+  {%- elif v >= 52.5 -%}m3-kp-progress-fill--w55
+  {%- elif v >= 47.5 -%}m3-kp-progress-fill--w50
+  {%- elif v >= 42.5 -%}m3-kp-progress-fill--w45
+  {%- elif v >= 37.5 -%}m3-kp-progress-fill--w40
+  {%- elif v >= 32.5 -%}m3-kp-progress-fill--w35
+  {%- elif v >= 27.5 -%}m3-kp-progress-fill--w30
+  {%- elif v >= 22.5 -%}m3-kp-progress-fill--w25
+  {%- elif v >= 17.5 -%}m3-kp-progress-fill--w20
+  {%- elif v >= 12.5 -%}m3-kp-progress-fill--w15
+  {%- elif v >= 7.5 -%}m3-kp-progress-fill--w10
+  {%- elif v >= 2.5 -%}m3-kp-progress-fill--w5
+  {%- else -%}m3-kp-progress-fill--w0
+  {%- endif -%}
+{%- endmacro %}
+
+{# 将英文样本中的父级编码映射成中文名称，避免显示 1.03/2.01 等内部编码 #}
+{% macro parent_display_for_item(item, level, l2_items, l3_items, fallback_domain) -%}
+  {%- if level == "L2" -%}
+    {{ fallback_domain }}
+  {%- elif level == "L3" -%}
+    {%- set raw = item.parent_name | default(item.parent_l2_name, true) -%}
+    {%- set ns = namespace(text='') -%}
+    {%- for p in l2_items -%}
+      {%- if raw and p.code is defined and p.code == raw -%}{%- set ns.text = p.name_cn | default(raw, true) -%}{%- endif -%}
+    {%- endfor -%}
+    {%- if ns.text -%}{{ ns.text }}{%- else -%}{{ display_domain_or_text(raw | default(fallback_domain, true)) }}{%- endif -%}
+  {%- elif level == "L4" -%}
+    {%- set raw = item.parent_name | default(item.parent_l3_name, true) -%}
+    {%- set ns = namespace(text='') -%}
+    {%- for p in l3_items -%}
+      {%- if raw and p.code is defined and p.code == raw -%}{%- set ns.text = p.name_cn | default(raw, true) -%}{%- endif -%}
+    {%- endfor -%}
+    {%- if ns.text -%}{{ ns.text }}{%- else -%}{{ display_domain_or_text(raw | default(fallback_domain, true)) }}{%- endif -%}
+  {%- else -%}
+    {{ fallback_domain }}
+  {%- endif -%}
+{%- endmacro %}
+
+{# P10 新版：单条知识诊断行 #}
+{% macro render_diagnosis_row(row, d_name, l2_items, l3_items, display_index=1) %}
+  {%- set it = row.item -%}
+  {%- set level_code = row.level_code | default("L3", true) -%}
+  {%- set acc = it.accuracy if it.accuracy is defined else none -%}
+  {%- set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) -%}
+  {%- set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) -%}
+  {%- set status = "achieved" if achieved else ("danger" if acc is not none and acc < 60 else "attention") -%}
+  {%- set parent_text = parent_display_for_item(it, level_code, l2_items, l3_items, d_name) -%}
+  <div class="m3-kp-diagnosis-row m3-kp-diagnosis-row--{{ status }}">
+    <div class="m3-kp-diagnosis-row__marker">{% if achieved %}&#10003;{% else %}{{ display_index }}{% endif %}</div>
+    <div class="m3-kp-diagnosis-row__main">
+      <div class="m3-kp-diagnosis-row__name">
+        {{ safe_text(it.name_cn) }}
+        <span class="m3-kp-diagnosis-row__type">{{ level_label(level_code) }}</span>
+      </div>
+      <div class="m3-kp-diagnosis-row__path">
+        {{ d_name }}{% if level_code != "L2" and parent_text %} · {{ parent_text }}{% endif %}
+      </div>
+    </div>
+    <div class="m3-kp-diagnosis-row__metric">
+      <strong>{{ format_percent_value(acc) }}</strong>
+      <span>当前正确率</span>
+    </div>
+    <div class="m3-kp-diagnosis-row__progress">
+      <div class="m3-kp-progress-track"><div class="m3-kp-progress-fill {{ progress_width_class(acc) }}"></div></div>
+      <span class="m3-kp-diagnosis-row__gap">{{ render_gap_text(delta) }}</span>
+    </div>
+    <div class="m3-kp-diagnosis-row__count">
+      <strong>{{ safe_text(it.count) }}题</strong>
+      <span>已做题量</span>
+    </div>
+  </div>
+{% endmacro %}
+
 {# 将 L1 编码（如 1.00）转成当前学科的领域名；其它编码/文本原样展示 #}
 {% macro display_domain_or_text(value) %}
   {%- if value is not none and value != "" -%}
     {%- set text = value | string -%}
     {%- set key = text.split('.')[0] -%}
-    {%- if key in domain_names and (text == key or text == key ~ '.00') -%}
+    {%- if knowledge_code_names is defined and text in knowledge_code_names -%}
+      {{- knowledge_code_names[text] -}}
+    {%- elif key in domain_names and (text == key or text == key ~ '.00') -%}
       {{- domain_names[key] -}}
     {%- else -%}
       {{- text -}}
@@ -243,7 +363,7 @@
   <div class="m3-kp-drill__section">
     {# 区块标题 #}
     <div class="m3-kp-drill__section-title">
-      {{ lb_icon('module' if level == 'L2' else ('target' if level == 'L3' else 'feature'), 'frame-inline-icon') }} {{ level }} {{ col_name }}分析
+      {{ lb_icon('module' if level == 'L2' else ('target' if level == 'L3' else 'feature'), 'frame-inline-icon') }} {{ level_label(level) }}分析
     </div>
 
     {# 数据表格 #}
@@ -384,6 +504,14 @@
   {% endfor %}
 {% endif %}
 {% set domain_panels = data.domain_panels | default({}, true) %}
+{% set knowledge_code_names = {} %}
+{% for _dk, _panel in domain_panels.items() %}
+  {% for _lvl_items in [_panel.l2_items | default([], true), _panel.l3_items | default([], true), _panel.l4_items | default([], true)] %}
+    {% for _it in _lvl_items %}
+      {% if _it.code is defined and _it.code and _it.name_cn %}{% set _ = knowledge_code_names.update({_it.code: _it.name_cn}) %}{% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endfor %}
 
 {# [v2.0] 固定的六大领域编号列表（确保始终生成6个panel） #}
 {% set domain_keys = ["1", "2", "3", "4", "5", "6"] %}
@@ -413,11 +541,11 @@
       <div class="m3-kp-core-summary__label">{{ lb_icon('tree', 'frame-conclusion-icon') }}本页核心结论</div>
       <div class="m3-kp-core-summary__text">
         {% if drill_focus.l3 or drill_focus.l4 %}
-          本页沿 L1-L4 逐层钻取，重点定位到{% if drill_focus.l3 %}「{{ drill_focus.l3 }}」{% endif %}{% if drill_focus.l4 %}及「{{ drill_focus.l4 }}」{% endif %}{% if drill_focus.max_gap %}，最大距目标线约 {{ drill_focus.max_gap }}{% endif %}；
+          本页按「领域→模块→知识点」梳理掌握情况，优先关注{% if drill_focus.l3 %}「{{ drill_focus.l3 }}」{% endif %}{% if drill_focus.l4 %}及「{{ drill_focus.l4 }}」{% endif %}{% if drill_focus.max_gap %}，最大提升空间约 {{ drill_focus.max_gap }}{% endif %}；
         {% else %}
-          本页用于展示从领域到考点细节的短板定位路径；
+          本页用于展示从领域到知识点细节的掌握情况；
         {% endif %}
-        {% if drill_nodata_names | length > 0 %}另有 {{ drill_nodata_names | length }} 个领域样本不足，需补充答题记录后再做细颗粒诊断。{% else %}下方按领域列出知识模块、知识点与考点细节，便于安排专项补强。{% endif %}
+        {% if drill_nodata_names | length > 0 %}另有 {{ drill_nodata_names | length }} 个领域样本不足，需补充答题记录后再做细颗粒诊断。{% else %}下方按领域展示未达标与已达标明细，颜色区分状态，便于安排专项补强。{% endif %}
       </div>
     </section>
 
@@ -438,7 +566,7 @@
         <div class="m3-kp-steps">
           {% for step in level_guide %}
             <div class="m3-kp-step m3-kp-step--{{ step.theme | default('l1', true) }}">
-              <div class="m3-kp-step__lvl">{{ step.level | default("L?", true) }}</div>
+              <div class="m3-kp-step__lvl">{{ level_label(step.level | default('', true)) }}</div>
               <div class="m3-kp-step__meta">
                 <div class="m3-kp-step__name">{{ lb_icon('tree' if step.level == 'L1' else ('module' if step.level == 'L2' else ('target' if step.level == 'L3' else 'feature')), 'frame-inline-icon') }} {{ step.name | default("--", true) }}</div>
                 <div class="m3-kp-step__desc">{{ step.desc | default("", true) }}</div>
@@ -453,7 +581,7 @@
         {# 层级数据为空时的兜底显示 #}
         <div class="m3-kp-steps">
           <div class="m3-kp-step m3-kp-step--l1">
-            <div class="m3-kp-step__lvl">L1</div>
+            <div class="m3-kp-step__lvl">领域</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('tree', 'frame-inline-icon') }} 领域</div>
               <div class="m3-kp-step__desc">(6项)</div>
@@ -461,7 +589,7 @@
           </div>
           <div class="m3-kp-step-arrow"></div>
           <div class="m3-kp-step m3-kp-step--l2">
-            <div class="m3-kp-step__lvl">L2</div>
+            <div class="m3-kp-step__lvl">模块</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('module', 'frame-inline-icon') }} 模块</div>
               <div class="m3-kp-step__desc">(粗粒度)</div>
@@ -469,7 +597,7 @@
           </div>
           <div class="m3-kp-step-arrow"></div>
           <div class="m3-kp-step m3-kp-step--l3">
-            <div class="m3-kp-step__lvl">L3</div>
+            <div class="m3-kp-step__lvl">知识点</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('target', 'frame-inline-icon') }} 知识点</div>
               <div class="m3-kp-step__desc">(中粒度)</div>
@@ -478,7 +606,7 @@
           {% if l4_items is defined and l4_items | length > 0 %}
           <div class="m3-kp-step-arrow"></div>
           <div class="m3-kp-step m3-kp-step--l4">
-            <div class="m3-kp-step__lvl">L4</div>
+            <div class="m3-kp-step__lvl">技能点</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('feature', 'frame-inline-icon') }} 技能点</div>
               <div class="m3-kp-step__desc">(细粒度)</div>
@@ -507,7 +635,7 @@
         <div class="m3-kp-path__nodes">
           {% for n in path_example.nodes %}
             <div class="m3-kp-path-node m3-kp-path-node--{{ n.theme | default('l1', true) }}">
-              <div class="m3-kp-path-node__lvl">({{ n.level | default("L?", true) }})</div>
+              <div class="m3-kp-path-node__lvl">{{ level_label(n.level | default('', true)) }}</div>
               <div class="m3-kp-path-node__name">{{ display_domain_or_text(n.name_cn | default("--", true)) }}</div>
               <div class="m3-kp-path-node__delta">
                 {# [v1.1] 支持 gap_to_target 回退 #}
@@ -570,72 +698,156 @@
         {% set l2_items = panel.l2_items | default([], true) %}
         {% set l3_items = panel.l3_items | default([], true) %}
         {% set l4_items = panel.l4_items | default([], true) %}
-
-        {# 判断该领域是否有任何层级的数据 #}
         {% set any_items = (l2_items | length > 0) or (l3_items | length > 0) or (l4_items | length > 0) %}
 
         {# 跳过无数据领域 — 统一在末尾合并展示 #}
-        {% if not any_items and not panel_has_data and not panel.all_achieved | default(false) %}
+        {% if not any_items and not panel_has_data and not (panel.all_achieved | default(false)) %}
           {# 跳过，不在循环中渲染空 panel #}
         {% else %}
-        {# === 领域 Panel 开始 === #}
-        <div class="m3-kp-drill__panel" data-domain-code="{{ d_code }}" data-domain-name="{{ d_name }}">
 
-          {# 领域标题栏 #}
-          <div class="m3-kp-drill__domain-header">
-            <span class="m3-kp-drill__domain-badge m3-kp-drill__domain-badge--l1">L1</span>
-            {{ lb_icon('tree', 'frame-inline-icon') }}
-            <span class="m3-kp-drill__domain-name">{{ d_name }}</span>
+        {# P10 新版：从“内部层级表格”改为“领域诊断卡片”。
+           展示策略：未达标优先，其次补充已达标；最多展示 5 条，避免信息密度过高。 #}
+        {% set row_ns = namespace(items=[], unmet=0, achieved=0, danger=0, attention=0) %}
+
+        {# 1) 未达标知识点 #}
+        {% for it in l3_items %}
+          {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
+          {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
+          {% if not achieved and row_ns.items | length < 5 %}
+            {% set _ = row_ns.items.append({'item': it, 'level_code': 'L3'}) %}
+            {% set row_ns.unmet = row_ns.unmet + 1 %}
+            {% if it.accuracy is defined and it.accuracy is not none and (it.accuracy | float) < 60 %}{% set row_ns.danger = row_ns.danger + 1 %}{% else %}{% set row_ns.attention = row_ns.attention + 1 %}{% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# 2) 未达标模块（直接用“模块”中文标签，不再暴露 L2） #}
+        {% for it in l2_items %}
+          {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
+          {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
+          {% if not achieved and row_ns.items | length < 5 %}
+            {% set _ = row_ns.items.append({'item': it, 'level_code': 'L2'}) %}
+            {% set row_ns.unmet = row_ns.unmet + 1 %}
+            {% if it.accuracy is defined and it.accuracy is not none and (it.accuracy | float) < 60 %}{% set row_ns.danger = row_ns.danger + 1 %}{% else %}{% set row_ns.attention = row_ns.attention + 1 %}{% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# 3) 未达标技能点 #}
+        {% for it in l4_items %}
+          {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
+          {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
+          {% if not achieved and row_ns.items | length < 5 %}
+            {% set _ = row_ns.items.append({'item': it, 'level_code': 'L4'}) %}
+            {% set row_ns.unmet = row_ns.unmet + 1 %}
+            {% if it.accuracy is defined and it.accuracy is not none and (it.accuracy | float) < 60 %}{% set row_ns.danger = row_ns.danger + 1 %}{% else %}{% set row_ns.attention = row_ns.attention + 1 %}{% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# 4) 已达标知识点/模块/技能点补足卡片明细 #}
+        {% for it in l3_items %}
+          {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
+          {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
+          {% if achieved and row_ns.items | length < 5 %}
+            {% set _ = row_ns.items.append({'item': it, 'level_code': 'L3'}) %}
+            {% set row_ns.achieved = row_ns.achieved + 1 %}
+          {% endif %}
+        {% endfor %}
+        {% for it in l2_items %}
+          {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
+          {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
+          {% if achieved and row_ns.items | length < 5 %}
+            {% set _ = row_ns.items.append({'item': it, 'level_code': 'L2'}) %}
+            {% set row_ns.achieved = row_ns.achieved + 1 %}
+          {% endif %}
+        {% endfor %}
+        {% for it in l4_items %}
+          {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
+          {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
+          {% if achieved and row_ns.items | length < 5 %}
+            {% set _ = row_ns.items.append({'item': it, 'level_code': 'L4'}) %}
+            {% set row_ns.achieved = row_ns.achieved + 1 %}
+          {% endif %}
+        {% endfor %}
+
+        {% set domain_status = 'achieved' if row_ns.unmet == 0 else ('danger' if row_ns.danger > 0 else 'attention') %}
+        {% set domain_status_text = '✓ 全部达标' if domain_status == 'achieved' else ('△ 需重点突破' if domain_status == 'danger' else '△ 有提升空间') %}
+
+        <div class="m3-kp-drill__panel m3-kp-diagnostic-card m3-kp-diagnostic-card--{{ domain_status }}" data-domain-code="{{ d_code }}" data-domain-name="{{ d_name }}">
+          <div class="m3-kp-diagnostic-card__header">
+            <div class="m3-kp-diagnostic-card__avatar">{{ d_name[0] if d_name else '域' }}</div>
+            <div class="m3-kp-diagnostic-card__heading">
+              <div class="m3-kp-diagnostic-card__title">{{ d_name }}</div>
+              <div class="m3-kp-diagnostic-card__meta">领域 · 共 {{ row_ns.items | length }} 个知识点已测评</div>
+            </div>
+            <div class="m3-kp-diagnostic-card__status m3-kp-diagnostic-card__status--{{ domain_status }}">{{ domain_status_text }}</div>
           </div>
 
-          {% if panel.all_achieved | default(false) %}
-            {# 状态1: 全达标 — 显示鼓励文案 + 展示达标数据 #}
-            <div class="m3-kp-drill__achieved-state">
-              <div class="m3-kp-drill__achieved-icon">&#10003;</div>
-              <p class="m3-kp-drill__achieved-text">{{ panel.encourage_text | default("「" ~ d_name ~ "」当前掌握得非常好，可以迈向下个难度，争取更高分数") }}</p>
+          {% if row_ns.items | length == 0 %}
+          <div class="m3-kp-diagnostic-card__empty">该领域暂无可展示的知识点明细</div>
+          {% else %}
+            {% if row_ns.unmet > 0 %}
+            <div class="m3-kp-diagnosis-group">
+              <div class="m3-kp-diagnosis-group__title m3-kp-diagnosis-group__title--unmet">⬇ 未达标（按优先级排列）</div>
+              {% set group = namespace(i=0) %}
+              {% for row in row_ns.items %}
+                {% set it = row.item %}
+                {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
+                {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
+                {% if not achieved %}
+                  {% set group.i = group.i + 1 %}
+                  {{ render_diagnosis_row(row, d_name, l2_items, l3_items, group.i) }}
+                {% endif %}
+              {% endfor %}
             </div>
-            {# 全达标时仍展示表格 (管理员决策: 全量展示+达标标记) #}
-            {{ render_level_table(
-                level="L2", theme="l2", col_name="知识点",
-                col_parent="所属领域", items=l2_items
-            ) }}
-            {{ render_level_table(
-                level="L3", theme="l3", col_name="知识点",
-                col_parent="上级模块", items=l3_items
-            ) }}
-            {% if l4_items | length > 0 %}
-            {{ render_level_table(
-                level="L4", theme="l4", col_name="知识点",
-                col_parent="上级知识点", items=l4_items
-            ) }}
             {% endif %}
-          {% elif any_items or panel_has_data %}
-            {# 状态2: 有数据 (含达标+未达标混合) — 渲染表格 #}
-            {{ render_level_table(
-                level="L2", theme="l2", col_name="知识点",
-                col_parent="所属领域", items=l2_items,
-                cta_text="下钻至L3查看具体知识点"
-            ) }}
-            {{ render_level_table(
-                level="L3", theme="l3", col_name="知识点",
-                col_parent="上级模块", items=l3_items,
-                cta_text=("下钻至L4查看最细粒度技能点" if l4_items | length > 0 else none)
-            ) }}
-            {% if l4_items | length > 0 %}
-            {{ render_level_table(
-                level="L4", theme="l4", col_name="知识点",
-                col_parent="上级知识点", items=l4_items
-            ) }}
+
+            {% if row_ns.achieved > 0 %}
+            <div class="m3-kp-diagnosis-group">
+              <div class="m3-kp-diagnosis-group__title m3-kp-diagnosis-group__title--achieved">✓ 已达标</div>
+              {% for row in row_ns.items %}
+                {% set it = row.item %}
+                {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
+                {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
+                {% if achieved %}
+                  {{ render_diagnosis_row(row, d_name, l2_items, l3_items, loop.index) }}
+                {% endif %}
+              {% endfor %}
+            </div>
             {% endif %}
           {% endif %}
-
         </div>
-        {# === 领域 Panel 结束 === #}
         {% endif %}
       {% endmacro %}
 
       {% if render_domain_keys | length > 0 %}
+      {% set focus_ns = namespace(names=[]) %}
+      {% for dk in render_domain_keys %}
+        {% set panel = domain_panels[dk] | default({}, true) %}
+        {% for it in panel.l3_items | default([], true) %}
+          {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
+          {% if delta is not none and delta < 0 and focus_ns.names | length < 2 and it.name_cn not in focus_ns.names %}
+            {% set _ = focus_ns.names.append(it.name_cn) %}
+          {% endif %}
+        {% endfor %}
+        {% for it in panel.l2_items | default([], true) %}
+          {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
+          {% if delta is not none and delta < 0 and focus_ns.names | length < 2 and it.name_cn not in focus_ns.names %}
+            {% set _ = focus_ns.names.append(it.name_cn) %}
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
       <div class="m3-kp-drill__grid">
+        <div class="m3-kp-diagnosis-header">
+          <div class="m3-kp-diagnosis-header__subtitle">
+            基于答题数据，按「领域→模块→知识点」三层定位掌握情况，目标线为 75%。
+            {% if focus_ns.names | length > 0 %}建议优先突破 <strong>{{ focus_ns.names | join('、') }}</strong>。{% else %}当前展示领域整体掌握稳定，建议继续保持。{% endif %}
+          </div>
+          <div class="m3-kp-status-legend">
+            <span class="m3-kp-status-legend__label">正确率状态：</span>
+            <span class="m3-kp-status-legend__item"><i class="m3-kp-status-dot m3-kp-status-dot--danger"></i>差距较大（&lt;60%）</span>
+            <span class="m3-kp-status-legend__item"><i class="m3-kp-status-dot m3-kp-status-dot--attention"></i>有待提升（60-75%）</span>
+            <span class="m3-kp-status-legend__item"><i class="m3-kp-status-dot m3-kp-status-dot--achieved"></i>已达标（≥75%）</span>
+          </div>
+        </div>
         <div class="m3-kp-drill__panel-card">
           <div class="m3-kp-drill__panels{% if render_domain_keys | length == 4 %} m3-kp-drill__panels--grid-2x2{% endif %}">
             {% for dk in render_domain_keys %}

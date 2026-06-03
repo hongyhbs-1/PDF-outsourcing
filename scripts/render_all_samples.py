@@ -151,6 +151,7 @@ def render_sample(sample_file: str, *, index: int, total: int,
         html_path = out_dir / f"{stem}.html"
         pdf_path = out_dir / f"{stem}.pdf"
     report_variant = MODE_TO_VARIANT[mode]
+    landscape = mode == "场景"
     print_sample_header(
         index=index,
         total=total,
@@ -172,6 +173,7 @@ def render_sample(sample_file: str, *, index: int, total: int,
         html = render_standalone.render_html(
             payload,
             report_variant=report_variant,
+            landscape=landscape,
         )
         html_path.write_text(html, encoding="utf-8")
         print(f"  HTML: {html_path.stat().st_size:,} bytes")
@@ -180,6 +182,7 @@ def render_sample(sample_file: str, *, index: int, total: int,
             str(pdf_path),
             payload,
             report_variant=report_variant,
+            landscape=landscape,
         )
         pdf_size = pdf_path.stat().st_size if pdf_path.exists() else 0
         elapsed = time.time() - t0

@@ -148,17 +148,19 @@
     {# 已达标/优等生路径: 当前→保持→冲刺；所有后续节点都应高于当前水平 #}
     <div class="ip-stage ip-stage--current">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
+      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前</div>
       <div class="ip-stage__desc">{% if target_reached %}已达标{% else %}优秀{% endif %}</div>
     </div>
     <div class="ip-stage ip-stage--boost">
+      <div class="ip-stage__transition">稳步拔高</div>
       <div class="ip-stage__marker ip-stage__marker--future">{{ stretch_acc }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}稳步拔高</div>
+      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}阶段目标</div>
       <div class="ip-stage__desc">约 30 天</div>
     </div>
     <div class="ip-stage ip-stage--target">
+      <div class="ip-stage__transition">冲刺突破</div>
       <div class="ip-stage__marker ip-stage__marker--future">{{ stretch_target_acc }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('trophy', 'frame-inline-icon ip-stage-icon--target') }}冲刺满分</div>
+      <div class="ip-stage__label">{{ lb_icon('trophy', 'frame-inline-icon ip-stage-icon--target') }}最终目标</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
     {% endif %}

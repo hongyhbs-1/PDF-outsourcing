@@ -840,7 +840,358 @@
 }
 
 /* -----------------------------------------------------------------------------
- * 17. 打印优化 (Print Optimization)
+ * 17. P10 知识掌握状态卡片 (Diagnosis Cards)
+ * ----------------------------------------------------------------------------- */
+.m3-kp-diagnosis-header {
+  margin: 0 0 18px;
+}
+
+.m3-kp-diagnosis-header__subtitle {
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.m3-kp-diagnosis-header__subtitle strong {
+  color: var(--color-danger);
+  font-weight: var(--font-weight-bold);
+}
+
+.m3-kp-status-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 12px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.m3-kp-status-legend__label {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.m3-kp-status-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-body);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.m3-kp-status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.m3-kp-status-dot--danger { background: #e54848; }
+.m3-kp-status-dot--attention { background: #e99a00; }
+.m3-kp-status-dot--achieved { background: #35b764; }
+
+/* 新版明细卡片使用单列大卡片，避免原 L2/L3 表格的认知负担。 */
+#toc-m3 .m3-kp-drill__panels,
+#toc-m3 .m3-kp-drill__panels--grid-2x2 {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+
+.m3-kp-diagnostic-card {
+  padding: 18px 22px 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--pm-shadow-card, 0 2px 8px rgba(0, 0, 0, 0.04));
+}
+
+.m3-kp-diagnostic-card--danger { border-color: rgba(229, 72, 72, 0.25); }
+.m3-kp-diagnostic-card--attention { border-color: rgba(233, 154, 0, 0.25); }
+.m3-kp-diagnostic-card--achieved { border-color: rgba(53, 183, 100, 0.22); }
+
+.m3-kp-diagnostic-card__header {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.m3-kp-diagnostic-card__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 22px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+.m3-kp-diagnostic-card--danger .m3-kp-diagnostic-card__avatar { background: #e9532e; }
+.m3-kp-diagnostic-card--attention .m3-kp-diagnostic-card__avatar { background: #e8a100; }
+.m3-kp-diagnostic-card--achieved .m3-kp-diagnostic-card__avatar { background: #2fb35d; }
+
+.m3-kp-diagnostic-card__heading {
+  min-width: 0;
+}
+
+.m3-kp-diagnostic-card__title {
+  font-size: 22px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  color: var(--color-text-primary);
+}
+
+.m3-kp-diagnostic-card__meta {
+  margin-top: 4px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.m3-kp-diagnostic-card__status {
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
+.m3-kp-diagnostic-card__status--danger {
+  color: #d53b30;
+  background: rgba(229, 72, 72, 0.10);
+}
+
+.m3-kp-diagnostic-card__status--attention {
+  color: #c67800;
+  background: rgba(233, 154, 0, 0.12);
+}
+
+.m3-kp-diagnostic-card__status--achieved {
+  color: #159447;
+  background: rgba(53, 183, 100, 0.12);
+}
+
+.m3-kp-diagnostic-card__empty {
+  padding: 18px 20px;
+  color: var(--color-text-muted);
+  text-align: center;
+  background: var(--color-panel-bg);
+  border-radius: 12px;
+}
+
+.m3-kp-diagnosis-group + .m3-kp-diagnosis-group {
+  margin-top: 18px;
+}
+
+.m3-kp-diagnosis-group__title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+}
+
+.m3-kp-diagnosis-group__title--unmet { color: #7f8a9a; }
+.m3-kp-diagnosis-group__title--achieved { color: #7f8a9a; }
+
+.m3-kp-diagnosis-row {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 82px 132px 64px;
+  align-items: center;
+  gap: 12px;
+  min-height: 66px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--color-divider);
+  border-radius: 12px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.m3-kp-diagnosis-row:last-child {
+  margin-bottom: 0;
+}
+
+.m3-kp-diagnosis-row--danger {
+  background: rgba(229, 72, 72, 0.035);
+}
+
+.m3-kp-diagnosis-row--attention {
+  background: rgba(233, 154, 0, 0.045);
+}
+
+.m3-kp-diagnosis-row--achieved {
+  background: rgba(53, 183, 100, 0.045);
+  border-color: rgba(53, 183, 100, 0.18);
+}
+
+.m3-kp-diagnosis-row__marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: var(--font-weight-bold);
+}
+
+.m3-kp-diagnosis-row--danger .m3-kp-diagnosis-row__marker {
+  color: #e54848;
+  background: rgba(229, 72, 72, 0.10);
+}
+
+.m3-kp-diagnosis-row--attention .m3-kp-diagnosis-row__marker {
+  color: #c67800;
+  background: rgba(233, 154, 0, 0.12);
+}
+
+.m3-kp-diagnosis-row--achieved .m3-kp-diagnosis-row__marker {
+  color: #35b764;
+  background: rgba(53, 183, 100, 0.10);
+}
+
+.m3-kp-diagnosis-row__main {
+  min-width: 0;
+}
+
+.m3-kp-diagnosis-row__name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+}
+
+.m3-kp-diagnosis-row__type {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 5px;
+  color: var(--color-text-muted);
+  background: var(--color-panel-bg);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.m3-kp-diagnosis-row__path {
+  margin-top: 3px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.m3-kp-diagnosis-row__metric,
+.m3-kp-diagnosis-row__count {
+  text-align: center;
+}
+
+.m3-kp-diagnosis-row__metric strong,
+.m3-kp-diagnosis-row__count strong {
+  display: block;
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+.m3-kp-diagnosis-row--danger .m3-kp-diagnosis-row__metric strong { color: #e54848; }
+.m3-kp-diagnosis-row--attention .m3-kp-diagnosis-row__metric strong { color: #e99a00; }
+.m3-kp-diagnosis-row--achieved .m3-kp-diagnosis-row__metric strong { color: #159447; }
+
+.m3-kp-diagnosis-row__metric span,
+.m3-kp-diagnosis-row__count span {
+  display: block;
+  margin-top: 3px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.m3-kp-diagnosis-row__progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.m3-kp-progress-track {
+  position: relative;
+  width: 86px;
+  height: 8px;
+  background: var(--color-panel-bg);
+  border-radius: 999px;
+  overflow: visible;
+}
+
+.m3-kp-progress-track::after {
+  content: "";
+  position: absolute;
+  left: 75%;
+  top: -4px;
+  width: 2px;
+  height: 16px;
+  background: #6f7785;
+  border-radius: 2px;
+}
+
+.m3-kp-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.m3-kp-diagnosis-row--danger .m3-kp-progress-fill { background: #e54848; }
+.m3-kp-diagnosis-row--attention .m3-kp-progress-fill { background: #e99a00; }
+.m3-kp-diagnosis-row--achieved .m3-kp-progress-fill { background: #35b764; }
+
+.m3-kp-progress-fill--w0 { width: 0%; }
+.m3-kp-progress-fill--w5 { width: 5%; }
+.m3-kp-progress-fill--w10 { width: 10%; }
+.m3-kp-progress-fill--w15 { width: 15%; }
+.m3-kp-progress-fill--w20 { width: 20%; }
+.m3-kp-progress-fill--w25 { width: 25%; }
+.m3-kp-progress-fill--w30 { width: 30%; }
+.m3-kp-progress-fill--w35 { width: 35%; }
+.m3-kp-progress-fill--w40 { width: 40%; }
+.m3-kp-progress-fill--w45 { width: 45%; }
+.m3-kp-progress-fill--w50 { width: 50%; }
+.m3-kp-progress-fill--w55 { width: 55%; }
+.m3-kp-progress-fill--w60 { width: 60%; }
+.m3-kp-progress-fill--w65 { width: 65%; }
+.m3-kp-progress-fill--w70 { width: 70%; }
+.m3-kp-progress-fill--w75 { width: 75%; }
+.m3-kp-progress-fill--w80 { width: 80%; }
+.m3-kp-progress-fill--w85 { width: 85%; }
+.m3-kp-progress-fill--w90 { width: 90%; }
+.m3-kp-progress-fill--w95 { width: 95%; }
+.m3-kp-progress-fill--w100 { width: 100%; }
+
+.m3-kp-diagnosis-row__gap {
+  min-width: 42px;
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
+.m3-kp-diagnosis-row--danger .m3-kp-diagnosis-row__gap { color: #e54848; }
+.m3-kp-diagnosis-row--attention .m3-kp-diagnosis-row__gap { color: #c67800; }
+.m3-kp-diagnosis-row--achieved .m3-kp-diagnosis-row__gap { color: #159447; }
+
+/* -----------------------------------------------------------------------------
+ * 18. 打印优化 (Print Optimization)
  * ----------------------------------------------------------------------------- */
 
 /* --- 16.5 无数据领域合并汇总块 --- */
@@ -904,6 +1255,146 @@
 
   .m3-kp-drill__panels--grid-2x2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #toc-m3 .m3-kp-drill__panel-card {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  #toc-m3 .m3-kp-drill__panels,
+  #toc-m3 .m3-kp-drill__panels--grid-2x2 {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .m3-kp-diagnosis-header {
+    margin: 0 0 8px;
+  }
+
+  .m3-kp-diagnosis-header__subtitle {
+    margin-bottom: 7px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .m3-kp-status-legend {
+    gap: 10px;
+    padding: 6px 9px;
+    border-radius: 8px;
+  }
+
+  .m3-kp-status-legend__label,
+  .m3-kp-status-legend__item {
+    font-size: 9.5px;
+  }
+
+  .m3-kp-status-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .m3-kp-diagnostic-card {
+    padding: 9px 11px 10px;
+    border-radius: 10px;
+    box-shadow: none;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .m3-kp-diagnostic-card__header {
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding-bottom: 8px;
+    margin-bottom: 7px;
+  }
+
+  .m3-kp-diagnostic-card__avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+
+  .m3-kp-diagnostic-card__title {
+    font-size: 15px;
+  }
+
+  .m3-kp-diagnostic-card__meta,
+  .m3-kp-diagnostic-card__status {
+    font-size: 9.5px;
+  }
+
+  .m3-kp-diagnostic-card__status {
+    padding: 4px 8px;
+  }
+
+  .m3-kp-diagnosis-group + .m3-kp-diagnosis-group {
+    margin-top: 8px;
+  }
+
+  .m3-kp-diagnosis-group__title {
+    margin-bottom: 5px;
+    font-size: 9.5px;
+  }
+
+  .m3-kp-diagnosis-row {
+    grid-template-columns: 26px minmax(0, 1fr) 55px 92px 45px;
+    gap: 6px;
+    min-height: 40px;
+    padding: 5px 7px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+  }
+
+  .m3-kp-diagnosis-row__marker {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    font-size: 10px;
+  }
+
+  .m3-kp-diagnosis-row__name {
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .m3-kp-diagnosis-row__type {
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-size: 8.5px;
+  }
+
+  .m3-kp-diagnosis-row__path,
+  .m3-kp-diagnosis-row__metric span,
+  .m3-kp-diagnosis-row__count span {
+    font-size: 8.5px;
+  }
+
+  .m3-kp-diagnosis-row__metric strong,
+  .m3-kp-diagnosis-row__count strong {
+    font-size: 11px;
+  }
+
+  .m3-kp-diagnosis-row__progress {
+    gap: 5px;
+  }
+
+  .m3-kp-progress-track {
+    width: 62px;
+    height: 6px;
+  }
+
+  .m3-kp-progress-track::after {
+    top: -3px;
+    width: 1.5px;
+    height: 12px;
+  }
+
+  .m3-kp-diagnosis-row__gap {
+    min-width: 28px;
+    font-size: 9px;
   }
 
   .m3-kp-drill__grid .m3-kp-drill__panel {

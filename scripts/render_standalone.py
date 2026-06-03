@@ -296,13 +296,16 @@ def _build_pdf_chrome_meta(payload: dict) -> dict:
     return meta
 
 
-def _build_pdf_kwargs(payload: dict) -> dict:
+def _build_pdf_kwargs(payload: dict, *, landscape: bool = False) -> dict:
     """构建 Playwright page.pdf() 参数, 含页眉页脚。"""
-    return {
+    kwargs = {
         "format": "A4",
         "print_background": True,
         **build_pdf_chrome_options(_build_pdf_chrome_meta(payload)),
     }
+    if landscape:
+        kwargs["landscape"] = True
+    return kwargs
 
 
 # ---------------------------------------------------------------------------
@@ -610,6 +613,47 @@ ADMISSIONS_BLUEPRINT_VARIANT = "admissions_blueprint"
 FULL_REPORT_VARIANT = "full"
 REPORT_VARIANTS = {PARENT_REPORT_VARIANT, ADMISSIONS_BLUEPRINT_VARIANT, FULL_REPORT_VARIANT}
 
+_LANDSCAPE_PRINT_CSS = """
+/* Landscape PDF output: used by the standalone admissions/scene renderer. */
+@page {
+  size: A4 landscape;
+}
+
+@page english-report {
+  size: A4 landscape;
+}
+
+:root {
+  --page-width: 297mm;
+  --page-min-height: 210mm;
+  --page-print-height: 188mm;
+  --landscape-content-zoom: 0.70;
+}
+
+@media screen {
+  .learning-blueprint-page {
+    width: var(--page-width);
+    min-height: var(--page-print-height);
+  }
+}
+
+@media print {
+  .learning-blueprint-page {
+    width: auto;
+    min-height: var(--page-print-height);
+    height: var(--page-print-height);
+    padding: 5mm 7mm 4mm;
+    overflow: hidden;
+  }
+
+  .learning-blueprint-page__scale {
+    width: calc(100% / var(--landscape-content-zoom));
+    transform: scale(var(--landscape-content-zoom));
+    transform-origin: top left;
+  }
+}
+"""
+
 
 def _validate_report_variant(report_variant: str) -> str:
     if report_variant not in REPORT_VARIANTS:
@@ -623,6 +667,7 @@ def render_html(
     comic_image_root: Path | None = None,
     typeset_css: str = "",
     report_variant: str = PARENT_REPORT_VARIANT,
+    landscape: bool = False,
 ) -> str:
     """将 JSON payload 渲染为 HTML。
 
@@ -643,7 +688,8 @@ def render_html(
     logo_path = ASSETS_DIR / "logo_dida985.png"
 
     context = dict(payload)
-    context["combined_css"] = load_css() + typeset_css
+    orientation_css = _LANDSCAPE_PRINT_CSS if landscape else ""
+    context["combined_css"] = load_css() + orientation_css + typeset_css
     context["render_payload"] = payload
     context["report_variant"] = report_variant
     context.update(build_learning_blueprints(payload))
@@ -857,6 +903,7 @@ def generate_pdf(
     payload: dict,
     comic_image_root=None,
     report_variant: str = PARENT_REPORT_VARIANT,
+    landscape: bool = False,
 ) -> Path:
     """双 Pass 精确排版 → PDF。
 
@@ -873,8 +920,9 @@ def generate_pdf(
 
     report_variant = _validate_report_variant(report_variant)
     payload = normalize_render_payload(payload)
+    landscape = bool(landscape or report_variant == ADMISSIONS_BLUEPRINT_VARIANT)
     _ensure_fontconfig_env()
-    pdf_kwargs = _build_pdf_kwargs(payload)
+    pdf_kwargs = _build_pdf_kwargs(payload, landscape=landscape)
     output = Path(output_path)
 
     temp_html_paths: list[Path] = []
@@ -903,6 +951,7 @@ def generate_pdf(
                     payload,
                     comic_image_root=comic_image_root,
                     report_variant=report_variant,
+                    landscape=landscape,
                 )
                 load_html_via_file(html_pass1)
                 page.emulate_media(media='print')
@@ -923,6 +972,7 @@ def generate_pdf(
                 comic_image_root=comic_image_root,
                 typeset_css=typeset_css,
                 report_variant=report_variant,
+                landscape=landscape,
             )
             load_html_via_file(html_pass2)
             _wait_for_images(page)
@@ -949,6 +999,7 @@ def main():
     parser.add_argument("json_file", help="render_payload JSON 文件路径")
     parser.add_argument("-o", "--output", default="output.html", help="输出 HTML 路径")
     parser.add_argument("--pdf", action="store_true", help="同时生成 PDF")
+    parser.add_argument("--landscape", action="store_true", help="PDF/HTML 使用 A4 横版排版")
     parser.add_argument(
         "--report-variant",
         choices=sorted(REPORT_VARIANTS),
@@ -964,13 +1015,14 @@ def main():
     if _HAS_GOLDEN:
         typeset_css = build_typeset_css(payload)
 
-    html = render_html(payload, typeset_css=typeset_css, report_variant=args.report_variant)
+    landscape = bool(args.landscape or args.report_variant == ADMISSIONS_BLUEPRINT_VARIANT)
+    html = render_html(payload, typeset_css=typeset_css, report_variant=args.report_variant, landscape=landscape)
     Path(args.output).write_text(html, encoding="utf-8")
     print(f"HTML: {args.output}")
 
     if args.pdf:
         pdf_path = args.output.replace(".html", ".pdf")
-        generate_pdf(pdf_path, payload, report_variant=args.report_variant)
+        generate_pdf(pdf_path, payload, report_variant=args.report_variant, landscape=landscape)
 
 
 if __name__ == "__main__":

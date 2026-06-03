@@ -209,8 +209,8 @@
         </div>
         <div class="sp-progress-labels{% if sp_markers_overlap %} sp-progress-labels--stacked{% endif %}">
           <span class="sp-progress-label sp-progress-label--start">0%</span>
-          <span class="sp-progress-label sp-progress-label--current{% if sp_progress_edge_class %} {{ sp_progress_edge_class }}{% endif %}{% if sp_markers_overlap %} sp-progress-label--stack-top{% endif %}">{% if has_real_data %}当前 {{ sp_clamped_rate | round(0) | int }}%{% else %}当前 暂无数据{% endif %}</span>
-          <span class="sp-progress-label sp-progress-label--target{% if sp_target_edge_class %} {{ sp_target_edge_class }}{% endif %}{% if sp_markers_overlap %} sp-progress-label--stack-bottom{% endif %}">{% if target_reached %}目标线 {{ sp_clamped_target_rate | round(0) | int }}%{% else %}目标 {{ sp_clamped_target_rate | round(0) | int }}%{% endif %}</span>
+          <span class="sp-progress-label sp-progress-label--current{% if sp_progress_edge_class %} {{ sp_progress_edge_class }}{% endif %}{% if sp_markers_overlap %} sp-progress-label--stack-top{% endif %}"><span class="sp-progress-label__name">当前</span><span class="sp-progress-label__value">{% if has_real_data %}{{ sp_clamped_rate | round(0) | int }}%{% else %}暂无数据{% endif %}</span></span>
+          <span class="sp-progress-label sp-progress-label--target{% if sp_target_edge_class %} {{ sp_target_edge_class }}{% endif %}{% if sp_markers_overlap %} sp-progress-label--stack-bottom{% endif %}"><span class="sp-progress-label__name">{% if target_reached %}目标线{% else %}目标{% endif %}</span><span class="sp-progress-label__value">{{ sp_clamped_target_rate | round(0) | int }}%</span></span>
           <span class="sp-progress-label sp-progress-label--end">100%</span>
         </div>
       </div>

@@ -183,6 +183,25 @@
   margin-bottom: 3px;
 }
 
+.ip-stage__transition {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: max-content;
+  max-width: 96px;
+  transform: translateX(-50%);
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--pm-bg-card, #ffffff);
+  color: var(--ip-stage-color, var(--pm-text-secondary));
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow: 0 0 0 2px var(--pm-bg-card, #ffffff);
+  z-index: 3;
+}
+
 .ip-stage__acc {
   font-size: 24px;
   font-weight: 700;
