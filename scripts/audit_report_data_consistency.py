@@ -10,7 +10,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-import render_standalone
+from renderer import render_html
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -217,7 +217,7 @@ def audit_payload(sample: str, payload: dict, rendered_html: str) -> list[AuditR
 
 def audit_sample_file(path: Path) -> list[AuditResult]:
     payload = json.loads(path.read_text(encoding="utf-8"))
-    rendered_html = render_standalone.render_html(payload)
+    rendered_html = render_html(payload)
     return audit_payload(path.stem, payload, rendered_html)
 
 

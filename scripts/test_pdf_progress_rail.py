@@ -12,7 +12,7 @@ import pdf_progress_rail as rail
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RENDER_STANDALONE = PROJECT_ROOT / "scripts" / "render_standalone.py"
+PDF_UTILS = PROJECT_ROOT / "scripts" / "pdf_utils.py"
 PDF_SERVICE = PROJECT_ROOT / "scripts" / "pdf_service.py"
 
 
@@ -92,7 +92,7 @@ class PdfProgressRailTest(unittest.TestCase):
         output_doc.close()
 
     def test_pdf_entries_apply_progress_rail_after_toc_extraction(self) -> None:
-        standalone = RENDER_STANDALONE.read_text(encoding="utf-8")
+        standalone = PDF_UTILS.read_text(encoding="utf-8")
         service = PDF_SERVICE.read_text(encoding="utf-8")
 
         self.assertIn("from pdf_progress_rail import apply_progress_rail", standalone)

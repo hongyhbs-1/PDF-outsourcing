@@ -10,7 +10,7 @@ import pdf_chrome_templates as chrome
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RENDER_STANDALONE = PROJECT_ROOT / "scripts" / "render_standalone.py"
+PDF_UTILS = PROJECT_ROOT / "scripts" / "pdf_utils.py"
 PDF_SERVICE = PROJECT_ROOT / "scripts" / "pdf_service.py"
 
 
@@ -54,7 +54,7 @@ class PdfChromeTemplatesTest(unittest.TestCase):
         self.assertEqual("0mm", margins["right"])
 
     def test_pdf_entries_use_shared_helper(self) -> None:
-        standalone = RENDER_STANDALONE.read_text(encoding="utf-8")
+        standalone = PDF_UTILS.read_text(encoding="utf-8")
         service = PDF_SERVICE.read_text(encoding="utf-8")
 
         self.assertIn("from pdf_chrome_templates import", standalone)

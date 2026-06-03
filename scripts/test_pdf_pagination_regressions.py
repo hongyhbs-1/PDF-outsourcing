@@ -16,7 +16,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 M8_CSS = PROJECT_ROOT / "templates" / "css" / "m8_appendix.css"
 IP_CSS = PROJECT_ROOT / "templates" / "css" / "improvement_preview.css"
-RENDER_STANDALONE = PROJECT_ROOT / "scripts" / "render_standalone.py"
+PDF_UTILS = PROJECT_ROOT / "scripts" / "pdf_utils.py"
 BASE_CSS = PROJECT_ROOT / "templates" / "css" / "base.css"
 COVER_CSS = PROJECT_ROOT / "templates" / "css" / "m0_cover.css"
 COMIC_CSS = PROJECT_ROOT / "templates" / "css" / "comic_scene1.css"
@@ -59,7 +59,7 @@ class PdfPaginationRegressionTest(unittest.TestCase):
         self.assertIn("margin-bottom: 8px;", print_rules)
 
     def test_render_standalone_does_not_override_module_break_before_by_height(self) -> None:
-        source = read_text(RENDER_STANDALONE)
+        source = read_text(PDF_UTILS)
         self.assertNotIn("MAX_CONTENT_HEIGHT", source)
         self.assertNotIn("MIN_CONTENT_HEIGHT", source)
         self.assertNotIn("page.style.breakBefore = 'auto';", source)
@@ -148,7 +148,7 @@ class PdfPaginationRegressionTest(unittest.TestCase):
         self.assertIn("min-height: auto;", print_rules)
 
     def test_m3_does_not_force_each_domain_panel_to_new_page(self) -> None:
-        source = read_text(RENDER_STANDALONE)
+        source = read_text(PDF_UTILS)
         css = read_text(M3_CSS)
         template = read_text(M3_TEMPLATE)
         self.assertNotIn("panel.style.breakBefore = 'page';", source)

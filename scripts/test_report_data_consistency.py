@@ -9,7 +9,7 @@ import unittest
 from pathlib import Path
 
 import audit_report_data_consistency as audit
-import render_standalone
+from renderer import render_html
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -24,7 +24,7 @@ def load_sample(name: str) -> dict:
 class ReportDataConsistencyTest(unittest.TestCase):
     def test_sample_04_key_counts_match_rendered_html(self) -> None:
         payload = load_sample("sample_04_english_rpt2_dual")
-        html = render_standalone.render_html(payload)
+        html = render_html(payload)
 
         results = audit.audit_payload("sample_04_english_rpt2_dual", payload, html)
         mismatches = [item for item in results if item.status == "mismatch"]
@@ -37,7 +37,7 @@ class ReportDataConsistencyTest(unittest.TestCase):
         payload["question_detail"]["wrong_count"] = 99
         payload["question_detail"]["correct_count"] = 8
 
-        html = render_standalone.render_html(payload)
+        html = render_html(payload)
         values = audit.extract_question_detail_overview(html)
 
         self.assertEqual(["107", "99", "8", "2"], values)
@@ -49,7 +49,7 @@ class ReportDataConsistencyTest(unittest.TestCase):
         payload["summary"]["pass_rate"] = 34.5
         payload["summary"]["pass_rate_text"] = "34.5%"
 
-        html = render_standalone.render_html(payload)
+        html = render_html(payload)
         results = audit.audit_payload("mutated", payload, html)
         by_metric = {(item.module, item.metric): item for item in results}
 

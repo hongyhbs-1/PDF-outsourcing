@@ -27,16 +27,17 @@ PROJECT_DIR = SCRIPT_DIR.parent
 SAMPLES_DIR = PROJECT_DIR / "samples" / "json"
 OUTPUT_DIR = PROJECT_DIR / "samples" / "output"
 
-# 将 scripts/ 加入 path 以便 import render_standalone
+# 将 scripts/ 加入 path 以便 import
 sys.path.insert(0, str(SCRIPT_DIR))
 from adapters import adapt_payload  # noqa: E402
-import render_standalone  # noqa: E402
+from renderer import render_html, PARENT_REPORT_VARIANT, ADMISSIONS_BLUEPRINT_VARIANT  # noqa: E402
+from pdf_generator import generate_pdf  # noqa: E402
 
 SUBJECT_CHOICES = ("数学", "英语")
 MODE_CHOICES = ("场景", "报告")
 MODE_TO_VARIANT = {
-    "报告": render_standalone.PARENT_REPORT_VARIANT,
-    "场景": render_standalone.ADMISSIONS_BLUEPRINT_VARIANT,
+    "报告": PARENT_REPORT_VARIANT,
+    "场景": ADMISSIONS_BLUEPRINT_VARIANT,
 }
 
 
@@ -123,10 +124,6 @@ def validate_payload_subject(
 
 
 def load_payload(json_path: Path) -> dict:
-    if hasattr(render_standalone, "_load_json"):
-        payload = render_standalone._load_json(json_path)
-        if payload is not None:
-            return adapt_payload(payload)
     with open(json_path, "r", encoding="utf-8") as f:
         return adapt_payload(json.load(f))
 
@@ -183,7 +180,7 @@ def render_sample(
     try:
         payload = load_payload(json_path)
         validate_payload_subject(payload, subject, sample_file)
-        html = render_standalone.render_html(
+        html = render_html(
             payload,
             report_variant=report_variant,
             landscape=landscape,
@@ -191,7 +188,7 @@ def render_sample(
         html_path.write_text(html, encoding="utf-8")
         print(f"  HTML: {html_path.stat().st_size:,} bytes")
 
-        render_standalone.generate_pdf(
+        generate_pdf(
             str(pdf_path),
             payload,
             report_variant=report_variant,

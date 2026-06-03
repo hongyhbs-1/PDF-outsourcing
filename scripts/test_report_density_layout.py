@@ -7,7 +7,7 @@ import json
 import unittest
 from pathlib import Path
 
-import render_standalone
+from renderer import render_html
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -16,7 +16,7 @@ SAMPLES_DIR = PROJECT_ROOT / "samples" / "json"
 
 def render_sample(name: str) -> str:
     payload = json.loads((SAMPLES_DIR / f"{name}.json").read_text(encoding="utf-8"))
-    return render_standalone.render_html(payload)
+    return render_html(payload)
 
 
 def extract_student_profile_html(html: str) -> str:

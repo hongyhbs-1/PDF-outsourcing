@@ -8,7 +8,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import render_all_samples
-import render_standalone
+from renderer import _resolve_comic_image_paths
 
 
 class RenderAllSamplesCliTest(unittest.TestCase):
@@ -87,7 +87,7 @@ class RenderAllSamplesCliTest(unittest.TestCase):
             (root / "scene2").mkdir()
 
             with self.assertRaises(FileNotFoundError):
-                render_standalone._resolve_comic_image_paths("中等生", root)
+                _resolve_comic_image_paths("中等生", root)
 
     def test_version_comic_images_only_check_png_files(self) -> None:
         with TemporaryDirectory() as temp_dir:
@@ -96,7 +96,7 @@ class RenderAllSamplesCliTest(unittest.TestCase):
             (root / "scene2").mkdir()
 
             with self.assertRaises(FileNotFoundError) as error:
-                render_standalone._resolve_comic_image_paths("中等生", root)
+                _resolve_comic_image_paths("中等生", root)
 
         message = str(error.exception)
         self.assertIn("中等生-中文.png", message)
