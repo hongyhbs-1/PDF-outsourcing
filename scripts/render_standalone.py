@@ -18,6 +18,7 @@
 import argparse
 import base64
 import json
+import math
 import os
 import re
 import sys
@@ -613,6 +614,82 @@ def normalize_render_payload(payload: dict) -> dict:
     return _normalize_student_display_fields(payload)
 
 
+def _svg_num(value: float) -> str:
+    text = f"{value:.3f}".rstrip("0").rstrip(".")
+    return text or "0"
+
+
+def _pie_point(cx: float, cy: float, radius: float, percent: float) -> tuple[float, float]:
+    angle = math.radians(percent * 3.6 - 90)
+    return cx + radius * math.cos(angle), cy + radius * math.sin(angle)
+
+
+def _pie_ring_path(start_percent: float, end_percent: float) -> str:
+    cx = cy = 60.0
+    outer_radius = 50.0
+    inner_radius = 26.0
+    outer_start_x, outer_start_y = _pie_point(cx, cy, outer_radius, start_percent)
+    outer_end_x, outer_end_y = _pie_point(cx, cy, outer_radius, end_percent)
+    inner_end_x, inner_end_y = _pie_point(cx, cy, inner_radius, end_percent)
+    inner_start_x, inner_start_y = _pie_point(cx, cy, inner_radius, start_percent)
+    large_arc = 1 if end_percent - start_percent > 50 else 0
+    return (
+        f"M {_svg_num(outer_start_x)} {_svg_num(outer_start_y)} "
+        f"A {_svg_num(outer_radius)} {_svg_num(outer_radius)} 0 {large_arc} 1 "
+        f"{_svg_num(outer_end_x)} {_svg_num(outer_end_y)} "
+        f"L {_svg_num(inner_end_x)} {_svg_num(inner_end_y)} "
+        f"A {_svg_num(inner_radius)} {_svg_num(inner_radius)} 0 {large_arc} 0 "
+        f"{_svg_num(inner_start_x)} {_svg_num(inner_start_y)} Z"
+    )
+
+
+def _build_difficulty_pie_slices(appendix: object) -> list[dict[str, object]]:
+    if not isinstance(appendix, dict):
+        return []
+    difficulty = appendix.get("difficulty") or {}
+    if not isinstance(difficulty, dict):
+        return []
+    items = difficulty.get("items") or []
+    if not isinstance(items, list):
+        return []
+
+    ratios: list[tuple[str, float]] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        try:
+            ratio = float(item.get("ratio") or 0)
+        except (TypeError, ValueError):
+            ratio = 0
+        if ratio <= 0:
+            continue
+        level = str(item.get("level") or "medium").strip().lower()
+        if level not in {"easy", "medium", "hard"}:
+            level = "medium"
+        ratios.append((level, ratio))
+
+    total = sum(ratio for _, ratio in ratios)
+    if total <= 0:
+        return []
+
+    slices: list[dict[str, object]] = []
+    offset = 0.0
+    last_index = len(ratios) - 1
+    for index, (level, ratio) in enumerate(ratios):
+        span = ratio / total * 100
+        end = 100.0 if index == last_index else min(100.0, offset + span)
+        if end <= offset:
+            continue
+        full = end - offset >= 99.999
+        slices.append({
+            "level": level,
+            "full": full,
+            "path_d": "" if full else _pie_ring_path(offset, end),
+        })
+        offset = end
+    return slices
+
+
 def _comic_image_candidates(image_root: Path, scene: str,
                             tier_name: str) -> list[Path]:
     return [image_root / scene / f"{tier_name}-中文{COMIC_IMAGE_SUFFIX}"]
@@ -737,6 +814,7 @@ def render_html(
     context["combined_css"] = load_css() + orientation_css + typeset_css
     context["render_payload"] = payload
     context["report_variant"] = report_variant
+    context["overview_difficulty_slices"] = _build_difficulty_pie_slices(context.get("appendix"))
     context.update(build_learning_blueprints(payload))
     context["font_path"] = str(font_path)
     context["logo_path"] = logo_data_uri

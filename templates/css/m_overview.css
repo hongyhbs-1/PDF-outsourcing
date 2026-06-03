@@ -439,7 +439,30 @@
 .mov-pie {
   width: 100px;
   height: 100px;
-  border-radius: 50%;
+  flex: none;
+  overflow: visible;
+}
+.mov-pie__track {
+  fill: rgba(31, 111, 120, 0.08);
+}
+.mov-pie__slice {
+  fill: var(--pm-status-attention, #d4943a);
+  stroke: none;
+  shape-rendering: geometricPrecision;
+}
+.mov-pie__slice--easy {
+  fill: var(--pm-status-success, #2d8a6e);
+}
+.mov-pie__slice--medium {
+  fill: var(--pm-status-attention, #d4943a);
+}
+.mov-pie__slice--hard {
+  fill: var(--pm-status-danger, #c44040);
+}
+.mov-pie__center {
+  fill: var(--pm-bg-card, #fff);
+  stroke: rgba(31, 111, 120, 0.10);
+  stroke-width: 1px;
 }
 .mov-pie-legend {
   display: flex;
