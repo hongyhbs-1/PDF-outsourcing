@@ -214,7 +214,7 @@
 
 .m9-table th,
 .m9-table td {
-  padding: 5px 7px;
+  padding: 4px 5px;
   text-align: left;
   border-bottom: 1px solid var(--pm-border-light);
   vertical-align: top;
@@ -249,10 +249,10 @@
 /* ==========================================================================
    5. 列宽
    ========================================================================== */
-.m9-col-no       { width: 50px; }
-.m9-col-diff     { width: 80px; }
-.m9-col-kp       { width: 120px; }
-.m9-col-tags     { width: 140px; }
+.m9-col-no       { width: 32px; }
+.m9-col-diff     { width: 48px; }
+.m9-col-kp       { width: 150px; }
+.m9-col-tags     { width: 110px; }
 .m9-col-analysis { width: auto; }
 .m9-col-kbp      { width: auto; }
 
@@ -406,14 +406,14 @@
 
   .m9-page--long .m9-table th,
   .m9-page--long .m9-table td {
-    padding: 3px 5px;
+    padding: 2px 4px;
   }
 
-  .m9-page--long .m9-col-no { width: 54px; }
-  .m9-page--long .m9-col-diff { width: 82px; }
-  .m9-page--long .m9-col-kp { width: 150px; }
-  .m9-page--long .m9-col-tags { width: 150px; }
-  .m9-page--long .m9-table--correct .m9-col-kp { width: 220px; }
+  .m9-page--long .m9-col-no { width: 40px; }
+  .m9-page--long .m9-col-diff { width: 62px; }
+  .m9-page--long .m9-col-kp { width: 160px; }
+  .m9-page--long .m9-col-tags { width: 130px; }
+  .m9-page--long .m9-table--correct .m9-col-kp { width: auto; }
 
   .m9-page--long .m9-table--wrong-lite {
     font-size: 16px;
@@ -429,8 +429,8 @@
     padding: 2.5px 5px;
   }
 
-  .m9-page--long .m9-table--wrong-lite .m9-col-no { width: 56px; }
-  .m9-page--long .m9-table--wrong-lite .m9-col-diff { width: 98px; }
+  .m9-page--long .m9-table--wrong-lite .m9-col-no { width: 42px; }
+  .m9-page--long .m9-table--wrong-lite .m9-col-diff { width: 70px; }
   .m9-page--long .m9-table--wrong-lite .m9-col-kp { width: auto; }
 
   .m9-page--long .m9-stars {
