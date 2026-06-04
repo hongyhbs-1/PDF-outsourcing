@@ -115,7 +115,7 @@
 /* [FIX] 恢复被上方 reset 覆盖的 module-content-card padding */
 .m3-kp-drill .module-content-card {
   background: var(--pm-bg-card);
-  border-radius: 10px;
+  border-radius: var(--vh-card-border-radius); /* → --vh-card-* */
   padding: 20px 26px;
   overflow: hidden;
 }
@@ -152,7 +152,7 @@
 
 .m3-kp-core-summary {
   margin: 0 0 var(--spacing-md);
-  padding: 10px 12px;
+  padding: var(--vh-card-padding);
   background: var(--pm-gradient-conclusion);
   border: 1px solid rgba(31, 111, 120, 0.16);
   border-radius: var(--radius-card);
@@ -685,7 +685,7 @@
 .m3-kp-guide-card .m3-kp-path {
   min-width: 0;
   margin: 0;
-  padding: 10px 12px;
+  padding: var(--vh-card-padding);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   column-span: none;
@@ -716,7 +716,7 @@
   min-height: 34px;
   padding: 6px 8px;
   gap: 6px;
-  border-radius: 8px;
+  border-radius: var(--vh-card-border-radius);
 }
 
 .m3-kp-guide-card .m3-kp-step__lvl {
@@ -737,7 +737,7 @@
   grid-template-columns: 34px minmax(0, 1fr) 42px;
   padding: 6px 8px;
   gap: 6px;
-  border-radius: 8px;
+  border-radius: var(--vh-card-border-radius);
 }
 
 .m3-kp-guide-card .m3-kp-path-node__lvl,
@@ -1009,7 +1009,7 @@
   align-items: center;
   gap: 12px;
   min-height: 66px;
-  padding: 10px 12px;
+  padding: var(--vh-card-padding);
   margin-bottom: 10px;
   border: 1px solid var(--color-divider);
   border-radius: 12px;
@@ -1198,7 +1198,7 @@
 .m3-kp-drill__nodata-merge {
   background: var(--m3-bg-muted, #F6F7F9);
   border: 1px solid var(--m3-border-card, #C4D4E0);
-  border-radius: 8px;
+  border-radius: var(--vh-card-border-radius);
   padding: 12px 16px;
   margin: 12px 0;
   font-size: 14px;
@@ -1241,7 +1241,7 @@
 
   .m3-kp-drill__panel-card {
     padding: 5px;
-    border-radius: 8px;
+    border-radius: var(--vh-card-border-radius);
     box-shadow: none;
   }
 
@@ -1282,7 +1282,7 @@
   .m3-kp-status-legend {
     gap: 10px;
     padding: 6px 9px;
-    border-radius: 8px;
+    border-radius: var(--vh-card-border-radius);
   }
 
   .m3-kp-status-legend__label,
@@ -1297,7 +1297,7 @@
 
   .m3-kp-diagnostic-card {
     padding: 9px 11px 10px;
-    border-radius: 10px;
+    border-radius: var(--vh-card-border-radius);
     box-shadow: none;
     break-inside: avoid;
     page-break-inside: avoid;
@@ -1313,7 +1313,7 @@
   .m3-kp-diagnostic-card__avatar {
     width: 34px;
     height: 34px;
-    border-radius: 8px;
+    border-radius: var(--vh-card-border-radius);
     font-size: 16px;
   }
 
@@ -1345,7 +1345,7 @@
     min-height: 40px;
     padding: 5px 7px;
     margin-bottom: 5px;
-    border-radius: 8px;
+    border-radius: var(--vh-card-border-radius);
   }
 
   .m3-kp-diagnosis-row__marker {
@@ -1415,7 +1415,7 @@
   /* [FIX] 恢复 module-content-card 在打印模式下的 padding */
   .m3-kp-drill .module-content-card {
     background: var(--pm-bg-card);
-    border-radius: 10px;
+    border-radius: var(--vh-card-border-radius);
     padding: 16px 20px;
     box-shadow: var(--pm-shadow-card);
   }
@@ -1435,7 +1435,7 @@
   .m3-kp-core-summary {
     margin-bottom: 8px;
     padding: 7px 10px;
-    border-radius: 8px;
+    border-radius: var(--vh-card-border-radius);
   }
 
   .m3-kp-core-summary__label {
@@ -1449,7 +1449,7 @@
   }
 
   .m3-kp-drill__intro-panel {
-    padding: 10px 12px;
+    padding: var(--vh-card-padding);
     margin-bottom: 9px;
   }
 
@@ -1601,7 +1601,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 10px;
-    padding: 10px 12px;
+    padding: var(--vh-card-padding);
   }
 
   .m3-kp-drill .m3-kp-guide-card[data-guide-columns="single"] {
@@ -1640,7 +1640,7 @@
   .m3-kp-guide-card .m3-kp-path {
     margin: 0;
     padding: 8px 10px;
-    border-radius: 8px;
+    border-radius: var(--vh-card-border-radius);
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;

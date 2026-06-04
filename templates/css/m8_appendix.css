@@ -190,9 +190,9 @@
 
 .m8-appendix-title__text {
   display: inline-block;
-  font-size: var(--appendix-font-size-page-title);
-  font-weight: var(--appendix-font-weight-bold);
-  color: var(--appendix-color-text-primary);
+  font-size: var(--vh-h0-font-size);
+  font-weight: var(--vh-h0-font-weight);
+  color: var(--vh-h0-color);
   margin: 0;
 }
 .m8-appendix-title__text::after {

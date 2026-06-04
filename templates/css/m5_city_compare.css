@@ -166,10 +166,10 @@
 
 .m5-core-conclusion {
   margin: 4px 0 0;
-  padding: 10px 12px;
+  padding: var(--vh-card-padding); /* → --vh-card-* */
   background: var(--pm-gradient-conclusion);
   border: 1px solid rgba(31, 111, 120, 0.16);
-  border-radius: 8px;
+  border-radius: var(--vh-card-border-radius);
   box-shadow: var(--pm-shadow-card);
 }
 
@@ -213,7 +213,7 @@
   min-width: 0;
   border: 2px solid var(--cc-card-border);
   background: var(--cc-card-bg);
-  border-radius: 8px;
+  border-radius: var(--vh-card-border-radius);
   padding: var(--cc-spacing-5) var(--cc-spacing-6);
 }
 
@@ -324,7 +324,7 @@
   gap: 12px;
   padding: 9px 10px;
   background: var(--cc-bg-muted);
-  border-radius: 8px;
+  border-radius: var(--vh-card-border-radius);
 }
 
 .m5-city-compare__overlap-stat-label {
@@ -352,7 +352,7 @@
 .m5-city-compare__table-section {
   border: 2px solid var(--cc-card-border);
   background: var(--cc-card-bg);
-  border-radius: 8px;
+  border-radius: var(--vh-card-border-radius);
   padding: var(--cc-spacing-5) var(--cc-spacing-6);
   margin-bottom: var(--cc-spacing-8);
 }
@@ -698,7 +698,7 @@
   .m5-core-conclusion {
     margin-top: 0;
     padding: 7px 10px;
-    border-radius: 8px;
+    border-radius: var(--vh-card-border-radius);
   }
 
   .m5-core-conclusion__label {
@@ -726,9 +726,9 @@
   }
 
   .m5-city-compare__card {
-    padding: 10px 12px;
+    padding: var(--vh-card-padding);
     border-width: 1px;
-    border-radius: 6px;
+    border-radius: var(--vh-card-border-radius);
   }
 
   .m5-city-compare__card-title {
@@ -808,10 +808,10 @@
   }
 
   .m5-city-compare__table-section {
-    padding: 10px 12px;
+    padding: var(--vh-card-padding);
     margin-bottom: 10px;
     border-width: 1px;
-    border-radius: 6px;
+    border-radius: var(--vh-card-border-radius);
   }
 
   .m5-city-compare__table-title {
