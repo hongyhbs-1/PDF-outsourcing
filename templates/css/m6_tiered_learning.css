@@ -1269,8 +1269,8 @@
   }
   .m6-role-panel {
     border-radius: 5px;
-    break-inside: avoid;
-    page-break-inside: avoid;
+    break-inside: auto;
+    page-break-inside: auto;
   }
   .m6-role-stack .m6-role-panel--student .m6-suggestion-sections {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1295,7 +1295,7 @@
   .m6-role-stack .m6-summary-box__text,
   .m6-role-stack .m6-check-item__text,
   .m6-role-stack .m6-guidance-paragraph {
-    font-size: 8px;
+    font-size: 9px;
     line-height: 1.12;
   }
   .m6-role-stack .m6-guidance-paragraph {
