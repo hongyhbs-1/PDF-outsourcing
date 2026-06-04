@@ -1151,6 +1151,119 @@
   }
 }
 
-/* ============================================================================
-   END OF FILE
-   ============================================================================
+/* ---------------------------------------------------------------------------
+   Feedback 5.0: math-only print overrides (migrated from shared_icon_enhancements.css)
+   --------------------------------------------------------------------------- */
+@media print {
+  body:not(.report-theme--english) .m4-peer-card,
+  body:not(.report-theme--english) .m4-table-card,
+  body:not(.report-theme--english) .m4-summary-card {
+    margin-bottom: 12px !important;
+  }
+
+  body:not(.report-theme--english) .m4-peer-title,
+  body:not(.report-theme--english) .m4-table-title,
+  body:not(.report-theme--english) .m4-summary-title {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin: 0 0 8px !important;
+    padding: 0 0 0 10px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-left: 3px solid var(--pm-teal, var(--cc-accent-primary)) !important;
+    border-bottom: 0 !important;
+    border-radius: 0 !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    line-height: 1.24 !important;
+    box-shadow: none !important;
+  }
+
+  body:not(.report-theme--english) .m4-peer-title,
+  body:not(.report-theme--english) .m4-table-title,
+  body:not(.report-theme--english) .m4-summary-title {
+    padding-top: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  body:not(.report-theme--english) .m4-peer-card,
+  body:not(.report-theme--english) .m4-table-card,
+  body:not(.report-theme--english) .m4-summary-card {
+    padding: 10px 12px 12px !important;
+    overflow: hidden !important;
+  }
+
+  /* P7 has a single inner wrapper; stretch that wrapper and separate its two
+     stacked groups so the page follows the same module-gap rhythm as P6. */
+  body:not(.report-theme--english) #toc-m4 > .m4-module-domains > .module-content-card {
+    min-height: 160mm !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-grid-split {
+    min-height: 148mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-grid-split__right .m4-summary-card {
+    margin-top: 30px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-peer-card,
+  body:not(.report-theme--english) #toc-m4 .m4-summary-card {
+    position: relative !important;
+    overflow: visible !important;
+    margin-top: 22px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-peer-card > .m4-peer-title,
+  body:not(.report-theme--english) #toc-m4 .m4-summary-card > .m4-summary-title {
+    position: absolute !important;
+    top: -23px !important;
+    left: 14px !important;
+    z-index: 3 !important;
+    margin: 0 !important;
+    background: var(--pm-bg-card, var(--cc-card-bg)) !important;
+    padding-right: 6px !important;
+  }
+
+  /* Feedback 5.4/5.8 P7: align the three subsection labels. P7 moves these
+     labels outside child cards; keep the labels in the same left lane while
+     allowing each title to show its leading pictogram. */
+  body:not(.report-theme--english) #toc-m4 .m4-peer-card,
+  body:not(.report-theme--english) #toc-m4 .m4-summary-card {
+    margin-top: 30px !important;
+  }
+
+  /* Feedback 5.5 P7: the third label sits inside the same right-column flow as
+     the table, so its absolute title lane needs extra top reserve to match the
+     gap between "二、领域表现详情" and the previous overview module. */
+  body:not(.report-theme--english) #toc-m4 .m4-grid-split__right .m4-summary-card {
+    margin-top: 42px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-peer-card > .m4-peer-title,
+  body:not(.report-theme--english) #toc-m4 .m4-summary-card > .m4-summary-title {
+    left: 4px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m4 .m4-peer-card > .m4-peer-title > .frame-inline-icon,
+  body:not(.report-theme--english) #toc-m4 .m4-summary-card > .m4-summary-title > .frame-inline-icon {
+    display: inline-flex !important;
+  }
+
+  /* Feedback 5.9 p7-p13 opinion document: keep the physical whitespace
+     between stacked modules consistent on each page.  Some pages use absolute
+     title lanes, so the visible gap is measured from the previous module body
+     to the next title label rather than only from card border to card border. */
+  body:not(.report-theme--english) #toc-m4 .m4-table-card {
+    /* P7: match the gap before "二、领域表现详情" to the gap before "三、分析小结". */
+    margin-top: 24px !important;
+  }
+}

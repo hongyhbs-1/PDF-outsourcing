@@ -1717,6 +1717,134 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Feedback 5.0: math-only print overrides (migrated from shared_icon_enhancements.css)
+   --------------------------------------------------------------------------- */
+@media print {
+  body:not(.report-theme--english) .m3-kp-guide-card {
+    margin-bottom: 12px !important;
+  }
+
+  body:not(.report-theme--english) .m3-kp-drill__section-title {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin: 0 0 8px !important;
+    padding: 0 0 0 10px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-left: 3px solid var(--pm-teal, var(--cc-accent-primary)) !important;
+    border-bottom: 0 !important;
+    border-radius: 0 !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    line-height: 1.24 !important;
+    box-shadow: none !important;
+  }
+
+  /* P9 guide cards are a two-column grid rather than a vertical stack; increase
+     the shared card footprint so both guide modules occupy the page height. */
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] {
+    min-height: 160mm !important;
+    gap: 16px !important;
+  }
+
+  /* Feedback 5.0 P9-P13 title audit: keep subsection titles fully outside
+     their child card borders. The previous negative-margin legend style made
+     titles sit on top of borders on P9-P13; use reserved top margin + absolute
+     title labels instead, so content boxes start cleanly below each label. */
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-column {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-column > .m3-kp-drill__section-title {
+    position: relative !important;
+    z-index: 2 !important;
+    margin: 0 0 8px !important;
+    background: transparent !important;
+    padding-right: 6px !important;
+  }
+
+  /* Feedback 6.0 p9 opinion document: the two guide modules should read as a
+     matched pair.  Use the same outer fill/border, then let the four internal
+     level/path rows divide the available height so the red-marked inner groups
+     no longer sit compressed at the top of large boxes. */
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-drill__intro-panel,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path {
+    background: var(--color-surface, var(--cc-card-bg)) !important;
+    border-color: var(--color-border, var(--cc-card-border)) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-steps,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path__nodes {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    /* P9: force the left L1-L4 guide cards and right L1-L4 path cards to use
+       the same four equal-height tracks, so every corresponding level has the
+       same top/bottom edge in PDF output. */
+    grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+    grid-auto-rows: minmax(0, 1fr) !important;
+    align-content: stretch !important;
+    gap: 8px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-steps {
+    margin-top: 0 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path__nodes {
+    margin: 0 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path__note,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-guide-note {
+    flex: 0 0 auto !important;
+    margin: 0 0 8px !important;
+    padding: 6px 8px !important;
+    background: var(--color-note-bg, var(--pm-bg-section)) !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node {
+    min-height: 0 !important;
+    height: 100% !important;
+    padding: 8px 10px !important;
+    border-radius: 8px !important;
+    align-items: center !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step__lvl {
+    width: 34px !important;
+    font-size: 18px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step__name,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node__lvl,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node__name,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node__delta {
+    font-size: 11.2px !important;
+    line-height: 1.25 !important;
+  }
+
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step__desc,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-drill__desc,
+  body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path__note {
+    font-size: 10.5px !important;
+    line-height: 1.3 !important;
+  }
+}
+
 /* =============================================================================
  * END OF FILE
  * ============================================================================= */

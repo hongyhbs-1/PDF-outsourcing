@@ -1434,6 +1434,55 @@ body {
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Feedback 5.0: math-only print overrides (migrated from shared_icon_enhancements.css)
+   --------------------------------------------------------------------------- */
+body:not(.report-theme--english) .m1-section-bar--subtle {
+  /* P6 示例：两个模块之间拉开距离，让内容更接近整页高度 */
+  margin-top: 44px;
+}
+
+@media print {
+  body:not(.report-theme--english) .m1-summary-card,
+  body:not(.report-theme--english) .m1-breakthrough-grid {
+    margin-bottom: 12px !important;
+  }
+
+  body:not(.report-theme--english) .m1-section-bar {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin: 0 0 8px !important;
+    padding: 0 0 0 10px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-left: 3px solid var(--pm-teal, var(--cc-accent-primary)) !important;
+    border-bottom: 0 !important;
+    border-radius: 0 !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    line-height: 1.24 !important;
+    box-shadow: none !important;
+  }
+
+  body:not(.report-theme--english) .m1-section-bar--subtle {
+    /* P6 示例：两个模块之间拉开距离，让内容更接近整页高度 */
+    margin: 46px 0 8px !important;
+  }
+
+  body:not(.report-theme--english) .m1-report-page--dense .m1-section-bar--subtle {
+    margin: 28px 0 8px !important;
+  }
+
+  body:not(.report-theme--english) .m1-section-bar--subtle,
+  body:not(.report-theme--english) .m1-report-page--dense .m1-section-bar--subtle {
+    margin: 24px 0 8px !important;
+  }
+}
+
 /* ============================================================================
  * END OF FILE
  * ============================================================================ */

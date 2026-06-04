@@ -844,3 +844,57 @@
     gap: 6px;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Feedback 5.0: math-only print overrides (migrated from shared_icon_enhancements.css)
+   --------------------------------------------------------------------------- */
+@media print {
+  body:not(.report-theme--english) .m2-cw-note-bar,
+  body:not(.report-theme--english) .m2-cw-weakness-card,
+  body:not(.report-theme--english) .m2-cw-reason-section,
+  body:not(.report-theme--english) .m2-cw-tips-box {
+    margin-bottom: 12px !important;
+  }
+
+  body:not(.report-theme--english) .m2-cw-note-bar__title,
+  body:not(.report-theme--english) .m2-cw-reason-header__title,
+  body:not(.report-theme--english) .m2-cw-tips-title {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin: 0 0 8px !important;
+    padding: 0 0 0 10px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-left: 3px solid var(--pm-teal, var(--cc-accent-primary)) !important;
+    border-bottom: 0 !important;
+    border-radius: 0 !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    line-height: 1.24 !important;
+    box-shadow: none !important;
+  }
+
+  body:not(.report-theme--english) .m2-cw-note-bar {
+    display: block !important;
+    margin: 0 0 12px !important;
+    padding: 8px 10px !important;
+    border-left: 0 !important;
+  }
+
+  body:not(.report-theme--english) .m2-cw-note-bar__text {
+    display: block !important;
+  }
+
+  body:not(.report-theme--english) .m2-cw-reason-header {
+    align-items: flex-start !important;
+    margin-bottom: 8px !important;
+  }
+
+  body:not(.report-theme--english) .m2-cw-tips-box {
+    margin: 0 0 12px !important;
+  }
+}

@@ -1162,3 +1162,95 @@
     line-height: 1.25 !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Feedback 5.0: math-only print overrides (migrated from shared_icon_enhancements.css)
+   --------------------------------------------------------------------------- */
+@media print {
+  body:not(.report-theme--english) .m5-city-compare__table-section,
+  body:not(.report-theme--english) .m5-city-compare__card--overlap-wide,
+  body:not(.report-theme--english) .m5-city-compare__footnote {
+    margin-bottom: 12px !important;
+  }
+
+  body:not(.report-theme--english) .m5-city-compare__card-title,
+  body:not(.report-theme--english) .m5-city-compare__table-title,
+  body:not(.report-theme--english) .m5-city-compare__footnote-title {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin: 0 0 8px !important;
+    padding: 0 0 0 10px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-left: 3px solid var(--pm-teal, var(--cc-accent-primary)) !important;
+    border-bottom: 0 !important;
+    border-radius: 0 !important;
+    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    line-height: 1.24 !important;
+    box-shadow: none !important;
+  }
+
+  body:not(.report-theme--english) .m5-city-compare__table-section,
+  body:not(.report-theme--english) .m5-city-compare__card--overlap-wide,
+  body:not(.report-theme--english) .m5-city-compare__footnote {
+    padding-top: 10px !important;
+  }
+
+  /* Feedback 5.0 P6-P13 density: the math city-exam page has few rows in
+     sample_01_math_25q, so stretch the main module card to the same visual
+     footprint as the surrounding chapter pages instead of leaving a half-page
+     blank area below the content. */
+  body:not(.report-theme--english) #toc-m5 > .m5-city-compare > .module-content-card {
+    min-height: 145mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__part--data {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide {
+    flex: 1 1 auto !important;
+  }
+
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__table-section,
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide {
+    position: relative !important;
+    overflow: visible !important;
+    margin-top: 22px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__table-section > .m5-city-compare__table-title,
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide > .m5-city-compare__card-title {
+    position: absolute !important;
+    top: -23px !important;
+    left: 14px !important;
+    z-index: 3 !important;
+    margin: 0 !important;
+    background: var(--pm-bg-card, var(--cc-card-bg)) !important;
+    padding-right: 6px !important;
+  }
+
+  /* Feedback 5.6 P10-P13: several subsection labels still started farther
+     right than the aligned P11 role titles because their absolute title lanes
+     used larger left offsets (14/16/18px). Pull these labels left to the same
+     visual text column while keeping icons and title-lane spacing intact. */
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__table-section > .m5-city-compare__table-title,
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide > .m5-city-compare__card-title {
+    left: 5px !important;
+  }
+
+  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide {
+    /* P10: the note block after "二、高频重合度" should not leave a larger gap
+       than the gap between "一、重合知识点清单" and "二、高频重合度". */
+    margin-bottom: 0 !important;
+  }
+}
