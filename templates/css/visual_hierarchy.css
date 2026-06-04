@@ -118,17 +118,36 @@
 .m3-kp-drill__kp-title,
 .m7-overview-card__title,
 .m7-usage-item__title,
+/* core-conclusion__text — 全模块统一 Hero，含 .module-page 前缀抗 shared 覆盖 */
+.m1-core-conclusion__text,
+.m2-cw-core-summary__text,
+.m3-kp-core-summary__text,
+.m4-core-conclusion__text,
+.m5-core-conclusion__text,
+.m6-core-conclusion__text,
+.m7-core-conclusion__text,
+.m8-core-conclusion__text,
 .m9-core-conclusion__text,
+.module-page .m1-core-conclusion__text,
+.module-page .m2-cw-core-summary__text,
+.module-page .m3-kp-core-summary__text,
+.module-page .m4-core-conclusion__text,
+.module-page .m5-core-conclusion__text,
+.module-page .m6-core-conclusion__text,
+.module-page .m7-core-conclusion__text,
+.module-page .m8-core-conclusion__text,
 .module-page .m9-core-conclusion__text {
-  font-size: 18px !important;
-  font-weight: 700 !important;
+  font-size: var(--vh-hero-font-size) !important;
+  font-weight: var(--vh-hero-font-weight) !important;
   color: var(--vh-hero-color) !important;
   line-height: var(--vh-hero-line-height) !important;
   margin-bottom: var(--vh-hero-margin-bottom) !important;
 }
 
 /* ── Stat Hero: 仪表盘统计数字 ── */
-.m9-overview__stat-num {
+.m9-overview__stat-num,
+.m1-goal-metric-value,
+.m7-kp-level-num {
   font-size: var(--vh-stat-font-size) !important;
   font-weight: var(--vh-stat-font-weight) !important;
   color: var(--vh-stat-color) !important;
@@ -147,6 +166,9 @@
 .m4-peer-title,
 .m4-table-title,
 .m4-summary-title,
+.m5-city-compare__table-title,
+.m5-city-compare__card-title,
+.m7-block-title,
 .m7-warnings-section-title,
 .m8-appendix-panel__section-title,
 .m8-appendix-panel__titlebar,
@@ -154,7 +176,11 @@
 .m6-suggestion-section__title,
 .m6-note-box__title,
 .m6-training-focus__title,
-.m9-paper-title {
+.m9-paper-title,
+/* .module-page 前缀抗 shared 覆盖 */
+.module-page .m5-city-compare__table-title,
+.module-page .m5-city-compare__card-title,
+.module-page .m7-block-title {
   font-size: var(--vh-h1-font-size) !important;
   font-weight: var(--vh-h1-font-weight) !important;
   color: var(--vh-h1-color) !important;
