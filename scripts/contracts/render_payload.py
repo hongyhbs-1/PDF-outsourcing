@@ -379,6 +379,8 @@ class RenderPayload(TypedDict, total=False):
     section_2_domains: dict             # 英语 brief 需要的别名
     section_core_weakness: dict         # 英语 brief 需要的别名
     schema_version: str                 # 数据格式版本标识
+    composition_facts: dict             # data_profile feature flag 检测用
+    reading_deep_selection: dict        # data_profile feature flag 检测用
 
 
 # ===========================================================================
@@ -431,7 +433,7 @@ class ExecutionBlueprint(TypedDict, total=False):
     footer: dict
 
 
-class BlueprintOutput(TypedDict):
+class BlueprintOutput(TypedDict, total=False):
     """build_learning_blueprints() 的返回类型"""
     diagnostic_blueprint: DiagnosticBlueprint
     execution_blueprint: ExecutionBlueprint

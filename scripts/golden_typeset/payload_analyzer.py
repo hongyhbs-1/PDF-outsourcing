@@ -10,7 +10,7 @@ payload_analyzer.py — payload → [(key, natural_height)]
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from . import WRAPPER_SELECTORS
-from .math_func import content_height, F_BODY, F_SMALL, F_TABLE, ROW_TABLE, ROW_ANALYSIS, ROW_CHECKLIST
+from .math_func import content_height, F_BODY, F_SMALL, F_TABLE, ROW_TABLE
 
 if TYPE_CHECKING:
     from scripts.contracts.render_payload import RenderPayload
