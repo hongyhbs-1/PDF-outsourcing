@@ -201,8 +201,8 @@
 .m9-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: 11px;
+  line-height: 1.35;
   margin-bottom: 8px;
   border: 1px solid var(--pm-border-card);
   overflow: hidden;
@@ -260,7 +260,7 @@
 .m9-stars {
   color: var(--pm-sand, #e2c48f);
   font-size: 11px;
-  letter-spacing: 1px;
+  letter-spacing: -0.5px;
   white-space: nowrap;
 }
 
@@ -270,22 +270,7 @@
 .m9-analysis-cell {
   font-size: 11px;
   color: var(--pm-text-secondary);
-  line-height: 1.4;
-}
-
-.m9-analysis-label {
-  font-weight: 600;
-  color: var(--pm-text-primary);
-}
-
-.m9-error-section {
-  margin-bottom: 2px;
-}
-
-.m9-breakpoint-section {
-  margin-top: 2px;
-  padding-top: 2px;
-  border-top: 0.5px solid var(--pm-border-light);
+  line-height: 1.35;
 }
 
 /* ==========================================================================
@@ -434,13 +419,13 @@
   .m9-page--long .m9-table--wrong-lite .m9-col-kp { width: auto; }
 
   .m9-page--long .m9-stars {
-    font-size: 10.5px;
-    letter-spacing: 0.2px;
+    font-size: 9px;
+    letter-spacing: -0.5px;
   }
 
   .m9-page--long .m9-table--wrong-lite .m9-stars {
-    font-size: 12.5px;
-    letter-spacing: 0;
+    font-size: 11px;
+    letter-spacing: -0.5px;
   }
 
   .m9-page--long .m9-analysis-cell {

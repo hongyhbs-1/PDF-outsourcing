@@ -111,21 +111,14 @@ M9: 逐题分析明细 (Question Detail Analysis)
         {% for q in paper.wrong_questions %}
         <tr>
           <td>{{ q.no }}</td>
-          <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
+          <td class="m9-stars" title="{{ q.difficulty }}/5">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
           <td>{{ q.kp_name }}</td>
           {% if wrong_meta.has_weakness %}<td>{{ q.weakness_tags | default([], true) | join('、') }}</td>{% endif %}
           {% if wrong_meta.has_analysis %}
           <td class="m9-analysis-cell">
-            {% if q.error_analysis %}
-            <div class="m9-error-section">
-              <span class="m9-analysis-label">分析：</span>{{ q.error_analysis }}
-            </div>
-            {% endif %}
-            {% if q.key_points %}
-            <div class="m9-breakpoint-section">
-              <span class="m9-analysis-label">破题点：</span>{{ q.key_points }}
-            </div>
-            {% endif %}
+            {% if q.error_analysis %}{{ q.error_analysis }}{% endif %}
+            {% if q.error_analysis and q.key_points %}；{% endif %}
+            {% if q.key_points %}{{ q.key_points }}{% endif %}
           </td>
           {% endif %}
         </tr>
