@@ -956,7 +956,7 @@
   body:not(.report-theme--english) .ip-page > .module-content-card,
   body:not(.report-theme--english) .mov-page > .module-content-card,
   body:not(.report-theme--english) #toc-m2 > .m2-core-weakness-module > .module-content-card,
-  body:not(.report-theme--english) #toc-m5 > .m5-city-compare > .module-content-card,
+  /* m5 removed — migrated to m5_city_compare.css */
   body:not(.report-theme--english) #toc-m7 > .m7-data-reliability > .module-content-card,
   body:not(.report-theme--english) #toc-m8 > .m8-appendix-page .module-content-card {
     min-height: 160mm !important;
@@ -1076,10 +1076,9 @@
   body:not(.report-theme--english) .ip-page > .module-content-card,
   body:not(.report-theme--english) .mov-page > .module-content-card,
   body:not(.report-theme--english) #toc-m2 > .m2-core-weakness-module > .module-content-card,
-  body:not(.report-theme--english) #toc-m5 > .m5-city-compare > .module-content-card,
+  /* m5 removed — migrated to m5_city_compare.css */
   body:not(.report-theme--english) #toc-m7 > .m7-data-reliability > .module-content-card,
-  body:not(.report-theme--english) #toc-m8 > .m8-appendix-page .module-content-card,
-  body:not(.report-theme--english) #toc-m4 .m4-grid-split {
+  body:not(.report-theme--english) #toc-m8 > .m8-appendix-page .module-content-card {
     justify-content: flex-start !important;
   }
 

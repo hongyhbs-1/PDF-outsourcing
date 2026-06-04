@@ -1,8 +1,8 @@
 ---
 title: "T007: CSS !important 治理 + 英语主题 token 消费"
-status: backlog
+status: in_progress
 priority: P1
-phase: pending
+phase: review
 assignee: hermes
 branch: longxiang
 created: 2026-06-04
