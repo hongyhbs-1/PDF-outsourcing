@@ -46,7 +46,7 @@ def build_typeset_css(payload: RenderPayload,
         if blocks:
             empirical_layouts[mod_id] = layout_page(blocks)
 
-    # measured 数据用于精确间距，但密度决策用经验估算
+    # measured 数据用于精确内容高度，但间距和密度决策用经验估算 ratio
     if measured:
         block_map = analyze_with_measured(payload, measured)
     else:
@@ -57,13 +57,43 @@ def build_typeset_css(payload: RenderPayload,
         if blocks:
             layouts[mod_id] = layout_page(blocks)
 
-    # 用经验估算 ratio 覆盖 measured ratio（密度决策不受间距影响）
-    from dataclasses import replace as _dc_replace
+    # 用经验估算 ratio 重新计算间距（measured ratio 含间距偏高，导致 u_max 过大）
+    # 只对有经验估算的模块重算
+    from .math_func import golden_gaps
     for mod_id, emp_layout in empirical_layouts.items():
         if mod_id in layouts:
+            layout = layouts[mod_id]
+            emp_ratio = emp_layout.content_ratio
+            # 用经验 ratio 计算正确的间距
+            n = len(layout.blocks)
+            remaining = layout_page.__defaults__[0] if layout_page.__defaults__ else 275.0
+            from .math_func import CANVAS_H
+            remaining = CANVAS_H - layout.content_h
+            gaps_raw = golden_gaps(remaining, n, content_ratio=emp_ratio)
+            top_pad = gaps_raw[0]
+            bottom_pad = gaps_raw[-1]
+            inter = gaps_raw[1:-1]
+            gaps = [top_pad] + inter
+
+            # 重新定位 blocks
+            y = 0.0
+            new_blocks = []
+            for i, blk in enumerate(layout.blocks):
+                y += gaps[i]
+                from .math_func import Block
+                new_blocks.append(Block(key=blk.key, h=blk.h,
+                                        gap=round(gaps[i], 2), y=round(y, 2)))
+                y += blk.h
+
+            from dataclasses import replace as _dc_replace
             layouts[mod_id] = _dc_replace(
-                layouts[mod_id],
-                content_ratio=emp_layout.content_ratio
+                layout,
+                blocks=new_blocks,
+                gaps_h=round(sum(gaps), 2),
+                top_pad=round(top_pad, 2),
+                bottom_pad=round(bottom_pad, 2),
+                unit_u=round(top_pad, 4),
+                content_ratio=emp_ratio,
             )
 
     return build_css(layouts, layout_profile=layout_profile)

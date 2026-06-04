@@ -75,15 +75,27 @@ def golden_gaps(remaining: float, n: int,
 
     总留白 = u * (2 + sum(phi^k, k=0..num_inter-1))
 
-    content_ratio < 0.4 时启用紧凑模式: u_max = 10mm
-    否则 u_max = 15mm
+    u_max 按密度分档:
+      ratio < 0.3  (极低): 3mm  — 内容极少，紧凑排列，不浪费空间
+      ratio < 0.5  (低):   5mm  — 可合并模块，适度间距
+      ratio < 0.7  (中):   10mm — 紧凑模式
+      ratio >= 0.7 (高):   15mm — 正常黄金间距
     """
     if remaining <= 0 or n <= 0:
         return [0.0] * max(n + 1, 1)
 
+    # u_max 按密度分档
+    if content_ratio < 0.3:
+        u_max = 3.0
+    elif content_ratio < 0.5:
+        u_max = 5.0
+    elif content_ratio < 0.7:
+        u_max = 10.0
+    else:
+        u_max = 15.0
+
     if n == 1:
         # 单容器: top_pad = bottom_pad = remaining/2, 但受 u_max 限制
-        u_max = 10.0 if content_ratio < 0.4 else 15.0
         half = min(remaining / 2.0, u_max)
         return [half, half]
 
@@ -93,9 +105,6 @@ def golden_gaps(remaining: float, n: int,
     # 加权和: sum(phi^k, k=0..num_inter-1)
     geo_sum = sum(PHI ** k for k in range(num_inter))
     total_weight = 2.0 + geo_sum
-
-    # u_max: 紧凑模式 vs 正常模式
-    u_max = 10.0 if content_ratio < 0.4 else 15.0
     u = min(u_max, remaining / total_weight)
 
     # top_pad = u
@@ -140,8 +149,10 @@ def layout_page(heights: List[tuple[str, float]],
          - top_pad = bottom_pad = u  (垂直居中)
          - inter[k] = u * phi^k      (严格黄金比例增长)
          - u 受 u_max 约束 (紧凑/正常模式)
-      4. content_ratio < 0.4: 紧凑模式, u_max=10mm
-         content_ratio >= 0.6: 高密度, 靠上排列
+      4. content_ratio < 0.3: 极紧凑模式, u_max=3mm
+         content_ratio < 0.5: 低密度模式, u_max=5mm
+         content_ratio < 0.7: 紧凑模式, u_max=10mm
+         content_ratio >= 0.7: 高密度, 靠上排列
     """
     keys = [t[0] for t in heights]
     hs = [t[1] for t in heights]
