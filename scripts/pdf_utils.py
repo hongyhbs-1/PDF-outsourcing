@@ -103,38 +103,39 @@ _PREFLIGHT_JS = """
     });
 
     // ─── [FIX] 动态分页: 低密度模块允许接前页 ───
-    const RATIO_THRESHOLD = 0.50;
+    // 算法：测量 module-page 的实际内容高度（绕过 min-height）
+    // 如果内容高度 < 阈值，取消 break-before: page + min-height
+    const PAGE_HEIGHT = 1123; // A4 at 96dpi
+    const DENSITY_THRESHOLD = 0.70; // 内容 < 70% 页面高度 → 低密度
 
-    // 1. 从 golden_typeset CSS 注释中解析各模块的 ratio
-    const modRatios = {};
-    const allStyles = document.querySelectorAll('style');
-    for (const s of allStyles) {
-        const match = s.textContent.match(/GOLDEN_RATIOS:\s*([\w:,.-]+)/);
-        if (match) {
-            match[1].split(',').forEach(pair => {
-                const [id, val] = pair.split(':');
-                modRatios[id] = parseFloat(val);
-            });
-            break;
-        }
-    }
-
-    // 2. 根据 ratio 决定分页策略
-    //    从子元素 class 中提取模块 ID（如 m1-report-page → m1）
-    const MOD_ID_RE = /\b(m\d+)-/;
     modulePages.forEach((page, index) => {
         if (index === 0 || page.classList.contains('comic-module')) return;
 
-        let modId = null;
-        for (const cls of page.firstElementChild?.classList || []) {
-            const m = cls.match(MOD_ID_RE);
-            if (m) { modId = m[1]; break; }
+        // 测量真实内容高度：临时去掉 min-height
+        const origMinH = page.style.minHeight;
+        page.style.minHeight = '0';
+        const childOrigins = [];
+        for (const child of page.children) {
+            childOrigins.push(child.style.minHeight);
+            child.style.minHeight = '0';
+        }
+        const contentHeight = page.scrollHeight;
+
+        // 恢复 min-height（后续可能还需要）
+        page.style.minHeight = origMinH;
+        let ci = 0;
+        for (const child of page.children) {
+            child.style.minHeight = childOrigins[ci++];
         }
 
-        const ratio = modRatios[modId];
-        if (ratio !== undefined && ratio < RATIO_THRESHOLD) {
+        if (contentHeight / PAGE_HEIGHT < DENSITY_THRESHOLD) {
+            // 低密度：取消强制分页 + 去掉 min-height 让内容紧凑
             page.style.breakBefore = 'auto';
             page.style.pageBreakBefore = 'auto';
+            page.style.minHeight = '0';
+            for (const child of page.children) {
+                child.style.minHeight = '0';
+            }
         }
     });
 
@@ -143,8 +144,6 @@ _PREFLIGHT_JS = """
         panels_with_data: panelsWithData.length,
         m5_fixed: !!m5,
         relaxed_blocks: avoidSelectors.length,
-        golden_ratios_found: Object.keys(modRatios).length,
-        golden_ratios: JSON.stringify(modRatios),
     };
 }
 """
@@ -334,6 +333,7 @@ def _build_pdf_kwargs(payload: dict, *, landscape: bool = False) -> dict:
     kwargs = {
         "format": "A4",
         "print_background": True,
+        "scale": 0.9,  # 略微缩小避免低密度模块浪费整页
         **build_pdf_chrome_options(_build_pdf_chrome_meta(payload)),
     }
     if landscape:

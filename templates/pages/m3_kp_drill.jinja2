@@ -408,9 +408,9 @@
     <div class="module-content-card m3-kp-guide-card" data-guide-columns="{{ 'single' if guide_column_count <= 1 else 'double' }}">
 
     {# =========================================================================
-     # 区块3：介绍面板 + 层级步骤条
+     # 区块3：介绍面板 + 层级步骤条（仅在有数据时显示，无数据时直接显示空状态提示）
      # ========================================================================= #}
-    {% if intro_text %}
+    {% if intro_text and has_data %}
     <div class="m3-kp-guide-column">
       <div class="m3-kp-drill__section-title m3-kp-drill__section-title--guide">{{ lb_icon('tree', 'frame-inline-icon') }} 一、层级说明</div>
       <div class="m3-kp-drill__intro-panel">
@@ -729,14 +729,10 @@
       {% endif %}
 
     {% else %}
-    {# 整体无数据时的兜底显示 #}
-    <div class="m3-kp-drill__grid">
-      <div class="m3-kp-drill__panel">
-        <div class="m3-kp-drill__empty-state">
-          暂无短板数据，无法进行知识点钻取分析
-        </div>
-      </div>
-    </div><!-- /.m3-kp-drill__grid -->
+    {# 整体无数据时的兜底显示 — 直接在 intro 区域内提示，避免额外占页 #}
+    <div class="m3-kp-drill__empty-state" style="margin-top: 12px; padding: 16px; text-align: center; color: var(--text-secondary);">
+      暂无短板数据，无法进行知识点钻取分析
+    </div>
     {% endif %}
 
   </div><!-- /.m3-kp-drill__container -->
