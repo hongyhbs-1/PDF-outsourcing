@@ -329,7 +329,7 @@
   border-radius: var(--radius-badge);
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-bold);
-  color: var(--cc-card-bg);
+  color: #ffffff;
 }
 
 .m3-kp-drill__domain-badge--l1 {
@@ -793,7 +793,7 @@
   height: 32px;
   border-radius: 50%;
   background: var(--color-success);
-  color: var(--cc-card-bg);
+  color: #ffffff;
   font-size: 18px;
   font-weight: var(--font-weight-bold);
   flex-shrink: 0;

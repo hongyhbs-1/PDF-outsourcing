@@ -7,16 +7,9 @@ Supports two modes:
 1. Dual Pass (recommended): pre-render HTML -> Playwright measures DOM heights -> precise typeset
 2. Single Pass (fallback): payload empirical estimation -> approximate typeset
 
-Integration into render_standalone.py:
-    # Dual Pass (recommended)
-    css = build_typeset_css(payload, measured=measured_heights)
-    # Single Pass (fallback)
-    css = build_typeset_css(payload)
-
 LayoutProfile integration:
-    css = build_typeset_css(payload, layout_profile=lp)
-    # Or auto-compute from payload:
-    css = build_typeset_css(payload, auto_profile=True)
+    layout_profile = compute_layout_profile(compute_data_profile(payload))
+    css = build_typeset_css(payload, measured=measured_heights, layout_profile=layout_profile)
 """
 from __future__ import annotations
 from typing import Dict, Optional, TYPE_CHECKING
@@ -32,7 +25,6 @@ if TYPE_CHECKING:
 def build_typeset_css(payload: RenderPayload,
                       measured: Optional[dict[str, list[tuple[str, float]]]] = None,
                       layout_profile: Optional[LayoutProfile] = None,
-                      auto_profile: bool = False,
                       ) -> str:
     """Generate typeset CSS.
 
@@ -41,20 +33,7 @@ def build_typeset_css(payload: RenderPayload,
         measured: Pass 1 DOM measurement results {mod_id: [(key, height_mm), ...]}
                   None falls back to empirical estimation
         layout_profile: optional LayoutProfile for CSS variable injection
-        auto_profile: when True and layout_profile is None, auto-compute
-                      DataProfile -> LayoutProfile from payload
     """
-    # Auto-compute LayoutProfile if requested and not explicitly provided
-    if layout_profile is None and auto_profile:
-        try:
-            from .data_profile import compute_data_profile
-            from .layout_profile import compute_layout_profile
-            dp = compute_data_profile(payload)
-            layout_profile = compute_layout_profile(dp)
-        except Exception:
-            # Non-fatal: profile computation failure should not break typesetting
-            layout_profile = None
-
     if measured:
         block_map = analyze_with_measured(payload, measured)
     else:

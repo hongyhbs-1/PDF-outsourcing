@@ -159,8 +159,7 @@
   justify-content: center;
   background: linear-gradient(135deg, var(--logo-blue) 50%, var(--logo-green) 50%);
   border-radius: 50%;
-  color: var(--cc-card-bg);
-  font-size: 5mm;
+  color: #ffffff;
   font-weight: var(--fw-bold);
 }
 
