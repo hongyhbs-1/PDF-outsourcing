@@ -50,3 +50,18 @@ VH 规则增加 .module-page 等特异性选择器解决
 - Stat Hero 覆盖: 1→3 (m9 + m1 + m7)
 - L1 覆盖: +3 选择器 + 3 .module-page 前缀
 - VH 文件: 195→212 行
+
+## 非主模块审查 (T009-2)
+扫描 cover/mtoc/mov/sp/ip，发现 12 处异常。
+
+### 决策（Hermes + Claude 共识）
+- A类: mtoc/mov/sp/ip 标题统一 L0 22px/800 (4处)
+- B类: mov-hero/sp-hero 统一 Hero 18px/700 (2处)
+- C类: mov-card__num/sp-metric/ip-gain 统一 Stat Hero 24px (3处)
+- D类: mtoc 导航条目豁免（非内容层级）
+- m0 cover 全部豁免（设计专用）
+
+### 验证
+- Playwright 9/9 (A:4 + B:2 + C:3)
+- 21/21 golden_typeset tests
+- 2 样本 PDF exit 0

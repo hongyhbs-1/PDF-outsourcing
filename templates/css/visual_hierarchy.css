@@ -11,8 +11,8 @@
   - L2: 卡片标题 13px/700w/secondary — 卡片定位
   - L3: 内容标签 12px/600w/muted — 数据标签
   
-  豁免模块：m0_cover / mtoc / m_overview / student_profile / improvement_preview
-  密度豁免：m9 解析内容 (analysis-cell/label/stars) 保持 11px
+  豁免模块：m0_cover（设计专用）
+  豁免元素：mtoc 导航条目（非内容层级）、m9 解析内容密度豁免
   ========================================================================== */
 
 :root {
@@ -82,10 +82,14 @@
    ==========================================================================
    以下规则覆盖各模块自行定义的标题样式，强制统一到层级 token。
    选择器按角色分组，枚举所有模块的标题 class。
-   豁免模块（m0/mtoc/m_overview/student_profile/improvement_preview）不在此列。
+   豁免：m0_cover（设计专用）、mtoc 导航条目（非内容层级）。
    ========================================================================== */
 
 /* ── L0: 模块页标题 ── */
+.mtoc-title,
+.mov-title,
+.sp-title,
+.ip-title,
 .m1-section-title__text,
 .m2-cw-module-title,
 .m3-kp-drill__title,
@@ -115,6 +119,8 @@
 }
 
 /* ── Hero: 核心陈述 ── */
+.mov-hero-title,
+.sp-hero-unified__title,
 .m3-kp-drill__kp-title,
 .m7-overview-card__title,
 .m7-usage-item__title,
@@ -145,6 +151,9 @@
 }
 
 /* ── Stat Hero: 仪表盘统计数字 ── */
+.mov-card__num,
+.sp-metric-card__value,
+.ip-focus-item__gain,
 .m9-overview__stat-num,
 .m1-goal-metric-value,
 .m7-kp-level-num {
