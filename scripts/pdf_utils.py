@@ -105,11 +105,25 @@ _PREFLIGHT_JS = """
     // ─── [FIX] 动态分页: 低密度模块允许接前页 ───
     // 算法：测量 module-page 的实际内容高度（绕过 min-height）
     // 如果内容高度 < 阈值，取消 break-before: page + min-height
+    // 仅对数据分析模块（m1-m9）生效，章节/封面/目录不参与
     const PAGE_HEIGHT = 1123; // A4 at 96dpi
     const DENSITY_THRESHOLD = 0.70; // 内容 < 70% 页面高度 → 低密度
 
+    // 数据分析模块白名单：section 或 firstChild class 以 m1-m9 开头
+    function isDataModule(mp) {
+        const targets = [mp.querySelector('section'), mp.firstElementChild];
+        for (const el of targets) {
+            if (!el) continue;
+            for (const cls of el.classList) {
+                if (/^m[1-9]/.test(cls)) return true;
+            }
+        }
+        return false;
+    }
+
     modulePages.forEach((page, index) => {
         if (index === 0 || page.classList.contains('comic-module')) return;
+        if (!isDataModule(page)) return;
 
         // 测量真实内容高度：临时去掉 min-height
         const origMinH = page.style.minHeight;
