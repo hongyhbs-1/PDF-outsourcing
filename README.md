@@ -14,14 +14,14 @@ playwright install chromium
 # 渲染单个样本（HTML + PDF，输出在当前目录）
 python scripts/render_standalone.py samples/json/sample_01_math.json -o output.html --pdf
 
-# 批量渲染全部样本
-python scripts/render_all_samples.py
+# 批量渲染全部样本（数学报告）
+python scripts/render_all_samples.py --学科 数学 --模式 报告
 
 # 指定样本编号渲染
-python scripts/render_all_samples.py 1
+python scripts/render_all_samples.py 1 --学科 数学 --模式 报告
 
-# 渲染场景报告
-python scripts/render_all_samples.py 4 --学科 数学 --模式 场景
+# 渲染英语场景报告
+python scripts/render_all_samples.py 4 --学科 英语 --模式 场景
 
 # 运行测试
 python -m pytest scripts/test_*.py -v

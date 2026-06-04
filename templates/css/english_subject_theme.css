@@ -155,11 +155,7 @@ body.report-theme--english .m0-cover-page {
   --pm-navy-mid:         #1a3a52;
   --pm-navy-light:       #204a67;
   --pm-teal:             var(--cc-accent-primary);
-  --pm-teal-light:       var(--pm-teal-light);
   --pm-teal-soft:        var(--cc-accent-line);
-  --pm-sand:             var(--pm-sand);
-  --pm-sand-dark:        var(--pm-sand-dark);
-  --pm-sand-light:       var(--pm-sand-light);
   --pm-sand-pale:        #faf6ee;
   --pm-bg-page:          var(--cc-page-bg);
   --pm-bg-card:          var(--cc-card-bg);
@@ -167,7 +163,6 @@ body.report-theme--english .m0-cover-page {
   --pm-text-secondary:   var(--cc-text-secondary);
   --pm-text-muted:       var(--cc-text-muted);
   --pm-text-light:       #a0aec0;
-  --pm-status-nodata:    var(--pm-status-nodata);
   --pm-gradient-accent-bar: linear-gradient(90deg, var(--pm-sand) 0%, var(--cc-accent-primary) 100%);
   background:
     radial-gradient(circle at top right, rgba(226, 196, 143, 0.18), transparent 28%),

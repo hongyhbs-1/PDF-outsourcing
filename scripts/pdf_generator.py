@@ -58,8 +58,7 @@ def generate_pdf(
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
-        print("PDF 生成需要 playwright: pip install playwright")
-        sys.exit(1)
+        raise ImportError("PDF 生成需要 playwright: pip install playwright")
 
     report_variant = _validate_report_variant(report_variant)
     landscape = bool(landscape or report_variant == ADMISSIONS_BLUEPRINT_VARIANT)

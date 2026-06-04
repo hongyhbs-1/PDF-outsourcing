@@ -14,8 +14,7 @@ from learning_blueprint_builder import build_learning_blueprints
 try:
     from jinja2 import Environment, FileSystemLoader
 except ImportError:
-    print("请安装 jinja2: pip install jinja2")
-    sys.exit(1)
+    raise ImportError("请安装 jinja2: pip install jinja2")
 
 # ---------------------------------------------------------------------------
 # 路径常量

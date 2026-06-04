@@ -101,11 +101,7 @@
 .m5-city-compare__title ~ .frame-title-icon,
 .m6-module-title__text ~ .frame-title-icon,
 .m7-section-title ~ .frame-title-icon,
-.m7-data-reliability__title ~ .frame-title-icon,
-.m1-section-title__text ~ .frame-title-ico,
-.m2-cw-module-title ~ .frame-title-ico,
-.m3-kp-drill__title ~ .frame-title-ico,
-.m4-section-title ~ .frame-title-ico {
+.m7-data-reliability__title ~ .frame-title-icon {
   font-size: var(--vh-h0-font-size) !important;
   font-weight: var(--vh-h0-font-weight) !important;
 }
