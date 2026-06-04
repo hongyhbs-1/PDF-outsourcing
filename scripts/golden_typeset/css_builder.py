@@ -58,8 +58,14 @@ _COMPACT_CORE_RHYTHM_MM: dict[str, dict[int, float]] = {
 }
 
 
-def _justify_for_ratio(ratio: float) -> str:
-    """保持章节页顶部阅读顺序，避免低密度页面内容垂直居中下坠。"""
+def _justify_for_ratio(ratio: float, layout_profile: Optional[LayoutProfile] = None) -> str:
+    """保持章节页顶部阅读顺序，避免低密度页面内容垂直居中下坠。
+
+    When layout_profile is provided with page_strategy == "center",
+    allow vertical centering (useful for sparse content pages).
+    """
+    if layout_profile and layout_profile.page_strategy == "center":
+        return "center"
     return "flex-start"
 
 
@@ -83,6 +89,29 @@ def build_css(layouts: Dict[str, PageLayout],
                 parts.append(f"  {var_name}: {var_value};")
         parts.append("}")
 
+    # LayoutProfile-driven typography adjustments (consume the CSS variables)
+    if layout_profile is not None:
+        lp = layout_profile
+        parts.append("")
+        parts.append("/* golden_typeset -- LayoutProfile-driven typography adjustments */")
+        parts.append("@media print {")
+        # typography_scale controls body font-size across all module pages
+        if lp.typography_scale != 1.0:
+            parts.append(f"  .module-page {{ font-size: calc(var(--vh-body-font-size) * {lp.typography_scale:.2f}); }}")
+        # padding_scale controls card padding and gap tokens
+        if lp.padding_scale != 1.0:
+            parts.append(f"  .module-page {{ --vh-card-padding: calc(10px * {lp.padding_scale:.2f}) calc(12px * {lp.padding_scale:.2f}); }}")
+            parts.append(f"  .module-page {{ --vh-gap-md: calc(10px * {lp.padding_scale:.2f}); }}")
+        # Per-module grid_columns overrides from module_overrides
+        _GRID_SELECTORS = {"m3": ".m3-kp-drill__panels"}
+        if lp.module_overrides:
+            for _mod_id, overrides in lp.module_overrides.items():
+                if "grid_columns" in overrides:
+                    sel = _GRID_SELECTORS.get(_mod_id)
+                    if sel:
+                        parts.append(f"  {sel} {{ grid-template-columns: repeat({overrides['grid_columns']}, 1fr); }}")
+        parts.append("}")
+
     for mod_id, layout in layouts.items():
         sel = WRAPPER_SELECTORS.get(mod_id)
         if not sel or not layout.blocks:
@@ -99,7 +128,7 @@ def build_css(layouts: Dict[str, PageLayout],
         parts.append("@media print {")
 
         # Wrapper: min-height + flex + 自适应 justify-content
-        justify = _justify_for_ratio(ratio)
+        justify = _justify_for_ratio(ratio, layout_profile=layout_profile)
         parts.append(f"  {sel} {{")
         parts.append(f"    min-height: calc(275mm - 6px);")
         parts.append(f"    display: flex;")

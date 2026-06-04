@@ -6,7 +6,7 @@ typography scale, padding, grid, and CSS variable overrides.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
@@ -22,15 +22,16 @@ class LayoutProfile:
     padding_scale: float  # 0.50 - 1.00
     grid_columns: int  # 1, 2, 3
     grid_gap_mm: float  # 3.0 - 8.0
-    page_strategy: Literal["single", "flow", "natural"]
+    page_strategy: Literal["single", "flow", "natural", "center"]
     css_overrides: dict[str, str]  # CSS vars injected into :root
+    module_overrides: dict[str, dict] = field(default_factory=dict)  # per-module overrides (e.g. {"m3": {"grid_columns": 2}})
 
 
 # ---------------------------------------------------------------------------
 # Mapping rules (subject + density -> base profile)
 # ---------------------------------------------------------------------------
 
-_BASE_PROFILES: dict[str, dict[str, dict]] = {
+_BASE_PROFILES: dict[tuple[str, str], dict] = {
     # math profiles
     ("math", "dense"): {
         "spacing_mode": "compact",
@@ -188,6 +189,23 @@ def compute_layout_profile(
         spacing_mode, typography_scale, padding_scale, grid_gap_mm
     )
 
+    # Build module_overrides: include all _MODULE_OVERRIDES entries that
+    # differ from the base profile values.  This allows css_builder to
+    # emit per-module CSS rules (e.g. grid_columns for m3).
+    module_overrides: dict[str, dict] = {}
+    for mid, overrides in _MODULE_OVERRIDES.items():
+        diffs: dict = {}
+        if overrides.get("grid_columns") != grid_columns:
+            diffs["grid_columns"] = overrides["grid_columns"]
+        if overrides.get("grid_gap_mm") != grid_gap_mm:
+            diffs["grid_gap_mm"] = overrides["grid_gap_mm"]
+        if overrides.get("typography_scale") != typography_scale:
+            diffs["typography_scale"] = overrides["typography_scale"]
+        if overrides.get("padding_scale") != padding_scale:
+            diffs["padding_scale"] = overrides["padding_scale"]
+        if diffs:
+            module_overrides[mid] = diffs
+
     return LayoutProfile(
         spacing_mode=spacing_mode,
         typography_scale=typography_scale,
@@ -196,4 +214,5 @@ def compute_layout_profile(
         grid_gap_mm=grid_gap_mm,
         page_strategy=page_strategy,
         css_overrides=css_overrides,
+        module_overrides=module_overrides,
     )
