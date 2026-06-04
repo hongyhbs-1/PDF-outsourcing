@@ -107,26 +107,15 @@ _PREFLIGHT_JS = """
     }
 
     // 2. 根据 ratio 决定分页策略
+    //    从子元素 class 中提取模块 ID（如 m1-report-page → m1）
+    const MOD_ID_RE = /\b(m\d+)-/;
     modulePages.forEach((page, index) => {
         if (index === 0 || page.classList.contains('comic-module')) return;
 
         let modId = null;
-        const inner = page.querySelector(
-            '.m1-report-page, .m2-core-weakness-module, .m3-kp-drill, ' +
-            'section.m4-module-domains, .m5-city-compare, .m6-page, ' +
-            '.m7-data-reliability, .m9-page, .m10-page, .m11-page'
-        );
-        if (inner) {
-            if (inner.classList.contains('m1-report-page')) modId = 'm1';
-            else if (inner.classList.contains('m2-core-weakness-module')) modId = 'm2';
-            else if (inner.classList.contains('m3-kp-drill')) modId = 'm3';
-            else if (inner.classList.contains('m4-module-domains')) modId = 'm4';
-            else if (inner.classList.contains('m5-city-compare')) modId = 'm5';
-            else if (inner.classList.contains('m6-page')) modId = 'm6';
-            else if (inner.classList.contains('m7-data-reliability')) modId = 'm7';
-            else if (inner.classList.contains('m9-page')) modId = 'm9';
-            else if (inner.classList.contains('m10-page')) modId = 'm10';
-            else if (inner.classList.contains('m11-page')) modId = 'm11';
+        for (const cls of page.firstElementChild?.classList || []) {
+            const m = cls.match(MOD_ID_RE);
+            if (m) { modId = m[1]; break; }
         }
 
         const ratio = modRatios[modId];
