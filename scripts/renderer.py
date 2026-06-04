@@ -6,7 +6,6 @@ HTML 渲染核心 — CSS 合并 + Jinja2 模板渲染
 """
 
 import base64
-import sys
 from pathlib import Path
 
 from learning_blueprint_builder import build_learning_blueprints

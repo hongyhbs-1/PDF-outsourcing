@@ -1,7 +1,7 @@
 ---
 title: "T009: 全模块VH层级审查与统一"
 priority: P0
-phase: ship
+phase: review
 assignee: "Hermes + Claude"
 project: "Outsourcing-PDF-layout"
 created: "2026-06-04"

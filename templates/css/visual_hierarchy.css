@@ -227,4 +227,50 @@
     --vh-h3-font-size: 11px;
     --vh-body-font-size: 10px;
   }
+
+  /* ── 打印字号下限 9px（硬规则） ── */
+  /* 以下模块元素在 screen 模式使用 8-9px，print 模式必须拉到 9px */
+  .m7-note,
+  .m7-badge,
+  .m7-metric-item__label,
+  .m7-metric-item__value,
+  .m7-metric-item__sub,
+  .m7-list-item__text,
+  .m7-list-item__count,
+  .m7-kp-level-label,
+  .m7-kp-level-unit,
+  .m7-overview-card__sub,
+  .m7-coverage-note,
+  .m7-block-desc,
+  .m6-training-focus__note,
+  .m6-city-advice-inline,
+  .m6-summary-box__text,
+  .m6-suggestion-section__no,
+  .m6-suggestion-section__item,
+  .m6-check-item,
+  .m6-check-icon,
+  .m6-check-item__text,
+  .m6-guidance-paragraph,
+  .m6-em-red,
+  .m7-coverage-table,
+  .m7-coverage-table td,
+  .m7-coverage-table th,
+  .m7-progress,
+  .m7-progress__fill,
+  .m7-compact-print-hidden,
+  .sp-progress-label,
+  .mov-pie-legend-item,
+  .mov-pie-legend__name,
+  .mov-pie-legend__value,
+  .sp-metric-card__tag,
+  .sp-metric-card__insight,
+  .frame-metric-icon,
+  .m1-goal-metric-desc,
+  .m1-bt-progress-label,
+  .m3-kp-diagnosis-row__type,
+  .m3-kp-diagnosis-row__path,
+  .m3-kp-diagnosis-row__metric span,
+  .m3-kp-diagnosis-row__count span {
+    font-size: 9px !important;
+  }
 }

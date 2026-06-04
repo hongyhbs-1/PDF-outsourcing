@@ -65,13 +65,13 @@
 
 ```
 Stage 1: base.css（全局基础）
-Stage 2: sorted(其余 *.css)（模块样式，字母序）
-Stage 3: shared_*.css（共享覆盖，最高优先级，最后加载）
-```
+Stage 2: sorted(其余 *.css)（模块样式，字母序，排除 shared_* 和 visual_hierarchy）
+Stage 3: shared_*.css（共享覆盖，高优先级）
+Stage 4: visual_hierarchy.css（最终仲裁者，跨模块层级统一 + 打印字号下限）
 
 **关键约束**：Stage 2 必须保持 `sorted()` 字母序，不能改为按前缀分组。因为 `improvement_*` 等前缀在字母序中排在 `m*` 之前，改变顺序会影响 CSS cascade 优先级。
 
-`html_renderer.py` 只加载 `base.css` + `m*.css`，不加载 shared 覆盖。这是既定行为。
+`html_renderer.py` 的 `_load_combined_css()` 加载所有 CSS（含 shared + VH），并缓存结果。`build_typeset_css()` 在 VH 之后追加 golden typeset CSS。
 
 ## 4. 单文件大小上限
 
