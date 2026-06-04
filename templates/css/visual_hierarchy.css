@@ -1,17 +1,19 @@
 /* ==========================================================================
-   T006: 统一视觉层级系统 (Visual Hierarchy System)
-   ==========================================================================
-   基于第一性原理方法论（docs/visual-hierarchy-methodology.md）
-   
-   5 层角色定义（辩论共识 2026-06-04）：
-   - L0: 模块页标题 22px/800w/navy — 章节锚点
-   - Hero: 核心陈述 18px/700w/primary — 一句话结论
-   - L1: 区块标题 14px/700w/primary — 内容块定位
-   - L2: 卡片标题 13px/700w/secondary — 卡片定位
-   - L3: 内容标签 12px/600w/muted — 数据标签
-   
-   豁免模块：m0_cover / mtoc / m_overview / student_profile / improvement_preview
-   ========================================================================== */
+  T006: 统一视觉层级系统 (Visual Hierarchy System)
+  ==========================================================================
+  基于第一性原理方法论（docs/visual-hierarchy-methodology.md）
+  
+  6 层角色定义（辩论共识 2026-06-04）：
+  - L0: 模块页标题 22px/800w/navy — 章节锚点
+  - Stat Hero: 仪表盘统计数字 24px/700w — 瞬间抓取（跨模块通用）
+  - Hero: 核心陈述 18px/700w/primary — 一句话结论
+  - L1: 区块标题 14px/700w/primary — 内容块定位
+  - L2: 卡片标题 13px/700w/secondary — 卡片定位
+  - L3: 内容标签 12px/600w/muted — 数据标签
+  
+  豁免模块：m0_cover / mtoc / m_overview / student_profile / improvement_preview
+  密度豁免：m9 解析内容 (analysis-cell/label/stars) 保持 11px
+  ========================================================================== */
 
 :root {
   /* ── L0: 模块页标题 ── */
@@ -20,6 +22,12 @@
   --vh-h0-color: #12344d;
   --vh-h0-line-height: 1.35;
   --vh-h0-margin-bottom: 0px;
+
+  /* ── Stat Hero: 仪表盘统计数字 ── */
+  --vh-stat-font-size: 24px;
+  --vh-stat-font-weight: 700;
+  --vh-stat-color: var(--cc-text-primary);
+  --vh-stat-line-height: 1.2;
 
   /* ── Hero: 区块核心陈述 ── */
   --vh-hero-font-size: 18px;
@@ -109,13 +117,27 @@
 /* ── Hero: 核心陈述 ── */
 .m3-kp-drill__kp-title,
 .m7-overview-card__title,
-.m7-usage-item__title {
-  font-size: var(--vh-hero-font-size) !important;
-  font-weight: var(--vh-hero-font-weight) !important;
+.m7-usage-item__title,
+.m9-core-conclusion__text,
+.module-page .m9-core-conclusion__text {
+  font-size: 18px !important;
+  font-weight: 700 !important;
   color: var(--vh-hero-color) !important;
   line-height: var(--vh-hero-line-height) !important;
   margin-bottom: var(--vh-hero-margin-bottom) !important;
 }
+
+/* ── Stat Hero: 仪表盘统计数字 ── */
+.m9-overview__stat-num {
+  font-size: var(--vh-stat-font-size) !important;
+  font-weight: var(--vh-stat-font-weight) !important;
+  color: var(--vh-stat-color) !important;
+  line-height: var(--vh-stat-line-height) !important;
+}
+
+/* ── 密度豁免: m9 解析内容保持 11px ── */
+/* m9-analysis-cell, m9-analysis-label, m9-stars 等 11px 不强制拉到 12px，
+   信息密度优先于层级统一。打印下限 ≥9px 已满足。 */
 
 /* ── L1: 区块标题 ── */
 .m2-cw-note-bar__title,
@@ -163,6 +185,7 @@
 @media print {
   :root {
     --vh-h0-font-size: 20px;
+    --vh-stat-font-size: 22px;
     --vh-hero-font-size: 16px;
     --vh-h1-font-size: 13px;
     --vh-h2-font-size: 12px;
