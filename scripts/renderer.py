@@ -115,21 +115,25 @@ def _rewrite_font_urls(css: str) -> str:
 def load_css() -> str:
     """合并所有 CSS 文件。
 
-    加载顺序（与旧 sorted(*.css) 字母序行为一致，shared_*.css 等同旧 zy/zz 后缀）：
-    base.css → 按字母序其余 CSS → shared_*.css（最高优先级，最后加载）
+    加载顺序（visual_hierarchy.css 必须最后，确保层级 token 覆盖所有模块和 shared_*.css）：
+    base.css → 按字母序其余 CSS → shared_*.css → visual_hierarchy.css
     """
     css_parts: list[str] = []
     base = CSS_DIR / "base.css"
     if base.exists():
         css_parts.append(base.read_text(encoding="utf-8"))
-    # 按字母序加载所有非 base、非 shared 的 CSS（保持与旧 sorted 行为一致）
+    # 按字母序加载所有非 base、非 shared、非 visual_hierarchy 的 CSS
     for f in sorted(CSS_DIR.glob("*.css")):
-        if f.name == "base.css" or f.name.startswith("shared_"):
+        if f.name == "base.css" or f.name.startswith("shared_") or f.name == "visual_hierarchy.css":
             continue
         css_parts.append(f.read_text(encoding="utf-8"))
-    # 共享覆盖（shared_*.css）— 最后加载，优先级最高（等同旧 zy/zz 前缀 hack）
+    # 共享覆盖（shared_*.css）
     for f in sorted(CSS_DIR.glob("shared_*.css")):
         css_parts.append(f.read_text(encoding="utf-8"))
+    # visual_hierarchy.css 最后加载 — 层级 token 必须是最终仲裁者
+    vh = CSS_DIR / "visual_hierarchy.css"
+    if vh.exists():
+        css_parts.append(vh.read_text(encoding="utf-8"))
     return _rewrite_font_urls("\n".join(css_parts))
 
 

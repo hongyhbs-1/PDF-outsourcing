@@ -1,45 +1,53 @@
 /* ==========================================================================
    T006: 统一视觉层级系统 (Visual Hierarchy System)
    ==========================================================================
-   所有模块必须消费这些 token，不得自行定义标题字号/字重/颜色/间距。
+   基于第一性原理方法论（docs/visual-hierarchy-methodology.md）
    
-   层级定义：
-   - Level 0: 模块页标题 (h1) — 每个模块最顶部的章节名
-   - Level 1: 区块标题 (h2) — 模块内的分区块标题
-   - Level 2: 卡片标题 (h3) — 单个卡片/面板的标题
-   - Level 3: 内容标题 (h4) — 卡片内的小标题
-   - Card:    卡片容器 — 统一圆角/内边距/阴影
-   - Body:    正文 — 统一字号/行高/颜色
+   5 层角色定义（辩论共识 2026-06-04）：
+   - L0: 模块页标题 22px/800w/navy — 章节锚点
+   - Hero: 核心陈述 18px/700w/primary — 一句话结论
+   - L1: 区块标题 14px/700w/primary — 内容块定位
+   - L2: 卡片标题 13px/700w/secondary — 卡片定位
+   - L3: 内容标签 12px/600w/muted — 数据标签
+   
+   豁免模块：m0_cover / mtoc / m_overview / student_profile / improvement_preview
    ========================================================================== */
 
 :root {
-  /* ── Level 0: 模块页标题 ── */
-  --vh-h0-font-size: 20px;
-  --vh-h0-font-weight: 700;
-  --vh-h0-color: var(--pm-text-primary);
-  --vh-h0-line-height: 1.4;
-  --vh-h0-margin-bottom: 12px;
+  /* ── L0: 模块页标题 ── */
+  --vh-h0-font-size: 22px;
+  --vh-h0-font-weight: 800;
+  --vh-h0-color: #12344d;
+  --vh-h0-line-height: 1.35;
+  --vh-h0-margin-bottom: 0px;
 
-  /* ── Level 1: 区块标题 ── */
-  --vh-h1-font-size: 15px;
+  /* ── Hero: 区块核心陈述 ── */
+  --vh-hero-font-size: 18px;
+  --vh-hero-font-weight: 700;
+  --vh-hero-color: var(--cc-text-primary);
+  --vh-hero-line-height: 1.45;
+  --vh-hero-margin-bottom: var(--vh-gap-md);
+
+  /* ── L1: 区块标题 ── */
+  --vh-h1-font-size: 14px;
   --vh-h1-font-weight: 700;
-  --vh-h1-color: var(--pm-text-primary);
-  --vh-h1-line-height: 1.5;
-  --vh-h1-margin-bottom: 8px;
+  --vh-h1-color: var(--cc-text-primary);
+  --vh-h1-line-height: 1.35;
+  --vh-h1-margin-bottom: var(--vh-gap-sm);
 
-  /* ── Level 2: 卡片标题 ── */
+  /* ── L2: 卡片/面板标题 ── */
   --vh-h2-font-size: 13px;
-  --vh-h2-font-weight: 600;
-  --vh-h2-color: var(--pm-text-secondary);
-  --vh-h2-line-height: 1.5;
-  --vh-h2-margin-bottom: 6px;
+  --vh-h2-font-weight: 700;
+  --vh-h2-color: var(--cc-text-secondary);
+  --vh-h2-line-height: 1.4;
+  --vh-h2-margin-bottom: var(--vh-gap-xs);
 
-  /* ── Level 3: 内容标题 ── */
+  /* ── L3: 内容标签 ── */
   --vh-h3-font-size: 12px;
   --vh-h3-font-weight: 600;
-  --vh-h3-color: var(--pm-text-muted);
+  --vh-h3-color: var(--cc-text-muted);
   --vh-h3-line-height: 1.4;
-  --vh-h3-margin-bottom: 4px;
+  --vh-h3-margin-bottom: var(--vh-gap-xs);
 
   /* ── Card: 卡片容器 ── */
   --vh-card-border-radius: 8px;
@@ -51,7 +59,7 @@
   /* ── Body: 正文 ── */
   --vh-body-font-size: 11px;
   --vh-body-line-height: 1.6;
-  --vh-body-color: var(--pm-text-secondary);
+  --vh-body-color: var(--cc-text-secondary);
 
   /* ── 间距阶梯 ── */
   --vh-gap-xs: 4px;
@@ -61,12 +69,108 @@
   --vh-gap-xl: 20px;
 }
 
+/* ==========================================================================
+   强制层级应用规则
+   ==========================================================================
+   以下规则覆盖各模块自行定义的标题样式，强制统一到层级 token。
+   选择器按角色分组，枚举所有模块的标题 class。
+   豁免模块（m0/mtoc/m_overview/student_profile/improvement_preview）不在此列。
+   ========================================================================== */
+
+/* ── L0: 模块页标题 ── */
+.m1-section-title__text,
+.m2-cw-module-title,
+.m3-kp-drill__title,
+.m4-section-title,
+.m5-city-compare__title,
+.m6-module-title__text,
+.m7-section-title,
+.m7-data-reliability__title {
+  font-size: var(--vh-h0-font-size) !important;
+  font-weight: var(--vh-h0-font-weight) !important;
+  color: var(--vh-h0-color) !important;
+  line-height: var(--vh-h0-line-height) !important;
+  margin-bottom: var(--vh-h0-margin-bottom) !important;
+}
+
+/* ── L0: 模块页标题图标（保持与标题同步） ── */
+.m1-section-title__text ~ .frame-title-icon,
+.m2-cw-module-title ~ .frame-title-icon,
+.m3-kp-drill__title ~ .frame-title-icon,
+.m4-section-title ~ .frame-title-icon,
+.m5-city-compare__title ~ .frame-title-icon,
+.m6-module-title__text ~ .frame-title-icon,
+.m7-section-title ~ .frame-title-icon,
+.m7-data-reliability__title ~ .frame-title-icon,
+.m1-section-title__text ~ .frame-title-ico,
+.m2-cw-module-title ~ .frame-title-ico,
+.m3-kp-drill__title ~ .frame-title-ico,
+.m4-section-title ~ .frame-title-ico {
+  font-size: var(--vh-h0-font-size) !important;
+  font-weight: var(--vh-h0-font-weight) !important;
+}
+
+/* ── Hero: 核心陈述 ── */
+.m3-kp-drill__kp-title,
+.m7-overview-card__title,
+.m7-usage-item__title {
+  font-size: var(--vh-hero-font-size) !important;
+  font-weight: var(--vh-hero-font-weight) !important;
+  color: var(--vh-hero-color) !important;
+  line-height: var(--vh-hero-line-height) !important;
+  margin-bottom: var(--vh-hero-margin-bottom) !important;
+}
+
+/* ── L1: 区块标题 ── */
+.m2-cw-note-bar__title,
+.m2-cw-tips-title,
+.m2-cw-legend-title,
+.m3-kp-drill__section-title,
+.m4-peer-title,
+.m4-table-title,
+.m4-summary-title,
+.m7-warnings-section-title,
+.m8-appendix-panel__section-title,
+.m8-appendix-panel__titlebar,
+.m8-appendix-usage__title,
+.m6-suggestion-section__title,
+.m6-note-box__title,
+.m6-training-focus__title,
+.m9-paper-title {
+  font-size: var(--vh-h1-font-size) !important;
+  font-weight: var(--vh-h1-font-weight) !important;
+  color: var(--vh-h1-color) !important;
+  line-height: var(--vh-h1-line-height) !important;
+  margin-bottom: var(--vh-h1-margin-bottom) !important;
+}
+
+/* ── L2: 卡片/面板标题 ── */
+.m1-bt-title,
+.m3-kp-drill__guide-text,
+.m6-card-header__title {
+  font-size: var(--vh-h2-font-size) !important;
+  font-weight: var(--vh-h2-font-weight) !important;
+  color: var(--vh-h2-color) !important;
+  line-height: var(--vh-h2-line-height) !important;
+  margin-bottom: var(--vh-h2-margin-bottom) !important;
+}
+
+/* ── L3: 内容标签 ── */
+.m5-compare-note {
+  font-size: var(--vh-h3-font-size) !important;
+  font-weight: var(--vh-h3-font-weight) !important;
+  color: var(--vh-h3-color) !important;
+  line-height: var(--vh-h3-line-height) !important;
+}
+
 /* ── 打印模式微调 ── */
 @media print {
   :root {
-    --vh-h0-font-size: 18px;
-    --vh-h1-font-size: 14px;
+    --vh-h0-font-size: 20px;
+    --vh-hero-font-size: 16px;
+    --vh-h1-font-size: 13px;
     --vh-h2-font-size: 12px;
+    --vh-h3-font-size: 11px;
     --vh-body-font-size: 10px;
   }
 }
