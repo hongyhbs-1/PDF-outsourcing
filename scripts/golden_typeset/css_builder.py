@@ -130,7 +130,13 @@ def build_css(layouts: Dict[str, PageLayout],
         # Wrapper: min-height + flex + 自适应 justify-content
         justify = _justify_for_ratio(ratio, layout_profile=layout_profile)
         parts.append(f"  {sel} {{")
-        parts.append(f"    min-height: calc(275mm - 6px);")
+        # 低密度模块 (< 0.5) 不设 min-height，让内容自然高度决定页面占用，
+        # 允许与前一个模块共享同一页（配合 break-before: auto）。
+        # 高密度模块保持 min-height 确保黄金间距排版有空间。
+        if ratio >= 0.50:
+            parts.append(f"    min-height: calc(275mm - 6px);")
+        else:
+            parts.append(f"    /* ratio={ratio:.2f} < 0.5: no min-height, natural height */")
         parts.append(f"    display: flex;")
         parts.append(f"    flex-direction: column;")
         parts.append(f"    justify-content: {justify};")
@@ -179,6 +185,13 @@ def build_css(layouts: Dict[str, PageLayout],
     parts.append("  thead { display: table-header-group; }")
     parts.append("  tr { page-break-inside: avoid; }")
     parts.append("}")
+
+    # GOLDEN_RATIOS: 供 _PREFLIGHT_JS 读取各模块 ratio 用于动态分页
+    ratio_parts = []
+    for mod_id, layout in layouts.items():
+        ratio_parts.append(f"{mod_id}:{layout.content_ratio:.2f}")
+    if ratio_parts:
+        parts.append(f"/* GOLDEN_RATIOS: {','.join(ratio_parts)} */")
 
     parts.append("")
     return "\n".join(parts)

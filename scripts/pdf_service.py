@@ -146,23 +146,52 @@ _PREFLIGHT_JS = """
         }
     });
 
-    // ─── [FIX] 避免中间空白页: 检测内容少的模块，移除强制分页 ───
-    // 计算页面高度（A4: ~297mm，在 96DPI 下约 1123px）
-    // 页面可打印区域（减去页眉页脚）约 900-1000px
-    const MAX_CONTENT_HEIGHT = 900; // px
-    const MIN_CONTENT_HEIGHT = 300;  // px
+    // ─── [FIX] 动态分页: 低密度模块允许接前页 ───
+    // 从 golden_typeset 注入的 CSS 注释中读取 ratio（精确值），
+    // 比用 DOM 高度估算更准确，因为 DOM 高度包含 golden 间距。
+    const RATIO_THRESHOLD = 0.50;
 
+    // 1. 从 golden_typeset CSS 注释中解析各模块的 ratio
+    //    格式: /* GOLDEN_RATIOS: m1:0.97,m2:0.37,... */
+    const modRatios = {};
+    const allStyles = document.querySelectorAll('style');
+    for (const s of allStyles) {
+        const match = s.textContent.match(/GOLDEN_RATIOS:\s*([\w:,.-]+)/);
+        if (match) {
+            match[1].split(',').forEach(pair => {
+                const [id, val] = pair.split(':');
+                modRatios[id] = parseFloat(val);
+            });
+            break;
+        }
+    }
+
+    // 2. 根据 ratio 决定分页策略
     modulePages.forEach((page, index) => {
-        // 跳过第一个模块和漫画模块
-        if (index === 0 || page.classList.contains('comic-module')) {
-            return;
+        if (index === 0 || page.classList.contains('comic-module')) return;
+
+        // 从 page 内的 wrapper 选择器推断模块 ID
+        let modId = null;
+        const inner = page.querySelector(
+            '.m1-report-page, .m2-core-weakness-module, .m3-kp-drill, ' +
+            'section.m4-module-domains, .m5-city-compare, .m6-page, ' +
+            '.m7-data-reliability, .m9-page, .m10-page, .m11-page'
+        );
+        if (inner) {
+            if (inner.classList.contains('m1-report-page')) modId = 'm1';
+            else if (inner.classList.contains('m2-core-weakness-module')) modId = 'm2';
+            else if (inner.classList.contains('m3-kp-drill')) modId = 'm3';
+            else if (inner.classList.contains('m4-module-domains')) modId = 'm4';
+            else if (inner.classList.contains('m5-city-compare')) modId = 'm5';
+            else if (inner.classList.contains('m6-page')) modId = 'm6';
+            else if (inner.classList.contains('m7-data-reliability')) modId = 'm7';
+            else if (inner.classList.contains('m9-page')) modId = 'm9';
+            else if (inner.classList.contains('m10-page')) modId = 'm10';
+            else if (inner.classList.contains('m11-page')) modId = 'm11';
         }
 
-        const height = page.getBoundingClientRect().height;
-
-        // 如果模块高度小于最大值且大于最小值，允许它跨页
-        // 这样可以避免内容很少的模块单独占一页
-        if (height < MAX_CONTENT_HEIGHT && height > MIN_CONTENT_HEIGHT) {
+        const ratio = modRatios[modId];
+        if (ratio !== undefined && ratio < RATIO_THRESHOLD) {
             page.style.breakBefore = 'auto';
             page.style.pageBreakBefore = 'auto';
         }
@@ -192,6 +221,8 @@ _PREFLIGHT_JS = """
             .filter(p => p.querySelectorAll('tbody tr').length > 0).length,
         m5_fixed: !!m5,
         relaxed_blocks: avoidSelectors.length,
+        golden_ratios_found: Object.keys(modRatios).length,
+        golden_ratios: JSON.stringify(modRatios),
     };
 }
 """

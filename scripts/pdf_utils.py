@@ -71,11 +71,78 @@ _PREFLIGHT_JS = """
         });
     });
 
+    // --- M8: 避免最后一个面板跨页导致的空白页 ---
+    const lastM8Panel = document.querySelector('.m8-appendix-panel:last-of-type');
+    if (lastM8Panel) {
+        lastM8Panel.style.breakInside = 'auto';
+        lastM8Panel.style.pageBreakInside = 'auto';
+    }
+
+    // --- 全局: 每个模块最后一个元素允许跨页 ---
+    const modulePages = document.querySelectorAll('.module-page');
+    modulePages.forEach(page => {
+        const lastElements = page.querySelectorAll('.card, .kp-card, .domain-card, .breakthrough-card, .m8-appendix-panel, .m7-note, table');
+        if (lastElements.length > 0) {
+            const lastEl = lastElements[lastElements.length - 1];
+            lastEl.style.breakInside = 'auto';
+            lastEl.style.pageBreakInside = 'auto';
+        }
+    });
+
+    // ─── [FIX] 动态分页: 低密度模块允许接前页 ───
+    const RATIO_THRESHOLD = 0.50;
+
+    // 1. 从 golden_typeset CSS 注释中解析各模块的 ratio
+    const modRatios = {};
+    const allStyles = document.querySelectorAll('style');
+    for (const s of allStyles) {
+        const match = s.textContent.match(/GOLDEN_RATIOS:\s*([\w:,.-]+)/);
+        if (match) {
+            match[1].split(',').forEach(pair => {
+                const [id, val] = pair.split(':');
+                modRatios[id] = parseFloat(val);
+            });
+            break;
+        }
+    }
+
+    // 2. 根据 ratio 决定分页策略
+    modulePages.forEach((page, index) => {
+        if (index === 0 || page.classList.contains('comic-module')) return;
+
+        let modId = null;
+        const inner = page.querySelector(
+            '.m1-report-page, .m2-core-weakness-module, .m3-kp-drill, ' +
+            'section.m4-module-domains, .m5-city-compare, .m6-page, ' +
+            '.m7-data-reliability, .m9-page, .m10-page, .m11-page'
+        );
+        if (inner) {
+            if (inner.classList.contains('m1-report-page')) modId = 'm1';
+            else if (inner.classList.contains('m2-core-weakness-module')) modId = 'm2';
+            else if (inner.classList.contains('m3-kp-drill')) modId = 'm3';
+            else if (inner.classList.contains('m4-module-domains')) modId = 'm4';
+            else if (inner.classList.contains('m5-city-compare')) modId = 'm5';
+            else if (inner.classList.contains('m6-page')) modId = 'm6';
+            else if (inner.classList.contains('m7-data-reliability')) modId = 'm7';
+            else if (inner.classList.contains('m9-page')) modId = 'm9';
+            else if (inner.classList.contains('m10-page')) modId = 'm10';
+            else if (inner.classList.contains('m11-page')) modId = 'm11';
+        }
+
+        const ratio = modRatios[modId];
+        if (ratio !== undefined && ratio < RATIO_THRESHOLD) {
+            page.style.breakBefore = 'auto';
+            page.style.pageBreakBefore = 'auto';
+        }
+    });
+
     return {
         panels_total: panels.length,
         panels_with_data: panelsWithData.length,
         m5_fixed: !!m5,
         relaxed_blocks: avoidSelectors.length,
+        golden_ratios_found: Object.keys(modRatios).length,
+        golden_ratios: JSON.stringify(modRatios),
     };
 }
 """

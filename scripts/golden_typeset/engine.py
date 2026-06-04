@@ -34,18 +34,36 @@ def build_typeset_css(payload: RenderPayload,
                   None falls back to empirical estimation
         layout_profile: optional LayoutProfile for CSS variable injection
     """
+    # 始终计算经验估算 ratio（用于密度决策）
+    empirical_blocks: Dict[str, list] = {}
+    for mod_id, analyzer in ANALYZERS.items():
+        blocks = analyzer(payload)
+        if blocks:
+            empirical_blocks[mod_id] = blocks
+
+    empirical_layouts: Dict[str, PageLayout] = {}
+    for mod_id, blocks in empirical_blocks.items():
+        if blocks:
+            empirical_layouts[mod_id] = layout_page(blocks)
+
+    # measured 数据用于精确间距，但密度决策用经验估算
     if measured:
         block_map = analyze_with_measured(payload, measured)
     else:
-        block_map = {}
-        for mod_id, analyzer in ANALYZERS.items():
-            blocks = analyzer(payload)
-            if blocks:
-                block_map[mod_id] = blocks
+        block_map = empirical_blocks
 
     layouts: Dict[str, PageLayout] = {}
     for mod_id, blocks in block_map.items():
         if blocks:
             layouts[mod_id] = layout_page(blocks)
+
+    # 用经验估算 ratio 覆盖 measured ratio（密度决策不受间距影响）
+    from dataclasses import replace as _dc_replace
+    for mod_id, emp_layout in empirical_layouts.items():
+        if mod_id in layouts:
+            layouts[mod_id] = _dc_replace(
+                layouts[mod_id],
+                content_ratio=emp_layout.content_ratio
+            )
 
     return build_css(layouts, layout_profile=layout_profile)
