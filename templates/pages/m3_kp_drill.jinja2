@@ -569,18 +569,18 @@
         {% for it in l3_items %}
           {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
           {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
-          {% if not achieved and row_ns.items | length < 5 %}
+          {% if not achieved and row_ns.items | length < 10 %}
             {% set _ = row_ns.items.append({'item': it, 'level_code': 'L3'}) %}
             {% set row_ns.unmet = row_ns.unmet + 1 %}
             {% if it.accuracy is defined and it.accuracy is not none and (it.accuracy | float) < 60 %}{% set row_ns.danger = row_ns.danger + 1 %}{% else %}{% set row_ns.attention = row_ns.attention + 1 %}{% endif %}
           {% endif %}
         {% endfor %}
 
-        {# 2) 未达标模块（直接用“模块”中文标签，不再暴露 L2） #}
+        {# 2) 未达标模块（直接用"模块"中文标签，不再暴露 L2） #}
         {% for it in l2_items %}
           {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
           {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
-          {% if not achieved and row_ns.items | length < 5 %}
+          {% if not achieved and row_ns.items | length < 10 %}
             {% set _ = row_ns.items.append({'item': it, 'level_code': 'L2'}) %}
             {% set row_ns.unmet = row_ns.unmet + 1 %}
             {% if it.accuracy is defined and it.accuracy is not none and (it.accuracy | float) < 60 %}{% set row_ns.danger = row_ns.danger + 1 %}{% else %}{% set row_ns.attention = row_ns.attention + 1 %}{% endif %}
@@ -591,7 +591,7 @@
         {% for it in l4_items %}
           {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
           {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
-          {% if not achieved and row_ns.items | length < 5 %}
+          {% if not achieved and row_ns.items | length < 10 %}
             {% set _ = row_ns.items.append({'item': it, 'level_code': 'L4'}) %}
             {% set row_ns.unmet = row_ns.unmet + 1 %}
             {% if it.accuracy is defined and it.accuracy is not none and (it.accuracy | float) < 60 %}{% set row_ns.danger = row_ns.danger + 1 %}{% else %}{% set row_ns.attention = row_ns.attention + 1 %}{% endif %}
@@ -602,7 +602,7 @@
         {% for it in l3_items %}
           {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
           {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
-          {% if achieved and row_ns.items | length < 5 %}
+          {% if achieved and row_ns.items | length < 10 %}
             {% set _ = row_ns.items.append({'item': it, 'level_code': 'L3'}) %}
             {% set row_ns.achieved = row_ns.achieved + 1 %}
           {% endif %}
@@ -610,7 +610,7 @@
         {% for it in l2_items %}
           {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
           {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
-          {% if achieved and row_ns.items | length < 5 %}
+          {% if achieved and row_ns.items | length < 10 %}
             {% set _ = row_ns.items.append({'item': it, 'level_code': 'L2'}) %}
             {% set row_ns.achieved = row_ns.achieved + 1 %}
           {% endif %}
@@ -618,7 +618,7 @@
         {% for it in l4_items %}
           {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
           {% set achieved = it.is_achieved if it.is_achieved is defined else (delta is not none and delta >= 0) %}
-          {% if achieved and row_ns.items | length < 5 %}
+          {% if achieved and row_ns.items | length < 10 %}
             {% set _ = row_ns.items.append({'item': it, 'level_code': 'L4'}) %}
             {% set row_ns.achieved = row_ns.achieved + 1 %}
           {% endif %}

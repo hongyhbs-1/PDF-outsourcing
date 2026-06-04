@@ -973,6 +973,13 @@
   page-break-inside: avoid;
 }
 
+/* 老师/家长建议内容可能跨页，允许 break */
+.m6-role-stack .m6-role-panel--parent,
+.m6-role-stack .m6-role-panel--teacher {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
 .m6-role-stack .m6-role-panel--student .m6-suggestion-sections {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }

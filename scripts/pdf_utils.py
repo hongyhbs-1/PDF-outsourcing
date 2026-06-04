@@ -78,6 +78,19 @@ _PREFLIGHT_JS = """
         lastM8Panel.style.pageBreakInside = 'auto';
     }
 
+    // --- M3: 领域面板允许跨页（防止面板内容被截断） ---
+    const m3Section = document.querySelector('section.m3-kp-drill');
+    if (m3Section) {
+        m3Section.querySelectorAll('.m3-kp-drill__panel').forEach(p => {
+            p.style.breakInside = 'auto';
+            p.style.pageBreakInside = 'auto';
+            p.querySelectorAll('tr, .m3-kp-diagnosis-row, .m3-kp-drill__panel-card').forEach(el => {
+                el.style.breakInside = 'auto';
+                el.style.pageBreakInside = 'auto';
+            });
+        });
+    }
+
     // --- 全局: 每个模块最后一个元素允许跨页 ---
     const modulePages = document.querySelectorAll('.module-page');
     modulePages.forEach(page => {
