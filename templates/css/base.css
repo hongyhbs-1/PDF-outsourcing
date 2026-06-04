@@ -553,7 +553,7 @@ body {
 /* --- 白色圆角内容卡片 --- */
 .module-content-card {
   background: var(--pm-bg-card);
-  border-radius: 10px;
+  border-radius: var(--vh-card-border-radius, 8px);
   padding: 20px 26px;
   overflow: hidden;
 }
@@ -561,7 +561,7 @@ body {
 @media print {
   .module-content-card {
     background: var(--pm-bg-card);
-    border-radius: 10px;
+    border-radius: var(--vh-card-border-radius, 8px);
     padding: 16px 20px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
@@ -655,7 +655,7 @@ table tr:nth-child(even) td {
 .m2-cw-summary-bar {
   background: var(--pm-bg-muted);
   border-left: 3px solid var(--pm-teal);
-  border-radius: 8px;
+  border-radius: var(--vh-card-border-radius, 8px);
   padding: 12px 16px;
   margin-top: 12px;
   margin-bottom: 12px;
@@ -663,7 +663,7 @@ table tr:nth-child(even) td {
 .m6-summary-box {
   background: var(--pm-bg-muted);
   border-left: 3px solid var(--pm-teal);
-  border-radius: 8px;
+  border-radius: var(--vh-card-border-radius, 8px);
   padding: 12px 16px;
   margin-left: var(--cw-spacing-6, 24px) !important;
   margin-top: 12px;
