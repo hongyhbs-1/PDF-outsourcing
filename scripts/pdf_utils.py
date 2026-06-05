@@ -121,9 +121,17 @@ _PREFLIGHT_JS = """
         return false;
     }
 
+    // 目录前的最后一个章节模块索引
+    let tocIndex = -1;
+    modulePages.forEach((mp, i) => {
+        if (mp.querySelector('.mtoc-page, [class*="toc"]')) tocIndex = i;
+    });
+
     modulePages.forEach((page, index) => {
         if (index === 0 || page.classList.contains('comic-module')) return;
         if (!isDataModule(page)) return;
+        // 紧接目录后的第一个数据模块必须新起页
+        if (tocIndex >= 0 && index === tocIndex + 1) return;
 
         // 测量真实内容高度：临时去掉 min-height
         const origMinH = page.style.minHeight;
@@ -215,13 +223,13 @@ def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
     # m8 标题可能因数据不同而变化，使用较短前缀
     _EXACT_TITLES = {
         "m1": ("一、诊断摘要",),
-        "m4": ("二、六大领域达标分析",),
-        "m2": ("三、核心短板清单",),
+        "m4": ("二、六大领域达标分析", "二、六大领域达标总览"),
+        "m2": ("三、核心短板清单", "三、个性化突破路径", "三、学习成果展示"),
         "m3": ("四、知识点短板钻取",),
         "m5": ("五、城市考情对照",),
         "m6": ("六、分层与学习建议",),
         "m9": ("七、逐题分析明细",),
-        "m7": ("七、数据", "八、数据"),
+        "m7": ("七、数据", "八、数据", "七、题检覆盖", "八、题检覆盖"),
         "m8": ("八、附录", "九、附录", "附录", "分析范围"),
         "m10": ("十、",),
         "m11": ("十一、",),
