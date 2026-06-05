@@ -21,7 +21,12 @@ from pathlib import Path
 
 from pdf_chrome_templates import build_pdf_chrome_options
 from pdf_progress_rail import apply_progress_rail
-from pdf_utils import _PREFLIGHT_JS
+from pdf_utils import (
+    _PREFLIGHT_JS,
+    _extract_toc_pages,
+    _toc_pages_for_injection,
+    _TOC_INJECT_JS,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -34,12 +39,6 @@ try:
     HAS_PLAYWRIGHT = True
 except ImportError:
     HAS_PLAYWRIGHT = False
-
-try:
-    import fitz  # PyMuPDF — 目录页码提取
-    HAS_FITZ = True
-except ImportError:
-    HAS_FITZ = False
 
 # ---------------------------------------------------------------------------
 # 浏览器单例 + 并发控制
@@ -82,82 +81,6 @@ def _get_browser() -> Browser:
         logger.info("Chromium 浏览器已启动")
         return _browser
 
-
-
-# ---------------------------------------------------------------------------
-# 两次渲染: 目录页码提取 + 注入
-# ---------------------------------------------------------------------------
-
-# 章节标题搜索标记 → TOC key (PDF 文本匹配用)
-# 注: TOC 页使用 "一" (无顿号), 模块标题使用 "一、" (有顿号), 不会误匹配
-_TOC_SEARCH_MAP: list[tuple[str, str]] = [
-    ("m1", "一、"),
-    ("m4", "二、"),
-    ("m2", "三、"),
-    ("m3", "四、"),
-    ("m5", "五、"),
-    ("m6", "六、"),
-    ("m9", "七、"),
-    ("m7", "八、"),
-    ("m8", "分析范围"),  # m8 标题 fitz 无法提取, 用首个面板标题代替
-    ("m10", "十、"),
-    ("m11", "十一、"),
-]
-_TOC_DISPLAY_KEYS = {"m1", "m4", "m2", "m3", "m5", "m6", "m9", "m7", "m8"}
-
-
-def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
-    """从 PDF 二进制内容中提取各章节起始页码。
-
-    按中文序号 "一、"~"七、" + "附录：" 在 PDF 文本中定位首次出现的页码。
-
-    Returns:
-        {"m1": 4, "m4": 6, ...} (1-based 页码)。
-        fitz 不可用或未找到任何章节时返回空 dict。
-    """
-    if not HAS_FITZ:
-        logger.warning("PyMuPDF (fitz) 未安装, 跳过目录页码提取")
-        return {}
-
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    result: dict[str, int] = {}
-    found_keys: set[str] = set()
-
-    for page_idx in range(len(doc)):
-        text = doc[page_idx].get_text()
-        for key, marker in _TOC_SEARCH_MAP:
-            if key not in found_keys and marker in text:
-                result[key] = page_idx + 1  # 1-based
-                found_keys.add(key)
-        if len(found_keys) == len(_TOC_SEARCH_MAP):
-            break  # 全部找到, 提前退出
-
-    doc.close()
-    logger.info("目录页码提取: %s", result)
-    return result
-
-
-def _toc_pages_for_injection(toc_pages: dict[str, int]) -> dict[str, int]:
-    return {
-        key: page_number
-        for key, page_number in toc_pages.items()
-        if key in _TOC_DISPLAY_KEYS
-    }
-
-
-_TOC_INJECT_JS = """
-(toc_pages) => {
-    let injected = 0;
-    for (const [key, pageNum] of Object.entries(toc_pages)) {
-        const el = document.querySelector(`[data-toc-key="${key}"]`);
-        if (el) {
-            el.textContent = String(pageNum);
-            injected++;
-        }
-    }
-    return injected;
-}
-"""
 
 
 # ---------------------------------------------------------------------------

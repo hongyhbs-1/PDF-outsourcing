@@ -59,10 +59,12 @@ class PdfPaginationRegressionTest(unittest.TestCase):
 
     def test_render_standalone_does_not_override_module_break_before_by_height(self) -> None:
         source = read_text(PDF_UTILS)
+        # 旧的高度阈值常量已删除
         self.assertNotIn("MAX_CONTENT_HEIGHT", source)
         self.assertNotIn("MIN_CONTENT_HEIGHT", source)
-        self.assertNotIn("page.style.breakBefore = 'auto';", source)
-        self.assertNotIn("page.style.pageBreakBefore = 'auto';", source)
+        # 紧凑算法(密度驱动)合法使用 breakBefore/pageBreakBefore,
+        # 但不允许基于固定像素高度的 break-before 覆盖
+        self.assertNotIn("offsetHeight", source)
 
     def test_print_page_shell_does_not_depend_on_viewport_height(self) -> None:
         for path in (BASE_CSS, COVER_CSS):
