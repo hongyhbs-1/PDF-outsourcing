@@ -719,9 +719,12 @@
   border-radius: var(--vh-card-border-radius);
 }
 
-.m3-kp-guide-card .m3-kp-step__lvl {
+.m3-kp-guide-card .m3-kp-step__lvl,
+.m3-kp-guide-card .m3-kp-path-node__lvl {
   width: 30px;
   font-size: 18px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
   text-align: center;
 }
 
@@ -740,7 +743,6 @@
   border-radius: var(--vh-card-border-radius);
 }
 
-.m3-kp-guide-card .m3-kp-path-node__lvl,
 .m3-kp-guide-card .m3-kp-path-node__name,
 .m3-kp-guide-card .m3-kp-path-node__delta {
   font-size: 12px;
@@ -1671,13 +1673,16 @@
     gap: 6px;
   }
 
-  .m3-kp-guide-card .m3-kp-step__lvl {
+  .m3-kp-guide-card .m3-kp-step__lvl,
+  .m3-kp-guide-card .m3-kp-path-node__lvl {
     width: 28px;
     font-size: 18px;
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    text-align: center;
   }
 
   .m3-kp-guide-card .m3-kp-step__name,
-  .m3-kp-guide-card .m3-kp-path-node__lvl,
   .m3-kp-guide-card .m3-kp-path-node__name,
   .m3-kp-guide-card .m3-kp-path-node__delta {
     font-size: 11px;

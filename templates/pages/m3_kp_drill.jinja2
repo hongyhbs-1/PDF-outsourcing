@@ -491,7 +491,7 @@
         <div class="m3-kp-path__nodes">
           {% for n in path_example.nodes %}
             <div class="m3-kp-path-node m3-kp-path-node--{{ n.theme | default('l1', true) }}">
-              <div class="m3-kp-path-node__lvl">({{ n.level | default("L?", true) }})</div>
+              <div class="m3-kp-path-node__lvl">{{ n.level | default("L?", true) }}</div>
               <div class="m3-kp-path-node__name">{{ display_domain_or_text(n.name_cn | default("--", true)) }}</div>
               <div class="m3-kp-path-node__delta">
                 {# [v1.1] 支持 gap_to_target 回退 #}

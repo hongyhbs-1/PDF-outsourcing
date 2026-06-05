@@ -111,9 +111,8 @@ report_master.jinja2 — 报告主入口模板 (v2)
   {% set _qd_total = _qd.total_count | default(0) %}
   {% set _show_question_detail = _qd_papers | length > 0 and _qd_total > 0 %}
   {% if _show_question_detail %}
-  <div class="module-page" id="toc-m9">
-    {% include 'pages/m9_question_detail.jinja2' %}
-  </div>
+  {# M9 子模板自己输出 module-page (split 模式可能有多个) #}
+  {% include 'pages/m9_question_detail.jinja2' %}
   {% endif %}
   {# ---- M7: data_reliability ---- #}
   <div class="module-page" id="toc-m7">

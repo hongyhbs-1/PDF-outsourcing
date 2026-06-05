@@ -466,3 +466,78 @@
     print-color-adjust: exact;
   }
 }
+
+/* ==========================================================================
+   7. Split mode — M9 数据驱动分页
+   ========================================================================== */
+
+.m9-page--split {
+  break-inside: auto;
+}
+
+.m9-page--split .m9-paper-section {
+  break-inside: auto;
+}
+
+.m9-page--split .m9-table {
+  break-inside: auto;
+  table-layout: fixed;
+  word-break: break-word;
+}
+
+.m9-page--split .m9-table thead {
+  display: table-header-group;
+}
+
+.m9-page--split .m9-table tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* Guard: 旧 long 模式 break-before 不影响 split */
+.m9-page--long:not(.m9-page--split) .m9-paper-section--continued {
+  break-before: page;
+  page-break-before: always;
+}
+
+/* 续页标题 */
+.m9-continuation-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: var(--pm-bg-muted, #f6f7f9);
+  border-left: 3px solid var(--pm-accent, #1f6f78);
+  border-radius: 4px;
+}
+
+.m9-continuation-header__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--pm-text-primary, #333);
+  margin: 0;
+}
+
+.m9-continuation-header__meta {
+  font-size: 12px;
+  color: var(--pm-text-muted, #888);
+}
+
+/* 续页隐藏标题区 */
+.m9-page--continued > .m9-title-section {
+  display: none;
+}
+
+/* ─── Split print ─── */
+@media print {
+  .m9-continuation-header {
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .m9-page--split .m9-paper-section {
+    margin-bottom: 8px;
+  }
+}

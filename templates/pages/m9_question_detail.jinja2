@@ -2,9 +2,9 @@
 ================================================================================
 M9: 逐题分析明细 (Question Detail Analysis)
 文件: m9_question_detail.jinja2
-版本: v2.0
+版本: v3.0
 描述: 按试卷分组展示每道题的诊断结果, 错题优先, Solve 字段直出, 零 LLM 调用
-优化: 首页概述+表格连续排版, 表头跨页重复, 空数据有说明, 紧凑表格
+优化: 支持数据驱动分页拆分, 首页概述+续页简洁标题, 表头跨页重复
 位置: M6(六、分层与学习建议) → [本页] → M7(八、数据可信度)
 关联CSS: m9_question_detail.css
 ================================================================================
@@ -17,145 +17,269 @@ M9: 逐题分析明细 (Question Detail Analysis)
 {% set total_count = qd.total_count | default(0) %}
 {% set wrong_count = qd.wrong_count | default(0) %}
 {% set has_data = papers | length > 0 and total_count > 0 %}
-{% set is_long_detail = has_data and papers | length > 1 and total_count >= 100 %}
+{% set split_pages = _m9_split_pages | default([], true) %}
 
-<div class="m9-page{% if is_long_detail %} m9-page--long{% endif %}">
-
-  {# --- 章节标题 --- #}
-  <section class="m9-title-section">
-    <h1 class="m9-title">七、逐题分析明细</h1>
-    <div class="m9-title__underline"></div>
-  </section>
-
-  {% if has_data %}
-  <section class="m9-core-conclusion">
-    <div class="m9-core-conclusion__label">{{ lb_icon('paper', 'frame-conclusion-icon') }}本页核心结论</div>
-    <div class="m9-core-conclusion__text">
-      本页覆盖{{ papers | length }}份试卷、{{ total_count }}道题，其中{{ wrong_count }}道需重点回看；下方按试卷分组展示题号、难度、知识点与破题点，先用错题定位短板，再用正确题确认稳定项。
-    </div>
-  </section>
-  {% endif %}
-
-  <div class="module-content-card">
-
-  {# --- 首页概述区 --- #}
-  {% if has_data %}
-  <div class="m9-overview">
-    <div class="m9-overview__stats">
-      <div class="m9-overview__stat">
-        <div class="m9-overview__stat-num">{{ total_count }}</div>
-        <div class="m9-overview__stat-label">总题数</div>
-      </div>
-      <div class="m9-overview__stat m9-overview__stat--danger">
-        <div class="m9-overview__stat-num">{{ wrong_count }}</div>
-        <div class="m9-overview__stat-label">错题数</div>
-      </div>
-      <div class="m9-overview__stat m9-overview__stat--success">
-        <div class="m9-overview__stat-num">{{ total_count - wrong_count }}</div>
-        <div class="m9-overview__stat-label">正确数</div>
-      </div>
-      <div class="m9-overview__stat">
-        <div class="m9-overview__stat-num">{{ papers | length }}</div>
-        <div class="m9-overview__stat-label">试卷数</div>
-      </div>
-    </div>
-    <p class="m9-overview__desc">
-      以下按试卷分组展示每道题的诊断结果，错题优先排列，含薄弱环节标注和破题点分析。
-    </p>
-  </div>
-
-  {% elif papers | length == 0 %}
-  <div class="m9-empty-state">
-    <div class="m9-empty-state__title">暂无逐题分析数据</div>
-    <p class="m9-empty-state__text">
-      当前未采集到有效的逐题答题记录。逐题分析需要完整的答题明细数据，包括每题的对错状态、难度、涉及知识点等。
-    </p>
-    <div class="m9-empty-state__action">
-      建议完成至少一套包含逐题记录的测评后，系统将自动生成详细的逐题诊断报告。
-    </div>
-  </div>
-  {% endif %}
-
-  {# --- 逐试卷表格 --- #}
-  {% for paper in papers %}
-  <div class="m9-paper-section{% if is_long_detail and not loop.first %} m9-paper-section--continued{% endif %}">
-
-    {# --- 试卷标题行 --- #}
-    <h3 class="m9-paper-title">{{ paper.paper_name }}（含小题共 {{ paper.total }} 题）</h3>
-
-    {# ---- 错题表 ---- #}
-    {% if paper.wrong_questions %}
-    {% set wrong_meta = namespace(has_weakness=false, has_analysis=false) %}
-    {% for q in paper.wrong_questions %}
-      {% if q.weakness_tags | default([], true) | length > 0 %}
-        {% set wrong_meta.has_weakness = true %}
-      {% endif %}
-      {% if q.error_analysis or q.key_points %}
-        {% set wrong_meta.has_analysis = true %}
-      {% endif %}
-    {% endfor %}
-    <h4 class="m9-table-label m9-table-label--wrong">
-      错题诊断（{{ paper.wrong_count }} 题）
-    </h4>
-    <table class="m9-table m9-table--wrong{% if not wrong_meta.has_weakness and not wrong_meta.has_analysis %} m9-table--wrong-lite{% endif %}">
-      <thead>
-        <tr>
-          <th class="m9-col-no">题号</th>
-          <th class="m9-col-diff">难度</th>
-          <th class="m9-col-kp">知识点</th>
-          {% if wrong_meta.has_weakness %}<th class="m9-col-tags">薄弱环节</th>{% endif %}
-          {% if wrong_meta.has_analysis %}<th class="m9-col-analysis">破题点分析</th>{% endif %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for q in paper.wrong_questions %}
-        <tr>
-          <td>{{ q.no }}</td>
-          <td class="m9-stars" title="{{ q.difficulty }}/5">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
-          <td>{{ q.kp_name }}</td>
-          {% if wrong_meta.has_weakness %}<td>{{ q.weakness_tags | default([], true) | join('、') }}</td>{% endif %}
-          {% if wrong_meta.has_analysis %}
-          <td class="m9-analysis-cell">
-            {% if q.error_analysis %}{{ q.error_analysis }}{% endif %}
-            {% if q.error_analysis and q.key_points %}；{% endif %}
-            {% if q.key_points %}{{ q.key_points }}{% endif %}
-          </td>
+{# ─── Macro: 渲染表格块 ─── #}
+{% macro render_table_block(block) %}
+<div class="m9-paper-section">
+  {% if block.section_type == 'wrong' %}
+  <h4 class="m9-table-label m9-table-label--wrong">{{ block.section_label }}</h4>
+  <table class="m9-table m9-table--wrong{% if not block.has_weakness and not block.has_analysis %} m9-table--wrong-lite{% endif %}">
+    <thead>
+      <tr>
+        <th class="m9-col-no">题号</th>
+        <th class="m9-col-diff">难度</th>
+        <th class="m9-col-kp">知识点</th>
+        {% if block.has_weakness %}<th class="m9-col-tags">薄弱环节</th>{% endif %}
+        {% if block.has_analysis %}<th class="m9-col-analysis">破题点分析</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for q in block.questions %}
+      <tr>
+        <td>{{ q.no }}</td>
+        <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
+        <td>{{ q.kp_name }}</td>
+        {% if block.has_weakness %}<td>{{ q.weakness_tags | default([], true) | join('、') }}</td>{% endif %}
+        {% if block.has_analysis %}
+        <td class="m9-analysis-cell">
+          {% if q.error_analysis %}
+          <div class="m9-error-section">
+            <span class="m9-analysis-label">分析：</span>{{ q.error_analysis }}
+          </div>
           {% endif %}
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
+          {% if q.key_points %}
+          <div class="m9-breakpoint-section">
+            <span class="m9-analysis-label">破题点：</span>{{ q.key_points }}
+          </div>
+          {% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% elif block.section_type == 'correct' %}
+  <h4 class="m9-table-label m9-table-label--correct">{{ block.section_label }}</h4>
+  <table class="m9-table m9-table--correct">
+    <thead>
+      <tr>
+        <th class="m9-col-no">题号</th>
+        <th class="m9-col-diff">难度</th>
+        <th class="m9-col-kp">知识点</th>
+        <th class="m9-col-kbp">破题点</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for q in block.questions %}
+      <tr>
+        <td>{{ q.no }}</td>
+        <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
+        <td>{{ q.kp_name }}</td>
+        <td>{{ q.key_points }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+{% endmacro %}
 
-    {# ---- 正确题表 ---- #}
-    {% if paper.correct_questions %}
-    <h4 class="m9-table-label m9-table-label--correct">
-      正确题目（{{ paper.correct_count }} 题）
-    </h4>
-    <table class="m9-table m9-table--correct">
-      <thead>
-        <tr>
-          <th class="m9-col-no">题号</th>
-          <th class="m9-col-diff">难度</th>
-          <th class="m9-col-kp">知识点</th>
-          <th class="m9-col-kbp">破题点</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for q in paper.correct_questions %}
-        <tr>
-          <td>{{ q.no }}</td>
-          <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
-          <td>{{ q.kp_name }}</td>
-          <td>{{ q.key_points }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
+{# ═══════════════════════════════════════════════════════════════════════════
+   SPLIT MODE: 多页输出
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% if has_data and split_pages | length > 0 %}
+  {% for subpage in split_pages %}
+  <div class="module-page" {% if loop.first %}id="toc-m9"{% endif %}>
+    <div class="m9-page m9-page--split{% if not loop.first %} m9-page--continued{% endif %}">
 
+      {% if loop.first %}
+      {# ─── 第一页：标题 + 概述 ─── #}
+      <section class="m9-title-section">
+        <h1 class="m9-title">七、逐题分析明细</h1>
+        <div class="m9-title__underline"></div>
+      </section>
+
+      <section class="m9-core-conclusion">
+        <div class="m9-core-conclusion__label">{{ lb_icon('paper', 'frame-conclusion-icon') }}本页核心结论</div>
+        <div class="m9-core-conclusion__text">
+          本页覆盖{{ subpage.stats.paper_count }}份试卷、{{ subpage.stats.total_count }}道题，其中{{ subpage.stats.wrong_count }}道需重点回看；下方按试卷分组展示题号、难度、知识点与破题点，先用错题定位短板，再用正确题确认稳定项。
+        </div>
+      </section>
+
+      <div class="module-content-card">
+        <div class="m9-overview">
+          <div class="m9-overview__stats">
+            <div class="m9-overview__stat">
+              <div class="m9-overview__stat-num">{{ subpage.stats.total_count }}</div>
+              <div class="m9-overview__stat-label">总题数</div>
+            </div>
+            <div class="m9-overview__stat m9-overview__stat--danger">
+              <div class="m9-overview__stat-num">{{ subpage.stats.wrong_count }}</div>
+              <div class="m9-overview__stat-label">错题数</div>
+            </div>
+            <div class="m9-overview__stat m9-overview__stat--success">
+              <div class="m9-overview__stat-num">{{ subpage.stats.total_count - subpage.stats.wrong_count }}</div>
+              <div class="m9-overview__stat-label">正确数</div>
+            </div>
+            <div class="m9-overview__stat">
+              <div class="m9-overview__stat-num">{{ subpage.stats.paper_count }}</div>
+              <div class="m9-overview__stat-label">试卷数</div>
+            </div>
+          </div>
+          <p class="m9-overview__desc">
+            以下按试卷分组展示每道题的诊断结果，错题优先排列，含薄弱环节标注和破题点分析。
+          </p>
+        </div>
+        {% for block in subpage.blocks %}
+          {{ render_table_block(block) }}
+        {% endfor %}
+      </div>
+
+      {% else %}
+      {# ─── 续页：简洁标题 ─── #}
+      <section class="m9-continuation-header">
+        <h2 class="m9-continuation-header__title">逐题分析明细（续）</h2>
+        <div class="m9-continuation-header__meta">第 {{ subpage.part_index }} / {{ subpage.part_count }} 页</div>
+      </section>
+      <div class="module-content-card">
+        {% for block in subpage.blocks %}
+          {{ render_table_block(block) }}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
   </div>
   {% endfor %}
-  </div><!-- /.module-content-card -->
 
+{# ═══════════════════════════════════════════════════════════════════════════
+   NON-SPLIT MODE: 原有单页逻辑
+   ═══════════════════════════════════════════════════════════════════════════ #}
+{% elif has_data %}
+<div class="module-page" id="toc-m9">
+  <div class="m9-page">
+    <section class="m9-title-section">
+      <h1 class="m9-title">七、逐题分析明细</h1>
+      <div class="m9-title__underline"></div>
+    </section>
+
+    <section class="m9-core-conclusion">
+      <div class="m9-core-conclusion__label">{{ lb_icon('paper', 'frame-conclusion-icon') }}本页核心结论</div>
+      <div class="m9-core-conclusion__text">
+        本页覆盖{{ papers | length }}份试卷、{{ total_count }}道题，其中{{ wrong_count }}道需重点回看；下方按试卷分组展示题号、难度、知识点与破题点，先用错题定位短板，再用正确题确认稳定项。
+      </div>
+    </section>
+
+    <div class="module-content-card">
+      <div class="m9-overview">
+        <div class="m9-overview__stats">
+          <div class="m9-overview__stat">
+            <div class="m9-overview__stat-num">{{ total_count }}</div>
+            <div class="m9-overview__stat-label">总题数</div>
+          </div>
+          <div class="m9-overview__stat m9-overview__stat--danger">
+            <div class="m9-overview__stat-num">{{ wrong_count }}</div>
+            <div class="m9-overview__stat-label">错题数</div>
+          </div>
+          <div class="m9-overview__stat m9-overview__stat--success">
+            <div class="m9-overview__stat-num">{{ total_count - wrong_count }}</div>
+            <div class="m9-overview__stat-label">正确数</div>
+          </div>
+          <div class="m9-overview__stat">
+            <div class="m9-overview__stat-num">{{ papers | length }}</div>
+            <div class="m9-overview__stat-label">试卷数</div>
+          </div>
+        </div>
+        <p class="m9-overview__desc">
+          以下按试卷分组展示每道题的诊断结果，错题优先排列，含薄弱环节标注和破题点分析。
+        </p>
+      </div>
+
+      {% for paper in papers %}
+      <div class="m9-paper-section">
+        <h3 class="m9-paper-title">{{ paper.paper_name }}（含小题共 {{ paper.total }} 题）</h3>
+
+        {% if paper.wrong_questions %}
+        {% set wrong_meta = namespace(has_weakness=false, has_analysis=false) %}
+        {% for q in paper.wrong_questions %}
+          {% if q.weakness_tags | default([], true) | length > 0 %}
+            {% set wrong_meta.has_weakness = true %}
+          {% endif %}
+          {% if q.error_analysis or q.key_points %}
+            {% set wrong_meta.has_analysis = true %}
+          {% endif %}
+        {% endfor %}
+        <h4 class="m9-table-label m9-table-label--wrong">
+          错题诊断（{{ paper.wrong_count }} 题）
+        </h4>
+        <table class="m9-table m9-table--wrong{% if not wrong_meta.has_weakness and not wrong_meta.has_analysis %} m9-table--wrong-lite{% endif %}">
+          <thead>
+            <tr>
+              <th class="m9-col-no">题号</th>
+              <th class="m9-col-diff">难度</th>
+              <th class="m9-col-kp">知识点</th>
+              {% if wrong_meta.has_weakness %}<th class="m9-col-tags">薄弱环节</th>{% endif %}
+              {% if wrong_meta.has_analysis %}<th class="m9-col-analysis">破题点分析</th>{% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for q in paper.wrong_questions %}
+            <tr>
+              <td>{{ q.no }}</td>
+              <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
+              <td>{{ q.kp_name }}</td>
+              {% if wrong_meta.has_weakness %}<td>{{ q.weakness_tags | default([], true) | join('、') }}</td>{% endif %}
+              {% if wrong_meta.has_analysis %}
+              <td class="m9-analysis-cell">
+                {% if q.error_analysis %}
+                <div class="m9-error-section">
+                  <span class="m9-analysis-label">分析：</span>{{ q.error_analysis }}
+                </div>
+                {% endif %}
+                {% if q.key_points %}
+                <div class="m9-breakpoint-section">
+                  <span class="m9-analysis-label">破题点：</span>{{ q.key_points }}
+                </div>
+                {% endif %}
+              </td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+
+        {% if paper.correct_questions %}
+        <h4 class="m9-table-label m9-table-label--correct">
+          正确题目（{{ paper.correct_count }} 题）
+        </h4>
+        <table class="m9-table m9-table--correct">
+          <thead>
+            <tr>
+              <th class="m9-col-no">题号</th>
+              <th class="m9-col-diff">难度</th>
+              <th class="m9-col-kp">知识点</th>
+              <th class="m9-col-kbp">破题点</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for q in paper.correct_questions %}
+            <tr>
+              <td>{{ q.no }}</td>
+              <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
+              <td>{{ q.kp_name }}</td>
+              <td>{{ q.key_points }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 </div>
+
+{% endif %}
