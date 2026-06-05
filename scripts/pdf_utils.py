@@ -29,88 +29,64 @@ from renderer import FONTS_DIR
 
 _PREFLIGHT_JS = """
 () => {
-    const panels = document.querySelectorAll('.m3-kp-drill__panel');
-    const panelsWithData = Array.from(panels).filter(
-        panel => panel.querySelectorAll('tbody tr').length > 0
-    );
+    // ─── 分页治理: JS 只做检测+标记, 不直接改 style ───
+    // 所有 break-inside/page-break-inside 控制由 CSS class 驱动
+    // JS 添加 .break-relax / .break-relax-tall / .break-relax-last
+    // CSS 层在 base.css 统一定义这些 class 的行为
 
-    // --- M5: 强制清理 ---
+    const modulePages = document.querySelectorAll('.module-page');
+
+    // --- S1: M5 清理 (min-height + 分页) ---
     const m5 = document.querySelector('.m5-city-compare');
-    if (m5) {
-        m5.style.minHeight = 'auto';
-        m5.style.pageBreakInside = 'auto';
-    }
+    if (m5) m5.classList.add('break-relax');
 
-    // --- M1: 放松 breakthrough-grid 整体 avoid ---
+    // --- S2: M1 breakthrough-grid 整体放松 ---
     const btGrid = document.querySelector('.m1-breakthrough-grid');
-    if (btGrid) {
-        btGrid.style.breakInside = 'auto';
-    }
+    if (btGrid) btGrid.classList.add('break-relax');
 
-    // --- M7: 置信度说明不独占页 ---
-    document.querySelectorAll('.m7-note').forEach(note => {
-        note.style.breakInside = 'auto';
-        note.style.pageBreakInside = 'auto';
-    });
+    // --- S3: M7 置信度说明不独占页 ---
+    document.querySelectorAll('.m7-note').forEach(n => n.classList.add('break-relax'));
 
-    // --- 全局: 放松所有 >200px 块的 break-inside:avoid ---
+    // --- S4: 大块元素(>200px)条件放松 ---
     const THRESHOLD = 200;
-    const avoidSelectors = [
+    const tallSelectors = [
         '.m1-suggestion-callout',
         '.m2-cw-tips-box',
         '.m4-chart-box',
         '.m4-summary-card',
     ];
-    avoidSelectors.forEach(sel => {
+    tallSelectors.forEach(sel => {
         document.querySelectorAll(sel).forEach(el => {
-            const h = el.getBoundingClientRect().height;
-            if (h > THRESHOLD) {
-                el.style.breakInside = 'auto';
-                el.style.pageBreakInside = 'auto';
+            if (el.getBoundingClientRect().height > THRESHOLD) {
+                el.classList.add('break-relax-tall');
             }
         });
     });
 
-    // --- M8: 避免最后一个面板跨页导致的空白页 ---
-    const lastM8Panel = document.querySelector('.m8-appendix-panel:last-of-type');
-    if (lastM8Panel) {
-        lastM8Panel.style.breakInside = 'auto';
-        lastM8Panel.style.pageBreakInside = 'auto';
-    }
+    // --- S5: M8 最后面板 — 已由 base.css :last-of-type 覆盖, JS 不再处理 ---
 
-    // --- M3: 领域面板允许跨页（防止面板内容被截断） ---
+    // --- S6: M3 领域面板允许跨页 ---
     const m3Section = document.querySelector('section.m3-kp-drill');
     if (m3Section) {
         m3Section.querySelectorAll('.m3-kp-drill__panel').forEach(p => {
-            p.style.breakInside = 'auto';
-            p.style.pageBreakInside = 'auto';
-            p.querySelectorAll('tr, .m3-kp-diagnosis-row, .m3-kp-drill__panel-card').forEach(el => {
-                el.style.breakInside = 'auto';
-                el.style.pageBreakInside = 'auto';
-            });
+            p.classList.add('break-relax');
         });
     }
 
-    // --- 全局: 每个模块最后一个元素允许跨页 ---
-    const modulePages = document.querySelectorAll('.module-page');
+    // --- S7: 模块尾元素允许跨页 ---
     modulePages.forEach(page => {
-        const lastElements = page.querySelectorAll('.card, .kp-card, .domain-card, .breakthrough-card, .m8-appendix-panel, .m7-note, table');
-        if (lastElements.length > 0) {
-            const lastEl = lastElements[lastElements.length - 1];
-            lastEl.style.breakInside = 'auto';
-            lastEl.style.pageBreakInside = 'auto';
+        const candidates = page.querySelectorAll(
+            '.card, .kp-card, .domain-card, .breakthrough-card, .m8-appendix-panel, .m7-note, table'
+        );
+        if (candidates.length > 0) {
+            candidates[candidates.length - 1].classList.add('break-relax-last');
         }
     });
 
-    // ─── [FIX] 动态分页: 低密度模块允许接前页 ───
-    // 算法：测量 module-page 的实际内容高度（绕过 min-height）
-    // 如果内容高度 < 阈值，取消 break-before: page + min-height
-    // 仅对数据分析模块（m1-m9）生效，章节/封面/目录不参与
-    const PAGE_HEIGHT = 1123; // A4 at 96dpi
-    const DENSITY_THRESHOLD = 0.70; // 内容 < 70% 页面高度 → 低密度
+    // ─── 紧凑算法: 低密度模块允许接前页 ───
+    const PAGE_HEIGHT = 1123;
+    const DENSITY_THRESHOLD = 0.70;
 
-    // 数据分析模块白名单：section 或 firstChild class 以 m1-m9 开头
-    // 注意：m10/m11 是专项精讲（作文/阅读），不是数据分析模块，不参与紧凑算法
     function isDataModule(mp) {
         const targets = [mp.querySelector('section'), mp.firstElementChild];
         for (const el of targets) {
@@ -122,7 +98,6 @@ _PREFLIGHT_JS = """
         return false;
     }
 
-    // 目录前的最后一个章节模块索引
     let tocIndex = -1;
     modulePages.forEach((mp, i) => {
         if (mp.querySelector('.mtoc-page, [class*="toc"]')) tocIndex = i;
@@ -131,27 +106,22 @@ _PREFLIGHT_JS = """
     modulePages.forEach((page, index) => {
         if (index === 0 || page.classList.contains('comic-module')) return;
         if (!isDataModule(page)) return;
-        // 紧接目录后的第一个数据模块必须新起页
         if (tocIndex >= 0 && index === tocIndex + 1) return;
 
-        // 测量真实内容高度：临时去掉 min-height
         page.style.minHeight = '0';
         for (const child of page.children) {
             child.style.minHeight = '0';
         }
         const contentHeight = page.scrollHeight;
 
-        // 附录模块(m8)天然内容少，即使超过阈值也紧凑处理
         const sec = page.querySelector('section');
         const isAppendix = sec && Array.from(sec.classList).some(c => /^m8/.test(c));
         const isLowDensity = contentHeight / PAGE_HEIGHT < DENSITY_THRESHOLD || isAppendix;
 
         if (isLowDensity) {
-            // 低密度：保持 min-height=0 + 取消强制分页
             page.style.breakBefore = 'auto';
             page.style.pageBreakBefore = 'auto';
         } else {
-            // 非低密度：恢复 min-height
             page.style.minHeight = '';
             for (const child of page.children) {
                 child.style.minHeight = '';
@@ -159,12 +129,17 @@ _PREFLIGHT_JS = """
         }
     });
 
+    // M3 panel 统计 (保留原返回值兼容)
+    const panels = document.querySelectorAll('.m3-kp-drill__panel');
+    const panelsWithData = Array.from(panels).filter(
+        p => p.querySelectorAll('tbody tr').length > 0
+    );
 
     return {
         panels_total: panels.length,
         panels_with_data: panelsWithData.length,
         m5_fixed: !!m5,
-        relaxed_blocks: avoidSelectors.length,
+        relaxed_blocks: tallSelectors.length,
     };
 }
 """

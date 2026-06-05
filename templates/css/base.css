@@ -584,6 +584,34 @@ tr, .card, .breakthrough-card, .kp-card, .domain-card {
   break-inside: avoid;
 }
 
+/* --- 分页放松标记类 (由 preflight JS 检测后添加) --- */
+/* Preflight JS 使用 el.classList.add() 标记，不再直接改 style */
+/* CSS 层统一控制，消除 JS/CSS 竞态 */
+.break-relax,
+.break-relax tr,
+.break-relax .m3-kp-diagnosis-row,
+.break-relax .m3-kp-drill__panel-card {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+/* 大块元素(>200px)允许跨页 — JS 检测高度后标记 */
+.break-relax-tall {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+/* 模块尾元素允许跨页 — 避免最后一项撑出空白页 */
+.break-relax-last {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+/* M5 清理: min-height + 分页强制放松 */
+.m5-city-compare.break-relax {
+  min-height: auto;
+}
+
 /* [FIX] 避免空白最后一页: M8 附录的最后一个面板允许跨页 */
 .m8-appendix-page tr:last-of-type,
 .m8-appendix-page .card:last-of-type,
