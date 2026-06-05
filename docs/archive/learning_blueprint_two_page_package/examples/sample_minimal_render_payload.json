@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "report_id": "20250517-7M-SH-001",
+    "report_date": "2025-05-17",
+    "report_title": "基线定位分析报告",
+    "student_display_name": "张小明",
+    "city_name": "上海",
+    "subject_name": "数学",
+    "target_score": 140,
+    "target_accuracy": 85,
+    "grade": "七年级"
+  },
+  "cover": {
+    "cover_meta": {
+      "raw_question_count": 168,
+      "display_question_count": 156,
+      "question_count": 156,
+      "total_questions": 156,
+      "paper_count": 12,
+      "report_date": "2025-05-17",
+      "city_name": "上海"
+    }
+  },
+  "summary": {
+    "target_score_text": "140分+",
+    "current_accuracy": 72,
+    "target_accuracy": 85,
+    "current_accuracy_text": "72%",
+    "target_accuracy_text": "85%",
+    "current_delta_text": "-13%"
+  },
+  "domains": {
+    "domain_items": [
+      {"domain_name": "方程与不等式", "accuracy": 88, "has_data": true},
+      {"domain_name": "函数", "accuracy": 75, "has_data": true},
+      {"domain_name": "数与代数", "accuracy": 90, "has_data": true},
+      {"domain_name": "统计与概率", "accuracy": 82, "has_data": true},
+      {"domain_name": "应用问题", "accuracy": null, "has_data": false},
+      {"domain_name": "几何", "accuracy": 58, "has_data": true}
+    ]
+  },
+  "kp_drill": {
+    "domain_panels": {
+      "1": {"domain_name": "方程与不等式", "has_data": true},
+      "2": {"domain_name": "函数", "has_data": true},
+      "3": {"domain_name": "数与代数", "has_data": true},
+      "4": {"domain_name": "统计与概率", "has_data": true},
+      "5": {"domain_name": "应用问题", "has_data": false},
+      "6": {"domain_name": "几何", "has_data": true}
+    }
+  },
+  "core_weakness": {
+    "items": [
+      {"priority": "P0", "name_cn": "三角形全等判定", "domain_name": "几何", "accuracy": 52, "gap_to_target": -33, "city_rank": 3, "tags": ["核心考点", "需强化"]},
+      {"priority": "P1", "name_cn": "一元一次不等式组", "domain_name": "代数", "accuracy": 61, "gap_to_target": -24, "city_rank": 8, "tags": ["核心考点"]},
+      {"priority": "P1", "name_cn": "勾股定理应用", "domain_name": "几何", "accuracy": 65, "gap_to_target": -20, "city_rank": 5, "tags": ["需突破"]},
+      {"priority": "P2", "name_cn": "函数图像识别", "domain_name": "函数", "accuracy": 70, "gap_to_target": -15, "city_rank": null, "tags": ["待拓展"]}
+    ]
+  },
+  "city_compare": {
+    "overlap_items": [
+      {"code": "6.02.03", "kp_name": "三角形全等判定", "city_rank": 3, "importance_score": 83.4, "student_accuracy": 52, "score_weight": "高"},
+      {"code": "1.01.03", "kp_name": "一元一次不等式组", "city_rank": 8, "importance_score": 72.1, "student_accuracy": 61, "score_weight": "高"},
+      {"code": "6.02.05", "kp_name": "勾股定理应用", "city_rank": 5, "importance_score": 69.5, "student_accuracy": 65, "score_weight": "高"}
+    ]
+  },
+  "data_reliability": {
+    "section_4_coverage": {
+      "stats": {
+        "test_period": "近4个月",
+        "l2_covered": 18,
+        "l2_total": 24,
+        "l3_covered": 46,
+        "l3_total": 51,
+        "l1_total": 6,
+        "l2_covered_text": "18 / 24",
+        "l3_covered_text": "46 / 51"
+      },
+      "summary_text": "数据覆盖较充分，诊断结论稳定，建议持续补充最新作答数据。"
+    },
+    "conclusion": {
+      "total_level": "高",
+      "conclusion_credibility": {"weighted_score": 88, "level": "高"},
+      "message": "样本充足，结论可靠"
+    }
+  },
+  "tiered_learning": {
+    "module": {"cards": {"stage_judgement": {"current": {"stage_name": "能力提升期", "position_hint": "打基础与补短板"}}}}
+  },
+  "question_detail": {"total_count": 156}
+}

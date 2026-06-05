@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 590">
+  <title>Static math knowledge map skeleton</title>
+  <circle cx="300" cy="300" r="260" fill="#F8FBFD"/>
+  <g fill="none" stroke="#DCEAF2" stroke-width="1" stroke-dasharray="3 4">
+    <circle cx="300" cy="300" r="82"/><circle cx="300" cy="300" r="130"/><circle cx="300" cy="300" r="178"/><circle cx="300" cy="300" r="226"/>
+  </g>
+  <g stroke="#B9D4E4" stroke-width="1.4">
+    <line x1="300" y1="300" x2="300" y2="58"/><line x1="300" y1="300" x2="502" y2="175"/><line x1="300" y1="300" x2="502" y2="407"/>
+    <line x1="300" y1="300" x2="300" y2="525"/><line x1="300" y1="300" x2="98" y2="407"/><line x1="300" y1="300" x2="98" y2="175"/>
+  </g>
+</svg>

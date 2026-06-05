@@ -1,0 +1,168 @@
+{# ---------------------------------------------------------------------------
+  Page 1: Student Diagnostic Panorama Blueprint
+  Required context key: diagnostic_blueprint
+--------------------------------------------------------------------------- #}
+{% set bp = diagnostic_blueprint %}
+<section class="m0-module-page learning-blueprint-page diagnostic-blueprint-page">
+  <div class="edge-tabs-mask"></div>
+  <header class="lb-header">
+    <div class="lb-page-label">{{ bp.meta.page1_label }}</div>
+    <div class="lb-meta-line">{{ bp.meta.student_name }} ｜ {{ bp.meta.grade }} ｜ {{ bp.meta.subject_name }} ｜ {{ bp.meta.report_title }} ｜ 目标 {{ bp.meta.target_score_text }}</div>
+    <h1>{{ bp.headline.title }}</h1>
+    <div class="lb-subtitle"><span></span>{{ bp.headline.subtitle }}<span></span></div>
+    <div class="lb-slogan">{{ bp.headline.slogan }}</div>
+  </header>
+
+  <main class="diagnostic-grid">
+    <section class="lb-panel profile-panel">
+      <h2><b>01</b> 学习画像总览</h2>
+      <div class="student-card">
+        <div class="student-avatar" aria-hidden="true">
+          <svg viewBox="0 0 72 72" role="img">
+            <circle cx="36" cy="36" r="34" />
+            <circle class="avatar-head" cx="36" cy="28" r="13" />
+            <path class="avatar-body" d="M18 61c3-15 13-22 18-22s15 7 18 22" />
+          </svg>
+        </div>
+        <div class="student-meta">
+          <p><span>学生</span>{{ bp.profile.student_name }}</p>
+          <p><span>年级</span>{{ bp.profile.grade }}</p>
+          <p><span>城市</span>{{ bp.profile.city_name }}</p>
+          <p><span>科目</span>{{ bp.profile.subject_name }}</p>
+        </div>
+      </div>
+      <div class="metric-row three">
+        <div class="metric-card primary"><span>当前水平</span><strong>{{ bp.profile.current_accuracy_text }}</strong><em>整体正确率</em></div>
+        <div class="metric-card success"><span>目标线</span><strong>{{ bp.profile.target_accuracy_text }}</strong><em>目标正确率</em></div>
+        <div class="metric-card warning"><span>差距</span><strong>{{ bp.profile.delta_text }}</strong><em>距目标线</em></div>
+      </div>
+      <div class="small-card-row">
+        <div class="small-signal"><i class="icon-gauge"></i><span>学习状态</span><strong>{{ bp.profile.stage_name }}</strong></div>
+        <div class="small-signal"><i class="icon-growth"></i><span>当前阶段</span><strong>{{ bp.profile.stage_hint }}</strong></div>
+        <div class="small-signal"><i class="icon-target"></i><span>重点关注领域</span><strong>{{ bp.profile.focus_domains_text }}</strong></div>
+      </div>
+    </section>
+
+    <section class="lb-panel ability-axis-panel">
+      <h2><b>02</b> 数学能力中轴图</h2>
+      <div class="ability-map-wrap">
+        <svg class="ability-map-svg" viewBox="0 0 600 590" role="img" aria-label="数学六大领域能力中轴图">
+          <defs>
+            <radialGradient id="mapCenterGlow" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="#EAF7FB" stop-opacity="1" />
+              <stop offset="75%" stop-color="#EAF7FB" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <circle cx="300" cy="300" r="260" fill="url(#mapCenterGlow)" />
+          <g class="map-rings">
+            <circle cx="300" cy="300" r="82" />
+            <circle cx="300" cy="300" r="130" />
+            <circle cx="300" cy="300" r="178" />
+            <circle cx="300" cy="300" r="226" />
+          </g>
+          <g class="map-spokes">
+            {% for d in bp.domains %}
+            <line x1="300" y1="300" x2="{{ d.x }}" y2="{{ d.y }}" />
+            {% endfor %}
+          </g>
+          <g class="center-person">
+            <circle cx="300" cy="300" r="55" />
+            <circle cx="300" cy="282" r="16" />
+            <path d="M265 332c7-26 26-37 35-37s28 11 35 37" />
+            <text x="300" y="360">{{ bp.profile.student_name }}</text>
+            <text x="300" y="384">数学能力中轴</text>
+          </g>
+          {% for d in bp.domains %}
+          <g class="domain-node state-{{ d.state }}" transform="translate({{ d.x }}, {{ d.y }})">
+            <polygon points="0,-44 38,-22 38,22 0,44 -38,22 -38,-22" />
+            <text class="domain-name" x="0" y="-10">{{ d.name }}</text>
+            <text class="domain-acc" x="0" y="16">{{ d.accuracy_text }}</text>
+            <text class="domain-state" x="0" y="38">{{ d.state_label }}</text>
+          </g>
+          {% endfor %}
+        </svg>
+      </div>
+      <div class="map-legend">
+        <span class="legend achieved">已达标</span>
+        <span class="legend attention">需关注</span>
+        <span class="legend improve">需加强</span>
+        <span class="legend nodata">数据不足</span>
+      </div>
+    </section>
+
+    <section class="lb-panel shortlist-panel">
+      <h2><b>03</b> 核心短板清单 <small>优先突破</small></h2>
+      <table class="shortlist-table">
+        <thead>
+          <tr>
+            <th>优先级</th><th>知识点</th><th>领域</th><th>正确率</th><th>距目标线</th><th>城市参考</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in bp.shortlist %}
+          <tr>
+            <td><span class="priority-badge {{ item.priority_class }}">{{ item.priority }}</span></td>
+            <td><strong>{{ item.name }}</strong><small>{{ item.tag_text }}</small></td>
+            <td>{{ item.domain }}</td>
+            <td>{{ item.accuracy_text }}</td>
+            <td class="gap-cell">{{ item.gap_text }}</td>
+            <td>{{ item.city_rank_text }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p class="table-note">推荐依据：正确率、距目标线、城市考频、题目数量综合排序。</p>
+    </section>
+
+    <section class="lb-panel knowledge-tree-panel">
+      <h2><b>04</b> 知识点钻取结构 <small>能力树</small></h2>
+      <div class="drill-head"><span>L1 六大领域</span><i></i><span>L2 知识模块</span><i></i><span>L3 知识点</span><i></i><span>L4 考点细节</span></div>
+      <div class="drill-list">
+        {% for item in bp.shortlist %}
+        <div class="drill-row state-{{ item.priority_class }}">
+          <span class="drill-domain">{{ item.domain }}</span>
+          <span class="drill-module">{{ item.domain }}</span>
+          <span class="drill-kp">{{ item.name }}</span>
+          <span class="drill-detail">{{ item.tag_text or '专项突破' }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="lb-panel evidence-panel">
+      <h2><b>05</b> 数据分析依据</h2>
+      <div class="engine-grid">
+        <div class="engine-card"><i class="icon-paper"></i><strong>{{ bp.evidence.paper_count }}</strong><span>分析试卷</span></div>
+        <div class="engine-card"><i class="icon-calendar"></i><strong>{{ bp.evidence.test_period }}</strong><span>数据周期</span></div>
+        <div class="engine-card"><i class="icon-doc"></i><strong>{{ bp.evidence.valid_questions }}</strong><span>有效大题</span></div>
+        <div class="engine-card"><i class="icon-shield"></i><strong>{{ bp.confidence.level }}</strong><span>数据可信度</span></div>
+      </div>
+      <div class="ai-core-svg">
+        <svg viewBox="0 0 220 130" role="img" aria-label="AI分析引擎">
+          <circle cx="110" cy="65" r="52" />
+          <circle cx="110" cy="65" r="38" />
+          <text x="110" y="57">AI</text>
+          <text x="110" y="82">分析引擎</text>
+          <g class="ai-dots"><circle cx="46" cy="65" r="4"/><circle cx="174" cy="65" r="4"/><circle cx="110" cy="13" r="4"/><circle cx="110" cy="117" r="4"/></g>
+        </svg>
+      </div>
+      <div class="expanded-line"><strong>展开 {{ bp.evidence.expanded_questions }} 道子题</strong><span>深入分析每一道题的得分点与失分点</span></div>
+    </section>
+
+    <section class="lb-panel path-panel">
+      <h2><b>06</b> 提分路径 <small>{{ bp.profile.current_accuracy_text }} → {{ bp.profile.target_accuracy_text }}</small></h2>
+      <div class="path-stage-grid">
+        <div class="stage-card stage-foundation"><strong>第一阶段</strong><em>0-30天</em><span>突破基础证据</span><p>补齐数据缺口，聚焦短板与高频考点。</p></div>
+        <div class="stage-arrow"></div>
+        <div class="stage-card stage-improve"><strong>第二阶段</strong><em>30-60天</em><span>巩固核心能力</span><p>模块专项突破，提升题型迁移能力。</p></div>
+        <div class="stage-arrow"></div>
+        <div class="stage-card stage-sprint"><strong>第三阶段</strong><em>60天+</em><span>冲刺目标线</span><p>综合训练、阶段复测，稳定冲刺目标。</p></div>
+      </div>
+      <div class="path-timeline"><span>{{ bp.profile.current_accuracy_text }} 当前水平</span><i></i><span>{{ bp.profile.target_accuracy_text }} 目标线</span></div>
+    </section>
+  </main>
+
+  <footer class="lb-footer">
+    <span>{{ bp.footer.left }}</span><span>{{ bp.footer.middle }}</span><span>{{ bp.footer.right }}</span>
+  </footer>
+</section>
