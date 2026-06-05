@@ -1461,8 +1461,7 @@
   }
 
   .m7-quality-block--blue {
-    grid-column: auto;
-    grid-row: auto;
+    /* flex 模式下自动定位，无需 grid 属性 */
   }
 
   .m7-block-title {

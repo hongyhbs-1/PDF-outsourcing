@@ -141,7 +141,12 @@ _PREFLIGHT_JS = """
         }
         const contentHeight = page.scrollHeight;
 
-        if (contentHeight / PAGE_HEIGHT < DENSITY_THRESHOLD) {
+        // 附录模块(m8)天然内容少，即使超过阈值也紧凑处理
+        const sec = page.querySelector('section');
+        const isAppendix = sec && Array.from(sec.classList).some(c => /^m8/.test(c));
+        const isLowDensity = contentHeight / PAGE_HEIGHT < DENSITY_THRESHOLD || isAppendix;
+
+        if (isLowDensity) {
             // 低密度：保持 min-height=0 + 取消强制分页
             page.style.breakBefore = 'auto';
             page.style.pageBreakBefore = 'auto';
@@ -152,20 +157,8 @@ _PREFLIGHT_JS = """
                 child.style.minHeight = '';
             }
         }
-        // 附录模块(m8)天然内容少，即使超过阈值也紧凑处理
-        const sec = page.querySelector('section');
-        const isAppendix = sec && Array.from(sec.classList).some(c => /^m8/.test(c));
-        if (isAppendix) {
-            page.style.breakBefore = 'auto';
-            page.style.pageBreakBefore = 'auto';
-            page.style.minHeight = '0';
-            for (const child of page.children) {
-                child.style.minHeight = '0';
-            }
-        }
     });
 
-    // density stats (removed for production)
 
     return {
         panels_total: panels.length,
