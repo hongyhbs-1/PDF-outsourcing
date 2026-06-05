@@ -24,15 +24,52 @@ except ImportError:
 from renderer import FONTS_DIR
 
 # ---------------------------------------------------------------------------
+# 紧凑策略 — 每个模块的紧凑行为声明
+# ---------------------------------------------------------------------------
+
+COMPACT_POLICY = {
+    # always: 始终允许接前页（短模块）
+    "m1": "always",
+    "m2": "always",
+    "m4": "always",
+    "m5": "always",
+    "m8": "always",
+    "m10": "always",
+    "m11": "always",
+    # never: 始终独占一页（高密度/有分页能力）
+    "m3": "never",
+    "m7": "never",
+    "m9": "never",
+    # auto: 按密度判定（数据量变化大的模块）
+    "m6": "auto",
+}
+
+_AUTO_DENSITY_THRESHOLD = 0.70
+
+
+def _build_preflight_js() -> str:
+    """构建注入了 COMPACT_POLICY 的预分页 JS。"""
+    import json
+    policy_json = json.dumps(COMPACT_POLICY, ensure_ascii=False)
+    threshold = _AUTO_DENSITY_THRESHOLD
+    return _PREFLIGHT_TEMPLATE.replace("__COMPACT_POLICY__", policy_json).replace(
+        "__DENSITY_THRESHOLD__", str(threshold)
+    )
+
+
+# ---------------------------------------------------------------------------
 # 预分页 JS (移植自 pdf_service.py)
 # ---------------------------------------------------------------------------
 
-_PREFLIGHT_JS = """
+_PREFLIGHT_TEMPLATE = """
 () => {
     // ─── 分页治理: JS 只做检测+标记, 不直接改 style ───
     // 所有 break-inside/page-break-inside 控制由 CSS class 驱动
     // JS 添加 .break-relax / .break-relax-tall / .break-relax-last
     // CSS 层在 base.css 统一定义这些 class 的行为
+
+    const COMPACT_POLICY = __COMPACT_POLICY__;
+    const AUTO_THRESHOLD = __DENSITY_THRESHOLD__;
 
     const modulePages = document.querySelectorAll('.module-page');
 
@@ -83,19 +120,19 @@ _PREFLIGHT_JS = """
         }
     });
 
-    // ─── 紧凑算法: 低密度模块允许接前页 ───
+    // ─── 紧凑算法: 策略驱动 ───
     const PAGE_HEIGHT = 1123;
-    const DENSITY_THRESHOLD = 0.70;
 
-    function isDataModule(mp) {
+    function getModuleId(mp) {
         const targets = [mp.querySelector('section'), mp.firstElementChild];
         for (const el of targets) {
             if (!el) continue;
             for (const cls of el.classList) {
-                if (/^m[1-9]($|-)/.test(cls)) return true;
+                const m = cls.match(/^(m\d+)(?:$|-)/);
+                if (m) return m[1];
             }
         }
-        return false;
+        return null;
     }
 
     let tocIndex = -1;
@@ -105,18 +142,30 @@ _PREFLIGHT_JS = """
 
     modulePages.forEach((page, index) => {
         if (index === 0 || page.classList.contains('comic-module')) return;
-        if (!isDataModule(page)) return;
+        const modId = getModuleId(page);
+        if (!modId) return;
         if (tocIndex >= 0 && index === tocIndex + 1) return;
+
+        const policy = COMPACT_POLICY[modId] || 'auto';
+
+        // never: 保持独立页, 跳过
+        if (policy === 'never') return;
 
         page.style.minHeight = '0';
         for (const child of page.children) {
             child.style.minHeight = '0';
         }
-        const contentHeight = page.scrollHeight;
 
-        const isLowDensity = contentHeight / PAGE_HEIGHT < DENSITY_THRESHOLD;
+        let shouldCompact = false;
+        if (policy === 'always') {
+            shouldCompact = true;
+        } else {
+            // auto: 密度判定
+            const contentHeight = page.scrollHeight;
+            shouldCompact = contentHeight / PAGE_HEIGHT < AUTO_THRESHOLD;
+        }
 
-        if (isLowDensity) {
+        if (shouldCompact) {
             page.style.breakBefore = 'auto';
             page.style.pageBreakBefore = 'auto';
         } else {
@@ -141,6 +190,9 @@ _PREFLIGHT_JS = """
     };
 }
 """
+
+# 预构建实例, 供 pdf_service / _build_final_pdf_bytes 使用
+_PREFLIGHT_JS = _build_preflight_js()
 
 # ---------------------------------------------------------------------------
 # TOC 页码提取 (移植自 pdf_service.py)
