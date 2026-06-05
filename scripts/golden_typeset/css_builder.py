@@ -18,9 +18,12 @@ min-height 扣除:
   外层 .module-page::before 渐变条占 ~5px，min-height 需扣除 6px 避免溢出生成空白页
 """
 from __future__ import annotations
-from typing import Dict
+from typing import Dict, Optional, TYPE_CHECKING
 from . import WRAPPER_SELECTORS
 from .math_func import PageLayout
+
+if TYPE_CHECKING:
+    from .layout_profile import LayoutProfile
 
 
 # 部分报告页在标题下新增了“本页核心结论”后，DOM 直接子元素从
@@ -55,14 +58,59 @@ _COMPACT_CORE_RHYTHM_MM: dict[str, dict[int, float]] = {
 }
 
 
-def _justify_for_ratio(ratio: float) -> str:
-    """保持章节页顶部阅读顺序，避免低密度页面内容垂直居中下坠。"""
+def _justify_for_ratio(ratio: float, layout_profile: Optional[LayoutProfile] = None) -> str:
+    """保持章节页顶部阅读顺序，避免低密度页面内容垂直居中下坠。
+
+    When layout_profile is provided with page_strategy == "center",
+    allow vertical centering (useful for sparse content pages).
+    """
+    if layout_profile and layout_profile.page_strategy == "center":
+        return "center"
     return "flex-start"
 
 
-def build_css(layouts: Dict[str, PageLayout]) -> str:
+def build_css(layouts: Dict[str, PageLayout],
+               layout_profile: Optional[LayoutProfile] = None) -> str:
     parts: list[str] = []
     parts.append("/* golden_typeset -- 数学排版引擎 */")
+
+    # Inject :root CSS variables from LayoutProfile when provided
+    if layout_profile is not None:
+        lp = layout_profile
+        parts.append("")
+        parts.append("/* golden_typeset -- LayoutProfile variables */")
+        parts.append(":root {")
+        parts.append(f"  --typography-scale: {lp.typography_scale:.2f};")
+        parts.append(f"  --padding-scale: {lp.padding_scale:.2f};")
+        parts.append(f"  --grid-columns: {lp.grid_columns};")
+        parts.append(f"  --grid-gap: {lp.grid_gap_mm:.1f}mm;")
+        for var_name, var_value in lp.css_overrides.items():
+            if var_name not in ("--typography-scale", "--padding-scale", "--grid-columns", "--grid-gap"):
+                parts.append(f"  {var_name}: {var_value};")
+        parts.append("}")
+
+    # LayoutProfile-driven typography adjustments (consume the CSS variables)
+    if layout_profile is not None:
+        lp = layout_profile
+        parts.append("")
+        parts.append("/* golden_typeset -- LayoutProfile-driven typography adjustments */")
+        parts.append("@media print {")
+        # typography_scale controls body font-size across all module pages
+        if lp.typography_scale != 1.0:
+            parts.append(f"  .module-page {{ font-size: calc(var(--vh-body-font-size) * {lp.typography_scale:.2f}); }}")
+        # padding_scale controls card padding and gap tokens
+        if lp.padding_scale != 1.0:
+            parts.append(f"  .module-page {{ --vh-card-padding: calc(10px * {lp.padding_scale:.2f}) calc(12px * {lp.padding_scale:.2f}); }}")
+            parts.append(f"  .module-page {{ --vh-gap-md: calc(10px * {lp.padding_scale:.2f}); }}")
+        # Per-module grid_columns overrides from module_overrides
+        _GRID_SELECTORS = {"m3": ".m3-kp-drill__panels"}
+        if lp.module_overrides:
+            for _mod_id, overrides in lp.module_overrides.items():
+                if "grid_columns" in overrides:
+                    sel = _GRID_SELECTORS.get(_mod_id)
+                    if sel:
+                        parts.append(f"  {sel} {{ grid-template-columns: repeat({overrides['grid_columns']}, 1fr); }}")
+        parts.append("}")
 
     for mod_id, layout in layouts.items():
         sel = WRAPPER_SELECTORS.get(mod_id)
@@ -80,9 +128,15 @@ def build_css(layouts: Dict[str, PageLayout]) -> str:
         parts.append("@media print {")
 
         # Wrapper: min-height + flex + 自适应 justify-content
-        justify = _justify_for_ratio(ratio)
+        justify = _justify_for_ratio(ratio, layout_profile=layout_profile)
         parts.append(f"  {sel} {{")
-        parts.append(f"    min-height: calc(275mm - 6px);")
+        # 低密度模块 (< 0.5) 不设 min-height，让内容自然高度决定页面占用，
+        # 允许与前一个模块共享同一页（配合 break-before: auto）。
+        # 高密度模块保持 min-height 确保黄金间距排版有空间。
+        if ratio >= 0.50:
+            parts.append(f"    min-height: calc(275mm - 6px);")
+        else:
+            parts.append(f"    /* ratio={ratio:.2f} < 0.5: no min-height, natural height */")
         parts.append(f"    display: flex;")
         parts.append(f"    flex-direction: column;")
         parts.append(f"    justify-content: {justify};")
@@ -131,6 +185,13 @@ def build_css(layouts: Dict[str, PageLayout]) -> str:
     parts.append("  thead { display: table-header-group; }")
     parts.append("  tr { page-break-inside: avoid; }")
     parts.append("}")
+
+    # GOLDEN_RATIOS: 供 _PREFLIGHT_JS 读取各模块 ratio 用于动态分页
+    ratio_parts = []
+    for mod_id, layout in layouts.items():
+        ratio_parts.append(f"{mod_id}:{layout.content_ratio:.2f}")
+    if ratio_parts:
+        parts.append(f"/* GOLDEN_RATIOS: {','.join(ratio_parts)} */")
 
     parts.append("")
     return "\n".join(parts)

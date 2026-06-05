@@ -1,4 +1,8 @@
-"""HTML 渲染服务 — RenderPayload → 完整 HTML。
+"""HTML 渲染服务 — RenderPayload -> 完整 HTML。
+
+.. deprecated::
+    此模块为 templates_v2 时代遗留，仅供 v2 管线内部使用。
+    新功能请使用 ``renderer.py`` 中的 ``render_html()``。
 
 CSS 拼接 (base.css + m*.css) 和 Jinja2 渲染逻辑从
 templates_v2/_scripts/render_smoke_test.py 和 tests_v2/test_e2e_render.py 提取。
@@ -48,7 +52,7 @@ _jinja_env: jinja2.Environment | None = None
 
 
 def _load_combined_css() -> str:
-    """读取并拼接 base.css + m*.css，结果缓存。"""
+    """读取并拼接 CSS，visual_hierarchy.css 最后加载确保层级 token 优先。"""
     global _combined_css
     if _combined_css is not None:
         return _combined_css
@@ -57,8 +61,18 @@ def _load_combined_css() -> str:
     base = _CSS_DIR / "base.css"
     if base.exists():
         parts.append(base.read_text(encoding="utf-8"))
-    for css_file in sorted(_CSS_DIR.glob("m*.css")):
+    # 非base、非shared、非visual_hierarchy 的CSS按字母序
+    for css_file in sorted(_CSS_DIR.glob("*.css")):
+        if css_file.name == "base.css" or css_file.name.startswith("shared_") or css_file.name == "visual_hierarchy.css":
+            continue
         parts.append(css_file.read_text(encoding="utf-8"))
+    # shared_*.css 覆盖层
+    for css_file in sorted(_CSS_DIR.glob("shared_*.css")):
+        parts.append(css_file.read_text(encoding="utf-8"))
+    # visual_hierarchy.css 最终仲裁
+    vh = _CSS_DIR / "visual_hierarchy.css"
+    if vh.exists():
+        parts.append(vh.read_text(encoding="utf-8"))
 
     _combined_css = "\n".join(parts)
     logger.info("CSS 拼接完成: %d 字符, %d 文件", len(_combined_css), len(parts))

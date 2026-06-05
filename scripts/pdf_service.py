@@ -21,6 +21,7 @@ from pathlib import Path
 
 from pdf_chrome_templates import build_pdf_chrome_options
 from pdf_progress_rail import apply_progress_rail
+from pdf_utils import _PREFLIGHT_JS
 
 logger = logging.getLogger(__name__)
 
@@ -81,140 +82,6 @@ def _get_browser() -> Browser:
         logger.info("Chromium 浏览器已启动")
         return _browser
 
-
-# ---------------------------------------------------------------------------
-# 预分页: 名单制处理高风险块
-# ---------------------------------------------------------------------------
-
-_PREFLIGHT_JS = """
-() => {
-    // ─── M3: 取消强制分页，避免空白页 ───
-    // 注释掉强制分页逻辑，让 Playwright 自然处理分页
-    // 这样可以避免内容很少的面板导致空白页的问题
-    /*
-    const panels = document.querySelectorAll('.m3-kp-drill__panel');
-    let firstNonEmpty = true;
-    panels.forEach(panel => {
-        const dataRows = panel.querySelectorAll('tbody tr');
-        if (dataRows.length > 0) {
-            if (!firstNonEmpty) {
-                panel.style.breakBefore = 'page';
-            }
-            firstNonEmpty = false;
-        }
-    });
-    */
-
-    // ─── M5: 强制清理 (belt-and-suspenders, CSS 应已修复) ───
-    const m5 = document.querySelector('.m5-city-compare');
-    if (m5) {
-        m5.style.minHeight = 'auto';
-        m5.style.pageBreakInside = 'auto';
-    }
-
-    // ─── M1: 放松 breakthrough-grid 整体 avoid (CSS 应已修复) ───
-    const btGrid = document.querySelector('.m1-breakthrough-grid');
-    if (btGrid) {
-        btGrid.style.breakInside = 'auto';
-    }
-
-    // ─── M7: 置信度说明不独占页 ───
-    document.querySelectorAll('.m7-note').forEach(note => {
-        note.style.breakInside = 'auto';
-        note.style.pageBreakInside = 'auto';
-    });
-
-    // ─── M8: 避免最后一个面板跨页导致的空白页 ───
-    // 让最后一个面板允许跨页，避免最后一页只剩页眉页脚
-    // 使用 :last-of-type 而不是 :last-child 以正确选择最后一个 section
-    const lastM8Panel = document.querySelector('.m8-appendix-panel:last-of-type');
-    if (lastM8Panel) {
-        lastM8Panel.style.breakInside = 'auto';
-        lastM8Panel.style.pageBreakInside = 'auto';
-    }
-
-    // ─── 全局: 避免每个模块最后一个元素导致空白页 ───
-    // 让每个模块的最后一个 card/panel/table 等元素允许跨页
-    const modulePages = document.querySelectorAll('.module-page');
-    modulePages.forEach(page => {
-        // 查找每个模块内的最后一个可能跨页的元素
-        const lastElements = page.querySelectorAll('.card, .kp-card, .domain-card, .breakthrough-card, .m8-appendix-panel, .m7-note, table');
-        if (lastElements.length > 0) {
-            const lastEl = lastElements[lastElements.length - 1];
-            lastEl.style.breakInside = 'auto';
-            lastEl.style.pageBreakInside = 'auto';
-        }
-    });
-
-    // ─── [FIX] 避免中间空白页: 检测内容少的模块，移除强制分页 ───
-    // 计算页面高度（A4: ~297mm，在 96DPI 下约 1123px）
-    // 页面可打印区域（减去页眉页脚）约 900-1000px
-    const MAX_CONTENT_HEIGHT = 900; // px
-    const MIN_CONTENT_HEIGHT = 300;  // px
-
-    modulePages.forEach((page, index) => {
-        // 跳过第一个模块和漫画模块
-        if (index === 0 || page.classList.contains('comic-module')) {
-            return;
-        }
-
-        const height = page.getBoundingClientRect().height;
-
-        // 如果模块高度小于最大值且大于最小值，允许它跨页
-        // 这样可以避免内容很少的模块单独占一页
-        if (height < MAX_CONTENT_HEIGHT && height > MIN_CONTENT_HEIGHT) {
-            page.style.breakBefore = 'auto';
-            page.style.pageBreakBefore = 'auto';
-        }
-    });
-
-    // ─── 全局: 放松所有 >200px 块的 break-inside:avoid ───
-    const THRESHOLD = 200;
-    const avoidSelectors = [
-        '.m1-suggestion-callout',
-        '.m2-cw-tips-box',
-        '.m4-chart-box',
-        '.m4-summary-card',
-    ];
-    avoidSelectors.forEach(sel => {
-        document.querySelectorAll(sel).forEach(el => {
-            const h = el.getBoundingClientRect().height;
-            if (h > THRESHOLD) {
-                el.style.breakInside = 'auto';
-                el.style.pageBreakInside = 'auto';
-            }
-        });
-    });
-
-    return {
-        panels_total: document.querySelectorAll('.m3-kp-drill__panel').length,
-        panels_with_data: [...document.querySelectorAll('.m3-kp-drill__panel')]
-            .filter(p => p.querySelectorAll('tbody tr').length > 0).length,
-        m5_fixed: !!m5,
-        relaxed_blocks: avoidSelectors.length,
-    };
-}
-"""
-
-
-def _preflight_paginate(page) -> dict:
-    """在 page.pdf() 之前运行, 修正高风险分页点。
-
-    名单制处理:
-      - M3: 已取消强制分页，避免内容很少的面板导致空白页（让 Playwright 自然处理）
-      - M5: 清除 min-height:297mm + page-break-inside:avoid
-      - M1: 放松 breakthrough-grid 整体 break-inside:avoid
-      - M7: 放松置信度说明 break-inside
-      - M8: 避免最后一个面板导致最后一页空白
-      - 全局: 每个模块最后一个元素允许跨页，避免空白最后一页
-      - 通用: >200px 的高风险尾块放松 break-inside:avoid
-
-    Returns:
-        预检统计信息 (用于日志)。
-    """
-    result = page.evaluate(_PREFLIGHT_JS)
-    logger.info("预分页完成: %s", result)
-    return result
 
 
 # ---------------------------------------------------------------------------
@@ -373,7 +240,8 @@ def _generate_pdf_impl(html: str, *, header_meta: dict | None = None) -> Path:
     page.set_default_timeout(900_000)  # 900s, 从实际执行开始计
     try:
         page.set_content(html, wait_until="networkidle")
-        _preflight_paginate(page)
+        result = page.evaluate(_PREFLIGHT_JS)
+        logger.info("预分页完成: %s", result)
 
         pdf_path = _create_temp_pdf_path()
         pdf_kwargs = _build_service_pdf_kwargs(pdf_path, header_meta)
