@@ -110,12 +110,13 @@ _PREFLIGHT_JS = """
     const DENSITY_THRESHOLD = 0.70; // 内容 < 70% 页面高度 → 低密度
 
     // 数据分析模块白名单：section 或 firstChild class 以 m1-m9 开头
+    // 注意：m10/m11 是专项精讲（作文/阅读），不是数据分析模块，不参与紧凑算法
     function isDataModule(mp) {
         const targets = [mp.querySelector('section'), mp.firstElementChild];
         for (const el of targets) {
             if (!el) continue;
             for (const cls of el.classList) {
-                if (/^m[1-9]/.test(cls)) return true;
+                if (/^m[1-9]($|-)/.test(cls)) return true;
             }
         }
         return false;
