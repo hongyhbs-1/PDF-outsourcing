@@ -63,11 +63,11 @@ report_master.jinja2 — 报告主入口模板 (v2)
   {% endif %}
   {% if _include_parent_report %}
   {# ---- 学生画像分析 (第 4 页: 三档分类 + 劣势 + 机构帮助) ---- #}
-  <div class="module-page">
+  <div class="module-page" id="toc-student-profile">
     {% include 'pages/student_profile.jinja2' %}
   </div>
   {# ---- 提升预期 (第 5 页: 提升路径 + 里程碑 + 关键提升点) ---- #}
-  <div class="module-page">
+  <div class="module-page" id="toc-improvement-preview">
     {% include 'pages/improvement_preview.jinja2' %}
   </div>
   {# ---- 数据分析概览 (封面后, 正文前, 无序号) ---- #}
@@ -110,9 +110,17 @@ report_master.jinja2 — 报告主入口模板 (v2)
   {% set _qd_papers = _qd.papers | default([], true) %}
   {% set _qd_total = _qd.total_count | default(0) %}
   {% set _show_question_detail = _qd_papers | length > 0 and _qd_total > 0 %}
+  {% set _m9_split = _m9_split_pages | default([], true) %}
   {% if _show_question_detail %}
-  {# M9 子模板自己输出 module-page (split 模式可能有多个) #}
+  {% if _m9_split | length > 0 %}
+  {# M9 split mode: 子模板自输出多个 module-page #}
   {% include 'pages/m9_question_detail.jinja2' %}
+  {% else %}
+  {# M9 non-split: report_master 统一包裹 module-page #}
+  <div class="module-page" id="toc-m9">
+    {% include 'pages/m9_question_detail.jinja2' %}
+  </div>
+  {% endif %}
   {% endif %}
   {# ---- M7: data_reliability ---- #}
   <div class="module-page" id="toc-m7">

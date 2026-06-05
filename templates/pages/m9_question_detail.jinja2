@@ -155,9 +155,9 @@ M9: 逐题分析明细 (Question Detail Analysis)
 
 {# ═══════════════════════════════════════════════════════════════════════════
    NON-SPLIT MODE: 原有单页逻辑
+   report_master 已包裹 module-page, 此处只输出内容
    ═══════════════════════════════════════════════════════════════════════════ #}
 {% elif has_data %}
-<div class="module-page" id="toc-m9">
   <div class="m9-page">
     <section class="m9-title-section">
       <h1 class="m9-title">七、逐题分析明细</h1>
@@ -280,6 +280,5 @@ M9: 逐题分析明细 (Question Detail Analysis)
       {% endfor %}
     </div>
   </div>
-</div>
 
 {% endif %}
