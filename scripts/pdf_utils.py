@@ -30,18 +30,18 @@ from renderer import FONTS_DIR
 COMPACT_POLICY = {
     # always: 始终允许接前页（短模块）
     "m1": "always",
-    "m2": "always",
-    "m4": "always",
     "m5": "always",
     "m8": "always",
     "m10": "always",
     "m11": "always",
-    # never: 始终独占一页（高密度/有分页能力）
-    "m3": "never",
-    "m7": "never",
+    # never: 始终独占一页（有分页能力的模块）
     "m9": "never",
-    # auto: 按密度判定（数据量变化大的模块）
+    # auto: 按密度判定（密度随数据量变化）
+    "m2": "auto",
+    "m3": "auto",
+    "m4": "auto",
     "m6": "auto",
+    "m7": "auto",
 }
 
 _AUTO_DENSITY_THRESHOLD = 0.70
