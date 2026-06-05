@@ -134,29 +134,21 @@ _PREFLIGHT_JS = """
         if (tocIndex >= 0 && index === tocIndex + 1) return;
 
         // 测量真实内容高度：临时去掉 min-height
-        const origMinH = page.style.minHeight;
         page.style.minHeight = '0';
-        const childOrigins = [];
         for (const child of page.children) {
-            childOrigins.push(child.style.minHeight);
             child.style.minHeight = '0';
         }
         const contentHeight = page.scrollHeight;
 
-        // 恢复 min-height（后续可能还需要）
-        page.style.minHeight = origMinH;
-        let ci = 0;
-        for (const child of page.children) {
-            child.style.minHeight = childOrigins[ci++];
-        }
-
         if (contentHeight / PAGE_HEIGHT < DENSITY_THRESHOLD) {
-            // 低密度：取消强制分页 + 去掉 min-height 让内容紧凑
+            // 低密度：保持 min-height=0 + 取消强制分页
             page.style.breakBefore = 'auto';
             page.style.pageBreakBefore = 'auto';
-            page.style.minHeight = '0';
+        } else {
+            // 非低密度：恢复 min-height
+            page.style.minHeight = '';
             for (const child of page.children) {
-                child.style.minHeight = '0';
+                child.style.minHeight = '';
             }
         }
     });
@@ -355,7 +347,7 @@ def _build_pdf_kwargs(payload: dict, *, landscape: bool = False) -> dict:
     kwargs = {
         "format": "A4",
         "print_background": True,
-        "scale": 0.9,  # 略微缩小避免低密度模块浪费整页
+        "scale": 1.0,
         **build_pdf_chrome_options(_build_pdf_chrome_meta(payload)),
     }
     if landscape:

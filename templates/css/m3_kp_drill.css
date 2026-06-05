@@ -309,6 +309,7 @@
   padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
   margin-bottom: 0;
   overflow: hidden;
+  break-inside: avoid;
 }
 
 /* [v2.0] 领域标题栏 (Domain Header) */
