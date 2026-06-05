@@ -114,9 +114,7 @@ _PREFLIGHT_JS = """
         }
         const contentHeight = page.scrollHeight;
 
-        const sec = page.querySelector('section');
-        const isAppendix = sec && Array.from(sec.classList).some(c => /^m8/.test(c));
-        const isLowDensity = contentHeight / PAGE_HEIGHT < DENSITY_THRESHOLD || isAppendix;
+        const isLowDensity = contentHeight / PAGE_HEIGHT < DENSITY_THRESHOLD;
 
         if (isLowDensity) {
             page.style.breakBefore = 'auto';
