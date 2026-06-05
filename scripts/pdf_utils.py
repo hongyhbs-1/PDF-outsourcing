@@ -347,7 +347,7 @@ def _build_pdf_kwargs(payload: dict, *, landscape: bool = False) -> dict:
     kwargs = {
         "format": "A4",
         "print_background": True,
-        "scale": 1.0,
+        "scale": 0.9,
         **build_pdf_chrome_options(_build_pdf_chrome_meta(payload)),
     }
     if landscape:
