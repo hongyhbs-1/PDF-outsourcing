@@ -28,16 +28,17 @@ from renderer import FONTS_DIR
 # ---------------------------------------------------------------------------
 
 COMPACT_POLICY = {
-    # never: 始终独占一页（每个模块的标题+说明+核心结论必须独立分页）
-    "m2": "never",
-    "m3": "never",
-    "m4": "never",
-    "m5": "never",
-    "m6": "never",
-    "m7": "never",
-    "m8": "never",
-    "m9": "never",
-    # always: 始终允许接前页（极短模块）
+    # never: 含算法/层级/指标说明，必须独立分页
+    "m2": "never",   # 短板筛选说明
+    "m3": "never",   # 层级说明
+    "m8": "never",   # 指标释义/难度分布
+    "m9": "never",   # 逐题分析明细（天然分页能力）
+    # auto: 数据量变化大，按密度判定
+    "m4": "auto",    # 领域图表
+    "m5": "auto",    # 城市考情
+    "m6": "auto",    # 学习建议
+    "m7": "auto",    # 可信度说明
+    # always: 极短模块，允许接前页
     "m1": "always",
     "m10": "always",
     "m11": "always",
