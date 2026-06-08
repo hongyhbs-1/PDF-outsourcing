@@ -220,6 +220,15 @@ def render_html(
     # pages are now replaced by the dynamic learning blueprint pages.
     context["tier_name"] = _select_tier_name(payload)
 
+    # M9 逐题分析拆分
+    try:
+        from m9_splitter import has_m9_detail, build_m9_split_pages
+        context["_has_m9_detail"] = has_m9_detail(payload)
+        context["_m9_split_pages"] = build_m9_split_pages(payload)
+    except ImportError:
+        context["_has_m9_detail"] = False
+        context["_m9_split_pages"] = []
+
     # 将封面 logo 路径也转为 Data URI (同因: page.set_content() 无法加载 file://)
     logo_data_uri = _image_to_data_uri(logo_path)
     cover = context.get("cover", context.get("module_0_cover", {}))

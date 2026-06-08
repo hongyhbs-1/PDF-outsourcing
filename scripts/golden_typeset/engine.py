@@ -90,4 +90,13 @@ def build_typeset_css(payload: RenderPayload,
                 content_ratio=emp_ratio,
             )
 
+    # M9 split: skip golden_typeset when splitter handles pagination
+    try:
+        from m9_splitter import should_split_m9
+        if should_split_m9(payload):
+            layouts.pop("m9", None)
+            empirical_blocks.pop("m9", None)
+    except ImportError:
+        pass
+
     return build_css(layouts, layout_profile=layout_profile)
