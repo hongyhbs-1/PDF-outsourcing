@@ -6,6 +6,7 @@ HTML 渲染核心 — CSS 合并 + Jinja2 模板渲染
 """
 
 import base64
+import math
 from pathlib import Path
 
 from learning_blueprint_builder import build_learning_blueprints
@@ -179,6 +180,101 @@ def _select_tier_name(payload: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
+# 难度分布饼图 (m_overview.jinja2 消费)
+# ---------------------------------------------------------------------------
+
+_PIE_CX = 60.0
+_PIE_CY = 60.0
+_PIE_R = 50.0
+_DIFFICULTY_LEVELS = {"easy", "medium", "hard"}
+
+
+def _safe_float(value) -> float:
+    if isinstance(value, str):
+        value = value.strip().rstrip("%")
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _pie_point(angle_deg: float) -> tuple:
+    angle = math.radians(angle_deg)
+    return (
+        _PIE_CX + _PIE_R * math.cos(angle),
+        _PIE_CY + _PIE_R * math.sin(angle),
+    )
+
+
+def _compute_difficulty_slices(payload: dict) -> list:
+    """Build SVG pie slices for m_overview.jinja2."""
+    appendix = payload.get("appendix") if isinstance(payload, dict) else None
+    if not isinstance(appendix, dict):
+        return []
+    difficulty = appendix.get("difficulty")
+    if not isinstance(difficulty, dict):
+        return []
+    items = difficulty.get("items")
+    if not isinstance(items, list):
+        return []
+
+    entries = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        level = str(item.get("level") or "medium").strip().lower()
+        if level not in _DIFFICULTY_LEVELS:
+            level = "medium"
+        ratio = max(0.0, _safe_float(item.get("ratio")))
+        count = max(0.0, _safe_float(item.get("count")))
+        entries.append({"level": level, "ratio": ratio, "count": count})
+
+    ratio_total = sum(e["ratio"] for e in entries)
+    count_total = sum(e["count"] for e in entries)
+    weight_key = "ratio" if ratio_total > 0 else "count"
+    total_weight = ratio_total if ratio_total > 0 else count_total
+    if total_weight <= 0:
+        return []
+
+    positive = [e for e in entries if e[weight_key] > 0]
+    if not positive:
+        return []
+
+    if len(positive) == 1:
+        return [{"level": positive[0]["level"], "path_d": "", "full": True}]
+
+    slices = []
+    cumulative = 0.0
+    last_index = len(positive) - 1
+    for index, entry in enumerate(positive):
+        weight = entry[weight_key]
+        start_frac = cumulative / total_weight
+        cumulative += weight
+        end_frac = 1.0 if index == last_index else cumulative / total_weight
+        sweep_angle = (end_frac - start_frac) * 360.0
+
+        if sweep_angle >= 359.999:
+            slices.append({"level": entry["level"], "path_d": "", "full": True})
+            continue
+
+        start_angle = start_frac * 360.0 - 90.0
+        end_angle = end_frac * 360.0 - 90.0
+        x1, y1 = _pie_point(start_angle)
+        x2, y2 = _pie_point(end_angle)
+        large_arc = 1 if sweep_angle > 180.0 else 0
+
+        path_d = (
+            f"M {_PIE_CX:g} {_PIE_CY:g} "
+            f"L {x1:.3f} {y1:.3f} "
+            f"A {_PIE_R:g} {_PIE_R:g} 0 {large_arc} 1 {x2:.3f} {y2:.3f} "
+            "Z"
+        )
+        slices.append({"level": entry["level"], "path_d": path_d, "full": False})
+
+    return slices
+
+
+# ---------------------------------------------------------------------------
 # 核心: HTML 渲染
 # ---------------------------------------------------------------------------
 
@@ -219,6 +315,7 @@ def render_html(
     # Kept for compatibility with older templates/debug output. Opening comic
     # pages are now replaced by the dynamic learning blueprint pages.
     context["tier_name"] = _select_tier_name(payload)
+    context["overview_difficulty_slices"] = _compute_difficulty_slices(payload)
 
     # M9 逐题分析拆分
     try:

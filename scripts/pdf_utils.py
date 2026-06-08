@@ -37,11 +37,13 @@ COMPACT_POLICY = {
     "m4": "auto",    # 领域图表
     "m5": "auto",    # 城市考情
     "m6": "auto",    # 学习建议
-    "m7": "auto",    # 可信度说明
+    "m7": "auto",     # 可信度说明 — f795e15 修复 s08 回归（xc 改 never 会破坏）
     # always: 极短模块，允许接前页
     "m1": "always",
-    "m10": "always",
-    "m11": "always",
+
+    # never: 英语专项精讲 — 正式 TOC 章节，标题不能跑到上一页
+    "m10": "never",
+    "m11": "never",
 }
 
 _AUTO_DENSITY_THRESHOLD = 0.70
