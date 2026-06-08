@@ -28,20 +28,19 @@ from renderer import FONTS_DIR
 # ---------------------------------------------------------------------------
 
 COMPACT_POLICY = {
-    # always: 始终允许接前页（短模块）
+    # never: 始终独占一页（每个模块的标题+说明+核心结论必须独立分页）
+    "m2": "never",
+    "m3": "never",
+    "m4": "never",
+    "m5": "never",
+    "m6": "never",
+    "m7": "never",
+    "m8": "never",
+    "m9": "never",
+    # always: 始终允许接前页（极短模块）
     "m1": "always",
-    "m5": "always",
-    "m8": "always",
     "m10": "always",
     "m11": "always",
-    # never: 始终独占一页（有分页能力的模块）
-    "m9": "never",
-    # auto: 按密度判定（密度随数据量变化）
-    "m2": "auto",
-    "m3": "auto",
-    "m4": "auto",
-    "m6": "auto",
-    "m7": "auto",
 }
 
 _AUTO_DENSITY_THRESHOLD = 0.70
