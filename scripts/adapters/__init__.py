@@ -82,23 +82,26 @@ def _normalize_student_display_name(payload: dict) -> dict:
 
 
 def _replace_all_strings(obj, old: str, new: str):
-    """Recursively replace exact-match strings in-place (no substring mutation)."""
+    """Recursively replace old with new in all string values (in-place).
+
+    old is the full machine-code student name (e.g. WO6-MATH-20260531_192939),
+    a unique token that will not substring-match unrelated content, so
+    str.replace is safe and also covers composite fields like page_title.
+    """
     if old == new:
         return
     if isinstance(obj, dict):
         for key in list(obj.keys()):
             val = obj[key]
-            if isinstance(val, str):
-                if val == old:
-                    obj[key] = new
+            if isinstance(val, str) and old in val:
+                obj[key] = val.replace(old, new)
             else:
                 _replace_all_strings(val, old, new)
     elif isinstance(obj, list):
         for i in range(len(obj)):
             val = obj[i]
-            if isinstance(val, str):
-                if val == old:
-                    obj[i] = new
+            if isinstance(val, str) and old in val:
+                obj[i] = val.replace(old, new)
             else:
                 _replace_all_strings(val, old, new)
 

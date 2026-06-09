@@ -37,7 +37,7 @@ COMPACT_POLICY = {
     "m4": "auto",    # 领域图表
     "m5": "auto",    # 城市考情
     "m6": "auto",    # 学习建议
-    "m7": "auto",     # 可信度说明 — f795e15 修复 s08 回归（xc 改 never 会破坏）
+    "m7": "never",    # 可信度说明 — 章节型页面，必须独立起页
     # always: 极短模块，允许接前页
     "m1": "always",
 
