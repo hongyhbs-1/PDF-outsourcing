@@ -12,8 +12,13 @@
 
 body.word-reference-typography,
 body.word-reference-typography .module-page {
-  font-family: "DejaVu Sans", "SimSun", "Songti SC", "Noto Serif CJK SC",
-               "Source Han Serif SC", serif;
+  --word-ref-font-family: "DejaVu Sans", "SimSun", "Songti SC",
+                          "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --font-family-base: var(--word-ref-font-family);
+  --font-family: var(--word-ref-font-family);
+  --cc-font-family: var(--word-ref-font-family);
+  --cw-font-family: var(--word-ref-font-family);
+  font-family: var(--word-ref-font-family);
   font-size: 10px;
   line-height: 1.5;
 }
