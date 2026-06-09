@@ -1072,7 +1072,7 @@ body {
 
   .m1-goal-metric-desc {
     margin-top: 2px;
-    font-size: 8.5px;
+    font-size: 9px;
     line-height: 1.2;
   }
 
@@ -1133,7 +1133,7 @@ body {
 
   .m1-bt-progress-label {
     padding: 1px 4px;
-    font-size: 8.5px;
+    font-size: 9px;
     border-radius: 8px;
   }
 
@@ -1236,7 +1236,7 @@ body {
 
   .m1-report-page--dense .m1-donut-caption {
     margin: 1px 0;
-    font-size: 8px;
+    font-size: 9px;
     line-height: 1.15;
   }
 
@@ -1252,7 +1252,7 @@ body {
   }
 
   .m1-report-page--dense .m1-legend-text {
-    font-size: 8.5px;
+    font-size: 9px;
   }
 
   .m1-report-page--dense .m1-summary-right {
@@ -1309,7 +1309,7 @@ body {
 
   .m1-report-page--dense .m1-goal-metric-label {
     margin-bottom: 1px;
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .m1-report-page--dense .m1-goal-metric-value {
@@ -1318,18 +1318,18 @@ body {
 
   .m1-report-page--dense .m1-goal-metric-desc {
     margin-top: 1px;
-    font-size: 7px;
+    font-size: 9px;
     line-height: 1.1;
   }
 
   .m1-report-page--dense .m1-goal-metric-gap,
   .m1-report-page--dense .m1-goal-metric-current .m1-kpi-arrow {
-    font-size: 7.5px;
+    font-size: 9px;
   }
 
   .m1-report-page--dense .m1-chart-note {
     margin: 2px 0 0;
-    font-size: 8px;
+    font-size: 9px;
     line-height: 1.15;
   }
 
@@ -1396,7 +1396,7 @@ body {
 
   .m1-report-page--dense .m1-bt-progress-label {
     padding: 1px 3px;
-    font-size: 7.3px;
+    font-size: 9px;
   }
 
   .m1-report-page--dense .m1-bt-tags {
@@ -1405,7 +1405,7 @@ body {
 
   .m1-report-page--dense .m1-bt-tag {
     padding: 1px 3px;
-    font-size: 7.3px;
+    font-size: 9px;
   }
 
   .m1-report-page--dense .m1-bt-notes {
@@ -1414,7 +1414,7 @@ body {
 
   .m1-report-page--dense .m1-bt-note {
     gap: 3px;
-    font-size: 7.6px;
+    font-size: 9px;
     line-height: 1.12;
   }
 

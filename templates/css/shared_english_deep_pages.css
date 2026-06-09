@@ -342,7 +342,7 @@
 
   .m10-score-dim,
   .m11-overview-row > div {
-    font-size: 8.8px;
+    font-size: 9px;
   }
 
   .m10-score-dim strong,
@@ -376,12 +376,12 @@
   .m11-qa-card__title::before {
     width: 12px;
     height: 12px;
-    font-size: 7px;
+    font-size: 9px;
   }
 
   .m11-qa-card__wrong-mark,
   .m11-qa-card__correct-mark {
     padding: 0 4px;
-    font-size: 7.8px;
+    font-size: 9px;
   }
 }

@@ -804,7 +804,7 @@
   .mov-pie-legend-item,
   .mov-pie-legend__value {
     gap: 3px;
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .mov-difficulty__bar,

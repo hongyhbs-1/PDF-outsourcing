@@ -126,7 +126,7 @@ def _base_style(theme: PdfChromeTheme) -> str:
   align-items: center;
   box-sizing: border-box;
   color: {theme.text_muted};
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1;
 }}
 .pw-hf-ellipsis {{

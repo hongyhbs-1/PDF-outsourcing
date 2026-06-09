@@ -536,7 +536,7 @@
 .m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-label--start,
 .m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-label--end {
   top: 12px;
-  font-size: 8px;
+  font-size: 9px;
   opacity: 0.72;
 }
 
@@ -1096,7 +1096,7 @@
 
   .m6-training-focus__note {
     margin-top: 2px;
-    font-size: 7.5px;
+    font-size: 9px;
     line-height: 1.18;
   }
 
@@ -1121,7 +1121,7 @@
   }
 
   .m6-city-advice-item {
-    font-size: 8.5px;
+    font-size: 9px;
     line-height: 1.18;
   }
 
@@ -1211,7 +1211,7 @@
   .m6-suggestion-section__no {
     min-width: 24px;
     padding: 2px 6px;
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .m6-suggestion-section__title {
@@ -1224,7 +1224,7 @@
 
   .m6-suggestion-section__item {
     margin-bottom: 2px;
-    font-size: 8px;
+    font-size: 9px;
     line-height: 1.18;
   }
 
@@ -1239,7 +1239,7 @@
     gap: 4px;
     padding: 2px 4px;
     margin-bottom: 2px;
-    font-size: 8px;
+    font-size: 9px;
     line-height: 1.12;
     border-radius: 5px;
   }

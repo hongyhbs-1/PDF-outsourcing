@@ -1365,13 +1365,13 @@
   .m3-kp-diagnosis-row__type {
     padding: 1px 4px;
     border-radius: 4px;
-    font-size: 8.5px;
+    font-size: 9px;
   }
 
   .m3-kp-diagnosis-row__path,
   .m3-kp-diagnosis-row__metric span,
   .m3-kp-diagnosis-row__count span {
-    font-size: 8.5px;
+    font-size: 9px;
   }
 
   .m3-kp-diagnosis-row__metric strong,
@@ -1553,7 +1553,7 @@
   }
 
   body.report-theme--english #toc-m3 .m3-kp-table {
-    font-size: 8px;
+    font-size: 9px;
     line-height: 1.03;
   }
 
@@ -1568,7 +1568,7 @@
 
   .m3-kp-badge {
     padding: 1px 4px;
-    font-size: 8.5px;
+    font-size: 9px;
   }
 
   .m3-kp-path__nodes {

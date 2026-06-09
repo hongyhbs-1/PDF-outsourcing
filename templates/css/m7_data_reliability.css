@@ -1413,7 +1413,7 @@
   .m7-kp-level-label,
   .m7-kp-level-unit,
   .m7-coverage-note {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .m7-overview-card__kp-levels {
@@ -1429,7 +1429,7 @@
   .m7-kp-level-badge {
     width: 20px;
     height: 14px;
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .m7-kp-level-num {
@@ -1507,7 +1507,7 @@
   .m7-note {
     margin-top: 5px;
     padding: 5px 7px;
-    font-size: 8px;
+    font-size: 9px;
     line-height: 1.25;
   }
 
@@ -1534,7 +1534,7 @@
 
   .m7-metric-item__sub {
     margin-top: 2px;
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .m7-list-item {
@@ -1871,7 +1871,7 @@
   }
 
   .m7-data-reliability--dense .m7-core-conclusion__label {
-    font-size: 8.6px !important;
+    font-size: 9px !important;
     margin-bottom: 1px;
     line-height: 1.12 !important;
   }
@@ -1901,25 +1901,25 @@
   .m7-data-reliability--dense .m7-kp-level-label,
   .m7-data-reliability--dense .m7-kp-level-unit,
   .m7-data-reliability--dense .m7-coverage-note {
-    font-size: 7.5px;
+    font-size: 9px;
     line-height: 1.08;
   }
 
   .m7-data-reliability--dense .m7-coverage-table {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .m7-data-reliability--dense .m7-coverage-table th,
   .m7-data-reliability--dense .m7-coverage-table td {
     padding: 1px 3px;
-    font-size: 8px;
+    font-size: 9px;
     line-height: 1.05;
   }
 
   .m7-data-reliability--dense .m7-note {
     margin-top: 2px;
     padding: 2px 4px;
-    font-size: 7.2px;
+    font-size: 9px;
     line-height: 1.08;
   }
 
@@ -1945,7 +1945,7 @@
 
   .m7-data-reliability--dense .m7-block-desc {
     margin-bottom: 2px;
-    font-size: 7.5px;
+    font-size: 9px;
     line-height: 1.08;
   }
 
@@ -1964,7 +1964,7 @@
   .m7-data-reliability--dense .m7-metric-item__value,
   .m7-data-reliability--dense .m7-metric-item__sub,
   .m7-data-reliability--dense .m7-list-item__text {
-    font-size: 7.4px;
+    font-size: 9px;
     line-height: 1.08;
   }
 
@@ -1985,7 +1985,7 @@
   .m7-data-reliability--dense .m7-badge {
     min-height: 12px;
     padding: 1px 2px;
-    font-size: 7.2px;
+    font-size: 9px;
     line-height: 1.05;
   }
 }
