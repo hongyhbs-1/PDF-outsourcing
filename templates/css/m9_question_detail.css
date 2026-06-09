@@ -485,6 +485,48 @@
   word-break: break-word;
 }
 
+/* Split mode column widths: fixed-layout tables need explicit widths. */
+.m9-page--split .m9-col-no {
+  width: 38px;
+}
+
+.m9-page--split .m9-col-diff {
+  width: 70px;
+}
+
+.m9-page--split .m9-col-kp {
+  width: 168px;
+}
+
+.m9-page--split .m9-col-tags {
+  width: 116px;
+}
+
+.m9-page--split .m9-col-analysis,
+.m9-page--split .m9-col-kbp {
+  width: auto;
+}
+
+/* Correct tables have fewer columns, so give KP a little more room. */
+.m9-page--split .m9-table--correct .m9-col-kp {
+  width: 176px;
+}
+
+/* Wrong-lite has only no/difficulty/KP; let KP consume remaining width. */
+.m9-page--split .m9-table--wrong-lite .m9-col-kp {
+  width: auto;
+}
+
+.m9-page--split .m9-table th,
+.m9-page--split .m9-table td {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.m9-page--split td.m9-stars {
+  text-align: center;
+}
+
 .m9-page--split .m9-table thead {
   display: table-header-group;
 }
@@ -539,5 +581,10 @@
 
   .m9-page--split .m9-paper-section {
     margin-bottom: 8px;
+  }
+
+  .m9-page--split .m9-table th,
+  .m9-page--split .m9-table td {
+    padding: 3px 6px;
   }
 }
