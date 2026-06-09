@@ -83,3 +83,91 @@ body.word-reference-typography .m9-overview__stat-num {
   font-size: 22px !important;
   font-weight: 700 !important;
 }
+
+/* ==========================================================================
+   Cover page: Word-reference typography calibration
+   参考 PDF: samples/word/math_parent_1.pdf (宋体+DejaVu Sans, Word风格)
+   仅在第一页 (cover) 应用，不影响其他页面。
+   ========================================================================== */
+
+body.word-reference-typography .m0-cover-page {
+  --fs-student-name: 7.2mm;
+  --fs-title: 4.6mm;
+  --fs-cover-badge: 3.1mm;
+  --fs-meta: 3.4mm;
+  --fs-footnote: 2.6mm;
+
+  --cover-mt-brand: 12mm;
+  --cover-gap-brand-student: 18mm;
+  --cover-gap-student-meta: 11mm;
+  --cover-gap-meta-divider: 14mm;
+  --cover-gap-divider-title: 10mm;
+
+  font-family: var(--word-ref-font-family);
+}
+
+body.word-reference-typography .m0-cover-exclusive__name {
+  letter-spacing: 0.8mm;
+  font-weight: 700;
+}
+
+body.word-reference-typography .m0-cover-exclusive__time {
+  font-size: 3mm;
+  letter-spacing: 0.2mm;
+}
+
+body.word-reference-typography .m0-cover-exclusive__label {
+  font-size: 3.4mm;
+  letter-spacing: 0.8mm;
+}
+
+body.word-reference-typography .m0-cover-dossier {
+  width: 96mm;
+  padding: 5mm 7mm;
+  border-radius: 5mm;
+}
+
+body.word-reference-typography .m0-cover-meta {
+  width: 76mm;
+  gap: 3mm;
+}
+
+body.word-reference-typography .m0-cover-meta__item {
+  grid-template-columns: 23mm minmax(0, 1fr);
+  column-gap: 5mm;
+}
+
+body.word-reference-typography .m0-cover-meta__label {
+  font-size: 3mm;
+  letter-spacing: 0.5mm;
+}
+
+body.word-reference-typography .m0-cover-meta__value {
+  font-size: 3.5mm;
+  letter-spacing: 0;
+}
+
+body.word-reference-typography .m0-cover-title__main {
+  font-size: var(--fs-title);
+  letter-spacing: 0.15mm;
+}
+
+body.word-reference-typography .m0-cover-badge {
+  margin-top: 6mm;
+  font-size: var(--fs-cover-badge);
+  letter-spacing: 0.4mm;
+}
+
+body.word-reference-typography .m0-cover-compliance {
+  padding-bottom: 7mm;
+  gap: 1.1mm;
+}
+
+body.word-reference-typography .m0-cover-compliance__filing {
+  font-size: 2.7mm;
+}
+
+body.word-reference-typography .m0-cover-compliance__authority,
+body.word-reference-typography .m0-cover-compliance__disclaimer {
+  font-size: 2.35mm;
+}

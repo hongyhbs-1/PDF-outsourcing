@@ -183,6 +183,10 @@ v1.1 - 2026-01-15
     {% set _appendix_data = appendix | default({}, true) %}
     {% set _appendix_papers = _appendix_data.papers | default({}, true) %}
     {% set _paper_count = cover_meta_raw.paper_count | default(_appendix_papers.total_papers | default(none), true) %}
+    {% set _target_score_text = _summary.target_score_text | default(meta.target_score_text | default('', true), true) %}
+    {% if not _target_score_text and meta.target_score | default(none, true) is not none %}
+      {% set _target_score_text = meta.target_score ~ '分+' %}
+    {% endif %}
     <div class="m0-cover-exclusive">
       <div class="m0-cover-exclusive__name">{{ _student }}</div>
       {# 评估时间紧跟姓名，形成"姓名+时间"视觉焦点 #}
@@ -226,9 +230,9 @@ v1.1 - 2026-01-15
         </div>
 
         <div class="m0-cover-meta__item">
-          <div class="m0-cover-meta__label">趋势</div>
-          <div class="m0-cover-meta__value{% if not cover_trend_label %} m0-cover-meta__value--empty{% endif %}">
-            {{- cover_trend_label | default(empty_placeholder, true) -}}
+          <div class="m0-cover-meta__label">目标分数</div>
+          <div class="m0-cover-meta__value{% if not _target_score_text %} m0-cover-meta__value--empty{% endif %}">
+            {{- _target_score_text | default(empty_placeholder, true) -}}
           </div>
         </div>
 
