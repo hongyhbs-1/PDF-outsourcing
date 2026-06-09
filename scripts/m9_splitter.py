@@ -13,27 +13,41 @@ M9 逐题分析明细 — 数据驱动的分页拆分器。
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
+
 # ---------------------------------------------------------------------------
-# 预算常量
+# 阈值配置（T017: 参数化，默认值基于 T016 合并时的经验常量）
 # ---------------------------------------------------------------------------
 
-# 单页预算：超过此值触发拆分
-_M9_SINGLE_PAGE_BUDGET = 24.0
 
-# 拆分后各页预算
-_M9_FIRST_PAGE_BUDGET = 20.0
-_M9_CONTINUED_PAGE_BUDGET = 34.0
-_M9_NEW_PAPER_PAGE_BUDGET = 30.0
+@dataclass(frozen=True)
+class M9SplitConfig:
+    """M9 分页拆分器阈值配置。
 
-# 每 chunk 行数硬上限
-_M9_MAX_WRONG_ROWS = 22
-_M9_MAX_CORRECT_ROWS = 40
+    所有预算值单位为「行权重」（非物理行数），由 _row_weight 估算。
+    """
 
-# 行权重基础
-_WRONG_BASE = 1.20
-_CORRECT_BASE = 0.85
-_WRONG_CAP = 2.90
-_CORRECT_CAP = 1.60
+    # 单页预算：超过此值触发拆分
+    single_page_budget: float = 24.0
+    # 拆分后首页预算（含统计概览，略小）
+    first_page_budget: float = 20.0
+    # 续页预算
+    continued_page_budget: float = 34.0
+    # 新试卷起始页预算
+    new_paper_page_budget: float = 30.0
+    # 每 chunk 行数硬上限
+    max_wrong_rows: int = 22
+    max_correct_rows: int = 40
+    # 行权重基础与上限
+    wrong_base: float = 1.20
+    correct_base: float = 0.85
+    wrong_cap: float = 2.90
+    correct_cap: float = 1.60
+
+
+# 模块级默认实例（向后兼容：不传 config 时使用）
+_DEFAULT_CONFIG = M9SplitConfig()
 
 
 # ---------------------------------------------------------------------------
@@ -49,20 +63,24 @@ def has_m9_detail(payload: dict) -> bool:
     return len(papers) > 0 and total > 0
 
 
-def should_split_m9(payload: dict) -> bool:
+def should_split_m9(payload: dict, config: M9SplitConfig | None = None) -> bool:
     """判断 M9 是否需要拆分。"""
     if not has_m9_detail(payload):
         return False
-    total_weight = _estimate_total_weight(payload)
-    return total_weight > _M9_SINGLE_PAGE_BUDGET
+    cfg = config or _DEFAULT_CONFIG
+    total_weight = _estimate_total_weight(payload, cfg)
+    return total_weight > cfg.single_page_budget
 
 
-def build_m9_split_pages(payload: dict) -> list[dict]:
+def build_m9_split_pages(
+    payload: dict, config: M9SplitConfig | None = None
+) -> list[dict]:
     """将 M9 数据拆分为多个页面条目。
 
     返回空列表表示不需要拆分（由模板用单页逻辑渲染）。
     """
-    if not should_split_m9(payload):
+    cfg = config or _DEFAULT_CONFIG
+    if not should_split_m9(payload, cfg):
         return []
 
     qd = payload.get("question_detail") or {}
@@ -70,7 +88,7 @@ def build_m9_split_pages(payload: dict) -> list[dict]:
     total_count = qd.get("total_count", 0) or 0
     wrong_count = qd.get("wrong_count", 0) or 0
 
-    chunks = _build_chunks(papers)
+    chunks = _build_chunks(papers, cfg)
     if len(chunks) <= 1:
         return []
 
@@ -100,9 +118,9 @@ def build_m9_split_pages(payload: dict) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 
-def _row_weight(row: dict, section_type: str) -> float:
+def _row_weight(row: dict, section_type: str, cfg: M9SplitConfig) -> float:
     """估算单行的显示权重。"""
-    weight = _WRONG_BASE if section_type == "wrong" else _CORRECT_BASE
+    weight = cfg.wrong_base if section_type == "wrong" else cfg.correct_base
 
     # 知识点文本长度
     kp_text = " ".join([
@@ -134,20 +152,20 @@ def _row_weight(row: dict, section_type: str) -> float:
         if len(analysis) > 80:
             weight += 0.45
 
-    cap = _WRONG_CAP if section_type == "wrong" else _CORRECT_CAP
+    cap = cfg.wrong_cap if section_type == "wrong" else cfg.correct_cap
     return min(weight, cap)
 
 
-def _estimate_total_weight(payload: dict) -> float:
+def _estimate_total_weight(payload: dict, cfg: M9SplitConfig) -> float:
     """估算整个 M9 的总权重。"""
     qd = payload.get("question_detail") or {}
     papers = qd.get("papers") or []
     total = 0.0
     for paper in papers:
         for q in paper.get("wrong_questions") or []:
-            total += _row_weight(q, "wrong")
+            total += _row_weight(q, "wrong", cfg)
         for q in paper.get("correct_questions") or []:
-            total += _row_weight(q, "correct")
+            total += _row_weight(q, "correct", cfg)
     return total
 
 
@@ -156,11 +174,11 @@ def _estimate_total_weight(payload: dict) -> float:
 # ---------------------------------------------------------------------------
 
 
-def _build_chunks(papers: list[dict]) -> list[list[dict]]:
+def _build_chunks(papers: list[dict], cfg: M9SplitConfig) -> list[list[dict]]:
     """将试卷数据按预算拆分为 chunk 组。"""
     chunks: list[list[dict]] = []
     current_blocks: list[dict] = []
-    current_budget = _M9_FIRST_PAGE_BUDGET
+    current_budget = cfg.first_page_budget
 
     for pi, paper in enumerate(papers):
         paper_name = paper.get("paper_name", f"试卷{pi + 1}")
@@ -171,8 +189,8 @@ def _build_chunks(papers: list[dict]) -> list[list[dict]]:
         wrong = paper.get("wrong_questions") or []
         if wrong:
             wrong_meta = _detect_meta(wrong)
-            for start in range(0, len(wrong), _M9_MAX_WRONG_ROWS):
-                batch = wrong[start:start + _M9_MAX_WRONG_ROWS]
+            for start in range(0, len(wrong), cfg.max_wrong_rows):
+                batch = wrong[start:start + cfg.max_wrong_rows]
                 block = {
                     "paper_index": pi,
                     "paper_name": paper_name,
@@ -183,19 +201,19 @@ def _build_chunks(papers: list[dict]) -> list[list[dict]]:
                     "has_weakness": wrong_meta["has_weakness"],
                     "has_analysis": wrong_meta["has_analysis"],
                 }
-                block_weight = sum(_row_weight(q, "wrong") for q in batch)
+                block_weight = sum(_row_weight(q, "wrong", cfg) for q in batch)
 
                 # 新试卷：如果当前页已有内容，从新页开始
                 if not started_new_paper and current_blocks and pi > 0:
                     chunks.append(current_blocks)
                     current_blocks = []
-                    current_budget = _M9_NEW_PAPER_PAGE_BUDGET
+                    current_budget = cfg.new_paper_page_budget
                     started_new_paper = True
 
                 if block_weight > current_budget and current_blocks:
                     chunks.append(current_blocks)
                     current_blocks = []
-                    current_budget = _M9_CONTINUED_PAGE_BUDGET
+                    current_budget = cfg.continued_page_budget
 
                 current_blocks.append(block)
                 current_budget -= block_weight
@@ -203,8 +221,8 @@ def _build_chunks(papers: list[dict]) -> list[list[dict]]:
         # 正确题
         correct = paper.get("correct_questions") or []
         if correct:
-            for start in range(0, len(correct), _M9_MAX_CORRECT_ROWS):
-                batch = correct[start:start + _M9_MAX_CORRECT_ROWS]
+            for start in range(0, len(correct), cfg.max_correct_rows):
+                batch = correct[start:start + cfg.max_correct_rows]
                 block = {
                     "paper_index": pi,
                     "paper_name": paper_name,
@@ -213,12 +231,12 @@ def _build_chunks(papers: list[dict]) -> list[list[dict]]:
                     "section_label": f"正确题目（{len(batch)} 题）",
                     "questions": batch,
                 }
-                block_weight = sum(_row_weight(q, "correct") for q in batch)
+                block_weight = sum(_row_weight(q, "correct", cfg) for q in batch)
 
                 if block_weight > current_budget and current_blocks:
                     chunks.append(current_blocks)
                     current_blocks = []
-                    current_budget = _M9_CONTINUED_PAGE_BUDGET
+                    current_budget = cfg.continued_page_budget
 
                 current_blocks.append(block)
                 current_budget -= block_weight
