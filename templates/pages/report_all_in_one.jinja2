@@ -162,7 +162,8 @@
       analysis_scope=(m9.analysis_scope | default({}, true)),
       difficulty=(m9.difficulty | default({}, true)),
       papers=(m9.papers | default({}, true)),
-      metric_definitions=(m9.metric_definitions | default([], true))
+      metric_definitions=(m9.metric_definitions | default([], true)),
+      data_supplement=(m9.data_supplement | default({}, true))
   %}
     {% include 'm8_appendix.jinja2' %}
   {% endwith %}

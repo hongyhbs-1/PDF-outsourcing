@@ -28,6 +28,13 @@
   .m8-appendix-table tr {
     break-inside: avoid;
   }
+
+  /* T019-A: 当 M8 包含数据补充面板时，解除 min-height/flex 约束，
+     允许内容自然分页（补充内容从 M7 迁移过来后 M8 可能超出单页）。 */
+  .m8-appendix-page:has(.m8-appendix-panel--supplement) .module-content-card {
+    min-height: auto !important;
+    display: block !important;
+  }
 }
 
 /* -----------------------------------------------------------------------------
@@ -657,6 +664,155 @@
   .m8-metric-item__desc {
     font-size: 9px;
     line-height: 1.3;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   10. 数据补充说明 Panel (T019-A: 从 M7 迁移过来的低样本/未覆盖明细)
+   --- 字号硬规则: 所有字号 ≥ 9px
+   ----------------------------------------------------------------------------- */
+.m8-appendix-panel--supplement {
+  /* 容器复用 .m8-appendix-panel 基础边框/背景，本类只补充内部布局 */
+}
+
+.m8-supplement-panel-body {
+  padding: var(--appendix-spacing-md) var(--appendix-spacing-lg);
+}
+
+.m8-supplement-desc {
+  margin: 0 0 var(--appendix-spacing-sm) 0;
+  font-size: 12px;
+  line-height: var(--appendix-line-height-normal);
+  color: var(--appendix-color-text-secondary);
+}
+
+.m8-supplement-block {
+  margin-top: var(--appendix-spacing-sm);
+  padding-top: var(--appendix-spacing-sm);
+  border-top: 1px dashed var(--appendix-color-border-table);
+}
+
+.m8-supplement-block:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.m8-supplement-block__title {
+  margin: 0 0 var(--appendix-spacing-xs) 0;
+  font-size: 13px;
+  font-weight: var(--appendix-font-weight-bold);
+  color: var(--appendix-color-text-primary);
+}
+
+.m8-supplement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.m8-supplement-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: var(--appendix-line-height-normal);
+  color: var(--appendix-color-text-primary);
+}
+
+.m8-supplement-item__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.m8-supplement-item__text strong {
+  font-weight: var(--appendix-font-weight-bold);
+}
+
+.m8-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+  display: inline-block;
+}
+
+.m8-dot--warning {
+  background: var(--appendix-color-label-orange);
+}
+
+.m8-supplement-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.m8-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  background: var(--appendix-color-surface-muted);
+  color: var(--appendix-color-text-primary);
+  font-size: 12px;
+  font-weight: var(--appendix-font-weight-medium);
+  line-height: 1.3;
+}
+
+.m8-badge--warning {
+  background: var(--appendix-color-label-orange-bg, rgba(224, 152, 56, 0.12));
+  color: var(--appendix-color-text-primary);
+}
+
+/* 打印模式下的紧凑样式 */
+@media print {
+  .m8-supplement-panel-body {
+    padding: 8px 10px 9px;
+  }
+
+  .m8-supplement-desc {
+    margin-bottom: 6px;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .m8-supplement-block {
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+
+  .m8-supplement-block__title {
+    margin-bottom: 4px;
+    font-size: 11px;
+  }
+
+  .m8-supplement-list {
+    gap: 4px;
+  }
+
+  .m8-supplement-item {
+    gap: 6px;
+    font-size: 9px;
+    line-height: 1.35;
+  }
+
+  .m8-dot {
+    width: 6px;
+    height: 6px;
+    margin-top: 4px;
+  }
+
+  .m8-supplement-badges {
+    gap: 5px;
+  }
+
+  .m8-badge {
+    min-height: 22px;
+    padding: 3px 8px;
+    font-size: 9px;
+    line-height: 1.25;
   }
 }
 

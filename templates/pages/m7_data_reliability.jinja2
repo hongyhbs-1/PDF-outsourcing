@@ -256,27 +256,16 @@
 {% set _subject_name_m7 = meta.subject_name | default('', true) %}
 {% set _subject_text_m7 = (_subject_code_m7 ~ ' ' ~ _subject_name_m7) | lower %}
 {% set _is_english_m7 = 'english' in _subject_text_m7 or '英语' in _subject_text_m7 %}
-{% if coverage_count >= 8 or low_sample_items | length >= 4 or uncovered_items | length >= 4 %}
-  {% set m7_density = 'dense' %}
-{% elif coverage_count <= 1 and low_sample_items | length == 0 and uncovered_items | length <= 1 %}
-  {% set m7_density = 'sparse' %}
-{% else %}
-  {% set m7_density = 'standard' %}
-{% endif %}
-{# 数学家长版 dense 数据页需控制单页信息密度，避免 PDF 底部只残留几行而生成近空白续页。 #}
-{% set m7_compact_page = (not _is_english_m7) and m7_density == 'dense' %}
-{% set coverage_display_limit = 14 if m7_compact_page else coverage_count %}
-{% set coverage_rows_visible = coverage_rows[:coverage_display_limit] %}
-{% set coverage_hidden_count = coverage_count - (coverage_rows_visible | length) %}
 {% set representative_l2_count = coverage_count %}
-{% set low_sample_display_limit = 6 if m7_compact_page else (low_sample_items | length) %}
-{% set low_sample_visible = low_sample_items[:low_sample_display_limit] %}
-{% set low_sample_hidden_count = (low_sample_items | length) - (low_sample_visible | length) %}
-{% set uncovered_display_limit = 5 if m7_compact_page else (uncovered_items | length) %}
-{% set uncovered_visible = uncovered_items[:uncovered_display_limit] %}
-{% set uncovered_hidden_count = (uncovered_items | length) - (uncovered_visible | length) %}
+{# T019-A: dense / compact 触发逻辑已移除 — 数据不足与未覆盖明细已迁移到 M8 附录，
+   M7 只保留汇总句。coverage_rows 完整渲染（不再 hidden）。 #}
+{% set data_supplement_summary = data_supplement_summary | default({
+  'low_sample_count': low_sample_items | length,
+  'uncovered_count': uncovered_items | length,
+  'has_supplement': (low_sample_items | length > 0) or (uncovered_items | length > 0)
+}, true) %}
 
-<div class="m7-data-reliability m7-data-reliability--{{ m7_density }}{% if m7_compact_page %} m7-data-reliability--compact{% endif %}">
+<div class="m7-data-reliability">
 
   {# ====================================================================
      Title: 页面主标题
@@ -433,7 +422,7 @@
         </thead>
         <tbody>
           {% for row in coverage_rows %}
-          <tr{% if m7_compact_page and loop.index > coverage_display_limit %} class="m7-compact-print-hidden"{% endif %}>
+          <tr>
             <td>{{ row.name_cn | default('--', true) }}</td>
             <td>{{ row.count_text | default(row.count ~ '题' if row.count else '--', true) }}</td>
             <td>
@@ -466,10 +455,6 @@
           {% endfor %}
         </tbody>
       </table>
-
-      {% if coverage_hidden_count > 0 %}
-      <div class="m7-table-compact-note m7-print-only">另有 {{ coverage_hidden_count }} 个低题量模块已纳入统计；打印版优先展示前 {{ coverage_rows_visible | length }} 个代表模块，完整明细保留在数据口径中。</div>
-      {% endif %}
 
       <div class="m7-note">
         <strong>置信度说明：</strong>
@@ -573,39 +558,16 @@
         {{ lb_icon('warning', 'frame-inline-icon frame-inline-icon--warning') }}
         <span>四、{{ low_sample.title | default('数据不足提示', true) }}</span>
       </h2>
-      
-      <p class="m7-block-desc">
-        以下知识点的题目数量较少，诊断结论置信度较低，建议补充相关练习后重新评估。
-      </p>
 
-      <div class="m7-list-card">
-        {% if low_sample_items | length > 0 %}
-          {% for item in low_sample_items %}
-          <div class="m7-list-item{% if m7_compact_page and loop.index > low_sample_display_limit %} m7-compact-print-hidden{% endif %}">
-            <span class="m7-dot m7-dot--warning"></span>
-            <span class="m7-list-item__text">
-              <strong>{{ item.name_cn | default('未知知识点', true) }}</strong>
-              {% if item.count is not none %}
-              （仅<span class="m7-list-item__count">{{ item.count }}题</span>，建议补充至{{ item.threshold | default(15, true) }}题以上）
-              {% endif %}
-            </span>
-          </div>
-          {% endfor %}
-          {% if low_sample_hidden_count > 0 %}
-          <div class="m7-list-item m7-list-item--summary m7-print-only">
-            <span class="m7-dot m7-dot--info"></span>
-            <span class="m7-list-item__text">另有 {{ low_sample_hidden_count }} 个样本不足项已纳入统计，建议按原始明细继续补题后复评。</span>
-          </div>
-          {% endif %}
-        {% else %}
-          <div class="m7-list-item">
-            <span class="m7-dot m7-dot--info"></span>
-            <span class="m7-list-item__text m7-text-muted">
-              所有知识点数据均已充足，无需额外补充。
-            </span>
-          </div>
-        {% endif %}
-      </div>
+      {% if data_supplement_summary and data_supplement_summary.low_sample_count > 0 %}
+      <p class="m7-block-desc">
+        本次诊断共发现 <strong>{{ data_supplement_summary.low_sample_count }}</strong> 个样本不足知识点，诊断结论置信度较低，建议补充相关练习后重新评估。<a class="m7-supplement-link">详见附录补充说明</a>
+      </p>
+      {% else %}
+      <p class="m7-block-desc">
+        所有知识点数据均已充足，无需额外补充。
+      </p>
+      {% endif %}
     </div>
 
     {# --- 区块3: 未覆盖的核心考点 (紫底) --- #}
@@ -615,54 +577,19 @@
         {{ lb_icon('target', 'frame-inline-icon') }}
         <span>五、{{ uncovered_core.title | default('未覆盖的核心考点', true) }}</span>
       </h2>
-      
+
+      {% if data_supplement_summary and data_supplement_summary.uncovered_count > 0 %}
       <p class="m7-block-desc">
-        以下核心考点在本次诊断中未涉及，暂无法形成评估结论。建议针对性补充相关练习。
+        本次诊断有 <strong>{{ data_supplement_summary.uncovered_count }}</strong> 个核心考点未涉及，暂无法形成评估结论，建议针对性补充相关练习。<a class="m7-supplement-link">详见附录补充说明</a>
       </p>
-
-      <div class="m7-badge-card">
-        {% if uncovered_items | length > 0 %}
-        <div class="m7-badge-list">
-          {% for item in uncovered_items %}
-          <span class="m7-badge{% if m7_compact_page and loop.index > uncovered_display_limit %} m7-compact-print-hidden{% endif %}">{{ item.display | default(item.name_cn, true) }}</span>
-          {% endfor %}
-          {% if uncovered_hidden_count > 0 %}
-          <span class="m7-badge m7-badge--summary m7-print-only">另有 {{ uncovered_hidden_count }} 个未列出，完整数据已纳入统计</span>
-          {% endif %}
-        </div>
-        {% else %}
-        <div class="m7-empty-state">
-          <div class="m7-empty-state__text m7-text-muted">
-            ✓ 所有核心考点均已覆盖
-          </div>
-        </div>
-        {% endif %}
-      </div>
+      {% else %}
+      <p class="m7-block-desc">
+        ✓ 所有核心考点均已覆盖
+      </p>
+      {% endif %}
     </div>
 
   </section>
-
-  {% if m7_density == 'sparse' %}
-  <section class="m7-report-box m7-report-box--usage">
-    <div class="m7-report-box__inner">
-      <h2 class="m7-section-title">{{ lb_icon('support', 'frame-section-icon') }} 六、如何使用当前诊断</h2>
-      <div class="m7-usage-grid">
-        <div class="m7-usage-item">
-          <div class="m7-usage-item__title">先看趋势</div>
-          <div class="m7-usage-item__text">当前样本较少时，优先把结论理解为趋势提示，而不是最终定论。</div>
-        </div>
-        <div class="m7-usage-item">
-          <div class="m7-usage-item__title">优先补样本</div>
-          <div class="m7-usage-item__text">建议先补齐低样本知识点与未覆盖考点，再回看领域和逐题分析。</div>
-        </div>
-        <div class="m7-usage-item">
-          <div class="m7-usage-item__title">结合正文阅读</div>
-          <div class="m7-usage-item__text">先看摘要与核心短板，再用本页判断哪些结论可信、哪些结论仍需继续观察。</div>
-        </div>
-      </div>
-    </div>
-  </section>
-  {% endif %}
 
 
 </div>

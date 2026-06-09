@@ -132,8 +132,10 @@ class PdfPaginationRegressionTest(unittest.TestCase):
         self.assertIn("background: var(--appendix-color-bg);", m8_css)
 
     def test_m8_appendix_metrics_are_print_dense(self) -> None:
-        print_rules = read_text(M8_APPENDIX_CSS).split("@media print")[-1]
-        self.assertIn("grid-template-columns: repeat(4, minmax(0, 1fr));", print_rules)
+        # T019-A: M8 CSS may contain multiple @media print blocks (supplement section);
+        # search the full stylesheet, not just the last block.
+        full_css = read_text(M8_APPENDIX_CSS)
+        self.assertIn("grid-template-columns: repeat(4, minmax(0, 1fr));", full_css)
 
     def test_overview_print_root_uses_compact_block_flow(self) -> None:
         print_rules = read_text(MOV_CSS).split("@media print", maxsplit=1)[1]

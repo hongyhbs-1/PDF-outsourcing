@@ -128,13 +128,20 @@ report_master.jinja2 — 报告主入口模板 (v2)
   </div>
   {# ---- M8: appendix ---- #}
   {% set appendix_data = appendix | default({}, true) %}
+  {% set _m8_data_reliability = data_reliability | default({}, true) %}
+  {% set _m8_section_4_coverage = _m8_data_reliability.section_4_coverage if _m8_data_reliability.section_4_coverage else {} %}
+  {% set _m8_data_insufficient = _m8_section_4_coverage.data_insufficient if _m8_section_4_coverage.data_insufficient else {} %}
   <div class="module-page" id="toc-m8">
     {% with
         meta=(meta | default({}, true)),
         analysis_scope=(appendix_data.analysis_scope | default({}, true)),
         difficulty=(appendix_data.difficulty | default({}, true)),
         papers=(appendix_data.papers | default({}, true)),
-        metric_definitions=(appendix_data.metric_definitions | default([], true))
+        metric_definitions=(appendix_data.metric_definitions | default([], true)),
+        data_supplement=({
+          'low_sample': (_m8_data_insufficient.low_sample | default({'items': []}, true)),
+          'uncovered_core': (_m8_data_insufficient.uncovered_core | default({'items': []}, true))
+        })
     %}
       {% include 'pages/m8_appendix.jinja2' %}
     {% endwith %}

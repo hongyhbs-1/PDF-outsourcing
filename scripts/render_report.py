@@ -263,40 +263,44 @@ def _build_module_7_data_reliability(report_data: Dict[str, Any], meta: Dict[str
 
 
 def _build_module_9_appendix(report_data: Dict[str, Any], meta: Dict[str, Any]) -> Dict[str, Any]:
-    """构建模块9：附录数据"""
+    """构建模块9：附录数据
+
+    T019-A: 同时从 data_reliability.section_4_coverage.data_insufficient 提取
+    低样本/未覆盖明细，作为 data_supplement 注入附录 payload。
+    """
     appendix = report_data.get("appendix", {})
 
     # 转换difficulty数据格式
     difficulty = appendix.get("difficulty", {})
     difficulty_items = difficulty.get("items", [])
-    
+
     # 定义难度级别映射（中文到英文）
     level_mapping = {
         "简单": "easy",
         "中等": "medium",
         "困难": "hard"
     }
-    
+
     # 定义默认的正确率和状态文本
     default_values = {
         "easy": {"accuracy": 89, "status_text": "掌握良好"},
         "medium": {"accuracy": 72, "status_text": "基本掌握"},
         "hard": {"accuracy": 58, "status_text": "需要加强"}
     }
-    
+
     # 转换difficulty items
     transformed_items = []
     for item in difficulty_items:
         level_cn = item.get("level", "")
         level_en = level_mapping.get(level_cn, "unknown")
         ratio_decimal = item.get("ratio", 0)
-        
+
         # 转换ratio从小数到整数百分比
         ratio_percent = int(ratio_decimal) if ratio_decimal else 0
-        
+
         # 获取默认值
         defaults = default_values.get(level_en, {"accuracy": None, "status_text": "--"})
-        
+
         transformed_item = {
             "level": level_en,
             "name_cn": level_cn,
@@ -306,11 +310,11 @@ def _build_module_9_appendix(report_data: Dict[str, Any], meta: Dict[str, Any]) 
             "status_text": defaults["status_text"]
         }
         transformed_items.append(transformed_item)
-    
+
     # 转换papers数据格式
     papers = appendix.get("papers", {})
     papers_items = papers.get("items", [])
-    
+
     # 转换papers items，添加缺失的index和source_file字段
     transformed_papers_items = []
     for idx, item in enumerate(papers_items, start=1):
@@ -321,7 +325,21 @@ def _build_module_9_appendix(report_data: Dict[str, Any], meta: Dict[str, Any]) 
             "source_file": item.get("date", "")  # 使用date字段作为source_file
         }
         transformed_papers_items.append(transformed_paper)
-    
+
+    # T019-A: 从 data_reliability 提取 data_supplement（低样本/未覆盖明细）
+    data_reliability = report_data.get("data_reliability", {})
+    section_4_coverage = data_reliability.get("section_4_coverage", {})
+    data_insufficient = section_4_coverage.get("data_insufficient", {})
+
+    data_supplement = {}
+    low_sample = data_insufficient.get("low_sample", {})
+    uncovered_core = data_insufficient.get("uncovered_core", {})
+    if low_sample or uncovered_core:
+        data_supplement = {
+            "low_sample": low_sample,
+            "uncovered_core": uncovered_core,
+        }
+
     return {
         "meta": meta,
         "analysis_scope": appendix.get("analysis_scope", {}),
@@ -334,6 +352,7 @@ def _build_module_9_appendix(report_data: Dict[str, Any], meta: Dict[str, Any]) 
             "total_papers": papers.get("total_papers", 0)
         },
         "metric_definitions": appendix.get("metric_definitions", []),
+        "data_supplement": data_supplement,
     }
 
 
