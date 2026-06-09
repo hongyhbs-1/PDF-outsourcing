@@ -28,7 +28,7 @@ class RenderAllSamplesCliTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 render_all_samples.discover_sample_files(Path(temp_dir))
 
-    def test_select_samples_without_limit_returns_all(self) -> None:
+    def test_select_samples_without_index_returns_all(self) -> None:
         sample_files = ["a.json", "b.json"]
 
         self.assertEqual(
@@ -41,15 +41,15 @@ class RenderAllSamplesCliTest(unittest.TestCase):
 
         self.assertEqual(
             render_all_samples.select_samples(sample_files, 1),
-            sample_files[:1],
+            ["a.json"],
         )
 
-    def test_select_samples_with_two_returns_first_two_samples(self) -> None:
+    def test_select_samples_with_two_returns_second_sample(self) -> None:
         sample_files = ["a.json", "b.json", "c.json"]
 
         self.assertEqual(
             render_all_samples.select_samples(sample_files, 2),
-            sample_files[:2],
+            ["b.json"],
         )
 
     def test_select_samples_rejects_zero(self) -> None:

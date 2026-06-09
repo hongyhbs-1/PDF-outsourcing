@@ -11,6 +11,7 @@ Usage:
 
 from __future__ import annotations
 
+import re as _re
 from typing import Protocol, runtime_checkable
 
 
@@ -34,9 +35,6 @@ def adapt_payload(payload: dict) -> dict:
         if adapter.detect(payload):
             return _normalize_student_display_name(adapter.adapt(payload))
     return _normalize_student_display_name(_ensure_page_visibility(payload))
-
-
-import re as _re
 
 
 _MACHINE_STUDENT_RE = _re.compile(
@@ -84,21 +82,23 @@ def _normalize_student_display_name(payload: dict) -> dict:
 
 
 def _replace_all_strings(obj, old: str, new: str):
-    """Recursively replace old with new in all string values (in-place)."""
+    """Recursively replace exact-match strings in-place (no substring mutation)."""
     if old == new:
         return
     if isinstance(obj, dict):
         for key in list(obj.keys()):
             val = obj[key]
             if isinstance(val, str):
-                obj[key] = val.replace(old, new)
+                if val == old:
+                    obj[key] = new
             else:
                 _replace_all_strings(val, old, new)
     elif isinstance(obj, list):
         for i in range(len(obj)):
             val = obj[i]
             if isinstance(val, str):
-                obj[i] = val.replace(old, new)
+                if val == old:
+                    obj[i] = new
             else:
                 _replace_all_strings(val, old, new)
 
