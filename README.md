@@ -29,8 +29,8 @@ python3 -m pytest scripts/ -p no:xdist -v
 ```
 ├── scripts/           # Python 渲染引擎和测试
 ├── templates/
-│   ├── pages/         # Jinja2 页面模板（22 个）
-│   ├── css/           # 样式文件（26 个）
+│   ├── pages/         # Jinja2 页面模板（20 个）
+│   ├── css/           # 样式文件（24 个）
 │   ├── macros/        # Jinja2 宏
 │   ├── fonts/         # 字体文件
 │   └── assets/        # 模板用图片（logo 等）
@@ -75,7 +75,6 @@ python3 -m pytest scripts/ -p no:xdist -v
 | M11 阅读 | `m11_reading_deep.jinja2` | 阅读精讲（英语） |
 | M00 蓝图 | `m00_student_diagnostic_blueprint.jinja2` | 学习诊断蓝图（场景模式） |
 | M01 辅导 | `m01_tutoring_execution_blueprint.jinja2` | 辅导执行蓝图（场景模式） |
-| 漫画场景 | `m2_comic_scene1.jinja2` / `m3_comic_scene2.jinja2` | 招生漫画页 |
 | 画像 | `student_profile.jinja2` | 学生画像 |
 | 提升预期 | `improvement_preview.jinja2` | 提升路线图 |
 | 教师补充 | `m_teacher_supplement.jinja2` | 教师版增量 |
@@ -124,7 +123,6 @@ python3 scripts/render_all_samples.py --学科 数学 --模式 场景 [N]
 | `docs/engineering-standards.md` | 工程规范（命名、构建、Git commit） |
 | `docs/report-data-contract.md` | 数据对账契约（JSON ↔ 模板） |
 | `docs/visual-hierarchy-methodology.md` | 视觉层次方法论 |
-| `docs/漫画图片功能使用说明.md` | 漫画场景页使用说明 |
 
 ## 开发约定
 

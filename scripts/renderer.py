@@ -27,8 +27,6 @@ CSS_DIR = TEMPLATE_DIR / "css"
 PAGES_DIR = TEMPLATE_DIR / "pages"
 FONTS_DIR = TEMPLATE_DIR / "fonts"
 ASSETS_DIR = TEMPLATE_DIR / "assets"
-TIER_NEED_MAJOR_MAX = 60
-TIER_ROOM_GROW_MAX = 85
 
 # ---------------------------------------------------------------------------
 # 报告变体常量
@@ -160,23 +158,6 @@ def _image_to_data_uri(path: Path) -> str:
     mime = suffix_map.get(path.suffix.lower(), "image/png")
     b64 = base64.b64encode(path.read_bytes()).decode("ascii")
     return f"data:{mime};base64,{b64}"
-
-
-# ---------------------------------------------------------------------------
-# 等级选择
-# ---------------------------------------------------------------------------
-
-
-def _select_tier_name(payload: dict) -> str:
-    """根据当前准确率选择漫画学生等级名。"""
-    summary = payload.get("summary", {})
-    acc = summary.get("current_accuracy", 0)
-
-    if acc < TIER_NEED_MAJOR_MAX:
-        return "差生"
-    if acc < TIER_ROOM_GROW_MAX:
-        return "中等生"
-    return "优等生"
 
 
 # ---------------------------------------------------------------------------
@@ -312,9 +293,6 @@ def render_html(
     context.update(build_learning_blueprints(payload))
     context["font_path"] = str(font_path)
     context["logo_path"] = _image_to_data_uri(logo_path)
-    # Kept for compatibility with older templates/debug output. Opening comic
-    # pages are now replaced by the dynamic learning blueprint pages.
-    context["tier_name"] = _select_tier_name(payload)
     context["overview_difficulty_slices"] = _compute_difficulty_slices(payload)
 
     # M9 逐题分析拆分
