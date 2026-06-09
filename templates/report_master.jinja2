@@ -26,7 +26,10 @@ report_master.jinja2 — 报告主入口模板 (v2)
 {% set _report_subject = meta.subject | default('', true) | lower %}
 {% set _report_subject_name = meta.subject_name | default('', true) %}
 {% set _is_english_report = _report_subject == 'english' or '英语' in _report_subject_name %}
-<body{% if _is_english_report %} class="report-theme--english"{% endif %}>
+{% set _body_classes = [] %}
+{% if _is_english_report %}{% set _body_classes = _body_classes + ['report-theme--english'] %}{% endif %}
+{% if typography_theme == 'word_reference' %}{% set _body_classes = _body_classes + ['word-reference-typography'] %}{% endif %}
+<body{% if _body_classes %} class="{{ _body_classes | join(' ') }}"{% endif %}>
 {% set _report_variant = report_variant | default('parent', true) %}
 {% set _is_admissions_blueprint = _report_variant == 'admissions_blueprint' %}
 {% set _include_learning_blueprint = _is_admissions_blueprint or _report_variant == 'full' %}

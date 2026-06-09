@@ -287,7 +287,18 @@ def render_html(
 
     context = dict(payload)
     orientation_css = _LANDSCAPE_PRINT_CSS if landscape else ""
-    context["combined_css"] = load_css() + orientation_css + typeset_css
+
+    # Word-reference typography theme (parent reports).
+    # Toggled by meta.typography_theme == "word_reference".
+    typography_theme = payload.get("meta", {}).get("typography_theme")
+    context["typography_theme"] = typography_theme
+    theme_css = ""
+    if typography_theme == "word_reference":
+        theme_path = CSS_DIR / "word_reference_typography.css"
+        if theme_path.exists():
+            theme_css = "\n" + theme_path.read_text(encoding="utf-8")
+
+    context["combined_css"] = load_css() + orientation_css + typeset_css + theme_css
     context["render_payload"] = payload
     context["report_variant"] = report_variant
     context.update(build_learning_blueprints(payload))

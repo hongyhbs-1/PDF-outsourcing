@@ -1,0 +1,80 @@
+/* ==========================================================================
+   word_reference_typography.css — 参考 Word PDF 风格的字体主题覆盖层
+
+   参考：samples/word/math_parent_1.pdf
+   字体：DejaVu Sans (西文) + Song (中文)
+   视觉密度：正文 9-10.5px，标题 16-18px，表格 9-10px
+
+   使用方式：
+   - 在 report_master.jinja2 的 body 上添加 class="word-reference-typography"
+   - 由 renderer.py 在 combined_css 末尾追加
+   ========================================================================== */
+
+body.word-reference-typography,
+body.word-reference-typography .module-page {
+  font-family: "DejaVu Sans", "SimSun", "Songti SC", "Noto Serif CJK SC",
+               "Source Han Serif SC", serif;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* 表格统一用同字体 */
+body.word-reference-typography table,
+body.word-reference-typography th,
+body.word-reference-typography td {
+  font-family: inherit;
+}
+
+body.word-reference-typography th {
+  font-size: 9.8px;
+  font-weight: 700;
+}
+
+body.word-reference-typography td {
+  font-size: 9.2px;
+  line-height: 1.35;
+}
+
+/* 视觉层级 token 覆盖（配合 visual_hierarchy.css） */
+body.word-reference-typography {
+  --vh-h0-font-size: 17px;
+  --vh-h0-font-weight: 700;
+  --vh-h0-line-height: 1.35;
+  --vh-stat-font-size: 22px;
+  --vh-stat-font-weight: 700;
+  --vh-hero-font-size: 13px;
+  --vh-hero-font-weight: 700;
+  --vh-hero-line-height: 1.45;
+  --vh-h1-font-size: 12px;
+  --vh-h1-font-weight: 700;
+  --vh-h2-font-size: 11px;
+  --vh-h2-font-weight: 700;
+  --vh-h3-font-size: 9.5px;
+  --vh-h3-font-weight: 600;
+  --vh-body-font-size: 10px;
+  --vh-body-line-height: 1.5;
+}
+
+/* M9 逐题分析表格 */
+body.word-reference-typography .m9-table {
+  font-size: 9.2px;
+  line-height: 1.35;
+}
+
+body.word-reference-typography .m9-table thead th {
+  font-size: 9.8px;
+}
+
+body.word-reference-typography .m9-stars {
+  font-size: 9px;
+  letter-spacing: -0.4px;
+}
+
+/* 核心数字：保留层级但压缩尺寸 */
+body.word-reference-typography .mov-card__num,
+body.word-reference-typography .sp-metric-card__value,
+body.word-reference-typography .ip-focus-item__gain,
+body.word-reference-typography .m9-overview__stat-num {
+  font-size: 22px !important;
+  font-weight: 700 !important;
+}
