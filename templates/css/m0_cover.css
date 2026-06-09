@@ -64,13 +64,13 @@
   --space-2xl: 20mm;
 
   /* ---------- 2.7 封面垂直节奏 ---------- */
-  --cover-mt-brand: 12mm;
-  --cover-gap-brand-student: 14mm;  /* P1 图片1：去掉品牌后让姓名更靠上 */
-  --cover-gap-student-meta: 10.5mm;
-  --cover-gap-meta-divider: 15mm;
-  --cover-gap-divider-title: 8mm;  /* P1-1: 收紧标题前间距 */
+  --cover-mt-brand: 17mm;
+  --cover-gap-brand-student: 22mm;
+  --cover-gap-student-meta: 16mm;
+  --cover-gap-meta-divider: 24mm;
+  --cover-gap-divider-title: 14mm;
   --cover-gap-title-sub: 8mm;
-  --cover-gap-title-badge: 10mm;  /* P1-2: 标语间距收紧 */
+  --cover-gap-title-badge: 12mm;
 
   /* ---------- 2.8 圆角 ---------- */
   --radius-badge: 3mm;
@@ -126,6 +126,7 @@
 
 /* P1-2: 标语弱化 — 更淡的颜色+更低的透明度 */
 .m0-cover-badge {
+  margin-top: var(--cover-gap-title-badge);
   font-size: var(--fs-cover-badge);
   font-weight: var(--fw-regular);
   color: var(--pm-text-light);
@@ -217,7 +218,7 @@
 .m0-cover-dossier {
   margin-top: var(--cover-gap-student-meta);
   width: 104mm;
-  padding: 5.2mm 7mm;
+  padding: 8mm 7mm;
   border: 0.35mm solid rgba(31, 111, 120, 0.16);
   border-radius: 7mm;
   background: rgba(255, 255, 255, 0.68);
@@ -238,7 +239,7 @@
   width: 80mm;
   display: flex;
   flex-direction: column;
-  gap: 4.5mm;
+  gap: 5.8mm;
   line-height: var(--lh-normal);
   transform: none;
 }
@@ -330,7 +331,7 @@
 
 .m0-cover-compliance {
   margin-top: auto;
-  padding-bottom: 8mm;
+  padding-bottom: 9mm;
   display: flex;
   flex-direction: column;
   align-items: center;
