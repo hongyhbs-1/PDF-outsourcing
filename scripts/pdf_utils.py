@@ -196,8 +196,6 @@ _PREFLIGHT_TEMPLATE = """
 # 预构建实例, 供 pdf_service / _build_final_pdf_bytes 使用
 _PREFLIGHT_JS = _build_preflight_js()
 
-_COVER_FOOTER_OVERLAY_KEY = "_cover_footer_overlay"
-
 # ---------------------------------------------------------------------------
 # TOC 页码提取 (移植自 pdf_service.py)
 # ---------------------------------------------------------------------------
@@ -380,27 +378,15 @@ def _build_pdf_chrome_meta(payload: dict) -> dict:
 
 def _build_pdf_kwargs(payload: dict, *, landscape: bool = False) -> dict:
     """构建 Playwright page.pdf() 参数, 含页眉页脚。"""
-    chrome_meta = _build_pdf_chrome_meta(payload)
     kwargs = {
         "format": "A4",
         "print_background": True,
         "scale": 0.9,
-        **build_pdf_chrome_options(chrome_meta),
-        "_chrome_meta": chrome_meta,
-        _COVER_FOOTER_OVERLAY_KEY: chrome_meta.get("typography_theme") == "word_reference" and not landscape,
+        **build_pdf_chrome_options(_build_pdf_chrome_meta(payload)),
     }
     if landscape:
         kwargs["landscape"] = True
     return kwargs
-
-
-def _playwright_pdf_kwargs(pdf_kwargs: dict) -> dict:
-    """Remove internal renderer flags before calling Playwright page.pdf()."""
-    return {key: value for key, value in pdf_kwargs.items() if not key.startswith("_")}
-
-
-def _uses_cover_footer_overlay(pdf_kwargs: dict) -> bool:
-    return bool(pdf_kwargs.get(_COVER_FOOTER_OVERLAY_KEY))
 
 
 # ---------------------------------------------------------------------------
@@ -474,9 +460,8 @@ def _page_pdf_segmented(
     when page_ranges is used, so chunking avoids Windows full-document print
     failures without changing visible page numbering.
     """
-    clean_kwargs = _playwright_pdf_kwargs(pdf_kwargs)
     if not HAS_FITZ:
-        return page.pdf(**clean_kwargs)
+        return page.pdf(**pdf_kwargs)
 
     chunks: list[bytes] = []
     start_page = 1
@@ -487,7 +472,7 @@ def _page_pdf_segmented(
             end_page = min(end_page, total_pages)
         try:
             chunk = page.pdf(
-                **{**clean_kwargs, "page_ranges": f"{start_page}-{end_page}"}
+                **{**pdf_kwargs, "page_ranges": f"{start_page}-{end_page}"}
             )
         except Exception as exc:
             if chunks and _is_page_range_exceeds_page_count_error(exc):
@@ -505,36 +490,6 @@ def _page_pdf_segmented(
         start_page = end_page + 1
 
     return _merge_pdf_chunks(chunks)
-
-
-def _hex_to_rgb01(hex_color: str) -> tuple[float, float, float]:
-    value = hex_color.strip().lstrip("#")
-    return tuple(int(value[i:i + 2], 16) / 255 for i in (0, 2, 4))
-
-
-def _draw_cover_footer_overlay(pdf_bytes: bytes, meta: dict | None) -> bytes:
-    """Bridge the page-1 body/footer seam without redrawing footer text."""
-    if not HAS_FITZ:
-        return pdf_bytes
-
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    try:
-        if doc.page_count == 0:
-            return pdf_bytes
-        page = doc[0]
-        width = page.rect.width
-        # Keep Chromium-rendered text/font metrics intact. Only paint the narrow
-        # connector band between the AI review line and the Playwright footer line.
-        page.draw_rect(
-            fitz.Rect(0, 795.0, width, 804.8),
-            color=None,
-            fill=_hex_to_rgb01("#F8F5EF"),
-            overlay=True,
-        )
-        print("[封面页脚] 已连接 P1 备案区与页脚横线背景")
-        return doc.tobytes()
-    finally:
-        doc.close()
 
 
 # ---------------------------------------------------------------------------
@@ -616,8 +571,6 @@ def _build_final_pdf_bytes(page, pdf_kwargs: dict) -> bytes:
     pdf_bytes = _page_pdf_segmented(page, pdf_kwargs)
     toc_pages = _extract_toc_pages(pdf_bytes)
     if not toc_pages:
-        if _uses_cover_footer_overlay(pdf_kwargs):
-            return _draw_cover_footer_overlay(pdf_bytes, pdf_kwargs.get("_chrome_meta"))
         return pdf_bytes
 
     # 3. 注入目录页码 (使用绝对定位, 零高度影响)
@@ -631,6 +584,4 @@ def _build_final_pdf_bytes(page, pdf_kwargs: dict) -> bytes:
     # 4. Pass 2: 最终 PDF
     final_bytes = _page_pdf_segmented(page, pdf_kwargs)
     final_bytes = apply_progress_rail(final_bytes, toc_pages)
-    if _uses_cover_footer_overlay(pdf_kwargs):
-        final_bytes = _draw_cover_footer_overlay(final_bytes, pdf_kwargs.get("_chrome_meta"))
     return final_bytes

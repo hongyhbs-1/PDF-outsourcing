@@ -17,13 +17,7 @@
   margin-bottom: 10mm;
   margin-left: 0;
   margin-right: 0;
-  background: #ffffff;
-}
-
-/* scale=0.9 缩放后封面盒够不到页脚，会露出 .module-page 的全局米色纸底，
-   与封面白底/白页脚形成色缝。提高优先级把封面纸面刷白，盖过 base.css 的 --pm-bg-page。 */
-.module-page.module-page--cover {
-  background: #ffffff;
+  background: var(--pm-bg-page);
 }
 
 /* ==========================================================================
@@ -84,7 +78,7 @@
   --cover-gap-divider-title: 8.75mm;
   --cover-gap-title-sub: 8mm;
   --cover-gap-title-badge: 9mm;
-  --cover-print-fill-height: 297mm;
+  --cover-print-fill-height: 305.5mm;
 
   /* ---------- 2.8 圆角 ---------- */
   --radius-badge: 3mm;
@@ -346,7 +340,7 @@
 
 .m0-cover-compliance {
   margin-top: auto;
-  padding-bottom: 0;
+  padding-bottom: 8mm;
   transform: translateY(-0.7mm);
   display: flex;
   flex-direction: column;
@@ -404,7 +398,6 @@
 @media print {
   .module-page--cover {
     page: cover-page;
-    background: #ffffff;
   }
 
   .m0-cover-page {

@@ -102,12 +102,12 @@ body.report-theme--english .m0-module-page {
   margin-bottom: 10mm;
   margin-left: 0;
   margin-right: 0;
-  background: #ffffff;
+  background: var(--cc-page-bg);
 }
 
 body.report-theme--english .module-page--cover {
   page: report-cover;
-  background: #ffffff;
+  background: var(--cc-page-bg);
 }
 
 body.report-theme--english .module-page.module-page--cover::before {

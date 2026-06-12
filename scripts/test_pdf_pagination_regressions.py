@@ -97,7 +97,7 @@ class PdfPaginationRegressionTest(unittest.TestCase):
         cover_named_page = css[css.index("@page cover-page {"):css.index(".m0-cover-page {", css.index("@page cover-page {"))]
         self.assertIn("margin-top: 12mm;", cover_named_page)
         self.assertIn("margin-bottom: 10mm;", cover_named_page)
-        self.assertIn("background: #ffffff;", cover_named_page)
+        self.assertIn("background: var(--pm-bg-page);", cover_named_page)
         self.assertIn("--cover-mt-brand: 20mm;", css)
         self.assertIn("--cover-gap-brand-student: 21.8mm;", css)
         self.assertIn("--cover-gap-student-meta: 8.65mm;", css)
@@ -107,7 +107,7 @@ class PdfPaginationRegressionTest(unittest.TestCase):
         self.assertIn("--fs-student-name: 17.8mm;", css)
         self.assertIn("--fs-title: 6.22mm;", css)
         self.assertIn("--fs-cover-badge: 4.44mm;", css)
-        self.assertIn("--cover-print-fill-height: 297mm;", css)
+        self.assertIn("--cover-print-fill-height: 305.5mm;", css)
         cover_page = css[css.index(".m0-cover-page {"):css.index("/* Premium: 装饰圆元素", css.index(".m0-cover-page {"))]
         self.assertIn("min-height: var(--cover-print-fill-height);", cover_page)
         self.assertIn('font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;', cover_page)
@@ -121,14 +121,14 @@ class PdfPaginationRegressionTest(unittest.TestCase):
         self.assertIn("font-size: 4.78mm;", meta_block)
         self.assertIn("font-size: 6.89mm;", meta_block)
         compliance = css[css.index(".m0-cover-compliance {"):css.index(".m0-cover-compliance__disclaimer", css.index(".m0-cover-compliance {"))]
-        self.assertIn("padding-bottom: 0;", compliance)
+        self.assertIn("padding-bottom: 8mm;", compliance)
         self.assertIn("transform: translateY(-0.7mm);", compliance)
         self.assertIn("font-size: 3.22mm;", compliance)
         self.assertIn("font-size: 2.64mm;", compliance)
         print_cover_page = css[css.index("@media print {"):css.index("  .m0-cover-page", css.index("@media print {"))]
         self.assertIn(".module-page--cover", print_cover_page)
         self.assertIn("page: cover-page;", print_cover_page)
-        self.assertIn("background: #ffffff;", print_cover_page)
+        self.assertNotIn("background: #ffffff;", print_cover_page)
         self.assertNotIn("min-height: 330mm;", css)
 
     def test_cover_ai_review_disclaimer_matches_word_reference_parent_p1(self) -> None:
@@ -379,20 +379,21 @@ class PdfPaginationRegressionTest(unittest.TestCase):
         self.assertIn("without splitting to P5", css)
         self.assertNotIn("zoom: 0.82 !important;", css)
 
-    def test_word_reference_cover_footer_connector_band_is_applied_on_p1(self) -> None:
+    def test_word_reference_cover_page_keeps_beige_paper_band_on_p1(self) -> None:
         source = read_text(PDF_UTILS)
-        self.assertIn('_COVER_FOOTER_OVERLAY_KEY = "_cover_footer_overlay"', source)
-        self.assertIn('chrome_meta.get("typography_theme") == "word_reference" and not landscape', source)
-        self.assertIn('fitz.Rect(0, 795.0, width, 804.8)', source)
-        self.assertIn('已连接 P1 备案区与页脚横线背景', source)
+        self.assertNotIn("cover_footer_overlay", source)
+        self.assertNotIn("draw_cover_footer_overlay", source)
+        css = read_text(COVER_CSS)
+        cover_named_page = css[css.index("@page cover-page {"):css.index(".m0-cover-page {", css.index("@page cover-page {"))]
+        self.assertIn("background: var(--pm-bg-page);", cover_named_page)
 
-    def test_english_theme_keeps_cover_white_and_body_pages_blue(self) -> None:
+    def test_english_theme_keeps_cover_paper_beige_and_body_pages_blue(self) -> None:
         css = read_text(ENGLISH_THEME_CSS)
         body_page_setup = css[css.index("body.report-theme--english {"):css.index("body.report-theme--english .module-page,", css.index("body.report-theme--english {"))]
         self.assertIn("background: var(--cc-english-page-bg);", body_page_setup)
         self.assertIn("background: var(--cc-english-page-bg);", body_page_setup.split("@page english-report", maxsplit=1)[1])
         report_cover = css[css.index("@page report-cover {"):css.index("body.report-theme--english .module-page.module-page--cover::before", css.index("@page report-cover {"))]
-        self.assertIn("background: #ffffff;", report_cover)
+        self.assertIn("background: var(--cc-page-bg);", report_cover)
         self.assertIn("page: report-cover;", report_cover)
         cover_page = css[css.index("body.report-theme--english .m0-cover-page {"):css.index("body.report-theme--english .m0-cover-page::after", css.index("body.report-theme--english .m0-cover-page {"))]
         self.assertIn("linear-gradient(180deg, #f8f5ef 0%, #ffffff 40%);", cover_page)
