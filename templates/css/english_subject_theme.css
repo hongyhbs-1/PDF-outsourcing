@@ -102,12 +102,12 @@ body.report-theme--english .m0-module-page {
   margin-bottom: 10mm;
   margin-left: 0;
   margin-right: 0;
-  background: var(--cc-page-bg);
+  background: #ffffff;
 }
 
 body.report-theme--english .module-page--cover {
   page: report-cover;
-  background: var(--cc-page-bg);
+  background: #ffffff;
 }
 
 body.report-theme--english .module-page.module-page--cover::before {
@@ -167,7 +167,7 @@ body.report-theme--english .m0-cover-page {
   background:
     radial-gradient(circle at top right, rgba(226, 196, 143, 0.18), transparent 28%),
     radial-gradient(circle at bottom left, rgba(31, 111, 120, 0.08), transparent 24%),
-    linear-gradient(180deg, var(--cc-page-bg) 0%, var(--cc-card-bg) 40%);
+    linear-gradient(180deg, #f8f5ef 0%, #ffffff 40%);
 }
 
 body.report-theme--english .m0-cover-page::after {

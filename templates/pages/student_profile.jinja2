@@ -171,7 +171,7 @@
 {% endif %}
 
 <div class="sp-page sp-page--{{ sp_density }}">
-  <h1 class="sp-title">{{ lb_icon('profile', 'frame-title-icon') }}{{ profile_title }}</h1>
+  <h1 class="report-page-title sp-title">{{ lb_icon('profile', 'frame-title-icon') }}{{ profile_title }}</h1>
 
   <div class="module-content-card">
 
@@ -208,7 +208,7 @@
         {% if has_real_data %}
         {% if target_reached %}
         <div class="sp-progress-panel__title">当前 {{ acc | int }}%，已达成 {{ target_acc | int }}% 目标线，继续冲高</div>
-        <p class="sp-progress-panel__text">目标线仅作达标参考，后续重点看高分稳定性与薄弱领域。</p>
+        <p class="sp-progress-panel__text">先看位置，再看后面的分析重点。</p>
         {% else %}
         <div class="sp-progress-panel__title">当前 {{ acc | int }}%，目标 {{ target_acc | int }}%，先抓 {{ lead_focus }}</div>
         <p class="sp-progress-panel__text">先看位置，再看后面的分析重点。</p>

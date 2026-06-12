@@ -12,8 +12,7 @@
 
 body.word-reference-typography,
 body.word-reference-typography .module-page {
-  --word-ref-font-family: "DejaVu Sans", "SimSun", "Songti SC",
-                          "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --word-ref-font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-family-base: var(--word-ref-font-family);
   --font-family: var(--word-ref-font-family);
   --cc-font-family: var(--word-ref-font-family);
@@ -42,9 +41,18 @@ body.word-reference-typography td {
 
 /* 视觉层级 token 覆盖（配合 visual_hierarchy.css） */
 body.word-reference-typography {
-  --vh-h0-font-size: 17px;
-  --vh-h0-font-weight: 700;
-  --vh-h0-line-height: 1.35;
+  --wr-page-title-color: var(--pm-teal);
+  --wr-page-title-font-size: 24.5px;
+  --wr-page-title-font-weight: 700;
+  --wr-page-title-line-height: 1.15;
+  --wr-page-title-underline-height: 2px;
+  --wr-page-title-underline-gap: 5px;
+  /* 「页标题 → 本页核心结论卡」统一垂直间距 (渲染后 ≈17.5pt, 对齐 math_parent_1 均值) */
+  --wr-gap-title-conclusion: 17px;
+  --vh-h0-font-size: var(--wr-page-title-font-size);
+  --vh-h0-font-weight: var(--wr-page-title-font-weight);
+  --vh-h0-color: var(--wr-page-title-color);
+  --vh-h0-line-height: var(--wr-page-title-line-height);
   --vh-stat-font-size: 22px;
   --vh-stat-font-weight: 700;
   --vh-hero-font-size: 13px;
@@ -87,3 +95,1009 @@ body.word-reference-typography .m9-overview__stat-num {
 /* Cover 页不参与 word_reference 字号覆盖：
    参考 PDF (math_parent_1) 的 cover 字号 (16mm/5.6mm/4mm/6.2mm) 与 m0_cover.css 默认值一致。
    覆盖会导致 cover 显得"差太多"，与模板不一致。 */
+
+@media print {
+  /* Shared body-page title typography. P1 cover and P5 TOC are excluded: only
+     templates that opt in with .report-page-title receive this style. Page
+     selectors below may tune spacing/geometry, but not title font treatment. */
+  body.word-reference-typography .report-page-title.report-page-title {
+    color: var(--wr-page-title-color) !important;
+    font-size: var(--wr-page-title-font-size) !important;
+    font-weight: var(--wr-page-title-font-weight) !important;
+    line-height: var(--wr-page-title-line-height) !important;
+  }
+
+  body.word-reference-typography .report-page-title.report-page-title::after {
+    height: var(--wr-page-title-underline-height) !important;
+    margin-top: var(--wr-page-title-underline-gap) !important;
+  }
+
+  /* Parent P2 student-profile pages: match the Word-reference page-2 template
+     without changing shared visual hierarchy tokens used by later modules. */
+  body.word-reference-typography .sp-page {
+    padding: 0 17mm 0 20mm !important;
+  }
+
+  body.word-reference-typography .sp-page > .module-content-card {
+    min-height: 224mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    padding: 20px 21px 20px 23px !important;
+  }
+
+  body.word-reference-typography.report-theme--english .sp-page > .module-content-card {
+    min-height: 206mm !important;
+  }
+
+  body.word-reference-typography .sp-title {
+    margin: 8px 0 16px !important;
+  }
+
+  body.word-reference-typography .sp-page > .report-page-title.report-page-title {
+    /* .sp-page keeps its legacy 1.03 page zoom for P2 layout geometry; counter it
+       only on the shared title so P2 visually matches the reusable title scale. */
+    zoom: 0.9709 !important;
+  }
+
+  body.word-reference-typography .sp-group-head,
+  body.word-reference-typography .sp-group-head--overview {
+    margin-bottom: 10px !important;
+  }
+
+  body.word-reference-typography .sp-group-title {
+    color: var(--pm-text-primary) !important;
+    font-size: 14.4px !important;
+    line-height: 1.25 !important;
+    padding-left: 8px !important;
+    border-left-width: 3px !important;
+  }
+
+  body.word-reference-typography .sp-hero-unified {
+    padding: 16px 20px 17px !important;
+  }
+
+  body.word-reference-typography .sp-hero-unified__title {
+    font-size: 21.2px !important;
+    line-height: 1.25 !important;
+    margin: 0 0 6px !important;
+  }
+
+  body.word-reference-typography .sp-hero-unified__text {
+    font-size: 14.4px !important;
+    line-height: 1.45 !important;
+    margin: 0 0 12px !important;
+    white-space: nowrap !important;
+  }
+
+  body.word-reference-typography .sp-chip {
+    font-size: 12.2px !important;
+    line-height: 1.2 !important;
+    padding: 2px 8px !important;
+  }
+
+  body.word-reference-typography .sp-page .sp-hero-unified + .sp-section-divider {
+    margin: 32px 0 25px !important;
+  }
+
+  body.word-reference-typography .sp-progress-panel {
+    padding: 12px 14px 4px !important;
+    gap: 14px !important;
+    margin-bottom: 9px !important;
+  }
+
+  body.word-reference-typography .sp-progress-panel__eyebrow,
+  body.word-reference-typography .sp-section-title {
+    font-size: 11.8px !important;
+    line-height: 1.2 !important;
+    padding: 3px 8px !important;
+    border-left-width: 3px !important;
+    margin-bottom: 7px !important;
+  }
+
+  body.word-reference-typography .sp-progress-panel__title {
+    font-size: 16.6px !important;
+    line-height: 1.28 !important;
+    margin-bottom: 6px !important;
+  }
+
+  body.word-reference-typography .sp-progress-panel__text {
+    font-size: 12.2px !important;
+    line-height: 1.32 !important;
+  }
+
+  body.word-reference-typography .sp-progress-labels,
+  body.word-reference-typography .sp-progress-label__name,
+  body.word-reference-typography .sp-progress-label__value,
+  body.word-reference-typography .sp-progress--dual-axis .sp-progress-label--start,
+  body.word-reference-typography .sp-progress--dual-axis .sp-progress-label--end {
+    font-size: 10px !important;
+  }
+
+  body.word-reference-typography .sp-metric-grid {
+    gap: 8px !important;
+    margin-bottom: 5px !important;
+  }
+
+  body.word-reference-typography .sp-metric-card {
+    padding: 8px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .sp-metric-grid {
+    margin-bottom: 5px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .sp-metric-card {
+    min-height: 136px !important;
+  }
+
+  body.word-reference-typography .sp-metric-card__tag {
+    font-size: 9.5px !important;
+    margin-bottom: 6px !important;
+  }
+
+  body.word-reference-typography .sp-metric-card__value {
+    font-size: 20px !important;
+    line-height: 1.1 !important;
+  }
+
+  body.word-reference-typography .sp-metric-card__value--current {
+    color: var(--pm-teal) !important;
+  }
+
+  body.word-reference-typography .sp-metric-card__value--pos {
+    color: var(--pm-status-success, var(--cc-success-green)) !important;
+  }
+
+  body.word-reference-typography .sp-metric-card__value--neg {
+    color: var(--pm-status-danger, var(--cc-danger-red)) !important;
+  }
+
+  body.word-reference-typography .sp-metric-card__label,
+  body.word-reference-typography .sp-metric-card__hint {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+
+  body.word-reference-typography .sp-metric-card__insight {
+    font-size: 9.5px !important;
+    line-height: 1.32 !important;
+  }
+
+  body.word-reference-typography .sp-analysis-card {
+    padding: 12px 14px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .sp-analysis-card--weakness {
+    min-height: 314px !important;
+  }
+
+  body.word-reference-typography.report-theme--english .sp-analysis-card--weakness {
+    min-height: 248px !important;
+  }
+
+  body.word-reference-typography .sp-weak-item {
+    padding: 8px 10px !important;
+  }
+
+  body.word-reference-typography .sp-weak-item__name,
+  body.word-reference-typography .sp-empty-card__title {
+    font-size: 13.4px !important;
+    line-height: 1.25 !important;
+  }
+
+  body.word-reference-typography .sp-weak-item__detail,
+  body.word-reference-typography .sp-empty-card__text,
+  body.word-reference-typography .sp-empty-card__action {
+    font-size: 12.2px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Parent P3 improvement-preview pages: use the same title scale and card
+     geometry as the Word-reference P3 while preserving source-driven content. */
+  body.word-reference-typography .ip-page {
+    padding: 0 17mm 0 20mm !important;
+  }
+
+  body.word-reference-typography .ip-page > .module-content-card {
+    min-height: 216mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    padding: 20px 21px 20px 23px !important;
+  }
+
+  body.word-reference-typography.report-theme--english .ip-page > .module-content-card {
+    min-height: 216mm !important;
+  }
+
+  body.word-reference-typography .ip-title {
+    margin: 10px 0 16px 3px !important;
+  }
+
+  body.word-reference-typography .ip-overview-head {
+    margin-bottom: 3px !important;
+  }
+
+  body.word-reference-typography .ip-section-heading,
+  body.word-reference-typography .ip-parent-guide__title {
+    color: var(--pm-text-primary) !important;
+    font-size: 14.4px !important;
+    line-height: 1.25 !important;
+    padding-left: 8px !important;
+    border-left-width: 3px !important;
+    margin-bottom: 10px !important;
+  }
+
+  body.word-reference-typography .ip-intervention-bar {
+    gap: 8px !important;
+    padding: 6px 10px !important;
+    margin-bottom: 12px !important;
+    font-size: 13.6px !important;
+    line-height: 1.42 !important;
+  }
+
+  body.word-reference-typography .ip-intervention-bar__label,
+  body.word-reference-typography .ip-phase-card__header {
+    font-size: 11.7px !important;
+    line-height: 1.2 !important;
+    padding: 3px 8px !important;
+    border-left-width: 3px !important;
+    border-radius: 6px !important;
+  }
+
+  body.word-reference-typography .ip-roadmap {
+    margin-bottom: 14px !important;
+    padding: 0 4px !important;
+  }
+
+  body.word-reference-typography .ip-stage {
+    padding: 0 8px !important;
+  }
+
+  body.word-reference-typography .ip-stage__marker {
+    width: 56px !important;
+    height: 56px !important;
+    font-size: 15px !important;
+    margin-bottom: 10px !important;
+  }
+
+  body.word-reference-typography .ip-stage:not(:last-child)::after {
+    top: 28px !important;
+    left: calc(50% + 32px) !important;
+    width: calc(100% - 64px) !important;
+  }
+
+  body.word-reference-typography .ip-stage__label {
+    font-size: 14.4px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 3px !important;
+  }
+
+  body.word-reference-typography .ip-stage:not(:first-child) .ip-stage__desc {
+    top: 38px !important;
+    font-size: 13.3px !important;
+  }
+
+  body.word-reference-typography .ip-milestones,
+  body.word-reference-typography .ip-focus-section {
+    margin-bottom: 18px !important;
+  }
+
+  body.word-reference-typography .ip-milestone {
+    gap: 14px !important;
+    padding: 14px 16px !important;
+    margin-bottom: 10px !important;
+    border-radius: 12px !important;
+  }
+
+  body.word-reference-typography .ip-milestone__phase {
+    width: 90px !important;
+    padding-right: 14px !important;
+  }
+
+  body.word-reference-typography .ip-milestone__phase-label {
+    font-size: 13.3px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 4px !important;
+  }
+
+  body.word-reference-typography .ip-milestone__phase-time {
+    font-size: 17.8px !important;
+    line-height: 1.2 !important;
+  }
+
+  body.word-reference-typography .ip-milestone__title {
+    font-size: 16.6px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 6px !important;
+  }
+
+  body.word-reference-typography .ip-milestone__text {
+    font-size: 14.4px !important;
+    line-height: 1.45 !important;
+  }
+
+  body.word-reference-typography .ip-focus-grid {
+    gap: 8px !important;
+  }
+
+  body.word-reference-typography .ip-focus-item {
+    padding: 13px 12px !important;
+    border-radius: 10px !important;
+  }
+
+  body.word-reference-typography .ip-focus-item__name {
+    font-size: 13.3px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 7px !important;
+  }
+
+  body.word-reference-typography .ip-focus-item__gain {
+    color: var(--pm-status-success, var(--cc-success-green)) !important;
+    font-size: 22px !important;
+    line-height: 1.1 !important;
+  }
+
+  body.word-reference-typography .ip-focus-item__label {
+    font-size: 12.2px !important;
+    line-height: 1.25 !important;
+  }
+
+  body.word-reference-typography .ip-phase-grid {
+    gap: 8px !important;
+    margin-bottom: 16px !important;
+  }
+
+  body.word-reference-typography .ip-phase-card {
+    padding: 12px 13px !important;
+    border-radius: 10px !important;
+  }
+
+  body.word-reference-typography .ip-phase-card__header {
+    margin-bottom: 8px !important;
+  }
+
+  body.word-reference-typography .ip-phase-card__body {
+    gap: 5px !important;
+  }
+
+  body.word-reference-typography .ip-phase-card__item {
+    font-size: 12.2px !important;
+    line-height: 1.45 !important;
+    padding-left: 13px !important;
+  }
+
+  body.word-reference-typography .ip-summary-bar {
+    margin-top: 0 !important;
+    padding: 13px 16px !important;
+    border-radius: 10px !important;
+    font-size: 13.9px !important;
+    line-height: 1.45 !important;
+  }
+
+  body.word-reference-typography .ip-parent-guide {
+    margin-top: 20px !important;
+    padding: 12px 20px !important;
+    border-radius: 10px !important;
+  }
+
+  body.word-reference-typography .ip-parent-guide__content p {
+    font-size: 12.2px !important;
+    line-height: 1.35 !important;
+    margin: 2px 0 !important;
+  }
+
+  body.word-reference-typography.report-theme--english .ip-roadmap {
+    margin-bottom: 8px !important;
+  }
+
+  body.word-reference-typography.report-theme--english .ip-milestones,
+  body.word-reference-typography.report-theme--english .ip-focus-section {
+    margin-bottom: 10px !important;
+  }
+
+  body.word-reference-typography.report-theme--english .ip-parent-guide {
+    margin-top: 8px !important;
+  }
+
+  /* Parent P5 table of contents: restore the base TOC scale for the
+     word-reference template after visual_hierarchy shrinks mtoc titles. */
+  body.word-reference-typography .mtoc-page {
+    zoom: 1.04 !important;
+    min-height: 264mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 2mm 16mm 0 20mm !important;
+    font-family: var(--word-ref-font-family) !important;
+  }
+
+  body.word-reference-typography .mtoc-title-section {
+    margin-bottom: 37px !important;
+    text-align: center !important;
+  }
+
+  body.word-reference-typography.report-theme--english .mtoc-title-section {
+    margin-bottom: 42px !important;
+  }
+
+  body.word-reference-typography .mtoc-title {
+    color: var(--pm-text-primary) !important;
+    font-size: 28.9px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.5em !important;
+    margin: 0 0 6px !important;
+    padding-bottom: 6px !important;
+    border-bottom: 3px solid var(--pm-teal) !important;
+  }
+
+  body.word-reference-typography .mtoc-list {
+    flex: 1 1 auto !important;
+    justify-content: space-evenly !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.word-reference-typography .mtoc-item {
+    grid-template-columns: 46px max-content minmax(24px, 1fr) 52px !important;
+    column-gap: 10px !important;
+    padding: 27px 0 !important;
+  }
+
+  body.word-reference-typography .mtoc-item__number,
+  body.word-reference-typography .mtoc-item__title {
+    font-size: 22.2px !important;
+    line-height: 1.2 !important;
+  }
+
+  body.word-reference-typography .mtoc-item__page {
+    min-width: 52px !important;
+    font-size: 20px !important;
+    line-height: 1.2 !important;
+  }
+
+  body.word-reference-typography .mtoc-reading-guide {
+    margin-top: 32px !important;
+    padding: 20px 23px !important;
+    border-radius: var(--pm-radius-badge, 12px) !important;
+  }
+
+  body.word-reference-typography .mtoc-reading-guide__title,
+  body.word-reference-typography .mtoc-reading-guide__item {
+    font-size: 14.4px !important;
+    font-weight: 400 !important;
+  }
+
+  body.word-reference-typography .mtoc-reading-guide__title {
+    margin-bottom: 10px !important;
+  }
+
+  body.word-reference-typography .mtoc-reading-guide__items {
+    gap: 8px !important;
+  }
+
+  body.word-reference-typography .mtoc-reading-guide__item {
+    gap: 13px !important;
+    line-height: 1.7 !important;
+  }
+
+  body.word-reference-typography .mtoc-reading-guide__num {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 11.1px !important;
+  }
+
+  /* Parent P6 diagnostic-summary page: M1 is not a dense table page in the
+     Word-reference parent template, so restore its title, summary, stat and
+     breakthrough scale after the global visual-hierarchy tokens shrink it. */
+  body.word-reference-typography .m1-report-page,
+  body.word-reference-typography .m1-report-page * {
+    font-family: var(--word-ref-font-family) !important;
+  }
+
+  body.word-reference-typography .m1-report-page {
+    padding: 0 16mm 0 20.5mm !important;
+    font-size: 14px !important;
+    line-height: 1.42 !important;
+  }
+
+  body.word-reference-typography .m1-section-title {
+    padding: 20px 0 0 !important;
+  }
+
+  body.word-reference-typography .m1-section-title__text {
+    column-gap: 5px !important;
+  }
+
+  body.word-reference-typography .m1-section-title__text::after {
+    height: var(--wr-page-title-underline-height) !important;
+    margin-top: var(--wr-page-title-underline-gap) !important;
+  }
+
+  /* 「本页核心结论」全模块统一 — 对齐 Word 参考 (math_parent_1):
+     label 12.2px/#12344d, text 14.4px/#1a2332 (PDF scale 0.9 后 ≈ 8.2pt / 9.8pt)。
+     高优先级 (body.+.module-page) 压过各模块 compact/dense/long 变体。 */
+  body.word-reference-typography .m1-core-conclusion,
+  body.word-reference-typography .module-page .m1-core-conclusion,
+  body.word-reference-typography .m2-cw-core-summary,
+  body.word-reference-typography .module-page .m2-cw-core-summary,
+  body.word-reference-typography .m3-kp-core-summary,
+  body.word-reference-typography .module-page .m3-kp-core-summary,
+  body.word-reference-typography .m4-core-conclusion,
+  body.word-reference-typography .module-page .m4-core-conclusion,
+  body.word-reference-typography .m5-core-conclusion,
+  body.word-reference-typography .module-page .m5-core-conclusion,
+  body.word-reference-typography .m6-core-conclusion,
+  body.word-reference-typography .module-page .m6-core-conclusion,
+  body.word-reference-typography .m7-core-conclusion,
+  body.word-reference-typography .module-page .m7-core-conclusion,
+  body.word-reference-typography .m8-core-conclusion,
+  body.word-reference-typography .module-page .m8-core-conclusion,
+  body.word-reference-typography .m9-core-conclusion,
+  body.word-reference-typography .module-page .m9-core-conclusion,
+  body.word-reference-typography .m10-core-conclusion,
+  body.word-reference-typography .module-page .m10-core-conclusion,
+  body.word-reference-typography .m11-core-conclusion,
+  body.word-reference-typography .module-page .m11-core-conclusion {
+    margin: var(--wr-gap-title-conclusion, 17px) 0 10px !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+  }
+
+  /* 标题容器底部间距归零 — 「标题→结论卡」间距统一由上方 margin-top token 提供 */
+  body.word-reference-typography .m6-module-title,
+  body.word-reference-typography .m8-appendix-title,
+  body.word-reference-typography .m9-title-section,
+  body.word-reference-typography .m10-title-section,
+  body.word-reference-typography .m11-title-section {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* m9: 结论卡 → 概览卡 间距对齐参考 (B≈40.5pt) */
+  body.word-reference-typography .m9-core-conclusion + .module-content-card {
+    margin-top: 30px !important;
+  }
+
+  body.word-reference-typography .m1-core-conclusion__label,
+  body.word-reference-typography .module-page .m1-core-conclusion__label,
+  body.word-reference-typography .m2-cw-core-summary__label,
+  body.word-reference-typography .module-page .m2-cw-core-summary__label,
+  body.word-reference-typography .m3-kp-core-summary__label,
+  body.word-reference-typography .module-page .m3-kp-core-summary__label,
+  body.word-reference-typography .m4-core-conclusion__label,
+  body.word-reference-typography .module-page .m4-core-conclusion__label,
+  body.word-reference-typography .m5-core-conclusion__label,
+  body.word-reference-typography .module-page .m5-core-conclusion__label,
+  body.word-reference-typography .m6-core-conclusion__label,
+  body.word-reference-typography .module-page .m6-core-conclusion__label,
+  body.word-reference-typography .m7-core-conclusion__label,
+  body.word-reference-typography .module-page .m7-core-conclusion__label,
+  body.word-reference-typography .m8-core-conclusion__label,
+  body.word-reference-typography .module-page .m8-core-conclusion__label,
+  body.word-reference-typography .m9-core-conclusion__label,
+  body.word-reference-typography .module-page .m9-core-conclusion__label,
+  body.word-reference-typography .m10-core-conclusion__label,
+  body.word-reference-typography .module-page .m10-core-conclusion__label,
+  body.word-reference-typography .m11-core-conclusion__label,
+  body.word-reference-typography .module-page .m11-core-conclusion__label {
+    font-size: 12.2px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 3px !important;
+    color: var(--pm-navy, #12344d) !important;
+  }
+
+  body.word-reference-typography .m1-core-conclusion__text,
+  body.word-reference-typography .module-page .m1-core-conclusion__text,
+  body.word-reference-typography .m2-cw-core-summary__text,
+  body.word-reference-typography .module-page .m2-cw-core-summary__text,
+  body.word-reference-typography .m3-kp-core-summary__text,
+  body.word-reference-typography .module-page .m3-kp-core-summary__text,
+  body.word-reference-typography .m4-core-conclusion__text,
+  body.word-reference-typography .module-page .m4-core-conclusion__text,
+  body.word-reference-typography .m5-core-conclusion__text,
+  body.word-reference-typography .module-page .m5-core-conclusion__text,
+  body.word-reference-typography .m6-core-conclusion__text,
+  body.word-reference-typography .module-page .m6-core-conclusion__text,
+  body.word-reference-typography .m7-core-conclusion__text,
+  body.word-reference-typography .module-page .m7-core-conclusion__text,
+  body.word-reference-typography .m8-core-conclusion__text,
+  body.word-reference-typography .module-page .m8-core-conclusion__text,
+  body.word-reference-typography .m9-core-conclusion__text,
+  body.word-reference-typography .module-page .m9-core-conclusion__text,
+  body.word-reference-typography .m10-core-conclusion__text,
+  body.word-reference-typography .module-page .m10-core-conclusion__text,
+  body.word-reference-typography .m11-core-conclusion__text,
+  body.word-reference-typography .module-page .m11-core-conclusion__text {
+    font-size: 14.4px !important;
+    line-height: 1.38 !important;
+    color: var(--pm-text-primary, #1a2332) !important;
+  }
+
+  body.word-reference-typography .m1-section-bar {
+    margin: 10px 0 7px !important;
+    padding: 7px 10px !important;
+    font-size: 13.9px !important;
+    line-height: 1.25 !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .m1-core-conclusion,
+  body.word-reference-typography:not(.report-theme--english) .module-page .m1-core-conclusion {
+    margin-bottom: 0 !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .m1-section-bar {
+    margin: 2px 0 3px !important;
+  }
+
+  body.word-reference-typography .m1-summary-card {
+    margin: 0 0 14px !important;
+    border-radius: 10px !important;
+  }
+
+  body.word-reference-typography .m1-summary-content {
+    gap: 14px !important;
+    padding: 12px !important;
+  }
+
+  body.word-reference-typography .m1-donut-container {
+    width: 148px !important;
+    height: 148px !important;
+  }
+
+  body.word-reference-typography .m1-donut-center {
+    font-size: 35.6px !important;
+    line-height: 1 !important;
+  }
+
+  body.word-reference-typography .m1-donut-caption,
+  body.word-reference-typography .m1-legend-text,
+  body.word-reference-typography .m1-goal-metric-label,
+  body.word-reference-typography .m1-goal-metric-desc,
+  body.word-reference-typography .m1-bt-note {
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+  }
+
+  body.word-reference-typography .m1-goal-metrics {
+    gap: 8px !important;
+  }
+
+  body.word-reference-typography .m1-goal-metric-card {
+    min-height: 60px !important;
+    padding: 8px 10px !important;
+    border-radius: 10px !important;
+  }
+
+  body.word-reference-typography .m1-goal-metric-card--current {
+    min-height: 64px !important;
+  }
+
+  body.word-reference-typography .m1-goal-metric-value {
+    font-size: 22.2px !important;
+    line-height: 1.08 !important;
+  }
+
+  body.word-reference-typography .m1-goal-metric-gap,
+  body.word-reference-typography .m1-kpi-arrow {
+    font-size: 10px !important;
+  }
+
+  body.word-reference-typography .m1-finding-item,
+  body.word-reference-typography .m1-summary-banner {
+    font-size: 15.5px !important;
+    line-height: 1.46 !important;
+  }
+
+  body.word-reference-typography .m1-findings-inline {
+    gap: 7px !important;
+    margin-top: 12px !important;
+    padding: 0 12px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .m1-findings-inline {
+    min-height: 160px !important;
+  }
+
+  body.word-reference-typography.report-theme--english .m1-findings-inline {
+    min-height: 120px !important;
+  }
+
+  body.word-reference-typography .m1-summary-banner {
+    margin-top: 12px !important;
+    padding: 9px 12px !important;
+  }
+
+  body.word-reference-typography .m1-chart-note {
+    font-size: 14.7px !important;
+    line-height: 1.4 !important;
+    margin: 17px 0 20px !important;
+  }
+
+  body.word-reference-typography.report-theme--english .m1-chart-note {
+    margin: 29px 0 28px !important;
+  }
+
+  body.word-reference-typography .m1-breakthrough-grid {
+    gap: 9px !important;
+    margin: 0 0 14px !important;
+  }
+
+  body.word-reference-typography .m1-breakthrough-card {
+    padding: 10px !important;
+    border-radius: 10px !important;
+  }
+
+  body.word-reference-typography .m1-bt-title {
+    font-size: 13.3px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 5px !important;
+  }
+
+  body.word-reference-typography .m1-breakthrough-progress {
+    padding: 14px 0 13px !important;
+    margin-bottom: 6px !important;
+  }
+
+  body.word-reference-typography .m1-bt-progress-label {
+    font-size: 9.5px !important;
+  }
+
+  body.word-reference-typography .m1-bt-note-square {
+    width: 6px !important;
+    height: 6px !important;
+    margin-top: 5px !important;
+  }
+
+  body.word-reference-typography .m1-suggestion-callout {
+    margin: 8px 0 0 !important;
+    padding: 9px 12px !important;
+    border-radius: 10px !important;
+    font-size: 14.7px !important;
+    line-height: 1.42 !important;
+  }
+
+  /* Parent P4 overview page: use explicit word-reference sizing instead of
+     page-level zoom so the title, overview card, paper list, difficulty chart,
+     and reading guide match the reference templates without splitting to P5. */
+  body.word-reference-typography .mov-page {
+    zoom: 1 !important;
+    font-family: var(--word-ref-font-family) !important;
+  }
+
+  body.word-reference-typography .mov-title-section,
+  body.word-reference-typography .mov-page--dense .mov-title-section {
+    margin-bottom: 14px !important;
+  }
+
+  body.word-reference-typography .mov-title,
+  body.word-reference-typography .mov-page--dense .mov-title {
+    padding-bottom: 5px !important;
+    margin: 8px 0 14px !important;
+  }
+
+  body.word-reference-typography .mov-page > .module-content-card {
+    min-height: 160mm !important;
+    display: block !important;
+    overflow: visible !important;
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    padding: 16px 20px !important;
+  }
+
+  body.word-reference-typography .mov-overview-head {
+    margin-bottom: 8px !important;
+  }
+
+  body.word-reference-typography .mov-hero,
+  body.word-reference-typography .mov-overview-grid,
+  body.word-reference-typography .mov-page--dense .mov-hero,
+  body.word-reference-typography .mov-page--dense .mov-overview-grid {
+    margin-bottom: 18px !important;
+  }
+
+  body.word-reference-typography .mov-hero-main,
+  body.word-reference-typography .mov-profile-card,
+  body.word-reference-typography .mov-difficulty-aside,
+  body.word-reference-typography .mov-page--dense .mov-hero-main,
+  body.word-reference-typography .mov-page--dense .mov-profile-card {
+    padding: 8px 10px !important;
+  }
+
+  body.word-reference-typography .mov-hero-kicker,
+  body.word-reference-typography .mov-page--dense .mov-hero-kicker {
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+  }
+
+  body.word-reference-typography .mov-hero-title,
+  body.word-reference-typography .mov-page--dense .mov-hero-title {
+    font-size: 16.5px !important;
+    line-height: 1.3 !important;
+    margin-bottom: 5px !important;
+  }
+
+  body.word-reference-typography .mov-hero-text {
+    font-size: 10.3px !important;
+    line-height: 1.4 !important;
+  }
+
+  body.word-reference-typography .mov-chip {
+    font-size: 9.3px !important;
+  }
+
+  body.word-reference-typography .mov-card__eyebrow,
+  body.word-reference-typography .mov-page--dense .mov-card__eyebrow,
+  body.word-reference-typography .mov-difficulty__title {
+    font-size: 10.8px !important;
+    line-height: 1.2 !important;
+  }
+
+  body.word-reference-typography .mov-card__num,
+  body.word-reference-typography .mov-page--dense .mov-card__num {
+    font-size: 23px !important;
+    line-height: 1.1 !important;
+  }
+
+  body.word-reference-typography .mov-card__label,
+  body.word-reference-typography .mov-card__hint,
+  body.word-reference-typography .mov-papers__table,
+  body.word-reference-typography .mov-page--dense .mov-papers__table,
+  body.word-reference-typography .mov-papers__summary,
+  body.word-reference-typography .mov-page--dense .mov-papers__summary,
+  body.word-reference-typography .mov-papers__notes,
+  body.word-reference-typography .mov-page--dense .mov-papers__notes,
+  body.word-reference-typography .mov-reading-guide__label,
+  body.word-reference-typography .mov-reading-guide__text {
+    font-size: 9.3px !important;
+  }
+
+  body.word-reference-typography .mov-pie-wrapper {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  body.word-reference-typography .mov-pie {
+    position: relative !important;
+    z-index: 2 !important;
+    width: 114px !important;
+    height: 114px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body.word-reference-typography .mov-pie__track,
+  body.word-reference-typography .mov-pie__slice,
+  body.word-reference-typography .mov-pie__center {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body.word-reference-typography .mov-pie-legend {
+    gap: 3px !important;
+  }
+
+  body.word-reference-typography .mov-pie-legend-item,
+  body.word-reference-typography .mov-pie-legend__value {
+    font-size: 8.3px !important;
+    line-height: 1.15 !important;
+  }
+
+  body.word-reference-typography .mov-papers,
+  body.word-reference-typography .mov-page--dense .mov-papers {
+    padding-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  body.word-reference-typography .mov-reading-guide {
+    margin-top: 10px !important;
+    padding: 10px 12px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-page {
+    padding: 0 16mm 0 20mm !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-title-section,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-title-section {
+    margin-bottom: 12px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-title,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-title {
+    margin: 10px 0 18px 6px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-hero,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-hero {
+    margin-bottom: 26px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-overview-grid,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-overview-grid {
+    margin-bottom: 26px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-hero-main,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-hero-main {
+    padding: 10px 12px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-card,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-card {
+    padding: 10px 10px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-hero-kicker,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-hero-kicker {
+    font-size: 14.8px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-hero-title,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-hero-title {
+    font-size: 18.3px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-hero-text {
+    font-size: 11.4px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-chip {
+    font-size: 10.3px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-card__eyebrow,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-card__eyebrow,
+  body.word-reference-typography:not(.report-theme--english) .mov-difficulty__title {
+    font-size: 12px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-card__num,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-card__num {
+    font-size: 25.2px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-card__label,
+  body.word-reference-typography:not(.report-theme--english) .mov-card__hint,
+  body.word-reference-typography:not(.report-theme--english) .mov-papers__table,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-papers__table,
+  body.word-reference-typography:not(.report-theme--english) .mov-papers__summary,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-papers__summary,
+  body.word-reference-typography:not(.report-theme--english) .mov-papers__notes,
+  body.word-reference-typography:not(.report-theme--english) .mov-page--dense .mov-papers__notes,
+  body.word-reference-typography:not(.report-theme--english) .mov-reading-guide__label,
+  body.word-reference-typography:not(.report-theme--english) .mov-reading-guide__text {
+    font-size: 10.3px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-reading-guide__title {
+    font-size: 12.6px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-conclusion {
+    margin-top: 14px !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-page > .module-content-card {
+    min-height: 188mm !important;
+  }
+
+  body.word-reference-typography:not(.report-theme--english) .mov-pie {
+    width: 128px !important;
+    height: 128px !important;
+  }
+
+  body.word-reference-typography.report-theme--english .mov-title-section,
+  body.word-reference-typography.report-theme--english .mov-page--dense .mov-title-section {
+    margin-bottom: -8px !important;
+  }
+
+  body.word-reference-typography.report-theme--english .mov-page > .module-content-card {
+    min-height: 153mm !important;
+  }
+
+  body.word-reference-typography.report-theme--english .mov-reading-guide {
+    margin-top: 10px !important;
+  }
+}

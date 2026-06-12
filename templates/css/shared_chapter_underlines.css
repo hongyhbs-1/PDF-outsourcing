@@ -13,6 +13,7 @@
   --chapter-title-icon-slot: 30px;
 }
 
+.report-page-title,
 .m1-section-title__text,
 .m2-cw-module-title,
 .m3-kp-drill__title,
@@ -31,6 +32,7 @@
   max-width: 100%;
 }
 
+.report-page-title .frame-title-icon,
 .m1-section-title__text .frame-title-icon,
 .m2-cw-module-title .frame-title-icon,
 .m3-kp-drill__title .frame-title-icon,
@@ -50,6 +52,7 @@
   padding-bottom: 0;
 }
 
+.report-page-title::after,
 .m1-section-title__text::after,
 .m2-cw-module-title::after,
 .m3-kp-drill__title::after,
@@ -69,6 +72,7 @@
   border-radius: var(--chapter-title-underline-radius);
 }
 
+.report-page-title:has(.frame-title-icon)::after,
 .m1-section-title__text:has(.frame-title-icon)::after,
 .m2-cw-module-title:has(.frame-title-icon)::after,
 .m3-kp-drill__title:has(.frame-title-icon)::after,

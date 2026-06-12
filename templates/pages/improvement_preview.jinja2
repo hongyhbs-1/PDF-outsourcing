@@ -76,11 +76,26 @@
     {% endif %}
   {% endfor %}
 {% endif %}
-{% set ip_lead = weak_items[0].name_cn | default('核心领域') if weak_items | length > 0 else '整体稳定性' %}
-{% set ip_secondary = weak_items[1].name_cn | default('次重点领域') if weak_items | length > 1 else ip_lead %}
+{% set focus_items = [] %}
+{% if weak_items | length > 0 %}
+  {% for item in weak_items %}
+    {% set _ = focus_items.append(item) %}
+  {% endfor %}
+{% endif %}
+{% if domains is defined and domains.domain_items is defined and focus_items | length < 3 %}
+  {% for item in domains.domain_items | sort(attribute='accuracy') %}
+    {% if item.has_data | default(true) and item not in focus_items %}
+      {% set _ = focus_items.append(item) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% set focus_limit = 3 if subject == '英语' else 4 %}
+{% set focus_target_acc = stretch_target_acc if tier == 'excellent' else target_acc %}
+{% set ip_lead = focus_items[0].name_cn | default('核心领域') if focus_items | length > 0 else '整体稳定性' %}
+{% set ip_secondary = focus_items[1].name_cn | default('次重点领域') if focus_items | length > 1 else ip_lead %}
 
 <div class="ip-page">
-  <h1 class="ip-title">{{ lb_icon('growth', 'frame-title-icon frame-title-icon--success') }}提升预期与改变</h1>
+  <h1 class="report-page-title ip-title">{{ lb_icon('growth', 'frame-title-icon frame-title-icon--success') }}提升预期与改变</h1>
 
   <div class="module-content-card">
 
@@ -90,12 +105,10 @@
   </div>
 
   {# === 0.1 本阶段介入重点（从学生画像迁移） === #}
-  {% if weak_items | length > 0 %}
   <div class="ip-intervention-bar">
     <span class="ip-intervention-bar__label">{{ lb_icon('target', 'frame-inline-icon') }}本阶段介入重点：</span>
-    <span class="ip-intervention-bar__text">主攻 {{ ip_lead }}{% if weak_items | length > 1 %}，跟进 {{ ip_secondary }}{% endif %}，巩固优势领域</span>
+    <span class="ip-intervention-bar__text">主攻 {{ ip_lead }}{% if focus_items | length > 1 %}，跟进 {{ ip_secondary }}{% endif %}，巩固优势领域</span>
   </div>
-  {% endif %}
 
   {# === 1. 提升路径概览 (三阶段) === #}
   <div class="ip-roadmap">
@@ -148,19 +161,19 @@
     {# 已达标/优等生路径: 当前→保持→冲刺；所有后续节点都应高于当前水平 #}
     <div class="ip-stage ip-stage--current">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前</div>
+      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
       <div class="ip-stage__desc">{% if target_reached %}已达标{% else %}优秀{% endif %}</div>
     </div>
     <div class="ip-stage ip-stage--boost">
       <div class="ip-stage__transition">稳步拔高</div>
       <div class="ip-stage__marker ip-stage__marker--future">{{ stretch_acc }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}阶段目标</div>
+      <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}快速提升</div>
       <div class="ip-stage__desc">约 30 天</div>
     </div>
     <div class="ip-stage ip-stage--target">
       <div class="ip-stage__transition">冲刺突破</div>
       <div class="ip-stage__marker ip-stage__marker--future">{{ stretch_target_acc }}%</div>
-      <div class="ip-stage__label">{{ lb_icon('trophy', 'frame-inline-icon ip-stage-icon--target') }}最终目标</div>
+      <div class="ip-stage__label">{{ lb_icon('trophy', 'frame-inline-icon ip-stage-icon--target') }}目标达成</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
     {% endif %}
@@ -238,7 +251,7 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">细节优化</div>
-        <p class="ip-milestone__text">当前已达到 <strong class="ip-milestone__highlight">{{ target_acc | int }}%</strong> 的本次目标线，接下来针对个别偶发失误点进行定向强化，保持高水准的同时进一步提升到 <strong class="ip-milestone__highlight">{{ stretch_acc }}%</strong>。</p>
+        <p class="ip-milestone__text">当前已达到 <strong class="ip-milestone__highlight">{{ target_acc | int }}%</strong> 的本次目标线，接下来针对偶发失误点进行定向强化，预计可提升到 <strong class="ip-milestone__highlight">{{ stretch_acc }}%</strong> 左右。</p>
       </div>
     </div>
     <div class="ip-milestone">
@@ -255,14 +268,16 @@
   </div>
 
   {# === 3. 具体提升点 === #}
-  {% if weak_items | length > 0 %}
+  {% if focus_items | length > 0 %}
   <div class="ip-focus-section">
     <div class="ip-section-heading">{{ lb_icon('target', 'frame-section-icon') }}三、提升要点</div>
     <div class="ip-focus-grid">
-      {% for item in weak_items[:4] %}
+      {% for item in focus_items[:focus_limit] %}
+      {% set item_acc = item.accuracy | default(acc) | float %}
+      {% set focus_gain = ([0, focus_target_acc - item_acc] | max) | round(1) %}
       <div class="ip-focus-item">
         <div class="ip-focus-item__name">{{ lb_icon('target', 'frame-inline-icon') }}{{ item.name_cn | default('领域' ~ loop.index) }}</div>
-        <div class="ip-focus-item__gain">+{{ (target_acc - (item.accuracy | default(0) | float)) | int }}%</div>
+        <div class="ip-focus-item__gain">+{{ '%.1f' | format(focus_gain) }}%</div>
         <div class="ip-focus-item__label">预期提升空间</div>
       </div>
       {% endfor %}

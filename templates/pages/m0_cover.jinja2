@@ -133,6 +133,8 @@ v1.1 - 2026-01-15
 {% set default_badge_text = "方向比速度重要" %}
 {% set default_brand_name = "dida985" %}
 {% set default_title = "基线定位分析报告" %}
+{% set word_reference_title = "学情透视分析报告" %}
+{% set _cover_title = word_reference_title if typography_theme == 'word_reference' else (data.title | default(default_title, true)) %}
 {% set default_subject = "数学" %}
 {% set default_footer = '{student_display_name}专属分析\n逐题透析·逐点拆解·对标历年真题考点' %}
 {% set empty_placeholder = "--" %}
@@ -261,7 +263,7 @@ v1.1 - 2026-01-15
        ==================================================================== #}
     <div class="m0-cover-title">
       <div class="m0-cover-title__main">
-        {{- data.title | default(default_title) -}}
+        {{- _cover_title -}}
       </div>
       {# 学科已移至元信息区突出显示，此处不再重复 #}
     </div>
@@ -279,7 +281,7 @@ v1.1 - 2026-01-15
     <div class="m0-cover-compliance">
       <div class="m0-cover-compliance__filing">网信算备310112946964101260015号</div>
       <div class="m0-cover-compliance__authority">依据《国家互联网信息办公室》《中华人民共和国工业和信息化部》《中华人民共和国公安部》要求，本算法已通过审查完成备案。</div>
-      <div class="m0-cover-compliance__disclaimer">本报告由AI人工智能生成，请结合实际情况使用</div>
+      <div class="m0-cover-compliance__disclaimer">人工智能生成，老师审查</div>
     </div>
 
   </div>

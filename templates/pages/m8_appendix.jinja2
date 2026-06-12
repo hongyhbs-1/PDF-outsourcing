@@ -168,7 +168,7 @@
        3.1 页面标题
        ------------------------------------------------------------------------- #}
     <div class="m8-appendix-title">
-      <h1 class="m8-appendix-title__text">
+      <h1 class="report-page-title m8-appendix-title__text">
         {% set _qd_m8 = question_detail | default({}, true) %}
         {% set _qd_papers_m8 = _qd_m8.papers | default([], true) %}
         {{ lb_icon('paper', 'frame-title-icon') }}{% if _qd_papers_m8 | length > 0 and _qd_m8.total_count | default(0) > 0 %}九{% else %}八{% endif %}、附录：试卷难度分布与分析依据

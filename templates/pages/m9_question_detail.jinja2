@@ -96,7 +96,7 @@ M9: 逐题分析明细 (Question Detail Analysis)
       {% if loop.first %}
       {# ─── 第一页：标题 + 概述 ─── #}
       <section class="m9-title-section">
-        <h1 class="m9-title">七、逐题分析明细</h1>
+        <h1 class="report-page-title m9-title">七、逐题分析明细</h1>
         <div class="m9-title__underline"></div>
       </section>
 
@@ -137,11 +137,7 @@ M9: 逐题分析明细 (Question Detail Analysis)
       </div>
 
       {% else %}
-      {# ─── 续页：简洁标题 ─── #}
-      <section class="m9-continuation-header">
-        <h2 class="m9-continuation-header__title">逐题分析明细（续）</h2>
-        <div class="m9-continuation-header__meta">第 {{ subpage.part_index }} / {{ subpage.part_count }} 页</div>
-      </section>
+      {# ─── 续页：与参考模板一致, 直接延续表格内容 ─── #}
       <div class="module-content-card">
         {% for block in subpage.blocks %}
           {{ render_table_block(block) }}
@@ -160,7 +156,7 @@ M9: 逐题分析明细 (Question Detail Analysis)
 {% elif has_data %}
   <div class="m9-page">
     <section class="m9-title-section">
-      <h1 class="m9-title">七、逐题分析明细</h1>
+      <h1 class="report-page-title m9-title">七、逐题分析明细</h1>
       <div class="m9-title__underline"></div>
     </section>
 

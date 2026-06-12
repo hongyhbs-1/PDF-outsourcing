@@ -45,6 +45,23 @@ class PdfChromeTemplatesTest(unittest.TestCase):
         self.assertNotIn("#5B9EA6", template)
         self.assertNotIn("background: #F9F9F9", template)
 
+    def test_word_reference_chrome_uses_transparent_header_footer_background(self) -> None:
+        template = chrome.build_header_template({
+            "typography_theme": "word_reference",
+            "report_title": "基线定位分析报告",
+        }) + chrome.build_footer_template({
+            "typography_theme": "word_reference",
+            "report_title": "基线定位分析报告",
+        })
+
+        self.assertIn("background: transparent", template)
+        self.assertIn("padding:0 15mm 5.4mm 18mm", template)
+        self.assertIn("font-size: 8px;", template)
+        self.assertIn("学情透视分析报告", template)
+        self.assertNotIn("基线定位分析报告", template)
+        self.assertIn("#DDE5E8", template)
+        self.assertIn("#D9B36A", template)
+
     def test_margins_match_header_footer_height(self) -> None:
         margins = chrome.build_pdf_margins()
 

@@ -37,6 +37,12 @@ if TYPE_CHECKING:
 # first grid row can share the remaining space under the guide.
 _NATURAL_PAGINATION_MODULES = {"m3", "m9"}
 
+# Some legacy long-page modules are compressed by golden_typeset at the page
+# wrapper level to keep their dense bodies on one page.  Their main page title
+# still has to remain visually aligned with the shared .report-page-title
+# hierarchy, so compensate only that title for the wrapper zoom.
+_TITLE_ZOOM_COMPENSATED_MODULES = {"m7"}
+
 _COMPACT_CORE_RHYTHM_MM: dict[str, dict[int, float]] = {
     # P8：标题需要更靠近页眉，核心结论紧跟标题，主体卡片紧跟归纳。
     "m1": {1: 4.0, 2: 2.0, 3: 0.0},
@@ -144,14 +150,22 @@ def build_css(layouts: Dict[str, PageLayout],
         # 压缩时使用 zoom (影响布局尺寸, 防止溢出)。
         # M9 是逐题长表，必须自然分页；若按整页高度压缩 wrapper，
         # Chromium 会把 100+ 行表格缩成一页，导致 PDF 正文字号接近不可读。
+        title_zoom_compensation = False
         if layout.scale < 1.0:
             parts.append(f"    /* scale={layout.scale:.4f} */")
             if mod_id in _NATURAL_PAGINATION_MODULES:
                 parts.append("    /* natural-pagination: zoom intentionally disabled */")
             else:
                 parts.append(f"    zoom: {layout.scale:.4f};")
+                title_zoom_compensation = mod_id in _TITLE_ZOOM_COMPENSATED_MODULES
 
         parts.append("  }")
+
+        if title_zoom_compensation:
+            parts.append(f"  {sel} > .report-page-title {{")
+            parts.append("    /* keep shared page-title typography visually consistent under wrapper zoom */")
+            parts.append(f"    zoom: {1 / layout.scale:.4f};")
+            parts.append("  }")
 
         # 每个直接子元素的 margin-top
         for i, blk in enumerate(layout.blocks):

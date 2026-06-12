@@ -11,7 +11,20 @@
    1. 页面设置
    ========================================================================== */
 
-/* @page 已统一在 base.css 管理 */
+@page cover-page {
+  size: A4 portrait;
+  margin-top: 12mm;
+  margin-bottom: 10mm;
+  margin-left: 0;
+  margin-right: 0;
+  background: #ffffff;
+}
+
+/* scale=0.9 缩放后封面盒够不到页脚，会露出 .module-page 的全局米色纸底，
+   与封面白底/白页脚形成色缝。提高优先级把封面纸面刷白，盖过 base.css 的 --pm-bg-page。 */
+.module-page.module-page--cover {
+  background: #ffffff;
+}
 
 /* ==========================================================================
    2. CSS 变量 (Design Tokens)
@@ -35,11 +48,11 @@
   --logo-green: #8DBF20;
 
   /* ---------- 2.3 字号 (A4适配) ---------- */
-  --fs-cover-badge: 4mm;  /* P1-2: 弱化标语，减小字号 */
+  --fs-cover-badge: 4.44mm;  /* P1-2: 弱化标语，匹配 Word 参考字号 */
   --fs-brand-name: 3.7mm;
-  --fs-title: 5.6mm;  /* P1: 报告标题继续降级，避免压过中间信息 */
+  --fs-title: 6.22mm;  /* P1: 报告标题匹配 Word 参考字号 */
   --fs-subtitle: 4.5mm;
-  --fs-student-name: 16mm;  /* P1-1: 姓名放大为视觉中心 */
+  --fs-student-name: 17.8mm;  /* P1-1: 姓名放大为视觉中心 */
   --fs-meta: 5.5mm;
   --fs-footnote: 3.7mm;
 
@@ -64,13 +77,14 @@
   --space-2xl: 20mm;
 
   /* ---------- 2.7 封面垂直节奏 ---------- */
-  --cover-mt-brand: 17mm;
-  --cover-gap-brand-student: 22mm;
-  --cover-gap-student-meta: 16mm;
-  --cover-gap-meta-divider: 24mm;
-  --cover-gap-divider-title: 14mm;
+  --cover-mt-brand: 20mm;
+  --cover-gap-brand-student: 21.8mm;
+  --cover-gap-student-meta: 8.65mm;
+  --cover-gap-meta-divider: 30mm;
+  --cover-gap-divider-title: 8.75mm;
   --cover-gap-title-sub: 8mm;
-  --cover-gap-title-badge: 12mm;
+  --cover-gap-title-badge: 9mm;
+  --cover-print-fill-height: 297mm;
 
   /* ---------- 2.8 圆角 ---------- */
   --radius-badge: 3mm;
@@ -83,13 +97,13 @@
 
 .m0-cover-page {
   width: 100%;
-  min-height: 330mm;
+  min-height: var(--cover-print-fill-height);
   background:
     radial-gradient(circle at top right, rgba(226, 196, 143, 0.18), transparent 28%),
     radial-gradient(circle at bottom left, rgba(31, 111, 120, 0.08), transparent 24%),
     linear-gradient(180deg, var(--pm-bg-page) 0%, var(--cc-card-bg) 40%);
   color: var(--cover-text);
-  font-family: var(--font-family-base);
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
@@ -110,7 +124,7 @@
 
 .m0-cover-content {
   width: 100%;
-  min-height: 330mm;
+  min-height: var(--cover-print-fill-height);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -239,33 +253,34 @@
   width: 80mm;
   display: flex;
   flex-direction: column;
-  gap: 5.8mm;
+  gap: 5.1mm;
   line-height: var(--lh-normal);
-  transform: none;
+  transform: translateX(-2.1mm);
 }
 
 .m0-cover-meta__item {
   min-width: 0;
   display: grid;
-  grid-template-columns: 25mm minmax(0, 1fr);
+  grid-template-columns: 20.3mm minmax(0, 1fr);
   align-items: baseline;
-  column-gap: 5.8mm;
+  column-gap: 11.3mm;
 }
 
 .m0-cover-meta__label {
   display: block;
   margin-bottom: 0;
-  font-size: 4.3mm;
+  font-size: 4.78mm;
   font-weight: var(--fw-semibold);
   color: var(--pm-teal);
   white-space: nowrap;
-  letter-spacing: 1.1mm;
+  text-align: center;
+  letter-spacing: 1.35mm;
 }
 
 .m0-cover-meta__value {
   display: block;
   text-align: left;
-  font-size: 6.2mm;
+  font-size: 6.89mm;
   font-weight: var(--fw-bold);
   color: var(--pm-navy-dark);
   white-space: nowrap;
@@ -308,21 +323,21 @@
   display: block;
   width: 100%;
   text-align: center;
-  font-size: 5.6mm;
+  font-size: 6.22mm;
   font-weight: var(--fw-semibold);
   line-height: var(--lh-tight);
   color: var(--pm-teal);
   letter-spacing: 1.5mm;
-  margin-top: 1mm;
+  margin-top: 1.6mm;
 }
 
 /* P1-1: 评估时间 — 紧跟姓名下方 */
 .m0-cover-exclusive__time {
-  font-size: 5mm;
+  font-size: 5.56mm;
   font-weight: var(--fw-regular);
   color: var(--pm-text-secondary);
   letter-spacing: 0.5mm;
-  margin-top: 1mm;
+  margin-top: 2.8mm;
 }
 
 /* ==========================================================================
@@ -331,7 +346,8 @@
 
 .m0-cover-compliance {
   margin-top: auto;
-  padding-bottom: 9mm;
+  padding-bottom: 0;
+  transform: translateY(-0.7mm);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -340,14 +356,14 @@
 }
 
 .m0-cover-compliance__filing {
-  font-size: 3mm;
+  font-size: 3.22mm;
   font-weight: var(--fw-medium);
   color: var(--pm-text-muted);
   letter-spacing: 0.2mm;
 }
 
 .m0-cover-compliance__authority {
-  font-size: 2.5mm;
+  font-size: 2.64mm;
   font-weight: var(--fw-regular);
   color: var(--pm-status-nodata);
   line-height: 1.6;
@@ -355,10 +371,10 @@
 }
 
 .m0-cover-compliance__disclaimer {
-  font-size: 2.5mm;
+  font-size: 2.39mm;
   font-weight: var(--fw-regular);
   color: var(--pm-status-nodata);
-  margin-top: 1mm;
+  margin-top: 0.1mm;
 }
 
 /* ==========================================================================
@@ -386,6 +402,11 @@
    ========================================================================== */
 
 @media print {
+  .module-page--cover {
+    page: cover-page;
+    background: #ffffff;
+  }
+
   .m0-cover-page {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

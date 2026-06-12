@@ -270,7 +270,7 @@
   {# ====================================================================
      Title: 页面主标题
      ==================================================================== #}
-  <h1 class="m7-data-reliability__title">
+  <h1 class="report-page-title m7-data-reliability__title">
     {% set _m7_chapter_no = '八' if _has_m9_detail | default(false) else '七' %}
     {{ lb_icon('shield', 'frame-title-icon') }}{{ _m7_chapter_no }}、{{ section.title | default('数据可信度说明', true) }}
   </h1>

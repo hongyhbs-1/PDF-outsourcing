@@ -38,6 +38,16 @@ DEFAULT_CHROME_THEME = PdfChromeTheme(
     line=LINE,
 )
 
+WORD_REFERENCE_CHROME_THEME = PdfChromeTheme(
+    background="transparent",
+    text_muted=TEXT_MUTED,
+    text_strong=TEXT_STRONG,
+    accent=TEAL,
+    accent_soft=TEAL_SOFT,
+    accent_bar=SAND,
+    line=LINE,
+)
+
 MARGIN_TOP = "12mm"
 MARGIN_BOTTOM = "10mm"
 MARGIN_LEFT = "0mm"
@@ -46,6 +56,7 @@ MARGIN_RIGHT = "0mm"
 HEADER_PADDING = "6.6mm 15mm 0 18mm"
 FOOTER_PADDING = "0 15mm 5.4mm 18mm"
 DEFAULT_TITLE = "学情诊断报告"
+WORD_REFERENCE_TITLE = "学情透视分析报告"
 DEFAULT_BRAND = "dida985小程序"
 DEFAULT_POSITIONING = "逐题透析 · 逐点拆解 · 对标历年真题考点"
 FONT_FILE = Path(__file__).resolve().parent.parent / "templates" / "fonts" / "NotoSansSC-Variable.ttf"
@@ -67,7 +78,15 @@ def _meta_value(meta: dict | None, *keys: str, default: str = "") -> str:
 
 def _theme_for_meta(meta: dict | None) -> PdfChromeTheme:
     """Keep PDF chrome subject-neutral; body pages handle subject palettes."""
+    if meta and meta.get("typography_theme") == "word_reference":
+        return WORD_REFERENCE_CHROME_THEME
     return DEFAULT_CHROME_THEME
+
+
+def _display_report_title(meta: dict | None, *keys: str, default: str = DEFAULT_TITLE) -> str:
+    if meta and meta.get("typography_theme") == "word_reference":
+        return WORD_REFERENCE_TITLE
+    return _meta_value(meta, *keys, default=default)
 
 
 def _build_header_context(meta: dict | None) -> str:
@@ -126,7 +145,7 @@ def _base_style(theme: PdfChromeTheme) -> str:
   align-items: center;
   box-sizing: border-box;
   color: {theme.text_muted};
-  font-size: 9px;
+  font-size: 8px;
   line-height: 1;
 }}
 .pw-hf-ellipsis {{
@@ -155,7 +174,7 @@ def build_pdf_margins() -> dict[str, str]:
 
 def build_header_template(meta: dict | None) -> str:
     theme = _theme_for_meta(meta)
-    title = _escape(_meta_value(meta, "report_short_title", "report_title", default=DEFAULT_TITLE))
+    title = _escape(_display_report_title(meta, "report_short_title", "report_title"))
     context_text = _escape(_build_header_context(meta))
 
     return (
@@ -173,7 +192,7 @@ def build_header_template(meta: dict | None) -> str:
 
 def build_footer_template(meta: dict | None) -> str:
     theme = _theme_for_meta(meta)
-    title = _escape(_meta_value(meta, "report_title", "report_name", default=DEFAULT_TITLE))
+    title = _escape(_display_report_title(meta, "report_title", "report_name"))
     report_date = _escape(_meta_value(meta, "report_date", "date"))
     brand = _escape(_meta_value(meta, "brand_name", default=DEFAULT_BRAND))
     date_text = f"报告日期：{report_date}" if report_date else ""

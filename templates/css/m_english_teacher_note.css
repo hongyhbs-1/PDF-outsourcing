@@ -1,0 +1,43 @@
+/* ==========================================================================
+   英语家长版教师解读占位页
+   ========================================================================== */
+
+.m-english-teacher-note {
+  min-height: var(--page-print-height, 275mm);
+  padding: 0 15mm 0 18mm;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22mm;
+  color: var(--pm-text-primary);
+  background: var(--pm-bg-page);
+  font-family: var(--font-family-base);
+  text-align: center;
+}
+
+.m-english-teacher-note__eyebrow {
+  font-size: 10.5pt;
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--pm-text-secondary);
+}
+
+.m-english-teacher-note__title {
+  max-width: 160mm;
+  margin: 0;
+  font-size: 21pt;
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--pm-text-primary);
+}
+
+@media print {
+  .m-english-teacher-note {
+    width: auto;
+    min-height: var(--page-print-height, 275mm);
+    padding: 0 15mm 0 18mm;
+    box-shadow: none;
+  }
+}
