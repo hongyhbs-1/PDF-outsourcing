@@ -3,7 +3,7 @@
  * 模块0: 封面 (Cover Page) — Premium Navy/Teal/Sand 主题
  * 文件: 0_cover.css
  * 版本: v2.0 (Premium)
- * 描述: 基线定位分析报告封面页 — 温暖专业视觉
+ * 描述: 学情透视分析报告封面页 — 温暖专业视觉
  * ==========================================================================
  */
 
@@ -65,7 +65,18 @@
 
   /* ---------- 2.7 封面垂直节奏 ---------- */
   --cover-mt-brand: 12mm;
-  --cover-gap-brand-student: 14mm;  /* P1 图片1：去掉品牌后让姓名更靠上 */
+  --cover-teacher-slot-top: 18mm;
+  --cover-teacher-slot-left: 18mm;
+  --cover-student-group-bottom: 105mm; /* production PDF box: dossier bottom lands on 182mm D golden line */
+  --cover-lower-top: 182mm;
+  --cover-lower-bottom: 30mm;
+  --cover-student-top: 64mm;
+  --cover-dossier-top: 116mm;
+  --cover-divider-top: 194mm;
+  --cover-title-top: 205mm;
+  --cover-badge-top: 228mm;
+  --cover-compliance-bottom: 8mm;
+  --cover-gap-brand-student: 14mm;  /* legacy flow fallback; D layout uses absolute anchors */
   --cover-gap-student-meta: 10.5mm;
   --cover-gap-meta-divider: 15mm;
   --cover-gap-divider-title: 8mm;  /* P1-1: 收紧标题前间距 */
@@ -111,13 +122,60 @@
 .m0-cover-content {
   width: 100%;
   min-height: var(--page-print-height);
+  height: var(--page-print-height);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: var(--cover-mt-brand);
+  padding-top: 0;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
+}
+
+.m0-teacher-slot {
+  position: absolute;
+  top: var(--cover-teacher-slot-top);
+  left: var(--cover-teacher-slot-left);
+  right: 18mm;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4mm;
+  pointer-events: none;
+}
+
+.m0-teacher-credit {
+  max-width: 118mm;
+  min-width: 0;
+  padding-top: 0;
+  font-size: 5.2mm;
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  color: var(--pm-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.m0-teacher-brand {
+  flex: 0 0 auto;
+  width: auto;
+  height: 8mm;
+  max-width: 42mm;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+}
+
+.m0-teacher-brand__logo {
+  display: block;
+  max-width: 42mm;
+  max-height: 8mm;
+  width: auto;
+  height: 8mm;
+  object-fit: contain;
 }
 
 /* ==========================================================================
@@ -126,6 +184,9 @@
 
 /* P1-2: 标语弱化 — 更淡的颜色+更低的透明度 */
 .m0-cover-badge {
+  position: static;
+  width: 100%;
+  text-align: center;
   font-size: var(--fs-cover-badge);
   font-weight: var(--fw-regular);
   color: var(--pm-text-light);
@@ -137,47 +198,14 @@
    5. 品牌区 — 顶部小尺寸
    ========================================================================== */
 
-.m0-cover-brand {
-  margin-top: 0;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-}
-
-.m0-cover-brand__logo {
-  width: 13mm;
-  height: 13mm;
-  display: block;
-  object-fit: contain;
-}
-
-.m0-cover-brand__logo-placeholder {
-  width: 13mm;
-  height: 13mm;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--logo-blue) 50%, var(--logo-green) 50%);
-  border-radius: 50%;
-  color: var(--cc-card-bg);
-  font-size: 5mm;
-  font-weight: var(--fw-bold);
-}
-
-.m0-cover-brand__name {
-  margin-top: 3.4mm;
-  font-size: var(--fs-brand-name);
-  font-weight: var(--fw-regular);
-  line-height: 1;
-  color: var(--pm-text-muted);
-}
-
 /* ==========================================================================
    6. 标题区 — Premium Navy 文字
    ========================================================================== */
 
 .m0-cover-title {
-  margin-top: var(--cover-gap-divider-title);
+  position: static;
+  width: 100%;
+  margin-top: 0;
   text-align: center;
 }
 
@@ -204,7 +232,9 @@
    ========================================================================== */
 
 .m0-cover-divider {
-  margin-top: var(--cover-gap-meta-divider);
+  position: static;
+  transform: none;
+  margin-top: 0;
   width: 58mm;
   height: 0.6mm;
   background: var(--pm-gradient-accent-bar);
@@ -216,7 +246,9 @@
    ========================================================================== */
 
 .m0-cover-dossier {
-  margin-top: var(--cover-gap-student-meta);
+  position: static;
+  transform: none;
+  margin-top: 10.5mm;
   width: 104mm;
   padding: 5.2mm 7mm;
   border: 0.35mm solid rgba(31, 111, 120, 0.16);
@@ -288,13 +320,39 @@
    ========================================================================== */
 
 .m0-cover-exclusive {
-  margin-top: var(--cover-gap-brand-student);
+  position: static;
+  margin-top: 0;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 1.5mm;
+}
+
+.m0-cover-student-group {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--cover-student-group-bottom);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.m0-cover-lower {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--cover-lower-top);
+  bottom: var(--cover-lower-bottom);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8mm;
+  text-align: center;
 }
 
 .m0-cover-exclusive__name {
@@ -330,13 +388,28 @@
    ========================================================================== */
 
 .m0-cover-compliance {
-  margin-top: auto;
-  padding-bottom: 8mm;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--cover-compliance-bottom);
+  margin-top: 0;
+  padding-bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 1.5mm;
+}
+
+.m0-cover-compliance__signature {
+  max-width: 92mm;
+  font-size: 3.2mm;
+  font-weight: var(--fw-medium);
+  line-height: 1.2;
+  color: var(--pm-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .m0-cover-compliance__filing {
@@ -354,11 +427,11 @@
   max-width: 175mm;
 }
 
-.m0-cover-compliance__disclaimer {
-  font-size: 2.5mm;
+.m0-cover-compliance__ai-review {
+  font-size: 2.15mm;
   font-weight: var(--fw-regular);
   color: var(--pm-status-nodata);
-  margin-top: 1mm;
+  line-height: 1.45;
 }
 
 /* ==========================================================================

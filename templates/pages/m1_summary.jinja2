@@ -25,7 +25,7 @@ render_payload.module_1_summary 结构示例:
 --------------------------------------------------------------------------------
 {
   "meta": {
-    "report_title": "基线定位分析报告（数学）",
+    "report_title": "学情透视分析报告（数学）",
     "report_date": "2025.06.05"
   },
   "summary": {
@@ -87,6 +87,10 @@ render_payload.module_1_summary 结构示例:
 {% set key_findings = _data.key_findings | default(key_findings | default([])) %}
 {% set breakthrough = _data.breakthrough | default(breakthrough | default({})) %}
 {% set suggestion = _data.suggestion | default(suggestion | default({})) %}
+{% set target_reliable = summary.target_judgement_reliable | default(meta.target_judgement_reliable | default(true)) %}
+{% set target_estimate_text = summary.target_estimate_text | default(meta.target_estimate_text | default('目标线为估算（本次未获取试卷满分，按默认 ' ~ (meta.full_score | default('--')) ~ ' 分折算）')) %}
+{% set m1_rate_label = '三级知识点（L3）达标率' if target_reliable else '三级知识点（L3）估算线以上比例' %}
+{% set m1_rate_formula = '达标的知识点/总知识点' if target_reliable else '估算线以上的知识点/总知识点' %}
 {% set bt_items = breakthrough['items'] | default([]) %}
 {% set all_achieved_breakthrough_text = '你已碾压当前难度题目，建议立即飞升位阶追求高分' %}
 {% set pass_stats = namespace(total=0, achieved=0, pending=0) %}
@@ -99,7 +103,7 @@ render_payload.module_1_summary 结构示例:
     {% set pass_stats.achieved = pass_stats.achieved + seg_value %}
   {% endif %}
 {% endfor %}
-{% set breakthrough_all_achieved = breakthrough.all_achieved | default(false) or (bt_items | length == 0 and pass_stats.total > 0 and pass_stats.pending == 0) %}
+{% set breakthrough_all_achieved = target_reliable and (breakthrough.all_achieved | default(false) or (bt_items | length == 0 and pass_stats.total > 0 and pass_stats.pending == 0)) %}
 {% if bt_items | length >= 6 %}
   {% set m1_density = 'dense' %}
 {% else %}
@@ -181,7 +185,15 @@ render_payload.module_1_summary 结构示例:
 {% endmacro %}
 
 {% set target_line_text = safe(summary.target_accuracy_text, '目标线') %}
-{% if breakthrough_all_achieved %}
+{% if not target_reliable %}
+  {% if pass_stats.total > 0 %}
+    {% set core_pass_detail = target_estimate_text ~ '；在已分析的' ~ pass_stats.total ~ '个知识点中，' ~ pass_stats.achieved ~ '个位于估算线以上，' ~ pass_stats.pending ~ '个需重点补齐；该划分仅供训练优先级参考。' %}
+    {% set banner_pass_detail = '已分析的' ~ pass_stats.total ~ '个知识点中，' ~ pass_stats.achieved ~ '个位于估算线以上，' ~ pass_stats.pending ~ '个需重点补齐。' %}
+  {% else %}
+    {% set core_pass_detail = target_estimate_text ~ '；当前没有足够知识点分布数据，暂不输出目标完成结论。' %}
+    {% set banner_pass_detail = '' %}
+  {% endif %}
+{% elif breakthrough_all_achieved %}
   {% if pass_stats.total > 0 %}
     {% set core_pass_detail = '在已分析的' ~ pass_stats.total ~ '个知识点中，已全部达到' ~ target_line_text ~ '；' ~ all_achieved_breakthrough_text ~ '。' %}
     {% set banner_pass_detail = '已分析的' ~ pass_stats.total ~ '个知识点已全部达标。' ~ all_achieved_breakthrough_text ~ '。' %}
@@ -200,7 +212,9 @@ render_payload.module_1_summary 结构示例:
 {% set chart_note_text = '' %}
 {% if summary.high_freq_kp_total is defined and summary.pass_segments is defined and summary.pass_segments | length >= 2 %}
   {% set high_freq_total = summary.high_freq_kp_total | default(0) | int %}
-  {% if breakthrough_all_achieved %}
+  {% if not target_reliable %}
+    {% set chart_note_text = '上传试卷包含L3级知识点' ~ summary.high_freq_kp_total ~ '个，其中' ~ summary.pass_segments[0].value ~ '个位于估算线以上，' ~ summary.pass_segments[1].value ~ '个暂在估算线以下；该划分仅供训练优先级参考。' %}
+  {% elif breakthrough_all_achieved %}
     {% if high_freq_total > 0 %}
       {% set chart_note_text = '上传试卷包含L3级知识点' ~ summary.high_freq_kp_total ~ '个，当前已全部超过目标正确率，建议升级题目难度继续冲高。' %}
     {% else %}
@@ -228,7 +242,7 @@ render_payload.module_1_summary 结构示例:
   <section class="m1-core-conclusion">
     <div class="m1-core-conclusion__label">{{ lb_icon('target', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m1-core-conclusion__text">
-      三级知识点（L3）达标率 {{ safe_pct(summary.pass_rate_text, '0%') }}（= 达标的知识点/总知识点）：{{ core_pass_detail }}
+      {{ m1_rate_label }} {{ safe_pct(summary.pass_rate_text, '0%') }}（= {{ m1_rate_formula }}）：{{ core_pass_detail }}
     </div>
   </section>
 
@@ -250,11 +264,11 @@ render_payload.module_1_summary 结构示例:
         {% if summary.pass_rate is defined and summary.pass_rate is not none %}
           {{ donut_chart(summary.pass_rate) }}
         {% else %}
-          <div class="m1-data-unavailable">达标率数据暂无</div>
+          <div class="m1-data-unavailable">{{ '达标率' if target_reliable else '估算比例' }}数据暂无</div>
         {% endif %}
 
         {# 圆环图说明 #}
-        <div class="m1-donut-caption">三级知识点（L3）达标率（= 达标的知识点/总知识点）</div>
+        <div class="m1-donut-caption">{{ m1_rate_label }}（= {{ m1_rate_formula }}）</div>
 
         {# 图例 #}
         {% if summary.pass_segments is defined and summary.pass_segments %}
@@ -279,11 +293,11 @@ render_payload.module_1_summary 结构示例:
           <div class="m1-donut-legend">
             <div class="m1-legend-item">
               <div class="m1-legend-icon m1-legend-icon--fail">—</div>
-              <span class="m1-legend-text">未达标</span>
+              <span class="m1-legend-text">{{ '未达标' if target_reliable else '估算线以下' }}</span>
             </div>
             <div class="m1-legend-item">
               <div class="m1-legend-icon m1-legend-icon--pass">✓</div>
-              <span class="m1-legend-text">已达标</span>
+              <span class="m1-legend-text">{{ '已达标' if target_reliable else '估算线以上' }}</span>
             </div>
           </div>
         {% endif %}
@@ -308,14 +322,16 @@ render_payload.module_1_summary 结构示例:
           <div class="m1-goal-metric-card m1-goal-metric-card--line">
             <div class="m1-goal-metric-label">{{ lb_icon('flag', 'frame-metric-icon') }}<span>目标线</span></div>
             <div class="m1-goal-metric-value">{{ safe(summary.target_accuracy_text, '--') }}</div>
-            <div class="m1-goal-metric-desc">答题正确率达标线</div>
+            <div class="m1-goal-metric-desc">{% if target_reliable %}答题正确率达标线{% else %}估算目标线，仅供参考{% endif %}</div>
           </div>
 
-          <div class="m1-goal-metric-card m1-goal-metric-card--current {{ get_status_class(_current_acc, _target_acc if _target_acc is not none else 0) }}">
+          <div class="m1-goal-metric-card m1-goal-metric-card--current {{ get_status_class(_current_acc, _target_acc if _target_acc is not none else 0) if target_reliable else 'm1-status--attention' }}">
             <div class="m1-goal-metric-label">{{ lb_icon('gauge', 'frame-metric-icon') }}<span>当前答题正确率</span></div>
             <div class="m1-goal-metric-current">
               <span class="m1-goal-metric-value">{{ safe(summary.current_accuracy_text, '--') }}</span>
-              {% if _has_goal_gap and _delta_num is not none %}
+              {% if not target_reliable %}
+                <span class="m1-goal-metric-gap m1-goal-metric-gap--above">目标线估算</span>
+              {% elif _has_goal_gap and _delta_num is not none %}
                 {% if _delta_num < 0 %}
                   <span class="m1-goal-metric-gap m1-goal-metric-gap--below">低于目标线 {{ _delta_text_clean }}</span>
                 {% elif _delta_num > 0 %}
@@ -340,7 +356,7 @@ render_payload.module_1_summary 结构示例:
       {% for finding in key_findings %}
       <div class="m1-finding-item">
         <span class="m1-bullet-square"></span>
-        <span>{{ safe(finding, '暂无发现') }}</span>
+      <span>{% if target_reliable %}{{ safe(finding, '暂无发现') }}{% else %}{% if loop.index == 1 %}{{ target_estimate_text }}{% elif loop.index == 2 %}本页仅把知识点分为估算线以上/以下，用于训练优先级参考。{% else %}优先补齐估算线以下的知识点，满分补齐后再复核目标差距。{% endif %}{% endif %}</span>
       </div>
       {% endfor %}
     </div>
@@ -348,7 +364,7 @@ render_payload.module_1_summary 结构示例:
 
     {# 摘要说明放在本卡片底部，避免与“本页核心结论”重复挤在顶部 #}
     <div class="m1-summary-banner">
-      整体正确率看所有答题表现；三级知识点（L3）达标率看细分知识点是否达标。{{ safe_pct(summary.pass_rate_text, '0%') }}表示三级知识点（L3）达标率（= 达标的知识点/总知识点）：{{ banner_pass_detail }}达标指正确率达到或超过本次设定的{{ target_line_text }}。
+      {% if target_reliable %}整体正确率看所有答题表现；三级知识点（L3）达标率看细分知识点是否达标。{{ safe_pct(summary.pass_rate_text, '0%') }}表示三级知识点（L3）达标率（= 达标的知识点/总知识点）：{{ banner_pass_detail }}达标指正确率达到或超过本次设定的{{ target_line_text }}。{% else %}整体正确率看所有答题表现；{{ m1_rate_label }}只用于估算训练优先级。{{ safe_pct(summary.pass_rate_text, '0%') }}表示{{ m1_rate_formula }}：{{ banner_pass_detail }}{{ target_estimate_text }}，暂不输出目标完成结论。{% endif %}
     </div>
   </div>
 
@@ -416,7 +432,7 @@ render_payload.module_1_summary 结构示例:
           <div class="m1-bt-notes">
             <div class="m1-bt-note m1-bt-note--improve">
               <span class="m1-bt-note-square"></span>
-              <span>{% if gap_to_target_pct > 0 %}还需提升 {{ gap_display }}%{% elif gap_to_target_pct < 0 %}已超目标 {{ gap_display }}%{% else %}已达目标{% endif %}</span>
+              <span>{% if not target_reliable %}{% if gap_to_target_pct > 0 %}距估算线 {{ gap_display }}%{% elif gap_to_target_pct < 0 %}估算线以上 {{ gap_display }}%{% else %}贴近估算线{% endif %}{% elif gap_to_target_pct > 0 %}还需提升 {{ gap_display }}%{% elif gap_to_target_pct < 0 %}已超目标 {{ gap_display }}%{% else %}已达目标{% endif %}</span>
             </div>
             {% if item.city_tag_left is defined and item.city_tag_left %}
               <div class="m1-bt-note m1-bt-note--evidence">

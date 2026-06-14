@@ -788,13 +788,15 @@
   }
 
   .mov-pie-wrapper {
-    gap: 4px;
-    justify-content: center;
+    gap: 2px;
+    justify-content: flex-start;
+    margin-top: -4px;
   }
 
   .mov-pie {
-    width: 62px;
-    height: 62px;
+    width: 112px;
+    height: 112px;
+    transform: translateY(-4px);
   }
 
   .mov-pie-legend {
@@ -868,6 +870,24 @@
   .mov-reading-guide__item {
     padding: 5px 6px;
     border-radius: 5px;
+  }
+
+  body.report-theme--english .module-page .mov-page {
+    zoom: 0.92;
+  }
+
+  body.report-theme--english .module-page .mov-title-section {
+    margin-bottom: 6px;
+  }
+
+  body.report-theme--english .module-page .mov-title {
+    margin: 4px 0 8px;
+  }
+
+  body.report-theme--english .module-page .mov-page > .module-content-card {
+    min-height: auto !important;
+    break-inside: auto !important;
+    page-break-inside: auto !important;
   }
 
   .mov-reading-guide__label,

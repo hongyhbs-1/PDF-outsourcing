@@ -340,6 +340,8 @@ CSS变量说明：
 
 {# 确保 meta 变量可用 — 必须在使用前 default #}
 {% set meta = meta | default({}) %}
+{% set target_reliable = section.target_judgement_reliable | default(meta.target_judgement_reliable | default(true)) %}
+{% set target_estimate_text = section.target_estimate_text | default(meta.target_estimate_text | default('目标线为估算（本次未获取试卷满分，按默认 ' ~ (meta.full_score | default('--')) ~ ' 分折算）')) %}
 
 {# 目标值：section 优先 → meta 兜底 → 默认 75 #}
 {% set target_accuracy = (
@@ -351,6 +353,14 @@ CSS变量说明：
         else 75
     )
 ) | float %}
+{% set target_accuracy_text = section.target_accuracy_text | default((target_accuracy | round(1)) ~ '%', true) %}
+{% if not target_reliable %}
+  {% set legend_items = [
+    { "key": "attention", "label": "需复核" },
+    { "key": "achieved", "label": "估算线以上" },
+    { "key": "improve", "label": "需重点关注" }
+  ] %}
+{% endif %}
 {% set domain_groups = namespace(achieved=[], attention=[], improve=[]) %}
 {% for d in domains %}
   {% set d_name = get_domain_name(d) %}
@@ -359,7 +369,7 @@ CSS变量说明：
     {% set domain_groups.improve = domain_groups.improve + [d_name] %}
   {% elif '关注' in d_status %}
     {% set domain_groups.attention = domain_groups.attention + [d_name] %}
-  {% elif '达标' in d_status %}
+  {% elif target_reliable and '达标' in d_status %}
     {% set domain_groups.achieved = domain_groups.achieved + [d_name] %}
   {% endif %}
 {% endfor %}
@@ -380,6 +390,9 @@ CSS变量说明：
       {% set weakest = domain_groups.improve[0] if domain_groups.improve | length > 0 else (domain_groups.attention[0] if domain_groups.attention | length > 0 else '暂无数据') %}
       {% set weakest_item = domains | selectattr('name_cn', 'equalto', weakest) | first %}
       {% set strongest = domain_groups.achieved[0] if domain_groups.achieved | length > 0 else '暂无达标领域' %}
+      {% if not target_reliable %}
+      先看六大领域整体正确率和表格明细依据。{{ target_estimate_text }}；本页暂不输出领域目标完成的正式结论，待试卷满分补齐后复核。
+      {% else %}
       先看六大领域整体达标情况，再看表格明细依据。
       {% if weakest_item and weakest_item.accuracy is not none and weakest_item.accuracy != '' %}
       <strong>{{ weakest }}</strong>正确率{{ weakest_item.accuracy_text | default('--') }}，距目标差{{ weakest_item.delta_text | default('--') }}，是当前最大短板，
@@ -391,6 +404,7 @@ CSS变量说明：
       {% if domain_groups.improve | length > 0 %}需重点关注：{{ domain_groups.improve | join('、') }}；{% endif %}
       {% if domain_groups.attention | length > 0 %}持续关注：{{ domain_groups.attention | join('、') }}；{% endif %}
       {% if domain_groups.achieved | length > 0 %}{{ domain_groups.achieved | join('、') }}表现良好。{% endif %}
+      {% endif %}
       {% endif %}
     </div>
   </div>
@@ -405,9 +419,9 @@ CSS变量说明：
      图表说明条 (Chart Meta Bar)
      ------------------------------------------------------------------------ #}
   <div class="m4-chart-card">
-  <div class="m4-chart-meta-bar">
+    <div class="m4-chart-meta-bar">
     <div class="m4-meta-text">
-      {{ lb_icon('flag', 'frame-inline-icon') }} 目标线：正确率 ≥ {{ target_accuracy | round(0) | int }}%
+      {{ lb_icon('flag', 'frame-inline-icon') }} 目标线：正确率 ≥ {{ target_accuracy_text }}{% if not target_reliable %}（估算）{% endif %}
     </div>
     <div class="m4-legend" aria-label="图例">
       {% for leg in legend_items %}
@@ -482,7 +496,7 @@ CSS变量说明：
     %}
     <div class="m4-axis {{ axis_class }}" aria-hidden="true" style="--target-pct: {{ target_accuracy }}%;">
       <span class="m4-tick m4-t0">0%</span>
-      <span class="m4-tick m4-t-target">{{ target_accuracy | round(0) | int }}%目标</span>
+      <span class="m4-tick m4-t-target">{{ target_accuracy_text }}目标</span>
       <span class="m4-tick m4-t100">100%</span>
     </div>
   </div><!-- /.m4-chart-box -->
@@ -548,7 +562,9 @@ CSS变量说明：
           {# 状态徽章 (兼容英文 achieved/improve/attention) #}
           <td>
             {% set status_val = status_cn(item.status | default('无数据')) | trim %}
-            {% if status_val in ['已达标', '需关注', '需加强'] %}
+            {% if not target_reliable and item_has_data %}
+              <span class="m4-badge m4-attention">暂不判定</span>
+            {% elif status_val in ['已达标', '需关注', '需加强'] %}
               <span class="m4-badge {{ pclass }}">{{ status_val }}</span>
             {% else %}
               <span class="m4-badge m4-nodata">无数据</span>
@@ -583,10 +599,15 @@ CSS变量说明：
      ------------------------------------------------------------------------ #}
   {% set weak_domains_list = domain_groups.improve + domain_groups.attention %}
   {% set strong_domains_list = domain_groups.achieved %}
-  {% if weak_domains_list | length > 0 or strong_domains_list | length > 0 %}
+  {% if weak_domains_list | length > 0 or strong_domains_list | length > 0 or not target_reliable %}
   <div class="m4-summary-card">
     <div class="m4-summary-title">{{ lb_icon('bulb', 'frame-inline-icon') }}三、{{ summary.title | default('分析小结') }}</div>
-    {% if weak_domains_list | length > 0 or strong_domains_list | length > 0 %}
+    {% if not target_reliable %}
+    <div class="m4-summary-item m4-summary-item--improve">
+      <span class="m4-summary-label">教学建议：</span>
+      <span class="m4-summary-text">{{ target_estimate_text }}；先按薄弱领域安排练习，满分补齐后再确认目标线判断。</span>
+    </div>
+    {% elif weak_domains_list | length > 0 or strong_domains_list | length > 0 %}
     <div class="m4-summary-item m4-summary-item--improve">
       <span class="m4-summary-label">教学建议：</span>
       <span class="m4-summary-text">

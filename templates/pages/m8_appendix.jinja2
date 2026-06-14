@@ -18,7 +18,7 @@
    
    {
      "meta": {
-       "report_name": "基线定位分析报告（数学）",
+       "report_name": "学情透视分析报告（数学）",
        "report_date": "2025.06.05",
        "page_title": "附录：分析依据"
      },
@@ -125,6 +125,8 @@
 
 {# meta 变量定义 - 确保兼容性 #}
 {% set meta = meta | default({}) %}
+{% set summary_data = summary | default({}, true) %}
+{% set target_reliable = summary_data.target_judgement_reliable | default(meta.target_judgement_reliable | default(true)) %}
 {% set raw_analysis_rows = analysis_scope.rows if analysis_scope and analysis_scope.rows else [] %}
 {% if raw_analysis_rows is mapping %}
   {% set analysis_label_map = {
@@ -257,7 +259,7 @@
         {% for metric in metric_definitions %}
         <div class="m8-metric-item">
           <div class="m8-metric-item__name">{{ safe_value(metric.name) }}</div>
-          <div class="m8-metric-item__desc">{{ safe_value(metric.desc) }}</div>
+          <div class="m8-metric-item__desc">{% if not target_reliable and metric.name | default('') == '距目标线' %}正确率 - 目标线；本次目标线为估算时，仅供训练优先级参考{% else %}{{ safe_value(metric.desc) }}{% endif %}</div>
         </div>
         {% endfor %}
       </div>

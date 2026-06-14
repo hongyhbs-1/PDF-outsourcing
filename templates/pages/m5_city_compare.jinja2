@@ -44,7 +44,7 @@
 --------------------------------------------------------------------------------
 {
   "meta": {
-    "report_title": "基线定位分析报告（数学）",
+    "report_title": "学情透视分析报告（数学）",
     "report_date": "2025-06-05",
     "module_title": "城市考情对照",
     "city_name": "上海"
@@ -205,6 +205,10 @@
 {% set advice_list = data.advice | default([]) %}
 {% set footnote = data.footnote | default({}) %}
 {% set long_item_threshold = 15 %}
+{# NEW 2026-06-09: 城市 Top15 重点 + 学生逐点正确率 #}
+{% set city_top_items = data.city_top_items | default([]) %}
+{% set has_city_top = city_top_items | length > 0 %}
+{% set city_name = meta.city_name | default('本') %}
 
 {#- [v1.2 B2优化] 数据有效性检查
     has_data 语义从"有交集"改为"有短板数据"
@@ -212,7 +216,6 @@
 -#}
 {% set student_core_weak_total = summary.student_core_weak_total | default(0) %}
 {% set has_data = summary.has_data | default(student_core_weak_total > 0) %}
-{% set has_overlap_items = items | length > 0 %}
 {% set overlap_count = summary.overlap_count | default(0) %}
 {% set city_top_n = summary.city_top_n | default(10) %}
 {% set overlap_ratio = summary.overlap_ratio | default(none) %}
@@ -223,12 +226,39 @@
 {% else %}
   {% set overlap_pct = overlap_ratio | round | int %}
 {% endif %}
+
+{# Defensive narrowing: old payloads may include mastered city-high-frequency items in
+   overlap_items. The visible overlap list must follow overlap_count's contract:
+   student weak points intersecting city TopN only. #}
+{% set overlap_display_items = [] %}
+{% for item in items %}
+  {% set item_gap = item.delta_vs_target if item.delta_vs_target is defined else item.gap_to_target | default(none) %}
+  {% if item_gap is not none and item_gap < 0 and (overlap_count <= 0 or overlap_display_items | length < overlap_count) %}
+    {% set _ = overlap_display_items.append(item) %}
+  {% endif %}
+{% endfor %}
+{% set has_overlap_items = overlap_display_items | length > 0 %}
 {% set overlap_names = [] %}
-{% for item in items[:3] %}
+{% for item in overlap_display_items[:3] %}
   {% if item.kp_name %}{% set _ = overlap_names.append(item.kp_name) %}{% endif %}
 {% endfor %}
 
-<div class="m5-city-compare{% if items | length >= long_item_threshold %} m5-city-compare--long{% endif %}">
+<style>
+  .m5-city-compare__acc-list { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #d8dee8; }
+  .m5-city-compare__acc-list-title { font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 10px; }
+  .m5-city-compare__acc-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+  .m5-city-compare__acc-rank { flex: 0 0 auto; min-width: 26px; text-align: center; }
+  .m5-city-compare__acc-name { flex: 0 0 168px; font-size: 12px; color: #34404e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .m5-city-compare__acc-bar { flex: 1 1 auto; height: 12px; background: #eef1f5; border-radius: 6px; overflow: hidden; }
+  .m5-city-compare__acc-bar-fill { display: block; height: 100%; background: #4a90d9; border-radius: 6px; }
+  .m5-city-compare__acc-bar-fill--weak { background: #e0584a; }
+  .m5-city-compare__acc-val { flex: 0 0 52px; text-align: right; font-size: 12px; font-weight: 600; color: #34404e; }
+  .m5-city-compare__acc-row--weak .m5-city-compare__acc-name,
+  .m5-city-compare__acc-row--weak .m5-city-compare__acc-val { color: #c0392b; }
+  .m5-city-compare__acc-untested { color: #9aa3ad; font-weight: 400; }
+  .m5-city-compare__acc-note { font-size: 11px; color: #8893a0; margin-top: 8px; }
+</style>
+<div class="m5-city-compare{% if overlap_display_items | length >= long_item_threshold %} m5-city-compare--long{% endif %}">
 
   {# ============================================================
      PART 1: 标题 + 一句话概述 (在卡片外)
@@ -263,66 +293,50 @@
   {# ----------------------
      表格：重合知识点清单（先看具体知识点）
      ---------------------- #}
-  {% if has_overlap_items %}
+  {% if has_city_top %}
   <section class="m5-city-compare__table-section">
-    <div class="m5-city-compare__table-title">{{ lb_icon('paper', 'frame-inline-icon') }} 一、重合知识点清单</div>
+    <div class="m5-city-compare__table-title">{{ lb_icon('paper', 'frame-inline-icon') }} 一、{{ city_name }}市高频 Top{{ city_top_items | length }} 重点</div>
 
     <table class="m5-city-compare__table">
       <thead>
         <tr>
           <th class="m5-city-compare__table th--center" style="width: 70px;">城市排名</th>
           <th style="width: auto;">知识点</th>
-          <th class="m5-city-compare__table th--right" style="width: 100px;">正确率</th>
-          <th class="m5-city-compare__table th--right" style="width: 90px;">距目标</th>
-          <th class="m5-city-compare__table th--center" style="width: 90px;">重要性</th>
+          <th class="m5-city-compare__table th--center" style="width: 90px;">重要度</th>
+          <th class="m5-city-compare__table th--center" style="width: 150px;">高频标签</th>
         </tr>
       </thead>
       <tbody>
-        {% for item in items %}
+        {% for item in city_top_items %}
         <tr>
           <td class="m5-city-compare__table td--center">
-            {% set badge_class = item.rank_badge_class | default(get_rank_badge_class(item.city_rank)) %}
-            <span class="m5-city-compare__rank-badge m5-city-compare__rank-badge--{{ badge_class }}">
+            <span class="m5-city-compare__rank-badge m5-city-compare__rank-badge--{{ item.rank_badge_class | default('blue') }}">
               {{ item.city_rank | default('--') }}
             </span>
           </td>
           <td>
             <div class="m5-city-compare__kp-name">{{ item.kp_name | default('--') }}</div>
-            {% if item.tags and item.tags | length > 0 %}
-            <div class="m5-city-compare__tags">
-              {% for tag in item.tags %}
-                {% if '必考' in tag or '高频' in tag %}
-                <span class="m5-city-compare__tag m5-city-compare__tag--highlight">{{ tag }}</span>
-                {% elif '急需' in tag or '薄弱' in tag %}
-                <span class="m5-city-compare__tag m5-city-compare__tag--warning">{{ tag }}</span>
-                {% else %}
-                <span class="m5-city-compare__tag">{{ tag }}</span>
-                {% endif %}
-              {% endfor %}
-            </div>
-            {% endif %}
-          </td>
-          <td class="m5-city-compare__table td--right">
-            {{ safe_value(item.student_accuracy, '%') }}
-          </td>
-          <td class="m5-city-compare__table td--right">
-            {% set gap_val = item.delta_vs_target if item.delta_vs_target is defined else item.gap_to_target | default(0) %}
-            {% set gap_class = item.gap_class | default(get_gap_class(gap_val)) %}
-            <span class="m5-city-compare__val--{{ gap_class }}">
-              {{ safe_signed_value(gap_val) }}
-            </span>
           </td>
           <td class="m5-city-compare__table td--center">
             <span class="m5-city-compare__weight-badge m5-city-compare__weight-badge--{{ item.score_weight_class | default('mid') }}">
               {{ item.score_weight | default('中') }}
             </span>
           </td>
+          <td class="m5-city-compare__table td--center">
+            {% if item.tags and item.tags | length > 0 %}
+              {% for tag in item.tags %}
+              <span class="m5-city-compare__tag m5-city-compare__tag--highlight">{{ tag }}</span>
+              {% endfor %}
+            {% else %}
+              <span class="m5-city-compare__tag">—</span>
+            {% endif %}
+          </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
     <div class="m5-city-compare__table-note">
-      重要性：综合历年真题出题频率、分值占比、难度评定
+      重要度：综合历年真题出题频率、分值占比、难度评定；本表为{{ city_name }}市历年高频考点 Top{{ city_top_items | length }}（城市维度，与个人作答无关）
     </div>
   </section>
   {% endif %}
@@ -374,6 +388,28 @@
         </div>
       </div>
     </div>
+
+    {# NEW 2026-06-09: 学生在城市 Top15 高频考点上的逐点正确率 #}
+    {% if has_city_top %}
+    <div class="m5-city-compare__acc-list">
+      <div class="m5-city-compare__acc-list-title">
+        你在{{ city_name }}市高频 Top{{ city_top_items | length }} 考点上的正确率{% if summary.city_top_avg_accuracy is not none %}（已测点平均 {{ summary.city_top_avg_accuracy }}%）{% endif %}
+      </div>
+      {% for item in city_top_items %}
+      <div class="m5-city-compare__acc-row{% if item.is_weak %} m5-city-compare__acc-row--weak{% endif %}">
+        <span class="m5-city-compare__rank-badge m5-city-compare__rank-badge--{{ item.rank_badge_class | default('blue') }} m5-city-compare__acc-rank">{{ item.city_rank | default('--') }}</span>
+        <span class="m5-city-compare__acc-name">{{ item.kp_name | default('--') }}</span>
+        <span class="m5-city-compare__acc-bar">
+          {% if item.tested %}
+          <span class="m5-city-compare__acc-bar-fill{% if item.is_weak %} m5-city-compare__acc-bar-fill--weak{% endif %}" style="width: {{ item.student_accuracy }}%;"></span>
+          {% endif %}
+        </span>
+        <span class="m5-city-compare__acc-val">{% if item.tested %}{{ item.student_accuracy }}%{% else %}<span class="m5-city-compare__acc-untested">未测</span>{% endif %}</span>
+      </div>
+      {% endfor %}
+      <div class="m5-city-compare__acc-note">红色 = 低于目标线的薄弱高频点（优先攻克）；“未测” = 本次未覆盖该考点。</div>
+    </div>
+    {% endif %}
   </section>
   </section><!-- /.m5-city-compare__part--data -->
   {% endif %}

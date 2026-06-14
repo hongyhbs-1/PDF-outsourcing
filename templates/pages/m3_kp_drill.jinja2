@@ -17,7 +17,7 @@
  #
  # {
  #   "header": {
- #     "left_text": "基线定位分析报告（数学）",
+ #     "left_text": "学情透视分析报告（数学）",
  #     "right_text": "报告日期：2025.06.05"
  #   },
  #   "module_title": "知识点短板钻取",
@@ -186,9 +186,9 @@
   {%- elif delta < 0 -%}
     差{{ format_percent_value(0 - delta, "") }}
   {%- elif delta > 0 -%}
-    超{{ format_percent_value(delta, "") }}
+    {%- if target_reliable | default(true) -%}超{{ format_percent_value(delta, "") }}{%- else -%}估算+{{ format_percent_value(delta, "") }}{%- endif -%}
   {%- else -%}
-    达标
+    {%- if target_reliable | default(true) -%}达标{%- else -%}估算线{%- endif -%}
   {%- endif -%}
 {%- endmacro %}
 
@@ -303,6 +303,15 @@
 
 {# 获取模块数据，支持多种数据路径 #}
 {% set data = section_3_kp_drill | default(kp_drill, true) | default({}, true) %}
+{% set summary_data = summary | default({}, true) %}
+{% set target_reliable = summary_data.target_judgement_reliable | default(meta.target_judgement_reliable | default(true)) %}
+{% set target_estimate_text = summary_data.target_estimate_text | default(meta.target_estimate_text | default('目标线为估算（本次未获取试卷满分，按默认 ' ~ (meta.full_score | default('--')) ~ ' 分折算）')) %}
+{% set m3_target_accuracy = data.target_accuracy | default(summary_data.target_accuracy | default(meta.target_accuracy | default(75, true), true), true) | float %}
+{% set m3_target_text = (m3_target_accuracy | round(0) | int) ~ '%' if m3_target_accuracy == (m3_target_accuracy | round(0)) else (m3_target_accuracy | round(1)) ~ '%' %}
+{% set m3_attention_floor = ([60, m3_target_accuracy - 15] | max) | round(0) | int %}
+{% if m3_attention_floor >= m3_target_accuracy %}
+  {% set m3_attention_floor = ([0, m3_target_accuracy - 1] | max) | round(0) | int %}
+{% endif %}
 
 {# 提取各部分数据 #}
 {% set header = data.header | default({}, true) %}
@@ -401,7 +410,7 @@
         {% else %}
           本页用于展示从领域到知识点细节的掌握情况；
         {% endif %}
-        {% if drill_nodata_names | length > 0 %}另有 {{ drill_nodata_names | length }} 个领域样本不足，需补充答题记录后再做细颗粒诊断。{% else %}下方按领域展示未达标与已达标明细，颜色区分状态，便于安排专项补强。{% endif %}
+        {% if drill_nodata_names | length > 0 %}另有 {{ drill_nodata_names | length }} 个领域样本不足，需补充答题记录后再做细颗粒诊断。{% else %}{% if target_reliable %}下方按领域展示未达标与已达标明细，颜色区分状态，便于安排专项补强。{% else %}{{ target_estimate_text }}；下方仅展示相对估算线的位置，暂不下达目标完成结论。{% endif %}{% endif %}
       </div>
     </section>
 
@@ -625,7 +634,11 @@
         {% endfor %}
 
         {% set domain_status = 'achieved' if row_ns.unmet == 0 else ('danger' if row_ns.danger > 0 else 'attention') %}
-        {% set domain_status_text = '✓ 全部达标' if domain_status == 'achieved' else ('△ 需重点突破' if domain_status == 'danger' else '△ 有提升空间') %}
+        {% if not target_reliable and domain_status == 'achieved' %}
+          {% set domain_status_text = '估算线以上' %}
+        {% else %}
+          {% set domain_status_text = '✓ 全部达标' if domain_status == 'achieved' else ('△ 需重点突破' if domain_status == 'danger' else '△ 有提升空间') %}
+        {% endif %}
 
         <div class="m3-kp-drill__panel m3-kp-diagnostic-card m3-kp-diagnostic-card--{{ domain_status }}" data-domain-code="{{ d_code }}" data-domain-name="{{ d_name }}">
           <div class="m3-kp-diagnostic-card__header">
@@ -658,7 +671,7 @@
 
             {% if row_ns.achieved > 0 %}
             <div class="m3-kp-diagnosis-group">
-              <div class="m3-kp-diagnosis-group__title m3-kp-diagnosis-group__title--achieved">✓ 已达标</div>
+              <div class="m3-kp-diagnosis-group__title m3-kp-diagnosis-group__title--achieved">{% if target_reliable %}✓ 已达标{% else %}估算线以上{% endif %}</div>
               {% for row in row_ns.items %}
                 {% set it = row.item %}
                 {% set delta = it.delta_vs_target if it.delta_vs_target is defined else it.gap_to_target | default(none) %}
@@ -694,14 +707,14 @@
       <div class="m3-kp-drill__grid">
         <div class="m3-kp-diagnosis-header">
           <div class="m3-kp-diagnosis-header__subtitle">
-            基于答题数据，按「领域→模块→知识点」三层定位掌握情况，目标线为 75%。
+            基于答题数据，按「领域→模块→知识点」三层定位掌握情况，目标线为 {{ m3_target_text }}。{% if not target_reliable %}{{ target_estimate_text }}。{% endif %}
             {% if focus_ns.names | length > 0 %}建议优先突破 <strong>{{ focus_ns.names | join('、') }}</strong>。{% else %}当前展示领域整体掌握稳定，建议继续保持。{% endif %}
           </div>
           <div class="m3-kp-status-legend">
             <span class="m3-kp-status-legend__label">正确率状态：</span>
-            <span class="m3-kp-status-legend__item"><i class="m3-kp-status-dot m3-kp-status-dot--danger"></i>差距较大（&lt;60%）</span>
-            <span class="m3-kp-status-legend__item"><i class="m3-kp-status-dot m3-kp-status-dot--attention"></i>有待提升（60-75%）</span>
-            <span class="m3-kp-status-legend__item"><i class="m3-kp-status-dot m3-kp-status-dot--achieved"></i>已达标（≥75%）</span>
+            <span class="m3-kp-status-legend__item"><i class="m3-kp-status-dot m3-kp-status-dot--danger"></i>差距较大（&lt;{{ m3_attention_floor }}%）</span>
+            <span class="m3-kp-status-legend__item"><i class="m3-kp-status-dot m3-kp-status-dot--attention"></i>有待提升（{{ m3_attention_floor }}-{{ m3_target_text }}）</span>
+            <span class="m3-kp-status-legend__item"><i class="m3-kp-status-dot m3-kp-status-dot--achieved"></i>{% if target_reliable %}已达标{% else %}估算线以上{% endif %}（≥{{ m3_target_text }}）</span>
           </div>
         </div>
         <div class="m3-kp-drill__panel-card">

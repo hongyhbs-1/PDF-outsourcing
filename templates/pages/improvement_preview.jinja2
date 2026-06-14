@@ -6,17 +6,22 @@
 {% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
 {% set acc = summary.current_accuracy | default(0) | float %}
 {% set target_acc = summary.target_accuracy | default(85) | float %}
+{% set acc_text = summary.current_accuracy_text | default((acc | round(1)) ~ '%', true) %}
+{% set target_acc_text = summary.target_accuracy_text | default((target_acc | round(1)) ~ '%', true) %}
+{% set target_reliable = summary.target_judgement_reliable | default(meta.target_judgement_reliable | default(true)) %}
+{% set target_estimate_text = summary.target_estimate_text | default(meta.target_estimate_text | default('目标线为估算（本次未获取试卷满分，按默认 ' ~ (meta.full_score | default('--')) ~ ' 分折算）')) %}
 {% set delta = summary.current_delta | default(0) | float %}
 {% set student_name = meta.student_display_name | default('同学') %}
 {% set subject = meta.subject_name | default('') %}
-{% set target_reached = target_acc > 0 and acc >= target_acc %}
-{% set stretch_acc = ([100, [target_acc + 10, acc + 5] | max] | min) | round(0, 'ceil') | int %}
+{% set target_reached = target_reliable and target_acc > 0 and acc >= target_acc %}
+{% set acc_ceiling = 98 %}
+{% set stretch_acc = ([acc_ceiling, [target_acc + 10, acc + 5] | max] | min) | round(0, 'ceil') | int %}
 {% if stretch_acc <= acc %}
-  {% set stretch_acc = ([100, acc + 1] | min) | round(0, 'ceil') | int %}
+  {% set stretch_acc = ([acc_ceiling, acc + 1] | min) | round(0, 'ceil') | int %}
 {% endif %}
-{% set stretch_target_acc = ([100, [stretch_acc + 5, acc + 10] | max] | min) | round(0, 'ceil') | int %}
+{% set stretch_target_acc = ([acc_ceiling, [stretch_acc + 5, acc + 10] | max] | min) | round(0, 'ceil') | int %}
 {% if stretch_target_acc <= stretch_acc %}
-  {% set stretch_target_acc = ([100, stretch_acc + 1] | min) | round(0, 'ceil') | int %}
+  {% set stretch_target_acc = ([acc_ceiling, stretch_acc + 1] | min) | round(0, 'ceil') | int %}
 {% endif %}
 {# Roadmap checkpoints must remain below the final target; sample 06 uses target_acc=75. #}
 {% set target_gap = target_acc - acc %}
@@ -56,15 +61,18 @@
 {% if room_boost_acc < acc %}
   {% set room_boost_acc = acc | round(0, 'ceil') | int %}
 {% endif %}
-{% set show_room_boost_stage = target_gap >= 2 and room_boost_acc > acc and room_boost_acc < target_acc %}
+{% set show_room_boost_stage = target_gap >= 1 and room_boost_acc > acc and room_boost_acc < target_acc %}
 
 {# --- 三档分类 (与 student_profile 保持一致)：已达到目标线时进入保持/拔高路径，不再把较低目标线画成后续“目标达成” --- #}
-{% if target_reached or acc >= 85 %}
+{% if target_reached %}
   {% set tier = 'excellent' %}
 {% elif acc < 60 %}
   {% set tier = 'need_major' %}
 {% else %}
   {% set tier = 'room_grow' %}
+{% endif %}
+{% if not target_reliable %}
+  {% set tier = 'estimated' %}
 {% endif %}
 
 {# --- 提取薄弱领域用于提升点 --- #}
@@ -90,7 +98,12 @@
   </div>
 
   {# === 0.1 本阶段介入重点（从学生画像迁移） === #}
-  {% if weak_items | length > 0 %}
+  {% if not target_reliable %}
+  <div class="ip-intervention-bar">
+    <span class="ip-intervention-bar__label">{{ lb_icon('target', 'frame-inline-icon') }}目标线说明：</span>
+    <span class="ip-intervention-bar__text">{{ target_estimate_text }}，本页暂不判断是否达成目标。</span>
+  </div>
+  {% elif weak_items | length > 0 %}
   <div class="ip-intervention-bar">
     <span class="ip-intervention-bar__label">{{ lb_icon('target', 'frame-inline-icon') }}本阶段介入重点：</span>
     <span class="ip-intervention-bar__text">主攻 {{ ip_lead }}{% if weak_items | length > 1 %}，跟进 {{ ip_secondary }}{% endif %}，巩固优势领域</span>
@@ -99,10 +112,21 @@
 
   {# === 1. 提升路径概览 (三阶段) === #}
   <div class="ip-roadmap">
-    {% if tier == 'need_major' %}
+    {% if tier == 'estimated' %}
+    <div class="ip-stage ip-stage--current">
+      <div class="ip-stage__marker ip-stage__marker--current">{{ acc_text }}</div>
+      <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
+    </div>
+    <div class="ip-stage ip-stage--target">
+      <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc_text }}</div>
+      <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon ip-stage-icon--target') }}估算目标线</div>
+      <div class="ip-stage__desc">待满分确认</div>
+    </div>
+
+    {% elif tier == 'need_major' %}
     {# 差生路径: 当前→60天→中等→90天→目标 #}
     <div class="ip-stage ip-stage--current">
-      <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
+      <div class="ip-stage__marker ip-stage__marker--current">{{ acc_text }}</div>
       <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
     </div>
     {% if show_foundation_stage %}
@@ -120,7 +144,7 @@
     </div>
     {% endif %}
     <div class="ip-stage ip-stage--target">
-      <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
+      <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc_text }}</div>
       <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon ip-stage-icon--target') }}目标达成</div>
       <div class="ip-stage__desc">约 180 天</div>
     </div>
@@ -128,7 +152,7 @@
     {% elif tier == 'room_grow' %}
     {# 中等生路径: 当前→30天→目标 #}
     <div class="ip-stage ip-stage--current">
-      <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
+      <div class="ip-stage__marker ip-stage__marker--current">{{ acc_text }}</div>
       <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
     </div>
     {% if show_room_boost_stage %}
@@ -139,7 +163,7 @@
     </div>
     {% endif %}
     <div class="ip-stage ip-stage--target">
-      <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
+      <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc_text }}</div>
       <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon ip-stage-icon--target') }}目标达成</div>
       <div class="ip-stage__desc">约 60 天</div>
     </div>
@@ -147,7 +171,7 @@
     {% else %}
     {# 已达标/优等生路径: 当前→保持→冲刺；所有后续节点都应高于当前水平 #}
     <div class="ip-stage ip-stage--current">
-      <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
+      <div class="ip-stage__marker ip-stage__marker--current">{{ acc_text }}</div>
       <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前</div>
       <div class="ip-stage__desc">{% if target_reached %}已达标{% else %}优秀{% endif %}</div>
     </div>
@@ -170,7 +194,19 @@
   <div class="ip-milestones">
     <div class="ip-section-heading">{{ lb_icon('growth', 'frame-section-icon frame-section-icon--success') }}二、提升路线</div>
 
-    {% if tier == 'need_major' %}
+    {% if tier == 'estimated' %}
+    <div class="ip-milestone">
+      <div class="ip-milestone__phase">
+        <div class="ip-milestone__phase-label">复核前</div>
+        <div class="ip-milestone__phase-time">先确认满分</div>
+      </div>
+      <div class="ip-milestone__body">
+        <div class="ip-milestone__title">目标线复核</div>
+        <p class="ip-milestone__text">{{ target_estimate_text }}。当前先按 <strong class="ip-milestone__highlight">{{ acc_text }}</strong> 的实际表现梳理薄弱点，待满分补齐后再判断目标差距。</p>
+      </div>
+    </div>
+
+    {% elif tier == 'need_major' %}
     {% if show_foundation_stage %}
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
@@ -179,7 +215,7 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">基础夯实期</div>
-        <p class="ip-milestone__text">集中补强薄弱领域的基础知识，通过 dida985 每日推送的针对性练习，预计可将正确率从 <strong class="ip-milestone__highlight">{{ acc | int }}%</strong> 提升至 <strong class="ip-milestone__highlight">{{ foundation_acc }}%</strong> 左右。</p>
+        <p class="ip-milestone__text">集中补强薄弱领域的基础知识，通过 dida985 每日推送的针对性练习，预计可将正确率从 <strong class="ip-milestone__highlight">{{ acc_text }}</strong> 提升至 <strong class="ip-milestone__highlight">{{ foundation_acc }}%</strong> 左右。</p>
       </div>
     </div>
     {% endif %}
@@ -202,7 +238,7 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">目标冲刺期</div>
-        <p class="ip-milestone__text">全面综合训练，模拟考试环境，追求 <strong class="ip-milestone__highlight">{{ target_acc | int }}%</strong> 的目标正确率。</p>
+        <p class="ip-milestone__text">全面综合训练，模拟考试环境，追求 <strong class="ip-milestone__highlight">{{ target_acc_text }}</strong> 的目标正确率。</p>
       </div>
     </div>
 
@@ -226,7 +262,7 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">目标冲刺</div>
-        <p class="ip-milestone__text">全面巩固，消灭偶发失误，稳定达到 <strong class="ip-milestone__highlight">{{ target_acc | int }}%</strong> 的目标正确率。</p>
+        <p class="ip-milestone__text">全面巩固，消灭偶发失误，稳定达到 <strong class="ip-milestone__highlight">{{ target_acc_text }}</strong> 的目标正确率。</p>
       </div>
     </div>
 
@@ -238,7 +274,7 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">细节优化</div>
-        <p class="ip-milestone__text">当前已达到 <strong class="ip-milestone__highlight">{{ target_acc | int }}%</strong> 的本次目标线，接下来针对个别偶发失误点进行定向强化，保持高水准的同时进一步提升到 <strong class="ip-milestone__highlight">{{ stretch_acc }}%</strong>。</p>
+        <p class="ip-milestone__text">当前已达到 <strong class="ip-milestone__highlight">{{ target_acc_text }}</strong> 的本次目标线，接下来针对个别偶发失误点进行定向强化，保持高水准的同时进一步提升到 <strong class="ip-milestone__highlight">{{ stretch_acc }}%</strong>。</p>
       </div>
     </div>
     <div class="ip-milestone">
@@ -262,7 +298,7 @@
       {% for item in weak_items[:4] %}
       <div class="ip-focus-item">
         <div class="ip-focus-item__name">{{ lb_icon('target', 'frame-inline-icon') }}{{ item.name_cn | default('领域' ~ loop.index) }}</div>
-        <div class="ip-focus-item__gain">+{{ (target_acc - (item.accuracy | default(0) | float)) | int }}%</div>
+        <div class="ip-focus-item__gain">+{{ (target_acc - (item.accuracy | default(0) | float)) | round(1) }}%</div>
         <div class="ip-focus-item__label">预期提升空间</div>
       </div>
       {% endfor %}
@@ -272,7 +308,33 @@
 
   {# === 4. 阶段目标 + 验收标准 + 训练重点 (三栏) === #}
   <div class="ip-phase-grid">
-    {% if tier == 'need_major' %}
+    {% if tier == 'estimated' %}
+    <div class="ip-phase-card">
+      <div class="ip-phase-card__header">{{ lb_icon('flag', 'frame-card-icon') }}阶段目标</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">确认试卷满分后复核目标线</div>
+        <div class="ip-phase-card__item">先围绕薄弱领域安排训练</div>
+        <div class="ip-phase-card__item">保留当前正确率作为过程参考</div>
+      </div>
+    </div>
+    <div class="ip-phase-card">
+      <div class="ip-phase-card__header">{{ lb_icon('teacher', 'frame-card-icon') }}训练重点</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">优先处理最低正确率领域</div>
+        <div class="ip-phase-card__item">复盘错题原因和同类变形</div>
+        <div class="ip-phase-card__item">补齐满分后重新确认目标线</div>
+      </div>
+    </div>
+    <div class="ip-phase-card ip-phase-card--accent">
+      <div class="ip-phase-card__header">{{ lb_icon('shield', 'frame-card-icon frame-card-icon--success') }}验收标准</div>
+      <div class="ip-phase-card__body">
+        <div class="ip-phase-card__item">满分字段已补齐</div>
+        <div class="ip-phase-card__item">目标正确率重新计算</div>
+        <div class="ip-phase-card__item">再输出目标差距判断</div>
+      </div>
+    </div>
+
+    {% elif tier == 'need_major' %}
     <div class="ip-phase-card">
       <div class="ip-phase-card__header">{{ lb_icon('flag', 'frame-card-icon') }}阶段目标</div>
       <div class="ip-phase-card__body">
@@ -302,7 +364,7 @@
     <div class="ip-phase-card">
       <div class="ip-phase-card__header">{{ lb_icon('flag', 'frame-card-icon') }}阶段目标</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">正确率提升至 <strong>{{ target_acc | int }}%</strong></div>
+        <div class="ip-phase-card__item">正确率提升至 <strong>{{ target_acc_text }}</strong></div>
         <div class="ip-phase-card__item">薄弱领域全部达标</div>
         <div class="ip-phase-card__item">中等难度题正确率 <strong>≥85%</strong></div>
       </div>
@@ -353,17 +415,21 @@
   </div>
 
   {# === 底部总结 === #}
-  {% if tier == 'need_major' %}
+  {% if tier == 'estimated' %}
   <div class="ip-summary-bar">
-    坚持使用 dida985 训练 <strong>180 天</strong>，预计从 {{ acc | int }}% 提升至 <strong>{{ target_acc | int }}%</strong>，提升幅度达 <strong>{{ (target_acc - acc) | int }}%</strong>
+    {{ target_estimate_text }}；本页只给训练方向参考，暂不下达目标完成结论。
+  </div>
+  {% elif tier == 'need_major' %}
+  <div class="ip-summary-bar">
+    坚持 <strong>180 天</strong> 有规律学习，预计从 {{ acc_text }} 提升至 <strong>{{ target_acc_text }}</strong>
   </div>
   {% elif tier == 'room_grow' %}
   <div class="ip-summary-bar">
-    坚持使用 dida985 训练 <strong>60 天</strong>，预计从 {{ acc | int }}% 提升至 <strong>{{ target_acc | int }}%</strong>，提升幅度达 <strong>{{ (target_acc - acc) | int }}%</strong>
+    坚持 <strong>60 天</strong> 有规律学习，预计从 {{ acc_text }} 提升至 <strong>{{ target_acc_text }}</strong>
   </div>
   {% else %}
   <div class="ip-summary-bar">
-    当前已达到 <strong>{{ target_acc | int }}%</strong> 的本次目标线；继续通过 dida985 的进阶训练，从 {{ acc | int }}% 稳步提升至 <strong>{{ stretch_target_acc }}%+</strong>，追求极致
+    当前已达到 <strong>{{ target_acc_text }}</strong> 的本次目标线；继续通过 dida985 的进阶训练，从 {{ acc_text }} 稳步提升至 <strong>{{ stretch_target_acc }}%+</strong>，追求极致
   </div>
   {% endif %}
 
@@ -371,7 +437,11 @@
   <div class="ip-parent-guide">
     <div class="ip-parent-guide__title">{{ lb_icon('parent', 'frame-section-icon') }}四、家长行动指南</div>
     <div class="ip-parent-guide__content">
-      {% if tier == 'need_major' %}
+      {% if tier == 'estimated' %}
+      <p>1. 先确认本次试卷满分，避免把估算目标线当作正式结论；</p>
+      <p>2. 在复核前，重点关注报告中列出的薄弱领域和错题原因；</p>
+      <p>3. 满分补齐后，再与老师一起确认目标差距和训练节奏。</p>
+      {% elif tier == 'need_major' %}
       <p>1. 每日监督孩子完成 <strong>15 分钟</strong>基础专项训练，确保不中断；</p>
       <p>2. 每周查看 dida985 学习报告，关注薄弱领域正确率变化；</p>
       <p>3. 配合错题精讲环节，帮助孩子理解错误原因而非只记答案；</p>
