@@ -1,0 +1,54 @@
+.teacher-cta-card {
+  width: min(760px, 100%);
+  margin: 44mm auto 0;
+  padding: 28mm 24mm 24mm;
+  border: 1px solid #d7dee8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #263341;
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(38, 51, 65, 0.08);
+}
+
+.teacher-cta-card__eyebrow {
+  margin: 0 0 12mm;
+  color: #5c6f82;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.teacher-cta-card__title {
+  margin: 0;
+  color: #1e2b38;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.38;
+  letter-spacing: 0;
+}
+
+.teacher-cta-card__divider {
+  width: 64px;
+  height: 3px;
+  margin: 14mm auto 10mm;
+  border-radius: 999px;
+  background: #3f7c9d;
+}
+
+.teacher-cta-card__brand {
+  margin: 0;
+  color: #5c6f82;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+@media print {
+  .teacher-cta-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

@@ -1,0 +1,42 @@
+{#
+================================================================================
+[新增②] 八 · 逐题错因分析 (Per-Question Error Causes) — 逐题分析明细(m9)之后 · 证据页
+渲染字段: per_question_causes[] { no, knowledge, difficulty, cause_l1, cause_l2,
+          student_summary, break_point(可选) }
+仅列错题(有诊断); 答对题不进
+关联CSS: m_per_question_causes.css
+================================================================================
+#}
+{% set rows = per_question_causes | default([], true) %}
+<section class="pqc-page">
+  <header class="pqc-head">
+    <div class="pqc-kicker">证据页 · 紧接「逐题分析明细」</div>
+    <h1 class="pqc-title"><span class="pqc-no">八</span>逐题错因分析</h1>
+    <div class="pqc-rule"></div>
+  </header>
+
+  <p class="pqc-intro">下表逐题列出本次<strong>有明确错因诊断</strong>的题目（共 {{ rows | length }} 题），含知识点、难度、错因类型与学生的具体表现，作为复习的证据支撑。答对题不在此列。</p>
+
+  <table class="pqc-table">
+    <thead>
+      <tr>
+        <th class="pqc-h-no">题号</th>
+        <th class="pqc-h-kp">知识点</th>
+        <th class="pqc-h-diff">难度</th>
+        <th class="pqc-h-cause">错因（大类·细类）</th>
+        <th class="pqc-h-sum">学生具体表现</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td class="pqc-c-no">{{ r.no }}</td>
+        <td class="pqc-c-kp">{{ r.knowledge }}</td>
+        <td class="pqc-c-diff">{{ r.difficulty }}</td>
+        <td class="pqc-c-cause">{{ r.cause_l1 }}{% if r.cause_l2 %}<span class="pqc-c2">{{ r.cause_l2 }}</span>{% endif %}</td>
+        <td class="pqc-c-sum">{{ r.student_summary }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>

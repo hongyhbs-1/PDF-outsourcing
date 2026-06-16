@@ -113,7 +113,7 @@
   {# === 1. 提升路径概览 (三阶段) === #}
   <div class="ip-roadmap">
     {% if tier == 'need_major' %}
-    {# 差生路径: 当前→60天→中等→90天→目标 #}
+    {# 差生路径: 当前→阶段一→中等→阶段二→目标 #}
     <div class="ip-stage ip-stage--current">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
       <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
@@ -122,24 +122,24 @@
     <div class="ip-stage ip-stage--checkpoint">
       <div class="ip-stage__marker ip-stage__marker--future">{{ foundation_acc }}%</div>
       <div class="ip-stage__label">{{ lb_icon('flag', 'frame-inline-icon ip-stage-icon--checkpoint') }}阶段性目标</div>
-      <div class="ip-stage__desc">约 60 天</div>
+      <div class="ip-stage__desc">阶段一·夯实补短</div>
     </div>
     {% endif %}
     {% if show_boost_stage %}
     <div class="ip-stage ip-stage--boost">
       <div class="ip-stage__marker ip-stage__marker--future">{{ boost_acc }}%</div>
       <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}稳步提升</div>
-      <div class="ip-stage__desc">约 120 天</div>
+      <div class="ip-stage__desc">阶段二·综合拔高</div>
     </div>
     {% endif %}
     <div class="ip-stage ip-stage--target">
       <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
       <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon ip-stage-icon--target') }}目标达成</div>
-      <div class="ip-stage__desc">约 180 天</div>
+      <div class="ip-stage__desc">集中冲刺·押题实战</div>
     </div>
 
     {% elif tier == 'room_grow' %}
-    {# 中等生路径: 当前→30天→目标 #}
+    {# 中等生路径: 当前→阶段一→目标 #}
     <div class="ip-stage ip-stage--current">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc | int }}%</div>
       <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
@@ -148,13 +148,13 @@
     <div class="ip-stage ip-stage--boost">
       <div class="ip-stage__marker ip-stage__marker--future">{{ room_boost_acc }}%</div>
       <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}快速提升</div>
-      <div class="ip-stage__desc">约 30 天</div>
+      <div class="ip-stage__desc">阶段一·夯实补短</div>
     </div>
     {% endif %}
     <div class="ip-stage ip-stage--target">
       <div class="ip-stage__marker ip-stage__marker--future">{{ target_acc | int }}%</div>
       <div class="ip-stage__label">{{ lb_icon('target', 'frame-inline-icon ip-stage-icon--target') }}目标达成</div>
-      <div class="ip-stage__desc">约 60 天</div>
+      <div class="ip-stage__desc">集中冲刺·押题实战</div>
     </div>
 
     {% else %}
@@ -168,13 +168,13 @@
       <div class="ip-stage__transition">稳步拔高</div>
       <div class="ip-stage__marker ip-stage__marker--future">{{ stretch_acc }}%</div>
       <div class="ip-stage__label">{{ lb_icon('growth', 'frame-inline-icon ip-stage-icon--boost') }}快速提升</div>
-      <div class="ip-stage__desc">约 30 天</div>
+      <div class="ip-stage__desc">阶段一·夯实补短</div>
     </div>
     <div class="ip-stage ip-stage--target">
       <div class="ip-stage__transition">冲刺突破</div>
       <div class="ip-stage__marker ip-stage__marker--future">{{ stretch_target_acc }}%</div>
       <div class="ip-stage__label">{{ lb_icon('trophy', 'frame-inline-icon ip-stage-icon--target') }}目标达成</div>
-      <div class="ip-stage__desc">约 60 天</div>
+      <div class="ip-stage__desc">集中冲刺·押题实战</div>
     </div>
     {% endif %}
   </div>
@@ -188,11 +188,11 @@
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">第一阶段</div>
-        <div class="ip-milestone__phase-time">0-60天</div>
+        <div class="ip-milestone__phase-time">阶段一·夯实补短</div>
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">基础夯实期</div>
-        <p class="ip-milestone__text">集中补强薄弱领域的基础知识，通过 dida985 每日推送的针对性练习，预计可将正确率从 <strong class="ip-milestone__highlight">{{ acc | int }}%</strong> 提升至 <strong class="ip-milestone__highlight">{{ foundation_acc }}%</strong> 左右。</p>
+        <p class="ip-milestone__text">集中补强薄弱领域的基础知识，通过 dida985 阶段一内每日推送的针对性练习，预计可将正确率从 <strong class="ip-milestone__highlight">{{ acc | int }}%</strong> 提升至 <strong class="ip-milestone__highlight">{{ foundation_acc }}%</strong> 左右。</p>
       </div>
     </div>
     {% endif %}
@@ -200,7 +200,7 @@
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">第二阶段</div>
-        <div class="ip-milestone__phase-time">60-120天</div>
+        <div class="ip-milestone__phase-time">阶段二·综合拔高</div>
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">能力提升期</div>
@@ -211,7 +211,7 @@
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">第三阶段</div>
-        <div class="ip-milestone__phase-time">120-180天</div>
+        <div class="ip-milestone__phase-time">集中冲刺·押题实战</div>
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">目标冲刺期</div>
@@ -224,7 +224,7 @@
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">第一阶段</div>
-        <div class="ip-milestone__phase-time">0-30天</div>
+        <div class="ip-milestone__phase-time">阶段一·夯实补短</div>
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">薄弱点突破</div>
@@ -235,7 +235,7 @@
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">第二阶段</div>
-        <div class="ip-milestone__phase-time">30-60天</div>
+        <div class="ip-milestone__phase-time">阶段二·综合拔高</div>
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">目标冲刺</div>
@@ -247,7 +247,7 @@
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">保持提升</div>
-        <div class="ip-milestone__phase-time">0-30天</div>
+        <div class="ip-milestone__phase-time">阶段一·夯实补短</div>
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">细节优化</div>
@@ -257,7 +257,7 @@
     <div class="ip-milestone">
       <div class="ip-milestone__phase">
         <div class="ip-milestone__phase-label">冲刺</div>
-        <div class="ip-milestone__phase-time">30-60天</div>
+        <div class="ip-milestone__phase-time">集中冲刺·押题实战</div>
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">满分冲刺</div>
@@ -299,9 +299,9 @@
     <div class="ip-phase-card">
       <div class="ip-phase-card__header">{{ lb_icon('teacher', 'frame-card-icon') }}训练重点</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">每日 <strong>15 分钟</strong>基础专项</div>
+        <div class="ip-phase-card__item">阶段一内每日 <strong>15 分钟</strong>基础专项</div>
         <div class="ip-phase-card__item">错题当日精讲 + 变形练习</div>
-        <div class="ip-phase-card__item">每周 1 次阶段小测</div>
+        <div class="ip-phase-card__item">阶段一结束进行阶段小测</div>
       </div>
     </div>
     <div class="ip-phase-card ip-phase-card--accent">
@@ -325,8 +325,8 @@
     <div class="ip-phase-card">
       <div class="ip-phase-card__header">{{ lb_icon('teacher', 'frame-card-icon') }}训练重点</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">薄弱领域 <strong>每日 20 分钟</strong>专项</div>
-        <div class="ip-phase-card__item">每两周 1 次诊断测评</div>
+        <div class="ip-phase-card__item">薄弱领域阶段一内 <strong>每日 20 分钟</strong>专项</div>
+        <div class="ip-phase-card__item">阶段二结束进行综合诊断</div>
         <div class="ip-phase-card__item">做题顺序和时间分配训练</div>
       </div>
     </div>
@@ -351,7 +351,7 @@
     <div class="ip-phase-card">
       <div class="ip-phase-card__header">{{ lb_icon('teacher', 'frame-card-icon') }}训练重点</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">竞赛级题目每日 <strong>2-3 题</strong></div>
+        <div class="ip-phase-card__item">阶段一内竞赛级题目每日 <strong>2-3 题</strong></div>
         <div class="ip-phase-card__item">模拟考试环境限时训练</div>
         <div class="ip-phase-card__item">个别失误点定向强化</div>
       </div>
@@ -387,17 +387,17 @@
     <div class="ip-parent-guide__title">{{ lb_icon('parent', 'frame-section-icon') }}四、家长行动指南</div>
     <div class="ip-parent-guide__content">
       {% if tier == 'need_major' %}
-      <p>1. 每日监督孩子完成 <strong>15 分钟</strong>基础专项训练，确保不中断；</p>
-      <p>2. 每周查看 dida985 学习报告，关注薄弱领域正确率变化；</p>
+      <p>1. 阶段一内每日监督孩子完成 <strong>15 分钟</strong>基础专项训练，确保不中断；</p>
+      <p>2. 每个阶段结束时查看 dida985 学习报告，关注薄弱领域正确率变化；</p>
       <p>3. 配合错题精讲环节，帮助孩子理解错误原因而非只记答案；</p>
-      <p>4. 每 <strong>60 天</strong>与孩子一起回顾阶段性成果，调整学习节奏。</p>
+      <p>4. 每个阶段结束与孩子一起回顾阶段性成果，调整学习节奏。</p>
       {% elif tier == 'room_grow' %}
-      <p>1. 每日安排 <strong>20 分钟</strong>薄弱领域专项训练，保持连续性；</p>
-      <p>2. 每两周查看一次诊断测评结果，跟踪进步趋势；</p>
+      <p>1. 阶段一内每日安排 <strong>20 分钟</strong>薄弱领域专项训练，保持连续性；</p>
+      <p>2. 每个阶段结束时查看诊断测评结果，跟踪进步趋势；</p>
       <p>3. 鼓励孩子总结错题规律，培养自主纠错能力；</p>
       <p>4. 目标达成后及时肯定，帮助孩子建立学习自信。</p>
       {% else %}
-      <p>1. 继续保持每日学习习惯，适当增加挑战题比例；</p>
+      <p>1. 继续保持阶段学习习惯，适当增加挑战题比例；</p>
       <p>2. 关注高难度题目的解题思路，而不仅仅是正确率；</p>
       <p>3. 鼓励孩子参加竞赛或拓展训练，拓宽思维边界；</p>
       <p>4. 定期回顾，确保稳定发挥，避免因疏忽而退步。</p>

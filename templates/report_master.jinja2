@@ -58,6 +58,12 @@ report_master.jinja2 — 报告主入口模板 (v2)
   <div class="module-page module-page--cover">
     {% include 'pages/m0_cover.jinja2' %}
   </div>
+  {# ---- 补短冲刺方案 (封面后, 正文前, 无序号) ---- #}
+  {% if remediation_plan %}
+  <div class="module-page" data-section-key="remediation_plan">
+    {% include 'pages/m_remediation_plan.jinja2' %}
+  </div>
+  {% endif %}
   {% endif %}
   {% if _include_learning_blueprint %}
   {# ---- 学习蓝图第 1 页: 学生学情诊断全景 ---- #}
@@ -125,6 +131,12 @@ report_master.jinja2 — 报告主入口模板 (v2)
     {% include 'pages/m9_question_detail.jinja2' %}
   </div>
   {% endif %}
+  {% endif %}
+  {# ---- 逐题错因分析 (M9后, 无序号) ---- #}
+  {% if per_question_causes %}
+  <div class="module-page" data-section-key="per_question_causes">
+    {% include 'pages/m_per_question_causes.jinja2' %}
+  </div>
   {% endif %}
   {# ---- 英语作文/阅读家长版占位提示: 深度讲解由老师精讲 ---- #}
   {% if _show_english_teacher_note %}
