@@ -124,7 +124,7 @@
     </div>
 
     {% elif tier == 'need_major' %}
-    {# 差生路径: 当前→60天→中等→90天→目标 #}
+    {# 差生路径: 当前→阶段一·夯实补短→中等→阶段二·综合拔高→目标 #}
     <div class="ip-stage ip-stage--current">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc_text }}</div>
       <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
@@ -150,7 +150,7 @@
     </div>
 
     {% elif tier == 'room_grow' %}
-    {# 中等生路径: 当前→30天→目标 #}
+    {# 中等生路径: 当前→阶段一·夯实补短→目标 #}
     <div class="ip-stage ip-stage--current">
       <div class="ip-stage__marker ip-stage__marker--current">{{ acc_text }}</div>
       <div class="ip-stage__label">{{ lb_icon('gauge', 'frame-inline-icon ip-stage-icon--current') }}当前水平</div>
@@ -215,7 +215,7 @@
       </div>
       <div class="ip-milestone__body">
         <div class="ip-milestone__title">基础夯实期</div>
-        <p class="ip-milestone__text">集中补强薄弱领域的基础知识，通过 dida985 每日推送的针对性练习，预计可将正确率从 <strong class="ip-milestone__highlight">{{ acc_text }}</strong> 提升至 <strong class="ip-milestone__highlight">{{ foundation_acc }}%</strong> 左右。</p>
+        <p class="ip-milestone__text">集中补强薄弱领域的基础知识，通过 dida985 阶段一内推送的针对性练习，预计可将正确率从 <strong class="ip-milestone__highlight">{{ acc_text }}</strong> 提升至 <strong class="ip-milestone__highlight">{{ foundation_acc }}%</strong> 左右。</p>
       </div>
     </div>
     {% endif %}
@@ -346,9 +346,9 @@
     <div class="ip-phase-card">
       <div class="ip-phase-card__header">{{ lb_icon('teacher', 'frame-card-icon') }}训练重点</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">每日 <strong>15 分钟</strong>基础专项</div>
+        <div class="ip-phase-card__item">阶段一内 <strong>15 分钟</strong>基础专项</div>
         <div class="ip-phase-card__item">错题当日精讲 + 变形练习</div>
-        <div class="ip-phase-card__item">每周 1 次阶段小测</div>
+        <div class="ip-phase-card__item">阶段一末 1 次阶段小测</div>
       </div>
     </div>
     <div class="ip-phase-card ip-phase-card--accent">
@@ -372,8 +372,8 @@
     <div class="ip-phase-card">
       <div class="ip-phase-card__header">{{ lb_icon('teacher', 'frame-card-icon') }}训练重点</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">薄弱领域 <strong>每日 20 分钟</strong>专项</div>
-        <div class="ip-phase-card__item">每两周 1 次诊断测评</div>
+        <div class="ip-phase-card__item">薄弱领域 <strong>阶段一内 20 分钟</strong>专项</div>
+        <div class="ip-phase-card__item">阶段一末 1 次诊断测评</div>
         <div class="ip-phase-card__item">做题顺序和时间分配训练</div>
       </div>
     </div>
@@ -398,7 +398,7 @@
     <div class="ip-phase-card">
       <div class="ip-phase-card__header">{{ lb_icon('teacher', 'frame-card-icon') }}训练重点</div>
       <div class="ip-phase-card__body">
-        <div class="ip-phase-card__item">竞赛级题目每日 <strong>2-3 题</strong></div>
+        <div class="ip-phase-card__item">竞赛级题目阶段二内 <strong>2-3 题</strong></div>
         <div class="ip-phase-card__item">模拟考试环境限时训练</div>
         <div class="ip-phase-card__item">个别失误点定向强化</div>
       </div>
@@ -442,20 +442,20 @@
       <p>2. 在复核前，重点关注报告中列出的薄弱领域和错题原因；</p>
       <p>3. 满分补齐后，再与老师一起确认目标差距和训练节奏。</p>
       {% elif tier == 'need_major' %}
-      <p>1. 每日监督孩子完成 <strong>15 分钟</strong>基础专项训练，确保不中断；</p>
-      <p>2. 每周查看 dida985 学习报告，关注薄弱领域正确率变化；</p>
+      <p>1. 阶段一内监督孩子完成 <strong>15 分钟</strong>基础专项训练，确保不中断；</p>
+      <p>2. 阶段一末查看 dida985 学习报告，关注薄弱领域正确率变化；</p>
       <p>3. 配合错题精讲环节，帮助孩子理解错误原因而非只记答案；</p>
-      <p>4. 每 <strong>60 天</strong>与孩子一起回顾阶段性成果，调整学习节奏。</p>
+      <p>4. 阶段二末与孩子一起回顾阶段性成果，调整学习节奏。</p>
       {% elif tier == 'room_grow' %}
-      <p>1. 每日安排 <strong>20 分钟</strong>薄弱领域专项训练，保持连续性；</p>
-      <p>2. 每两周查看一次诊断测评结果，跟踪进步趋势；</p>
+      <p>1. 阶段一内安排 <strong>20 分钟</strong>薄弱领域专项训练，保持连续性；</p>
+      <p>2. 阶段一末查看诊断测评结果，跟踪进步趋势；</p>
       <p>3. 鼓励孩子总结错题规律，培养自主纠错能力；</p>
       <p>4. 目标达成后及时肯定，帮助孩子建立学习自信。</p>
       {% else %}
-      <p>1. 继续保持每日学习习惯，适当增加挑战题比例；</p>
+      <p>1. 继续保持阶段一学习习惯，适当增加挑战题比例；</p>
       <p>2. 关注高难度题目的解题思路，而不仅仅是正确率；</p>
       <p>3. 鼓励孩子参加竞赛或拓展训练，拓宽思维边界；</p>
-      <p>4. 定期回顾，确保稳定发挥，避免因疏忽而退步。</p>
+      <p>4. 阶段二末回顾，确保稳定发挥，避免因疏忽而退步。</p>
       {% endif %}
     </div>
   </div>
