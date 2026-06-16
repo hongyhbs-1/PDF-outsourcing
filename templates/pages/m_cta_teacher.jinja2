@@ -1,9 +1,0 @@
-{% set cta = teacher_cta | default({}, true) %}
-{% if cta.visible | default(false) %}
-<section class="teacher-cta-card" role="region" aria-label="{{ cta.aria_label | default('作文和阅读部分分析请联系老师精讲') }}">
-  <div class="teacher-cta-card__eyebrow">{{ cta.eyebrow | default('教师解读') }}</div>
-  <h2 class="teacher-cta-card__title">{{ cta.text | default(cta.title | default('作文和阅读部分分析请联系老师精讲')) }}</h2>
-  <div class="teacher-cta-card__divider"></div>
-  <p class="teacher-cta-card__brand">{{ cta.brand | default('dida985') }}</p>
-</section>
-{% endif %}
