@@ -171,7 +171,9 @@
       <h1 class="report-page-title m8-appendix-title__text">
         {% set _qd_m8 = question_detail | default({}, true) %}
         {% set _qd_papers_m8 = _qd_m8.papers | default([], true) %}
-        {{ lb_icon('paper', 'frame-title-icon') }}{% if _qd_papers_m8 | length > 0 and _qd_m8.total_count | default(0) > 0 %}九{% else %}八{% endif %}、附录：试卷难度分布与分析依据
+        {% set _has_pqc_m8 = per_question_causes | default([], true) | length > 0 %}
+        {% set _m8_offset = (1 if (_qd_papers_m8 | length > 0 and _qd_m8.total_count | default(0) > 0) else 0) + (1 if _has_pqc_m8 else 0) %}
+        {{ lb_icon('paper', 'frame-title-icon') }}{{ ['八', '九', '十'][_m8_offset] }}、附录：试卷难度分布与分析依据
       </h1>
       <div class="m8-appendix-title__underline"></div>
     </div>
