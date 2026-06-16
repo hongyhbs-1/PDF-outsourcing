@@ -108,7 +108,7 @@
   <section class="m10-core-conclusion">
     <div class="m10-core-conclusion__label">{{ lb_icon('target', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m10-core-conclusion__text">
-      {% if has_score %}本次作文得分 {{ total_score }}/{{ full_score }}，内容 {{ content_score }}/{{ content_full }}、语言 {{ language_score }}/{{ language_full }}、组织 {{ organization_score }}/{{ organization_full }}；{% else %}本次已采集作文{% if selected_essay.canonical_no | default('', true) %}（第{{ selected_essay.canonical_no }}题）{% endif %}，当前先依据题目、作答与教师点评给出专项诊断；{% endif %}{% if fix_summary.values | length > 0 %}优先修正{{ fix_summary.values | join('、') }}，{% endif %}本周围绕{{ weekly_focus }}完成闭环训练。
+      {% if has_score %}本次作文得分 {{ total_score }}/{{ full_score }}，内容 {{ content_score }}/{{ content_full }}、语言 {{ language_score }}/{{ language_full }}、组织 {{ organization_score }}/{{ organization_full }}；{% else %}本次已采集作文{% if selected_essay.canonical_no | default('', true) %}（第{{ selected_essay.canonical_no }}题）{% endif %}，当前先依据题目、作答与教师点评给出专项诊断；{% endif %}{% if fix_summary.values | length > 0 %}优先修正{{ fix_summary.values | join('、') }}，{% endif %}阶段一围绕{{ weekly_focus }}完成夯实补短闭环训练。
     </div>
   </section>
 
@@ -197,11 +197,11 @@
   </div>
   {% endif %}
 
-  {# 7. 本周提升建议 #}
+  {# 7. 阶段提升建议 #}
   {% if weekly_suggestion | default('', true) %}
   <div class="m10-section">
     <div class="m10-tip-card m10-tip-card--success">
-      <div class="m10-section-title">{{ lb_icon('support', 'frame-section-icon') }}本周提升建议</div>
+      <div class="m10-section-title">{{ lb_icon('support', 'frame-section-icon') }}阶段提升建议</div>
       <p class="m10-analysis">{{ weekly_suggestion }}</p>
     </div>
   </div>

@@ -1,0 +1,69 @@
+{#
+================================================================================
+[新增①] 冲刺方案 (Sprint Plan) — 封面后 · 全报告行动纲领
+位置: M0(封面) → [本页] → 学习蓝图/正文
+渲染字段: remediation_plan {
+   headline,
+   priority_items[]{ knowledge_name, importance_level, action },
+   difficulty_upgrade{ intro, stages[]{ name, detail } },
+   stage_one_steps[]{ step, detail }
+}
+铁律: 无分数; 重要度用文本星级(非 ★ glyph); 不出现具体时间/周期, 用 阶段/步骤 表达
+关联CSS: m_remediation_plan.css
+================================================================================
+#}
+{% set rp = remediation_plan | default({}, true) %}
+{% set du = rp.difficulty_upgrade | default({}, true) %}
+<section class="rp-page">
+  <header class="rp-head">
+    <div class="rp-kicker">全报告行动纲领</div>
+    <h1 class="rp-title">冲刺方案</h1>
+    <div class="rp-rule"></div>
+  </header>
+
+  {% if rp.headline %}
+  <div class="rp-headline">{{ rp.headline }}</div>
+  {% endif %}
+
+  {% if rp.priority_items %}
+  <div class="rp-block">
+    <h2 class="rp-h2">优先攻克高分集中点</h2>
+    {% for it in rp.priority_items %}
+    <div class="rp-item">
+      <div class="rp-item-top">
+        <span class="rp-kp">{{ it.knowledge_name }}</span>
+        {% if it.importance_level %}<span class="rp-star">{{ it.importance_level }}</span>{% endif %}
+      </div>
+      <div class="rp-action">{{ it.action }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if du.intro or du.stages %}
+  <div class="rp-block rp-upgrade">
+    <h2 class="rp-h2">难度升级建议</h2>
+    {% if du.intro %}<p class="rp-upgrade-text">{{ du.intro }}</p>{% endif %}
+    {% for st in du.stages %}
+    <div class="rp-stage">
+      <div class="rp-stage-name">{{ st.name }}</div>
+      <div class="rp-stage-detail">{{ st.detail }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if rp.stage_one_steps %}
+  <div class="rp-block">
+    <h2 class="rp-h2">一阶段重点</h2>
+    <div class="rp-steps">
+      {% for s in rp.stage_one_steps %}
+      <div class="rp-step">
+        <span class="rp-step-no">{{ s.step | default('', true) }}</span>
+        <span class="rp-step-detail">{{ s.detail | default(s, true) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</section>
