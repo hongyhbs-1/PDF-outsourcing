@@ -1,0 +1,39 @@
+/* ============================================================================
+   [新增①] 冲刺方案 m_remediation_plan.css  （草案版 — 精修交外包）
+   ============================================================================ */
+.rp-page{ padding:12mm 15mm; font-family:'Noto Sans SC',sans-serif; color:#2b2b2b; }
+.rp-head{ margin-bottom:5mm; }
+.rp-kicker{ font-size:3.2mm; letter-spacing:.28em; color:#1a7f6b; font-weight:600; }
+.rp-title{ font-size:9mm; font-weight:800; color:#143f38; margin:1mm 0 0; line-height:1.1; }
+.rp-rule{ height:1.1mm; width:30mm; background:#1a7f6b; border-radius:1mm; margin:3mm 0 0; }
+
+.rp-headline{ font-size:4.4mm; line-height:1.7; font-weight:600; color:#1f3c36;
+  background:#eef8f4; border-left:1.6mm solid #1a7f6b; padding:4mm 5mm; border-radius:1.5mm; margin:5mm 0 7mm; }
+
+.rp-block{ margin-bottom:7mm; }
+.rp-h2{ font-size:4.8mm; font-weight:700; color:#143f38; margin:0 0 3.5mm;
+  padding-bottom:1.5mm; border-bottom:.4mm solid #d7e8e2; }
+
+.rp-item{ margin-bottom:3.5mm; padding:3mm 4mm; background:#fafafa;
+  border:.3mm solid #ececec; border-radius:1.5mm; }
+.rp-item-top{ display:flex; align-items:center; gap:3mm; margin-bottom:1.5mm; }
+.rp-kp{ font-size:4.3mm; font-weight:700; color:#1f1f1f; }
+.rp-star{ font-size:3.1mm; font-weight:600; color:#9a6b00; background:#fdf6e3;
+  border:.3mm solid #efd9a0; padding:.6mm 2.2mm; border-radius:3mm; white-space:nowrap; }
+.rp-action{ font-size:3.8mm; line-height:1.65; color:#474747; }
+
+.rp-upgrade{ background:#f5fafe; border:.3mm solid #d6e7f5; border-radius:1.5mm; padding:4mm 5mm; }
+.rp-upgrade .rp-h2{ border-bottom-color:#cfe3f2; }
+.rp-upgrade-text{ font-size:3.8mm; line-height:1.7; color:#37474f; margin:0; }
+
+/* 难度升级建议 — 阶段块 (阶段一/阶段二/集中冲刺) */
+.rp-stage{ margin-top:3mm; padding-left:4mm; border-left:1mm solid #9cc7ec; }
+.rp-stage-name{ font-size:3.9mm; font-weight:700; color:#205a86; margin-bottom:.8mm; }
+.rp-stage-detail{ font-size:3.7mm; line-height:1.65; color:#37474f; }
+
+/* 一阶段重点 — 步骤 (第一步/第二步) */
+.rp-steps{ display:flex; flex-direction:column; gap:2.5mm; }
+.rp-step{ display:flex; align-items:flex-start; gap:3mm; }
+.rp-step-no{ flex:0 0 auto; font-size:3.3mm; font-weight:700; color:#1a7f6b;
+  background:#eef8f4; border:.3mm solid #bfe0d4; padding:.6mm 2.4mm; border-radius:3mm; white-space:nowrap; }
+.rp-step-detail{ font-size:3.8mm; line-height:1.6; color:#474747; }

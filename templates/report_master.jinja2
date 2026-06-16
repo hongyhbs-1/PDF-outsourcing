@@ -54,6 +54,12 @@ report_master.jinja2 — 报告主入口模板 (v2)
   <div class="module-page module-page--cover">
     {% include 'pages/m0_cover.jinja2' %}
   </div>
+  {# ---- 冲刺方案: 封面后 · 全报告行动纲领 ---- #}
+  {% if remediation_plan %}
+  <div class="module-page" data-section-key="remediation_plan">
+    {% include 'pages/m_remediation_plan.jinja2' %}
+  </div>
+  {% endif %}
   {% endif %}
   {% if _include_learning_blueprint %}
   {# ---- 学习蓝图第 1 页: 学生学情诊断全景 ---- #}
@@ -113,6 +119,12 @@ report_master.jinja2 — 报告主入口模板 (v2)
   {% if _show_question_detail %}
   <div class="module-page" id="toc-m9">
     {% include 'pages/m9_question_detail.jinja2' %}
+  </div>
+  {% endif %}
+  {# ---- 逐题错因分析: 紧接逐题分析明细之后 ---- #}
+  {% if per_question_causes %}
+  <div class="module-page" data-section-key="per_question_causes">
+    {% include 'pages/m_per_question_causes.jinja2' %}
   </div>
   {% endif %}
   {# ---- M7: data_reliability ---- #}
