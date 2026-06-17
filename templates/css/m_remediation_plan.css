@@ -17,7 +17,10 @@
 .rp-item{ margin-bottom:3.5mm; padding:3mm 4mm; background:#fafafa;
   border:.3mm solid #ececec; border-radius:1.5mm; }
 .rp-item-top{ display:flex; align-items:center; gap:3mm; margin-bottom:1.5mm; }
-.rp-kp{ font-size:4.3mm; font-weight:700; color:#1f1f1f; }
+.rp-kp{ font-size:4.3mm; font-weight:700; color:#1f1f1f;
+  display:inline-block; padding:1.2mm 3mm;
+  border:.4mm solid #1a7f6b; border-radius:1.2mm;
+  background:#eef8f4; }
 .rp-star{ font-size:3.1mm; font-weight:600; color:#9a6b00; background:#fdf6e3;
   border:.3mm solid #efd9a0; padding:.6mm 2.2mm; border-radius:3mm; white-space:nowrap; }
 .rp-action{ font-size:3.8mm; line-height:1.65; color:#474747; }

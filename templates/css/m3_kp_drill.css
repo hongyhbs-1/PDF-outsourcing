@@ -713,27 +713,27 @@
 }
 
 .m3-kp-guide-card .m3-kp-step {
-  min-height: 34px;
-  padding: 6px 8px;
-  gap: 6px;
+  min-height: 60px;
+  padding: 8px 10px;
+  gap: 8px;
   border-radius: var(--vh-card-border-radius);
 }
 
 .m3-kp-guide-card .m3-kp-step__lvl,
 .m3-kp-guide-card .m3-kp-path-node__lvl {
-  width: 30px;
-  font-size: 18px;
+  width: 42px;
+  font-size: 24px;
   font-weight: var(--font-weight-bold);
   line-height: 1;
   text-align: center;
 }
 
 .m3-kp-guide-card .m3-kp-step__name {
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .m3-kp-guide-card .m3-kp-step__desc {
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .m3-kp-guide-card .m3-kp-path-node {
@@ -1474,15 +1474,15 @@
   }
 
   .m3-kp-step__lvl {
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .m3-kp-step__name {
-    font-size: 13px;
+    font-size: 16px;
   }
 
   .m3-kp-step__desc {
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .m3-kp-step-arrow {
@@ -1668,15 +1668,15 @@
   }
 
   .m3-kp-guide-card .m3-kp-step {
-    min-height: 34px;
-    padding: 6px 8px;
-    gap: 6px;
+    min-height: 60px;
+    padding: 8px 10px;
+    gap: 8px;
   }
 
   .m3-kp-guide-card .m3-kp-step__lvl,
   .m3-kp-guide-card .m3-kp-path-node__lvl {
-    width: 28px;
-    font-size: 18px;
+    width: 42px;
+    font-size: 24px;
     font-weight: var(--font-weight-bold);
     line-height: 1;
     text-align: center;
@@ -1685,11 +1685,11 @@
   .m3-kp-guide-card .m3-kp-step__name,
   .m3-kp-guide-card .m3-kp-path-node__name,
   .m3-kp-guide-card .m3-kp-path-node__delta {
-    font-size: 11px;
+    font-size: 16px;
   }
 
   .m3-kp-guide-card .m3-kp-step__desc {
-    font-size: 9.5px;
+    font-size: 14px;
   }
 
   .m3-kp-guide-card .m3-kp-path-node {
@@ -1822,30 +1822,30 @@
 
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step,
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node {
-    min-height: 0 !important;
-    height: 100% !important;
+    min-height: 60px !important;
+    height: auto !important;
     padding: 8px 10px !important;
     border-radius: 8px !important;
     align-items: center !important;
   }
 
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step__lvl {
-    width: 34px !important;
-    font-size: 18px !important;
+    width: 42px !important;
+    font-size: 24px !important;
   }
 
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step__name,
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node__lvl,
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node__name,
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path-node__delta {
-    font-size: 11.2px !important;
+    font-size: 16px !important;
     line-height: 1.25 !important;
   }
 
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-step__desc,
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-drill__desc,
   body:not(.report-theme--english) #toc-m3 .m3-kp-guide-card[data-guide-columns="double"] .m3-kp-path__note {
-    font-size: 10.5px !important;
+    font-size: 14px !important;
     line-height: 1.3 !important;
   }
 }

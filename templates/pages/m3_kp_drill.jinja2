@@ -417,15 +417,22 @@
         {# 说明文字：与右侧提示条使用同一卡片样式 #}
         <div class="m3-kp-path__note m3-kp-guide-note">{{ intro_text }}</div>
 
-        {# 层级步骤条 L1 → L2 → L3 → L4 #}
+        {# 层级步骤条 L1 → L2 → L3 → L4，带每个层级的示意示例 #}
+        {% set level_examples = {
+          "L1": {"example": "几何", "icon": "tree"},
+          "L2": {"example": "三角形", "icon": "module"},
+          "L3": {"example": "相似三角形", "icon": "target"},
+          "L4": {"example": "AA判定", "icon": "feature"}
+        } %}
         {% if level_guide | length > 0 %}
         <div class="m3-kp-steps">
           {% for step in level_guide %}
+            {% set ex = level_examples[step.level] | default({"example": "", "icon": "tree"}, true) %}
             <div class="m3-kp-step m3-kp-step--{{ step.theme | default('l1', true) }}">
               <div class="m3-kp-step__lvl">{{ step.level | default("L?", true) }}</div>
               <div class="m3-kp-step__meta">
-                <div class="m3-kp-step__name">{{ lb_icon('tree' if step.level == 'L1' else ('module' if step.level == 'L2' else ('target' if step.level == 'L3' else 'feature')), 'frame-inline-icon') }} {{ step.name | default("--", true) }}</div>
-                <div class="m3-kp-step__desc">{{ step.desc | default("", true) }}</div>
+                <div class="m3-kp-step__name">{{ lb_icon(ex.icon, 'frame-inline-icon') }} {{ step.name | default("--", true) }}</div>
+                <div class="m3-kp-step__desc">{{ step.desc | default("", true) }} · 示例：<strong>{{ ex.example }}</strong></div>
               </div>
             </div>
             {% if not loop.last %}
@@ -440,7 +447,7 @@
             <div class="m3-kp-step__lvl">L1</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('tree', 'frame-inline-icon') }} 领域</div>
-              <div class="m3-kp-step__desc">(6项)</div>
+              <div class="m3-kp-step__desc">(6项) · 示例：<strong>几何</strong></div>
             </div>
           </div>
           <div class="m3-kp-step-arrow"></div>
@@ -448,7 +455,7 @@
             <div class="m3-kp-step__lvl">L2</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('module', 'frame-inline-icon') }} 模块</div>
-              <div class="m3-kp-step__desc">(粗粒度)</div>
+              <div class="m3-kp-step__desc">(粗粒度) · 示例：<strong>三角形</strong></div>
             </div>
           </div>
           <div class="m3-kp-step-arrow"></div>
@@ -456,7 +463,7 @@
             <div class="m3-kp-step__lvl">L3</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('target', 'frame-inline-icon') }} 知识点</div>
-              <div class="m3-kp-step__desc">(中粒度)</div>
+              <div class="m3-kp-step__desc">(中粒度) · 示例：<strong>相似三角形</strong></div>
             </div>
           </div>
           {% if l4_items is defined and l4_items | length > 0 %}
@@ -465,7 +472,7 @@
             <div class="m3-kp-step__lvl">L4</div>
             <div class="m3-kp-step__meta">
               <div class="m3-kp-step__name">{{ lb_icon('feature', 'frame-inline-icon') }} 技能点</div>
-              <div class="m3-kp-step__desc">(细粒度)</div>
+              <div class="m3-kp-step__desc">(细粒度) · 示例：<strong>AA判定</strong></div>
             </div>
           </div>
           {% endif %}
