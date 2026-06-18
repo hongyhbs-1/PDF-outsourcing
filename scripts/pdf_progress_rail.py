@@ -15,6 +15,7 @@ else:
 
 
 SECTION_DEFS = (
+    ("remediation_plan", "冲刺方案", "冲", "冲刺方案"),
     ("m1", "一、诊断摘要", "一", "诊断摘要"),
     ("m4", "二、六大领域达标分析", "二", "领域分析"),
     ("m2", "三、核心短板清单", "三", "核心短板"),
@@ -22,6 +23,7 @@ SECTION_DEFS = (
     ("m5", "五、城市考情对照", "五", "城市考情"),
     ("m6", "六、分层学习建议", "六", "学习建议"),
     ("m9", "七、逐题分析明细", "七", "逐题分析"),
+    ("per_question_causes", "逐题错因分析", "错", "错因分析"),
     ("m7", "八、数据可信度说明", "八", "可信度"),
     ("m8", "附录", "附", "附录"),
     ("m10", "英语作文专项", "作", "作文"),
@@ -29,10 +31,11 @@ SECTION_DEFS = (
 )
 
 # Chinese ordinal numerals for dynamic renumbering
-_CN_ORDINALS = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一"]
+_CN_ORDINALS = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"]
 
 # Keys that use ordinal numbers (m8/m10/m11 use fixed non-ordinal labels)
-_ORDINAL_KEYS = {"m1", "m4", "m2", "m3", "m5", "m6", "m9", "m7"}
+# remediation_plan is not ordinal (acts as a standalone section before m1)
+_ORDINAL_KEYS = {"m1", "m4", "m2", "m3", "m5", "m6", "m9", "per_question_causes", "m7"}
 
 NAV_TOP = 52
 NAV_BOTTOM = 52

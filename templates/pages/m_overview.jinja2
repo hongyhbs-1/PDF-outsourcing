@@ -52,6 +52,8 @@
 {% set student_grade = _cm.grade | default('--') %}
 {% set city_name = _meta.city_name | default(_cm.city_name | default(_cm.city | default('--'))) %}
 {% set subject_name = _meta.subject_name | default(_cover.subject | default('--'), true) %}
+{% set subject_code = _meta.subject | default('', true) | lower %}
+{% set is_english_subject = subject_code in ['english', 'eng'] or subject_name in ['英语', 'English', 'english'] %}
 {% set exam_name = _cm.exam_name | default(_meta.exam_name | default('--'), true) %}
 {% set trend_raw = _cm.trend | default(_summary.current_trend | default('', true), true) %}
 {% set trend_map = {'up': '上升', 'down': '下降', 'stable': '稳定'} %}
@@ -86,7 +88,7 @@
 <div class="mov-page mov-page--{{ mov_density }}">
 
   <section class="mov-title-section">
-    <h1 class="report-page-title mov-title">{{ lb_icon('data', 'frame-title-icon') }}数据分析概览</h1>
+    <h1 class="mov-title">{{ lb_icon('data', 'frame-title-icon') }}数据分析概览</h1>
     <div class="mov-title__underline"></div>
   </section>
 
@@ -203,8 +205,11 @@
       合计：{{ _papers.total_questions | default(0) }}题 / {{ _papers.total_papers | default(0) }}份试卷
     </div>
     <div class="mov-papers__notes">
-      <p>注：1. 学生未解答的题目不计入分析数据，实际分析题量以合计数为准；</p>
+      <p>注：1. 学生未解答的题目及缺少题干仅有解答的无效数据不计入有效分析，实际分析题量以合计数为准；</p>
       <p class="mov-papers__notes-indent">2. 试卷名称缺失时，相关题目统一归入"用户上传试卷"中。</p>
+      {% if is_english_subject %}
+      <p class="mov-papers__notes-indent">3. 主观题不计入正确率分析与难度统计，由老师精讲。</p>
+      {% endif %}
     </div>
   </div>
   {% endif %}

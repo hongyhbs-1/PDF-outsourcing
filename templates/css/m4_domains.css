@@ -156,12 +156,12 @@
 
 .m4-section-title {
   display: inline-block;
-  font-size: var(--vh-h0-font-size);
-  font-weight: var(--vh-h0-font-weight);
-  color: var(--vh-h0-color);
+  font-size: 24px;
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
   padding: var(--cw-spacing-3) var(--cw-spacing-6) 0;
   margin: 0;
-  line-height: var(--vh-h0-line-height);
+  line-height: var(--cw-line-height-tight);
 }
 
 .m4-section-title::after {
@@ -189,16 +189,16 @@
 
 .m4-core-conclusion__label {
   color: var(--cw-color-accent-teal);
-  font-size: var(--vh-h3-font-size);
-  font-weight: var(--vh-h3-font-weight);
-  margin-bottom: var(--vh-gap-xs);
+  font-size: 12px;
+  font-weight: var(--cw-font-weight-bold);
+  margin-bottom: 3px;
 }
 
 .m4-core-conclusion__text {
-  color: var(--vh-h2-color);
-  font-size: var(--vh-h2-font-size);
-  font-weight: var(--vh-h2-font-weight);
-  line-height: var(--vh-h2-line-height);
+  color: var(--cw-color-text-primary);
+  font-size: 14px;
+  font-weight: var(--cw-font-weight-bold);
+  line-height: 1.45;
 }
 
 .m4-peer-card {
@@ -211,9 +211,9 @@
 
 .m4-peer-title {
   padding: 8px 12px;
-  font-size: var(--vh-h1-font-size);
-  font-weight: var(--vh-h1-font-weight);
-  color: var(--vh-h1-color);
+  font-size: 15px;
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
   border-bottom: 1px solid var(--cw-color-border-card);
 }
 
@@ -557,9 +557,9 @@
 
 .m4-table-title {
   padding: 8px 12px;
-  font-size: var(--vh-h1-font-size);
-  font-weight: var(--vh-h1-font-weight);
-  color: var(--vh-h1-color);
+  font-size: 15px;
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
   border-bottom: 1px solid var(--cw-color-border-card);
 }
 
@@ -700,9 +700,9 @@
 
 .m4-summary-title {
   padding: 8px 12px;
-  font-size: var(--vh-h1-font-size);
-  font-weight: var(--vh-h1-font-weight);
-  color: var(--vh-h1-color);
+  font-size: 15px;
+  font-weight: var(--cw-font-weight-bold);
+  color: var(--cw-color-text-primary);
   border-bottom: 1px solid var(--cw-color-border-card);
 }
 
@@ -716,9 +716,9 @@
   position: relative;
   padding: 8px 12px;
   padding-left: 30px;
-  font-size: var(--vh-body-font-size);
-  line-height: var(--vh-body-line-height);
-  color: var(--vh-body-color);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--cw-color-text-primary);
   border-bottom: 1px solid var(--cw-color-border-card);
   background: var(--cw-color-page-bg);
 }
@@ -774,10 +774,10 @@
 
 .m4-summary-label {
   display: block;
-  color: var(--vh-h3-color);
-  font-weight: var(--vh-h3-font-weight);
-  margin-bottom: var(--vh-gap-xs);
-  font-size: var(--vh-h3-font-size);
+  color: var(--cw-color-text-secondary);
+  font-weight: var(--cw-font-weight-medium);
+  margin-bottom: 3px;
+  font-size: 12px;
 }
 
 .m4-summary-text {
@@ -813,9 +813,9 @@
    ------------------------------------------------------------------------ */
 .m4-summary-note {
   padding: 8px 12px;
-  font-size: var(--vh-body-font-size);
-  line-height: var(--vh-body-line-height);
-  color: var(--vh-body-color);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--cw-color-text-secondary);
   margin: 0;
 }
 
@@ -864,9 +864,9 @@
   border-radius: var(--cw-radius-xs, 4px);
   padding: 8px 12px;
   margin: 8px 0;
-  font-size: var(--vh-body-font-size);
-  line-height: var(--vh-body-line-height);
-  color: var(--vh-body-color);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--cw-color-text-secondary, #666);
   break-inside: avoid;
 }
 
@@ -1151,119 +1151,6 @@
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Feedback 5.0: math-only print overrides (migrated from shared_icon_enhancements.css)
-   --------------------------------------------------------------------------- */
-@media print {
-  body:not(.report-theme--english) .m4-peer-card,
-  body:not(.report-theme--english) .m4-table-card,
-  body:not(.report-theme--english) .m4-summary-card {
-    margin-bottom: 12px !important;
-  }
-
-  body:not(.report-theme--english) .m4-peer-title,
-  body:not(.report-theme--english) .m4-table-title,
-  body:not(.report-theme--english) .m4-summary-title {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-    width: fit-content !important;
-    max-width: 100% !important;
-    margin: 0 0 8px !important;
-    padding: 0 0 0 10px !important;
-    background: transparent !important;
-    border: 0 !important;
-    border-left: 3px solid var(--pm-teal, var(--cc-accent-primary)) !important;
-    border-bottom: 0 !important;
-    border-radius: 0 !important;
-    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
-    font-size: 12.5px !important;
-    font-weight: 800 !important;
-    line-height: 1.24 !important;
-    box-shadow: none !important;
-  }
-
-  body:not(.report-theme--english) .m4-peer-title,
-  body:not(.report-theme--english) .m4-table-title,
-  body:not(.report-theme--english) .m4-summary-title {
-    padding-top: 0 !important;
-    padding-right: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  body:not(.report-theme--english) .m4-peer-card,
-  body:not(.report-theme--english) .m4-table-card,
-  body:not(.report-theme--english) .m4-summary-card {
-    padding: 10px 12px 12px !important;
-    overflow: hidden !important;
-  }
-
-  /* P7 has a single inner wrapper; stretch that wrapper and separate its two
-     stacked groups so the page follows the same module-gap rhythm as P6. */
-  body:not(.report-theme--english) #toc-m4 > .m4-module-domains > .module-content-card {
-    min-height: 160mm !important;
-  }
-
-  body:not(.report-theme--english) #toc-m4 .m4-grid-split {
-    min-height: 148mm !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-  }
-
-  body:not(.report-theme--english) #toc-m4 .m4-grid-split__right .m4-summary-card {
-    margin-top: 30px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m4 .m4-peer-card,
-  body:not(.report-theme--english) #toc-m4 .m4-summary-card {
-    position: relative !important;
-    overflow: visible !important;
-    margin-top: 22px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m4 .m4-peer-card > .m4-peer-title,
-  body:not(.report-theme--english) #toc-m4 .m4-summary-card > .m4-summary-title {
-    position: absolute !important;
-    top: -23px !important;
-    left: 14px !important;
-    z-index: 3 !important;
-    margin: 0 !important;
-    background: var(--pm-bg-card, var(--cc-card-bg)) !important;
-    padding-right: 6px !important;
-  }
-
-  /* Feedback 5.4/5.8 P7: align the three subsection labels. P7 moves these
-     labels outside child cards; keep the labels in the same left lane while
-     allowing each title to show its leading pictogram. */
-  body:not(.report-theme--english) #toc-m4 .m4-peer-card,
-  body:not(.report-theme--english) #toc-m4 .m4-summary-card {
-    margin-top: 30px !important;
-  }
-
-  /* Feedback 5.5 P7: the third label sits inside the same right-column flow as
-     the table, so its absolute title lane needs extra top reserve to match the
-     gap between "二、领域表现详情" and the previous overview module. */
-  body:not(.report-theme--english) #toc-m4 .m4-grid-split__right .m4-summary-card {
-    margin-top: 42px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m4 .m4-peer-card > .m4-peer-title,
-  body:not(.report-theme--english) #toc-m4 .m4-summary-card > .m4-summary-title {
-    left: 4px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m4 .m4-peer-card > .m4-peer-title > .frame-inline-icon,
-  body:not(.report-theme--english) #toc-m4 .m4-summary-card > .m4-summary-title > .frame-inline-icon {
-    display: inline-flex !important;
-  }
-
-  /* Feedback 5.9 p7-p13 opinion document: keep the physical whitespace
-     between stacked modules consistent on each page.  Some pages use absolute
-     title lanes, so the visible gap is measured from the previous module body
-     to the next title label rather than only from card border to card border. */
-  body:not(.report-theme--english) #toc-m4 .m4-table-card {
-    /* P7: match the gap before "二、领域表现详情" to the gap before "三、分析小结". */
-    margin-top: 24px !important;
-  }
-}
+/* ============================================================================
+   END OF FILE
+   ============================================================================

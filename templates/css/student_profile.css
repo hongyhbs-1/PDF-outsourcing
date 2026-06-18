@@ -525,7 +525,7 @@
 .sp-progress--dual-axis .sp-progress-label--start,
 .sp-progress--dual-axis .sp-progress-label--end {
   top: 13px;
-  font-size: 9px;
+  font-size: 8px;
   opacity: 0.72;
 }
 
@@ -941,7 +941,7 @@
     padding: 6px;
   }
   .sp-metric-card__tag {
-    font-size: 9px;
+    font-size: 8.5px;
     margin-bottom: 4px;
   }
   .sp-metric-card__value {
@@ -954,7 +954,7 @@
   .sp-metric-card__insight {
     margin-top: 4px;
     padding-top: 4px;
-    font-size: 9px;
+    font-size: 8.5px;
     line-height: 1.22;
   }
   .sp-intervention-card {

@@ -155,10 +155,10 @@
 
 .m6-module-title__text {
   display: inline-block;
-  font-size: var(--vh-h0-font-size);
-  font-weight: var(--vh-h0-font-weight);
-  color: var(--vh-h0-color);
-  line-height: var(--vh-h0-line-height);
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
 }
 
 .m6-module-title__text::after {
@@ -189,15 +189,15 @@
   align-items: center;
   gap: 4px;
   color: var(--color-blue-deep);
-  font-size: var(--vh-h3-font-size);
-  font-weight: var(--vh-h3-font-weight);
-  margin-bottom: var(--vh-gap-xs);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 3px;
 }
 
 .m6-core-conclusion__text {
-  color: var(--vh-h2-color);
-  font-size: var(--vh-h2-font-size);
-  font-weight: var(--vh-h2-font-weight);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: var(--font-weight-bold);
   line-height: 1.45;
 }
 
@@ -297,10 +297,10 @@
 }
 
 .m6-card-header__title {
-  font-size: var(--vh-h1-font-size);
-  font-weight: var(--vh-h1-font-weight);
-  color: var(--vh-h1-color);
-  line-height: var(--vh-h1-line-height);
+  font-size: var(--font-size-card-title);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
 }
 
 /* --------------------------------------------------------------------------
@@ -344,9 +344,9 @@
 }
 
 .m6-stage-label__name {
-  font-size: var(--vh-h1-font-size);
-  font-weight: var(--vh-h1-font-weight);
-  color: var(--vh-h1-color);
+  font-size: 18px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
   line-height: var(--line-height-tight);
 }
 
@@ -536,7 +536,7 @@
 .m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-label--start,
 .m6-stage-progress-panel .sp-progress--dual-axis .sp-progress-label--end {
   top: 12px;
-  font-size: 9px;
+  font-size: 8px;
   opacity: 0.72;
 }
 
@@ -893,9 +893,9 @@
 }
 
 .m6-training-focus__title {
-  font-size: var(--vh-h1-font-size);
-  font-weight: var(--vh-h1-font-weight);
-  color: var(--vh-h1-color);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary, #101828);
   margin-bottom: 10px;
   padding-left: 10px;
   border-left: 3px solid var(--pm-teal, var(--cc-accent-primary));
@@ -971,13 +971,6 @@
   padding: 14px 16px;
   break-inside: avoid;
   page-break-inside: avoid;
-}
-
-/* 老师/家长建议内容可能跨页，允许 break */
-.m6-role-stack .m6-role-panel--parent,
-.m6-role-stack .m6-role-panel--teacher {
-  break-inside: auto;
-  page-break-inside: auto;
 }
 
 .m6-role-stack .m6-role-panel--student .m6-suggestion-sections {
@@ -1096,7 +1089,7 @@
 
   .m6-training-focus__note {
     margin-top: 2px;
-    font-size: 9px;
+    font-size: 7.5px;
     line-height: 1.18;
   }
 
@@ -1121,7 +1114,7 @@
   }
 
   .m6-city-advice-item {
-    font-size: 9px;
+    font-size: 8.5px;
     line-height: 1.18;
   }
 
@@ -1211,7 +1204,7 @@
   .m6-suggestion-section__no {
     min-width: 24px;
     padding: 2px 6px;
-    font-size: 9px;
+    font-size: 8px;
   }
 
   .m6-suggestion-section__title {
@@ -1224,7 +1217,7 @@
 
   .m6-suggestion-section__item {
     margin-bottom: 2px;
-    font-size: 9px;
+    font-size: 8px;
     line-height: 1.18;
   }
 
@@ -1239,7 +1232,7 @@
     gap: 4px;
     padding: 2px 4px;
     margin-bottom: 2px;
-    font-size: 9px;
+    font-size: 8px;
     line-height: 1.12;
     border-radius: 5px;
   }
@@ -1276,8 +1269,8 @@
   }
   .m6-role-panel {
     border-radius: 5px;
-    break-inside: auto;
-    page-break-inside: auto;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
   .m6-role-stack .m6-role-panel--student .m6-suggestion-sections {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1302,7 +1295,7 @@
   .m6-role-stack .m6-summary-box__text,
   .m6-role-stack .m6-check-item__text,
   .m6-role-stack .m6-guidance-paragraph {
-    font-size: 9px;
+    font-size: 8px;
     line-height: 1.12;
   }
   .m6-role-stack .m6-guidance-paragraph {
@@ -1343,162 +1336,5 @@
 
   .m6-card-header__title {
     font-size: 20px;
-  }
-}
-
-/* ---------------------------------------------------------------------------
-   Feedback 5.0: math-only print overrides (migrated from shared_icon_enhancements.css)
-   --------------------------------------------------------------------------- */
-@media print {
-  body:not(.report-theme--english) .m6-card {
-    margin-bottom: 12px !important;
-  }
-
-  body:not(.report-theme--english) .m6-card-header__title,
-  body:not(.report-theme--english) .m6-training-focus__title {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-    width: fit-content !important;
-    max-width: 100% !important;
-    margin: 0 0 8px !important;
-    padding: 0 0 0 10px !important;
-    background: transparent !important;
-    border: 0 !important;
-    border-left: 3px solid var(--pm-teal, var(--cc-accent-primary)) !important;
-    border-bottom: 0 !important;
-    border-radius: 0 !important;
-    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
-    font-size: 12.5px !important;
-    font-weight: 800 !important;
-    line-height: 1.24 !important;
-    box-shadow: none !important;
-  }
-
-  body:not(.report-theme--english) #toc-m6 .m6-card + .m6-card {
-    margin-top: 28px !important;
-  }
-
-  body:not(.report-theme--english) .m6-card {
-    margin-bottom: 8px !important;
-  }
-
-  /* Feedback 5.0 P11: remove legacy square/role pictogram markers before
-     section titles; the unified title rule already provides the left accent. */
-  body:not(.report-theme--english) #toc-m6 .m6-card-header > .m6-bullet,
-  body:not(.report-theme--english) #toc-m6 .m6-card-header > .m6-role-icon {
-    display: none !important;
-  }
-
-  body:not(.report-theme--english) .m6-card-header {
-    margin-bottom: 4px !important;
-  }
-
-  body:not(.report-theme--english) .m6-training-focus {
-    margin-bottom: 6px !important;
-    padding-bottom: 6px !important;
-  }
-
-  body:not(.report-theme--english) .m6-role-panel {
-    padding-top: 5px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m6 .m6-card,
-  body:not(.report-theme--english) #toc-m6 .m6-role-panel {
-    position: relative !important;
-    overflow: visible !important;
-    margin-top: 24px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m6 .m6-recommendation-module > .m6-training-focus > .m6-training-focus__title {
-    position: absolute !important;
-    top: -23px !important;
-    left: 14px !important;
-    z-index: 3 !important;
-    margin: 0 !important;
-    background: var(--color-card-fill, var(--pm-bg-card, var(--cc-card-bg))) !important;
-    padding-right: 6px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m6 .m6-card > .m6-card-header,
-  body:not(.report-theme--english) #toc-m6 .m6-role-panel > .m6-card-header {
-    position: absolute !important;
-    top: -23px !important;
-    left: 14px !important;
-    z-index: 3 !important;
-    margin: 0 !important;
-    background: var(--color-card-fill, var(--pm-bg-card, var(--cc-card-bg))) !important;
-    width: fit-content !important;
-    padding-right: 6px !important;
-  }
-
-  /* Feedback 5.1 P11-P13: reserve a slightly taller title lane and place
-     labels 2px inside that lane. This prevents first labels from visually
-     clipping against the parent card edge while keeping them clearly outside
-     each child box. */
-  body:not(.report-theme--english) #toc-m6 .m6-card > .m6-card-header,
-  body:not(.report-theme--english) #toc-m6 .m6-role-panel > .m6-card-header,
-  body:not(.report-theme--english) #toc-m6 .m6-recommendation-module > .m6-training-focus > .m6-training-focus__title {
-    position: absolute !important;
-    top: -22px !important;
-    left: 16px !important;
-    z-index: 3 !important;
-    margin: 0 !important;
-    padding: 0 8px 0 10px !important;
-  }
-
-  /* Feedback 5.2 P11: keep subsection labels completely above their child
-     borders. A small reserved-lane increase plus a larger upward label offset
-     clears the borders without pushing M6 onto an extra page. */
-  body:not(.report-theme--english) #toc-m6 .m6-card,
-  body:not(.report-theme--english) #toc-m6 .m6-role-panel {
-    margin-top: 26px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m6 .m6-card > .m6-card-header,
-  body:not(.report-theme--english) #toc-m6 .m6-role-panel > .m6-card-header,
-  body:not(.report-theme--english) #toc-m6 .m6-recommendation-module > .m6-training-focus > .m6-training-focus__title {
-    top: -26px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m6 .m6-card > .m6-card-header {
-    left: 18px !important;
-    padding: 0 10px 0 0 !important;
-  }
-
-  body:not(.report-theme--english) #toc-m6 .m6-role-panel > .m6-card-header {
-    left: 5px !important;
-    padding: 0 10px 0 0 !important;
-  }
-
-  body:not(.report-theme--english) #toc-m6 .m6-recommendation-module > .m6-training-focus > .m6-training-focus__title {
-    left: 18px !important;
-    padding: 0 10px !important;
-  }
-
-  /* Feedback 5.6: pull subsection labels left to the same visual text column. */
-  body:not(.report-theme--english) #toc-m6 .m6-card > .m6-card-header,
-  body:not(.report-theme--english) #toc-m6 .m6-role-panel > .m6-card-header,
-  body:not(.report-theme--english) #toc-m6 .m6-recommendation-module > .m6-training-focus > .m6-training-focus__title {
-    left: 5px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m6 .module-content-card > .m6-card.m6-recommendation-module {
-    /* P11: reserve the same visible lane between the stage card and "二、训练重点速览". */
-    margin-top: 32px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m6 .m6-role-stack {
-    /* P11: role cards use absolute headers; a 6px stack gap produces matching
-       visible title gaps between the three role modules. */
-    gap: 6px !important;
-  }
-
-  /* Feedback 6.1 p11 opinion document: remove the tiny vertical accent bars
-     before the three role suggestion headings only. The page-level and module
-     titles keep their existing accent treatment. */
-  body:not(.report-theme--english) #toc-m6 .m6-role-panel .m6-card-header__title {
-    border-left: 0 !important;
-    padding-left: 0 !important;
   }
 }

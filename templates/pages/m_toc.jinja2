@@ -1,143 +1,36 @@
 {#
 ================================================================================
-目录页 (Table of Contents)
-文件: m_toc.jinja2
-版本: v1.1 (B方案: 两次渲染动态页码)
-描述: 列出报告各大部分标题和页码, 帮助用户快速定位内容
-位置: M0(封面) + 概览 → [本页] → M1(一、诊断摘要)
-不编序号 — 与封面、概览、附录同级, 属报告"框架页"
-关联CSS: m_toc.css
+Table of Contents
 
-页码注入:
-  pdf_service.py 两次渲染: 第一次生成临时PDF → fitz提取页码 →
-  JS注入到 data-toc-key 对应的 span → 第二次生成最终PDF
+The TOC is manifest-driven. It must not infer section visibility from payload
+data presence because parent policy owns m5/m10/m11 visibility.
 ================================================================================
 #}
 
-{# toc_pages: 由渲染器注入 (Jinja2层), 格式 {"m1": 4, "m4": 6, ...} #}
 {% set _pages = toc_pages | default({}) %}
-{% set _pv_toc = page_visibility | default({}, true) %}
-{% set _show_m10_toc = _show_m10_composition | default(none) %}
-{% set _show_m11_toc = _show_m11_reading_deep | default(none) %}
-{% if _show_m10_toc is none or _show_m11_toc is none %}
-  {% set _comp_toc = composition_deep | default({}, true) %}
-  {% set _m10_toc = m10 | default({}, true) %}
-  {% set _comp_facts_toc = composition_facts | default({}, true) %}
-  {% set _comp_items_toc = _comp_facts_toc.get('items', []) if _comp_facts_toc is mapping else [] %}
-  {% set _rd_toc = reading_deep | default({}, true) %}
-  {% set _m11_toc = m11 | default({}, true) %}
-  {% set _reading_facts_toc = reading_passage_facts | default({}, true) %}
-  {% set _reading_passages_toc = _reading_facts_toc.passages | default([], true) %}
-  {% set _has_m10_toc_data = _m10_toc.visible | default(false) or _comp_toc.score_overview | default({}, true) or _comp_toc.topic_analysis | default('', true) or _comp_toc.data_ready | default(false) or (_comp_items_toc | length > 0) %}
-  {% set _has_m11_toc_data = _m11_toc.visible | default(false) or _rd_toc.status | default('', true) == 'success' or _rd_toc.content | default({}, true) or _rd_toc.result | default({}, true) or (_reading_passages_toc | length > 0) %}
-  {% if _show_m10_toc is none %}
-    {% set _show_m10_toc = _pv_toc.m10_composition | default(false) %}
-  {% endif %}
-  {% if _show_m11_toc is none %}
-    {% set _show_m11_toc = _pv_toc.m11_reading_deep | default(false) %}
-  {% endif %}
-{% endif %}
-{% set _has_english_deep_toc = _show_m10_toc or _show_m11_toc %}
+{% set _manifest = section_manifest | default({}, true) %}
+{% set _toc_sections = _manifest.toc_sections | default([], true) %}
+{% set _toc_keys = _toc_sections | map(attribute='key') | list %}
+{% set _has_question_detail_toc = 'm9' in _toc_keys %}
+{% set _has_english_deep_toc = 'm10' in _toc_keys or 'm11' in _toc_keys %}
 
-<div class="mtoc-page{% if _has_english_deep_toc %} mtoc-page--extended{% endif %}">
+<div class="mtoc-page{% if _toc_sections | length > 9 %} mtoc-page--extended{% endif %}">
 
-  {# --- 标题 --- #}
   <div class="mtoc-title-section">
     <h1 class="mtoc-title">目录</h1>
   </div>
 
-  {# --- 目录列表 --- #}
   <ul class="mtoc-list">
-
-    <li class="mtoc-item">
-      <span class="mtoc-item__number">1</span>
-      <span class="mtoc-item__title">诊断摘要</span>
+    {% for section in _toc_sections %}
+    <li class="mtoc-item{% if section.key == 'm8' %} mtoc-item--framepage{% endif %}">
+      <span class="mtoc-item__number">{{ section.number | default(loop.index) }}</span>
+      <span class="mtoc-item__title">{{ section.title }}</span>
       <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m1">{{ _pages.get('m1', '') }}</span>
+      <span class="mtoc-item__page" data-toc-key="{{ section.key }}">{{ _pages.get(section.key, '') }}</span>
     </li>
-
-    <li class="mtoc-item">
-      <span class="mtoc-item__number">2</span>
-      <span class="mtoc-item__title">六大领域达标分析</span>
-      <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m4">{{ _pages.get('m4', '') }}</span>
-    </li>
-
-    <li class="mtoc-item">
-      <span class="mtoc-item__number">3</span>
-      <span class="mtoc-item__title">核心短板清单</span>
-      <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m2">{{ _pages.get('m2', '') }}</span>
-    </li>
-
-    <li class="mtoc-item">
-      <span class="mtoc-item__number">4</span>
-      <span class="mtoc-item__title">知识点短板钻取</span>
-      <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m3">{{ _pages.get('m3', '') }}</span>
-    </li>
-
-    <li class="mtoc-item">
-      <span class="mtoc-item__number">5</span>
-      <span class="mtoc-item__title">城市考情对照</span>
-      <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m5">{{ _pages.get('m5', '') }}</span>
-    </li>
-
-    <li class="mtoc-item">
-      <span class="mtoc-item__number">6</span>
-      <span class="mtoc-item__title">分层与学习建议</span>
-      <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m6">{{ _pages.get('m6', '') }}</span>
-    </li>
-
-    {% set _qd_toc = question_detail | default({}, true) %}
-    {% set _qd_papers_toc = _qd_toc.papers | default([], true) %}
-    {% set _show_question_detail_toc = _qd_papers_toc | length > 0 and _qd_toc.total_count | default(0) > 0 %}
-    {% if _show_question_detail_toc %}
-    <li class="mtoc-item">
-      <span class="mtoc-item__number">7</span>
-      <span class="mtoc-item__title">逐题分析明细</span>
-      <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m9">{{ _pages.get('m9', '') }}</span>
-    </li>
-    {% endif %}
-
-    <li class="mtoc-item">
-      <span class="mtoc-item__number">{% if _show_question_detail_toc %}8{% else %}7{% endif %}</span>
-      <span class="mtoc-item__title">数据覆盖与可信度说明</span>
-      <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m7">{{ _pages.get('m7', '') }}</span>
-    </li>
-
-    <li class="mtoc-item mtoc-item--framepage">
-      <span class="mtoc-item__number"></span>
-      <span class="mtoc-item__title">附录</span>
-      <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m8">{{ _pages.get('m8', '') }}</span>
-    </li>
-
-    {% if _show_m10_toc %}
-    <li class="mtoc-item">
-      <span class="mtoc-item__number">10</span>
-      <span class="mtoc-item__title">作文精讲</span>
-      <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m10">{{ _pages.get('m10', '') }}</span>
-    </li>
-    {% endif %}
-
-    {% if _show_m11_toc %}
-    <li class="mtoc-item">
-      <span class="mtoc-item__number">11</span>
-      <span class="mtoc-item__title">阅读精讲</span>
-      <span class="mtoc-item__dots"></span>
-      <span class="mtoc-item__page" data-toc-key="m11">{{ _pages.get('m11', '') }}</span>
-    </li>
-    {% endif %}
-
+    {% endfor %}
   </ul>
 
-  {# --- 阅读建议 --- #}
   <div class="mtoc-reading-guide">
     <div class="mtoc-reading-guide__title">阅读建议</div>
     <div class="mtoc-reading-guide__items">
@@ -149,7 +42,7 @@
         <span class="mtoc-reading-guide__num">2</span>
         <span>重点关注<strong>核心短板清单</strong>中的高优先级项目，把它们转成下一阶段训练任务。</span>
       </div>
-      {% if _show_question_detail_toc %}
+      {% if _has_question_detail_toc %}
       <div class="mtoc-reading-guide__item">
         <span class="mtoc-reading-guide__num">3</span>
         <span>对照<strong>逐题分析明细</strong>回看错题，确认薄弱环节的具体表现。</span>
@@ -158,7 +51,7 @@
       {% if _has_english_deep_toc %}
       <div class="mtoc-reading-guide__item">
         <span class="mtoc-reading-guide__num">4</span>
-        <span>英语专项页可直接查看<strong>作文精讲</strong>与<strong>阅读精讲</strong>，把错因转成下一周训练任务。</span>
+        <span>英语专项页可直接查看<strong>作文精讲</strong>与<strong>阅读精讲</strong>。</span>
       </div>
       {% endif %}
     </div>

@@ -13,7 +13,7 @@
 
 {
   "page_header": {
-    "report_name": "基线定位分析报告(数学)",
+    "report_name": "学情透视分析报告(数学)",
     "report_date": "2025.06.05"
   },
   "module": {
@@ -59,7 +59,7 @@
         "sections": [
           {
             "no": "01",
-            "title": "阶段一·夯实补短",
+            "title": "近期重点(阶段一)",
             "items": [
               "阶段一内专项练习相似三角形判定题2-3道",
               "复习勾股定理公式,确保正定理和逆定理区分清楚"
@@ -67,7 +67,7 @@
           },
           {
             "no": "02",
-            "title": "阶段二·综合拔高",
+            "title": "中期规划(阶段二)",
             "items": [
               "系统完成三角形章节的专项复习",
               "阶段二内完成2套几何综合练习"
@@ -81,7 +81,7 @@
         "icon": "parent",
         "summary": "孩子代数能力不错,但几何需要重点关注。建议创造安静学习环境,支持专项训练。",
         "checklist": [
-          "督促孩子在阶段一内每天完成几何专项练习,建议固定在晚自习时间段",
+          "督促孩子阶段一内完成几何专项练习,建议固定在晚自习时间段",
           "可考虑购买相似三角形专项练习册,针对薄弱点加强",
           "多鼓励少施压,几何需要逐步积累,避免焦虑情绪传递"
         ]
@@ -229,6 +229,8 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 {% set current_pass_rate_raw = current.pass_rate | default(none) %}
 {% set summary_pass_rate_raw = summary_data.pass_rate | default(none) %}
 {% set summary_accuracy_raw = summary_data.current_accuracy | default(none) %}
+{% set target_reliable = summary_data.target_judgement_reliable | default(current.target_judgement_reliable | default(meta.target_judgement_reliable | default(true))) %}
+{% set target_estimate_text = summary_data.target_estimate_text | default(current.target_estimate_text | default(meta.target_estimate_text | default('目标线为估算（本次未获取试卷满分，按默认 ' ~ (meta.full_score | default('--')) ~ ' 分折算）'))) %}
 {# 部分上游样本误把 current_accuracy 写入 stage_judgement.current.pass_rate；当三者同时存在且可判定时，优先使用真正的 L3 达标率。 #}
 {% set use_summary_pass_rate = has_data and summary_pass_rate_raw not in [none, ''] and current_pass_rate_raw not in [none, ''] and summary_accuracy_raw not in [none, ''] and (current_pass_rate_raw | float) == (summary_accuracy_raw | float) and (summary_pass_rate_raw | float) != (current_pass_rate_raw | float) %}
 {% if not has_data %}
@@ -280,9 +282,13 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 {% set stage_progress_order_class = 'sp-progress--current-before-target' if clamped_rate < clamped_target_rate else 'sp-progress--current-after-target' %}
 {% set stage_progress_edge_class = 'sp-progress-label--edge-start' if clamped_rate <= 8 else ('sp-progress-label--edge-end' if clamped_rate >= 92 else '') %}
 {% set stage_target_edge_class = 'sp-progress-label--edge-start' if clamped_target_rate <= 8 else ('sp-progress-label--edge-end' if clamped_target_rate >= 92 else '') %}
-{% set above_target = has_data and clamped_rate >= clamped_target_rate %}
+{% set stage_rate_text = summary_data.pass_rate_text | default((clamped_rate | round(1)) ~ '%', true) %}
+{% set stage_target_text = current.target_accuracy_text | default(stage_card.target_accuracy_text | default(summary_data.target_accuracy_text | default((clamped_target_rate | round(1)) ~ '%', true), true), true) %}
+{% set above_target = has_data and target_reliable and clamped_rate >= clamped_target_rate %}
 {% if has_data %}
-  {% if above_target %}
+  {% if not target_reliable %}
+    {% set stage_position_hint = target_estimate_text %}
+  {% elif above_target %}
     {% set stage_position_hint = '已达到目标线' if stage_progress_gap == 0 else '已超过目标线' ~ stage_gap_display ~ '个百分点' %}
   {% else %}
     {% set stage_position_hint = '距目标线还差' ~ stage_gap_display ~ '个百分点' %}
@@ -330,7 +336,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
      模块标题 (Module Title)
      -------------------------------------------------------------------------- #}
   <div class="m6-module-title">
-    <h1 class="report-page-title m6-module-title__text">
+    <h1 class="m6-module-title__text">
       {{ lb_icon('support', 'frame-title-icon') }}六、{{ module.title | default('分层与学习建议', true) }}
     </h1>
     <div class="m6-module-title__underline"></div>
@@ -339,7 +345,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
   <section class="m6-core-conclusion">
     <div class="m6-core-conclusion__label">{{ lb_icon('support', 'frame-conclusion-icon') }}本页核心结论</div>
     <div class="m6-core-conclusion__text">
-      当前处于「{{ current_stage.name }}」，建议按 30/60 天推进：P9 领域上{% if weak_domain_names | length > 0 %}{{ weak_domain_names | join('、') }}低于目标线{% else %}薄弱领域待确认{% endif %}；P10 优先处理{% if core_weak_names | length > 0 %}{{ core_weak_names | join('、') }}{% else %}核心短板{% endif %}；P11 重点钻取{% if drill_focus.l3 %}{{ drill_focus.l3 }}{% else %}L3薄弱环节{% endif %}{% if drill_focus.l4 %}/{{ drill_focus.l4 }}{% endif %}；P12 显示{% if city_overlap_names | length > 0 %}{{ city_overlap_names | join('、') }}与{{ city_label }}市高频考点重合{% else %}高频重合项待确认{% endif %}。30 天内先掌握{{ thirty_day_targets | join('、') if thirty_day_targets | length > 0 else '核心短板' }}，60 天内巩固{{ sixty_day_targets | join('、') if sixty_day_targets | length > 0 else '重点知识点' }}并完成复测。
+      当前处于「{{ current_stage.name }}」，建议按 阶段一·夯实补短 / 阶段二·综合拔高 / 集中冲刺·押题实战 推进：P9 领域上{% if weak_domain_names | length > 0 %}{{ weak_domain_names | join('、') }}{% if target_reliable %}低于目标线{% else %}需优先复核{% endif %}{% else %}薄弱领域待确认{% endif %}；P10 优先处理{% if core_weak_names | length > 0 %}{{ core_weak_names | join('、') }}{% else %}核心短板{% endif %}；P11 重点钻取{% if drill_focus.l3 %}{{ drill_focus.l3 }}{% else %}L3薄弱环节{% endif %}{% if drill_focus.l4 %}/{{ drill_focus.l4 }}{% endif %}；P12 显示{% if city_overlap_names | length > 0 %}{{ city_overlap_names | join('、') }}与{{ city_label }}市高频考点重合{% else %}高频重合项待确认{% endif %}。{% if not target_reliable %}{{ target_estimate_text }}；{% endif %}阶段一内先掌握{{ thirty_day_targets | join('、') if thirty_day_targets | length > 0 else '核心短板' }}，阶段二内巩固{{ sixty_day_targets | join('、') if sixty_day_targets | length > 0 else '重点知识点' }}并完成复测。
     </div>
   </section>
 
@@ -390,7 +396,7 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
       <div class="sp-progress-panel__meta">
         <div class="sp-progress-panel__eyebrow">{{ lb_icon('gauge', 'frame-inline-icon') }}阶段位置</div>
         {% if has_data %}
-        <div class="sp-progress-panel__title">达标率 {{ clamped_rate | round(0) | int }}%，目标 {{ clamped_target_rate | round(0) | int }}%，{{ current_stage.name }}</div>
+        <div class="sp-progress-panel__title">达标率 {{ stage_rate_text }}，{% if target_reliable %}目标{% else %}估算目标{% endif %} {{ stage_target_text }}，{{ current_stage.name }}</div>
         <p class="sp-progress-panel__text">{{ stage_position_hint }}</p>
         {% else %}
         <div class="sp-progress-panel__title">当前数据还不足以判断稳定阶段</div>
@@ -406,8 +412,8 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
         </div>
         <div class="sp-progress-labels{% if stage_markers_overlap %} sp-progress-labels--stacked{% endif %}">
           <span class="sp-progress-label sp-progress-label--start">0%</span>
-          <span class="sp-progress-label sp-progress-label--current{% if stage_progress_edge_class %} {{ stage_progress_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-top{% endif %}"><span class="sp-progress-label__name">达标率</span><span class="sp-progress-label__value">{% if has_data %}{{ clamped_rate | round(0) | int }}%{% else %}暂无数据{% endif %}</span></span>
-          <span class="sp-progress-label sp-progress-label--target{% if stage_target_edge_class %} {{ stage_target_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-bottom{% endif %}"><span class="sp-progress-label__name">目标</span><span class="sp-progress-label__value">{{ clamped_target_rate | round(0) | int }}%</span></span>
+          <span class="sp-progress-label sp-progress-label--current{% if stage_progress_edge_class %} {{ stage_progress_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-top{% endif %}"><span class="sp-progress-label__name">达标率</span><span class="sp-progress-label__value">{% if has_data %}{{ stage_rate_text }}{% else %}暂无数据{% endif %}</span></span>
+          <span class="sp-progress-label sp-progress-label--target{% if stage_target_edge_class %} {{ stage_target_edge_class }}{% endif %}{% if stage_markers_overlap %} sp-progress-label--stack-bottom{% endif %}"><span class="sp-progress-label__name">目标</span><span class="sp-progress-label__value">{{ stage_target_text }}</span></span>
           <span class="sp-progress-label sp-progress-label--end">100%</span>
         </div>
       </div>
@@ -415,8 +421,10 @@ report_output.standard_texts.study_suggestions.for_teacher.teaching_focus[] → 
 
     {# 当前阶段特点说明框 #}
     {% set note = stage_card.note | default({}) %}
-    {% if has_data and use_summary_pass_rate and pass_total > 0 %}
+    {% if has_data and target_reliable and use_summary_pass_rate and pass_total > 0 %}
       {% set stage_note_text = '你目前处在「' ~ current_stage.name ~ '」，在本次覆盖的' ~ pass_total ~ '个知识点中，已有' ~ pass_achieved ~ '/' ~ pass_total ~ '个考点达标，未达标' ~ pass_pending ~ '个。按照下面的建议有计划地练习，一定能稳步提升。' %}
+    {% elif not target_reliable %}
+      {% set stage_note_text = target_estimate_text ~ '；本页仅按估算线判断训练优先级，不输出目标完成结论，建议先按训练优先级推进。' %}
     {% else %}
       {% set stage_note_text = note.text | default('', true) %}
     {% endif %}

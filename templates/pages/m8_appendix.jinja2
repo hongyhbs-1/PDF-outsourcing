@@ -18,7 +18,7 @@
    
    {
      "meta": {
-       "report_name": "基线定位分析报告（数学）",
+       "report_name": "学情透视分析报告（数学）",
        "report_date": "2025.06.05",
        "page_title": "附录：分析依据"
      },
@@ -125,6 +125,8 @@
 
 {# meta 变量定义 - 确保兼容性 #}
 {% set meta = meta | default({}) %}
+{% set summary_data = summary | default({}, true) %}
+{% set target_reliable = summary_data.target_judgement_reliable | default(meta.target_judgement_reliable | default(true)) %}
 {% set raw_analysis_rows = analysis_scope.rows if analysis_scope and analysis_scope.rows else [] %}
 {% if raw_analysis_rows is mapping %}
   {% set analysis_label_map = {
@@ -168,12 +170,12 @@
        3.1 页面标题
        ------------------------------------------------------------------------- #}
     <div class="m8-appendix-title">
-      <h1 class="report-page-title m8-appendix-title__text">
+      <h1 class="m8-appendix-title__text">
         {% set _qd_m8 = question_detail | default({}, true) %}
         {% set _qd_papers_m8 = _qd_m8.papers | default([], true) %}
         {% set _has_pqc_m8 = per_question_causes | default([], true) | length > 0 %}
         {% set _m8_offset = (1 if (_qd_papers_m8 | length > 0 and _qd_m8.total_count | default(0) > 0) else 0) + (1 if _has_pqc_m8 else 0) %}
-        {{ lb_icon('paper', 'frame-title-icon') }}{{ ['八', '九', '十'][_m8_offset] }}、附录：试卷难度分布与分析依据
+        {{ lb_icon('paper', 'frame-title-icon') }}{{ ['八', '九', '十', '十一'][_m8_offset] }}、附录：试卷难度分布与分析依据
       </h1>
       <div class="m8-appendix-title__underline"></div>
     </div>
@@ -259,7 +261,7 @@
         {% for metric in metric_definitions %}
         <div class="m8-metric-item">
           <div class="m8-metric-item__name">{{ safe_value(metric.name) }}</div>
-          <div class="m8-metric-item__desc">{{ safe_value(metric.desc) }}</div>
+          <div class="m8-metric-item__desc">{% if not target_reliable and metric.name | default('') == '距目标线' %}正确率 - 目标线；本次目标线为估算时，仅供训练优先级参考{% else %}{{ safe_value(metric.desc) }}{% endif %}</div>
         </div>
         {% endfor %}
       </div>
@@ -336,51 +338,9 @@
       {% endif %}
     </section>
 
-    {# -------------------------------------------------------------------------
-       3.6 模块五：数据补充说明 (T019-A: 从 M7 迁移过来的低样本/未覆盖明细)
-       ------------------------------------------------------------------------- #}
-    {% set _m8_data_supplement = data_supplement | default({}, true) %}
-    {% set _m8_low_sample = _m8_data_supplement.low_sample if _m8_data_supplement.low_sample else {'items': []} %}
-    {% set _m8_uncovered = _m8_data_supplement.uncovered_core if _m8_data_supplement.uncovered_core else {'items': []} %}
-    {% set _m8_low_sample_items = _m8_low_sample['items'] if _m8_low_sample and 'items' in _m8_low_sample else [] %}
-    {% set _m8_uncovered_items = _m8_uncovered['items'] if _m8_uncovered and 'items' in _m8_uncovered else [] %}
-    {% set _m8_has_supplement = (_m8_low_sample_items | length > 0) or (_m8_uncovered_items | length > 0) %}
-
-    {% if _m8_has_supplement %}
-    <section class="m8-appendix-panel m8-appendix-panel--supplement">
-      <div class="m8-appendix-panel__titlebar">{{ lb_icon('warning', 'frame-inline-icon') }} 五、数据补充说明</div>
-      <div class="m8-supplement-panel-body">
-        <p class="m8-supplement-desc">以下内容来自数据可信度说明（详见正文章节），建议针对性补充相关练习后重新评估。</p>
-
-        {% if _m8_low_sample_items | length > 0 %}
-        <div class="m8-supplement-block">
-          <h3 class="m8-supplement-block__title">{{ _m8_low_sample.title | default('数据不足知识点', true) }}</h3>
-          <div class="m8-supplement-badges">
-            {% for item in _m8_low_sample_items %}
-            <span class="m8-badge m8-badge--warning">{{ item.name_cn | default('未知知识点', true) }}（{{ item.count | default('?', true) }}题）</span>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-
-        {% if _m8_uncovered_items | length > 0 %}
-        <div class="m8-supplement-block">
-          <h3 class="m8-supplement-block__title">{{ _m8_uncovered.title | default('未覆盖的核心考点', true) }}</h3>
-          <div class="m8-supplement-badges">
-            {% for item in _m8_uncovered_items %}
-            <span class="m8-badge">{{ item.display | default(item.name_cn, true) }}</span>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-      </div>
-    </section>
-    {% endif %}
-
-    {% set _m8_usage_section_no = '六' if _m8_has_supplement else '五' %}
     {% if m8_density != 'dense' %}
     <div class="m8-appendix-usage">
-      <div class="m8-appendix-usage__title">{{ lb_icon('support', 'frame-inline-icon') }} {{ _m8_usage_section_no }}、附录使用说明</div>
+      <div class="m8-appendix-usage__title">{{ lb_icon('support', 'frame-inline-icon') }} 五、附录使用说明</div>
       <div class="m8-appendix-usage__text">
         本附录用于说明分析范围、样本来源和指标口径。阅读正文时，可结合试卷清单确认样本覆盖，再结合指标释义理解各模块中的正确率、目标线和优先级等结论。
       </div>

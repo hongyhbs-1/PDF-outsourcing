@@ -136,10 +136,10 @@
   margin: var(--cc-spacing-6) 0;
   padding-bottom: var(--cc-spacing-3);
   border-bottom: 2px solid var(--cc-accent-teal);
-  font-size: var(--vh-h0-font-size);
-  font-weight: var(--vh-h0-font-weight);
-  line-height: var(--vh-h0-line-height);
-  color: var(--vh-h0-color);
+  font-size: var(--cc-font-size-h1);
+  font-weight: var(--cc-font-weight-bold);
+  line-height: var(--cc-line-height-tight);
+  color: var(--cc-text-primary);
 }
 
 /* ============================================================
@@ -159,17 +159,17 @@
 
 .m5-city-compare__intro {
   margin: var(--cc-spacing-2) 0 0;
-  font-size: var(--vh-body-font-size);
-  line-height: var(--vh-body-line-height);
-  color: var(--vh-body-color);
+  font-size: var(--cc-font-size-body);
+  line-height: var(--cc-line-height-relaxed);
+  color: var(--cc-text-secondary);
 }
 
 .m5-core-conclusion {
   margin: 4px 0 0;
-  padding: var(--vh-card-padding); /* → --vh-card-* */
+  padding: 10px 12px;
   background: var(--pm-gradient-conclusion);
   border: 1px solid rgba(31, 111, 120, 0.16);
-  border-radius: var(--vh-card-border-radius);
+  border-radius: 8px;
   box-shadow: var(--pm-shadow-card);
 }
 
@@ -178,16 +178,16 @@
   align-items: center;
   gap: 4px;
   color: var(--cc-accent-primary);
-  font-size: var(--vh-h3-font-size);
-  font-weight: var(--vh-h3-font-weight);
-  margin-bottom: var(--vh-gap-xs);
+  font-size: 12px;
+  font-weight: var(--cc-font-weight-bold);
+  margin-bottom: 3px;
 }
 
 .m5-core-conclusion__text {
-  color: var(--vh-h2-color);
-  font-size: var(--vh-h2-font-size);
-  font-weight: var(--vh-h2-font-weight);
-  line-height: var(--vh-h2-line-height);
+  color: var(--cc-text-primary);
+  font-size: 14px;
+  font-weight: var(--cc-font-weight-bold);
+  line-height: 1.45;
 }
 
 
@@ -213,7 +213,7 @@
   min-width: 0;
   border: 2px solid var(--cc-card-border);
   background: var(--cc-card-bg);
-  border-radius: var(--vh-card-border-radius);
+  border-radius: 8px;
   padding: var(--cc-spacing-5) var(--cc-spacing-6);
 }
 
@@ -221,9 +221,9 @@
    6.2 Left Card: Analysis
    ---------------------- */
 .m5-city-compare__card-title {
-  font-size: var(--vh-h1-font-size);
-  font-weight: var(--vh-h1-font-weight);
-  color: var(--vh-h1-color);
+  font-size: var(--cc-font-size-h3);
+  font-weight: var(--cc-font-weight-bold);
+  color: var(--cc-text-primary);
   margin-bottom: var(--cc-spacing-4);
 }
 
@@ -282,10 +282,10 @@
 }
 
 .m5-city-compare__overlap-subtitle {
-  font-size: var(--vh-h2-font-size);
-  font-weight: var(--vh-h2-font-weight);
-  color: var(--vh-h2-color);
-  line-height: var(--vh-h2-line-height);
+  font-size: 13px;
+  font-weight: var(--cc-font-weight-medium);
+  color: var(--cc-text-secondary);
+  line-height: 1.6;
   margin-bottom: var(--cc-spacing-4);
 }
 
@@ -324,7 +324,7 @@
   gap: 12px;
   padding: 9px 10px;
   background: var(--cc-bg-muted);
-  border-radius: var(--vh-card-border-radius);
+  border-radius: 8px;
 }
 
 .m5-city-compare__overlap-stat-label {
@@ -352,15 +352,15 @@
 .m5-city-compare__table-section {
   border: 2px solid var(--cc-card-border);
   background: var(--cc-card-bg);
-  border-radius: var(--vh-card-border-radius);
+  border-radius: 8px;
   padding: var(--cc-spacing-5) var(--cc-spacing-6);
   margin-bottom: var(--cc-spacing-8);
 }
 
 .m5-city-compare__table-title {
-  font-size: var(--vh-h1-font-size);
-  font-weight: var(--vh-h1-font-weight);
-  color: var(--vh-h1-color);
+  font-size: var(--cc-font-size-h3);
+  font-weight: var(--cc-font-weight-bold);
+  color: var(--cc-text-primary);
   margin-bottom: var(--cc-spacing-4);
 }
 
@@ -562,9 +562,9 @@
    SECTION 8: Advice (融入背景，无框)
    ============================================================ */
 .m5-city-compare__advice-title {
-  font-size: var(--vh-h1-font-size);
-  font-weight: var(--vh-h1-font-weight);
-  color: var(--vh-h1-color);
+  font-size: var(--cc-font-size-h3);
+  font-weight: var(--cc-font-weight-bold);
+  color: var(--cc-text-primary);
   margin-bottom: var(--cc-spacing-3);
 }
 
@@ -698,7 +698,7 @@
   .m5-core-conclusion {
     margin-top: 0;
     padding: 7px 10px;
-    border-radius: var(--vh-card-border-radius);
+    border-radius: 8px;
   }
 
   .m5-core-conclusion__label {
@@ -726,9 +726,9 @@
   }
 
   .m5-city-compare__card {
-    padding: var(--vh-card-padding);
+    padding: 10px 12px;
     border-width: 1px;
-    border-radius: var(--vh-card-border-radius);
+    border-radius: 6px;
   }
 
   .m5-city-compare__card-title {
@@ -808,10 +808,10 @@
   }
 
   .m5-city-compare__table-section {
-    padding: var(--vh-card-padding);
+    padding: 10px 12px;
     margin-bottom: 10px;
     border-width: 1px;
-    border-radius: var(--vh-card-border-radius);
+    border-radius: 6px;
   }
 
   .m5-city-compare__table-title {
@@ -936,7 +936,7 @@
   .m5-city-compare--long .m5-city-compare__overlap-ratio {
     margin-top: 2px;
     margin-bottom: 2px;
-    font-size: 9px;
+    font-size: 8px;
     line-height: 1.12;
   }
 
@@ -966,16 +966,16 @@
   }
 
   .m5-city-compare--long .m5-city-compare__overlap-stat-label {
-    font-size: 9px;
+    font-size: 7px;
   }
 
   .m5-city-compare--long .m5-city-compare__overlap-stat-value {
-    font-size: 9px;
+    font-size: 8px;
     margin-top: 1px;
   }
 
   .m5-city-compare--long .m5-city-compare__table {
-    font-size: 9px;
+    font-size: 7.4px;
     line-height: 1.05;
   }
 
@@ -987,7 +987,7 @@
   .m5-city-compare--long .m5-city-compare__rank-badge {
     min-width: 14px;
     height: 12px;
-    font-size: 9px;
+    font-size: 7px;
   }
 
   .m5-city-compare--long .m5-city-compare__tags {
@@ -998,14 +998,14 @@
   .m5-city-compare--long .m5-city-compare__tag,
   .m5-city-compare--long .m5-city-compare__weight-badge {
     padding: 0 2px;
-    font-size: 9px;
+    font-size: 7px;
   }
 
   .m5-city-compare--long .m5-city-compare__table-note,
   .m5-city-compare--long .m5-city-compare__advice-item,
   .m5-city-compare--long .m5-city-compare__footnote-text,
   .m5-city-compare--long .m5-city-compare__footnote-line {
-    font-size: 9px !important;
+    font-size: 7.5px !important;
     line-height: 1.1;
   }
 
@@ -1160,97 +1160,5 @@
   body.report-theme--english #toc-m5 .m5-city-compare--long .m5-city-compare__footnote-line {
     font-size: 9px !important;
     line-height: 1.25 !important;
-  }
-}
-
-/* ---------------------------------------------------------------------------
-   Feedback 5.0: math-only print overrides (migrated from shared_icon_enhancements.css)
-   --------------------------------------------------------------------------- */
-@media print {
-  body:not(.report-theme--english) .m5-city-compare__table-section,
-  body:not(.report-theme--english) .m5-city-compare__card--overlap-wide,
-  body:not(.report-theme--english) .m5-city-compare__footnote {
-    margin-bottom: 12px !important;
-  }
-
-  body:not(.report-theme--english) .m5-city-compare__card-title,
-  body:not(.report-theme--english) .m5-city-compare__table-title,
-  body:not(.report-theme--english) .m5-city-compare__footnote-title {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-    width: fit-content !important;
-    max-width: 100% !important;
-    margin: 0 0 8px !important;
-    padding: 0 0 0 10px !important;
-    background: transparent !important;
-    border: 0 !important;
-    border-left: 3px solid var(--pm-teal, var(--cc-accent-primary)) !important;
-    border-bottom: 0 !important;
-    border-radius: 0 !important;
-    color: var(--pm-text-primary, var(--cc-text-primary)) !important;
-    font-size: 12.5px !important;
-    font-weight: 800 !important;
-    line-height: 1.24 !important;
-    box-shadow: none !important;
-  }
-
-  body:not(.report-theme--english) .m5-city-compare__table-section,
-  body:not(.report-theme--english) .m5-city-compare__card--overlap-wide,
-  body:not(.report-theme--english) .m5-city-compare__footnote {
-    padding-top: 10px !important;
-  }
-
-  /* Feedback 5.0 P6-P13 density: the math city-exam page has few rows in
-     sample_01_math_25q, so stretch the main module card to the same visual
-     footprint as the surrounding chapter pages instead of leaving a half-page
-     blank area below the content. */
-  body:not(.report-theme--english) #toc-m5 > .m5-city-compare > .module-content-card {
-    min-height: 145mm !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  body:not(.report-theme--english) #toc-m5 .m5-city-compare__part--data {
-    flex: 1 1 auto !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide {
-    flex: 1 1 auto !important;
-  }
-
-  body:not(.report-theme--english) #toc-m5 .m5-city-compare__table-section,
-  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide {
-    position: relative !important;
-    overflow: visible !important;
-    margin-top: 22px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m5 .m5-city-compare__table-section > .m5-city-compare__table-title,
-  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide > .m5-city-compare__card-title {
-    position: absolute !important;
-    top: -23px !important;
-    left: 14px !important;
-    z-index: 3 !important;
-    margin: 0 !important;
-    background: var(--pm-bg-card, var(--cc-card-bg)) !important;
-    padding-right: 6px !important;
-  }
-
-  /* Feedback 5.6 P10-P13: several subsection labels still started farther
-     right than the aligned P11 role titles because their absolute title lanes
-     used larger left offsets (14/16/18px). Pull these labels left to the same
-     visual text column while keeping icons and title-lane spacing intact. */
-  body:not(.report-theme--english) #toc-m5 .m5-city-compare__table-section > .m5-city-compare__table-title,
-  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide > .m5-city-compare__card-title {
-    left: 5px !important;
-  }
-
-  body:not(.report-theme--english) #toc-m5 .m5-city-compare__card--overlap-wide {
-    /* P10: the note block after "二、高频重合度" should not leave a larger gap
-       than the gap between "一、重合知识点清单" and "二、高频重合度". */
-    margin-bottom: 0 !important;
   }
 }

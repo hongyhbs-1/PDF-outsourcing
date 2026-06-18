@@ -248,6 +248,7 @@ def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
     # m7 标题可能因 M9 是否存在而变化序号（七、/八、），提供两个候选
     # m8 标题可能因数据不同而变化，使用较短前缀
     _EXACT_TITLES = {
+        "remediation_plan": ("冲刺方案",),
         "m1": ("一、诊断摘要",),
         "m4": ("二、六大领域达标分析", "二、六大领域达标总览"),
         "m2": ("三、核心短板清单", "三、个性化突破路径", "三、学习成果展示"),
@@ -255,10 +256,11 @@ def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
         "m5": ("五、城市考情对照",),
         "m6": ("六、分层与学习建议",),
         "m9": ("七、逐题分析明细",),
-        "m7": ("七、数据", "八、数据", "七、题检覆盖", "八、题检覆盖"),
-        "m8": ("八、附录", "九、附录", "附录", "分析范围"),
-        "m10": ("十、",),
-        "m11": ("十一、",),
+        "per_question_causes": ("逐题错因分析",),
+        "m7": ("七、数据", "八、数据", "九、数据", "十、数据", "七、题检覆盖", "八、题检覆盖", "九、题检覆盖", "十、题检覆盖"),
+        "m8": ("八、附录", "九、附录", "十、附录", "十一、附录", "附录", "分析范围"),
+        "m10": ("十、", "十一、", "十二、"),
+        "m11": ("十一、", "十二、", "十三、"),
     }
 
     # m7 需要额外验证：标题行必须很短（< 30 字符），排除正文中的偶然匹配
@@ -269,6 +271,8 @@ def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
         # when the bundled CJK font is subset for PDF. Keep TOC extraction
         # stable by matching the semantic title after skipping the TOC page.
         "m3": ("知识点短板钻取",),
+        # per_question_causes: PDF text is "八逐题错因分析" (no 、 separator)
+        "per_question_causes": ("逐题错因分析",),
     }
 
     for page_idx in range(len(doc)):
@@ -295,6 +299,9 @@ def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
                     continue
                 # 对短前缀标题额外验证：行长度不能太长（排除正文中的偶然匹配）
                 if key in _SHORT_TITLE_KEYS and len(stripped) > _SHORT_TITLE_MAX_LEN:
+                    continue
+                # m10/m11 短前缀匹配需排除 m8 附录页（"十、附录" 等）
+                if key in ("m10", "m11") and "附录" in stripped:
                     continue
                 result[key] = page_idx + 1
                 found_keys.add(key)
