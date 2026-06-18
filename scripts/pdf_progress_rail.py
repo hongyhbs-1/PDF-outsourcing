@@ -315,7 +315,8 @@ def apply_progress_rail(pdf_bytes: bytes, toc_pages: dict[str, int]) -> bytes:
         doc.close()
         return pdf_bytes
 
-    # Find the TOC page number by searching for "目 录" or "目录"
+    # Navigation rail starts from page 2 (after cover), skipping TOC page
+    # Overview/student-profile/improvement-preview pages before TOC also get the rail (no tab highlighted)
     toc_page_num = 0
     for page_idx in range(len(doc)):
         text = doc[page_idx].get_text()
@@ -330,20 +331,17 @@ def apply_progress_rail(pdf_bytes: bytes, toc_pages: dict[str, int]) -> bytes:
             if toc_page_num:
                 break
 
-    # Navigation rail starts from the page AFTER TOC
-    start_page = toc_page_num + 1 if toc_page_num else 1
-    print(f"[导航栏] 目录页={toc_page_num}, 起始页={start_page}")
-    print(f"[导航栏] 章节范围:")
-    for r in ranges:
-        print(f"  {r.key}: pages {r.start_page}-{r.end_page} -> tab=\"{r.tab_label}\"")
+    print(f"[导航栏] 目录页={toc_page_num}")
 
     for index, page in enumerate(doc, start=1):
-        if index < start_page:
+        # Skip cover (page 1) and TOC page
+        if index == 1:
+            continue
+        if toc_page_num and index == toc_page_num:
             continue
         current = section_for_page(index, ranges)
-        if current is None:
-            continue
-        # Clear existing rail links to prevent duplication on re-render
+        # Pages before TOC (overview, profiles) get rail with no active tab
+        # Pages after TOC get rail with active tab
         for link in page.get_links():
             if link.get('kind') == 1:  # LINK_GOTO
                 page.delete_link(link)
