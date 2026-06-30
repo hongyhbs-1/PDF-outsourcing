@@ -507,6 +507,13 @@
   color: var(--appendix-text-secondary, #666);
 }
 
+/* 含特殊字符（÷×等公式）的片段：独占一行 */
+.m8-formula-line {
+  display: block;
+  margin-top: 2px;
+  line-height: 1.6;
+}
+
 .m8-appendix-usage {
   margin-top: 14px;
   padding: 14px 16px;

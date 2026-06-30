@@ -90,6 +90,20 @@
 {% set items = s.get('items', []) %}
 {% set has_data = s.get('has_data', (items | length) > 0) %}
 
+{# 兼容 dida985 schema: core_weakness.empty_guidance.{reason_text, action_text}
+   模板原从顶层读取，这里做 fallback 归一化，让下游 {%- if s.reason_text -%} 等无需改动 #}
+{% set _eg_obj = s.get('empty_guidance', {}) if s is mapping else {} %}
+{% set _eg_obj = _eg_obj if _eg_obj is mapping else {} %}
+{% set _reason_text = s.get('reason_text') if s is mapping else none %}
+{% set _reason_text = _reason_text or _eg_obj.get('reason_text') %}
+{% set _action_text = s.get('action_text') if s is mapping else none %}
+{% set _action_text = _action_text or _eg_obj.get('action_text') %}
+{% set _empty_reason = s.get('empty_reason') if s is mapping else none %}
+{# 兜底: items 为空但有 reason_text/action_text 时，触发空态引导块 #}
+{% if not _empty_reason and (_reason_text or _action_text) and not has_data %}
+  {% set _empty_reason = 'all_achieved' %}
+{% endif %}
+
 {# 英语样本里 core_weakness.domain 可能是 1.00 等内部编码；P8 对家长展示必须转成中文领域名。 #}
 {% set subject_code = meta.subject | default('', true) | lower %}
 {% set subject_name = meta.subject_name | default('', true) %}
@@ -283,30 +297,30 @@
       {% endfor %}
     {% else %}
       {# P6-T10: 空状态智能引导 — 根据 empty_reason 显示不同引导 #}
-      {% if s.get('empty_reason') %}
+      {% if _empty_reason %}
       <div class="m2-cw-empty-guidance">
-        {% if s.get('empty_reason') == 'easy_heavy' %}
-          <div class="m2-cw-empty-guidance__icon">🎯</div>
+        {% if _empty_reason == 'easy_heavy' %}
+          <div class="m2-cw-empty-guidance__icon">{{ lb_icon('target', 'frame-empty-icon') }}</div>
           <div class="m2-cw-empty-guidance__title">基础扎实，准备突破</div>
-        {% elif s.get('empty_reason') == 'low_volume' %}
-          <div class="m2-cw-empty-guidance__icon">📝</div>
+        {% elif _empty_reason == 'low_volume' %}
+          <div class="m2-cw-empty-guidance__icon">{{ lb_icon('growth', 'frame-empty-icon') }}</div>
           <div class="m2-cw-empty-guidance__title">数据积累中</div>
         {% else %}
-          <div class="m2-cw-empty-guidance__icon">🌟</div>
+          <div class="m2-cw-empty-guidance__icon">{{ lb_icon('trophy', 'frame-empty-icon') }}</div>
           <div class="m2-cw-empty-guidance__title">全面达标</div>
         {% endif %}
 
-        {% if s.get('reason_text') %}
-        <div class="m2-cw-empty-guidance__reason">{{ s.reason_text }}</div>
+        {% if _reason_text %}
+        <div class="m2-cw-empty-guidance__reason">{{ _reason_text }}</div>
         {% endif %}
-        {% if s.get('action_text') %}
-        <div class="m2-cw-empty-guidance__action">{{ s.action_text }}</div>
+        {% if _action_text %}
+        <div class="m2-cw-empty-guidance__action">{{ _action_text }}</div>
         {% endif %}
 
         {% if s.get('empty_context') %}
         <div class="m2-cw-empty-guidance__stats">
           本次分析: {{ s.empty_context.total_questions }} 题
-          {% if s.empty_reason == 'easy_heavy' %}
+          {% if _empty_reason == 'easy_heavy' %}
             · 简单题占比 {{ s.empty_context.easy_ratio_text }}
           {% endif %}
         </div>

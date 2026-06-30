@@ -47,10 +47,14 @@ def compute_data_profile(payload: RenderPayload) -> DataProfile:
     pv = payload.get("page_visibility", {})
     has_city_compare = bool(pv.get("m5_city_compare", False))
 
-    # composition: check composition_facts.feature_enabled OR m10.visible
+    # composition: check composition_facts.feature_enabled OR m10.visible OR composition_rules.selected_essay.selected (not False)
     cf = payload.get("composition_facts", {})
     m10 = payload.get("m10", {})
-    has_composition = bool(
+    cr = payload.get("composition_rules", {})
+    se = cr.get("selected_essay", {}) if isinstance(cr, dict) else {}
+    selected_flag = se.get("selected") if isinstance(se, dict) else None
+    essay_active = (selected_flag is None) or bool(selected_flag)
+    has_composition = essay_active and bool(
         (isinstance(cf, dict) and cf.get("feature_enabled"))
         or (isinstance(m10, dict) and m10.get("visible"))
     )

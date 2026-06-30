@@ -40,16 +40,25 @@ report_master.jinja2 — 报告主入口模板 (v2)
 {% set _m10_page = m10 | default({}, true) %}
 {% set _comp_facts_page = composition_facts | default({}, true) %}
 {% set _comp_items_page = _comp_facts_page.get('items', []) if _comp_facts_page is mapping else [] %}
-{% set _has_m10_data = _m10_page.visible | default(false) or _comp_page.score_overview | default({}, true) or _comp_page.topic_analysis | default('', true) or _comp_page.data_ready | default(false) or (_comp_items_page | length > 0) %}
+{% set _comp_rules_page = composition_rules | default({}, true) %}
+{% set _selected_essay_info = _comp_rules_page.get('selected_essay', {}) | default({}, true) %}
+{% set _essay_selected_flag = _selected_essay_info.get('selected', none) %}
+{% set _essay_active = (_essay_selected_flag is none) or (_essay_selected_flag == true) %}
+{% set _has_m10_data = _essay_active and (_m10_page.visible | default(false) or (_comp_page.score_overview | default({}, false) | length > 0) or (_comp_page.topic_analysis | default('', false) | length > 0) or _comp_page.data_ready | default(false) or (_comp_items_page | length > 0)) %}
 {% set _show_m10_composition = pv.m10_composition | default(false) %}
 
 {% set _rd_page = reading_deep | default({}, true) %}
 {% set _m11_page = m11 | default({}, true) %}
 {% set _reading_facts_page = reading_passage_facts | default({}, true) %}
 {% set _reading_passages_page = _reading_facts_page.passages | default([], true) %}
-{% set _has_m11_data = _m11_page.visible | default(false) or _rd_page.status | default('', true) == 'success' or _rd_page.content | default({}, true) or _rd_page.result | default({}, true) or (_reading_passages_page | length > 0) %}
+{% set _has_m11_data = _m11_page.visible | default(false) or (_rd_page.status | default('', false) == 'success') or (_rd_page.content | default({}, false) | length > 0) or (_rd_page.result | default({}, false) | length > 0) or (_reading_passages_page | length > 0) %}
 {% set _show_m11_reading_deep = pv.m11_reading_deep | default(false) %}
 {% set _show_english_teacher_note = _is_english_report and (_has_m10_data or _has_m11_data) and not (_show_m10_composition or _show_m11_reading_deep) %}
+
+{# ---- 英语进阶挑战建议 (facts.extensions.english_progression_fr2) ---- #}
+{% set _fr2_ext = facts.extensions | default({}, true) if facts is defined else {} %}
+{% set _english_progression_fr2 = english_progression_fr2 | default(_fr2_ext.english_progression_fr2 | default({}, true), true) %}
+{% set _has_english_progression = _is_english_report and (_english_progression_fr2.rows | default([], true) | length > 0) %}
 
   {# ---- 页眉页脚已迁移至 Playwright headerTemplate/footerTemplate (T14 Phase 6) ---- #}
 
@@ -187,6 +196,13 @@ report_master.jinja2 — 报告主入口模板 (v2)
   {% if _show_m11_reading_deep %}
   <div class="module-page" id="toc-m11">
     {% include 'pages/m11_reading_deep.jinja2' %}
+  </div>
+  {% endif %}
+
+  {# ---- 英语进阶挑战建议 (英语专属；有 FR2 数据时自动显示) ---- #}
+  {% if _has_english_progression %}
+  <div class="module-page" id="toc-english-progression">
+    {% include 'pages/m_english_progression.jinja2' %}
   </div>
   {% endif %}
   {% endif %}

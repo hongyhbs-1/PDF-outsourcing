@@ -261,7 +261,21 @@
         {% for metric in metric_definitions %}
         <div class="m8-metric-item">
           <div class="m8-metric-item__name">{{ safe_value(metric.name) }}</div>
-          <div class="m8-metric-item__desc">{% if not target_reliable and metric.name | default('') == '距目标线' %}正确率 - 目标线；本次目标线为估算时，仅供训练优先级参考{% else %}{{ safe_value(metric.desc) }}{% endif %}</div>
+          {% if not target_reliable and metric.name | default('') == '距目标线' %}
+          <div class="m8-metric-item__desc">正确率 - 目标线；本次目标线为估算时，仅供训练优先级参考</div>
+          {% else %}
+          {# 含特殊字符（÷×）的公式部分需独占一行 #}
+          {% set _desc_text = safe_value(metric.desc) | string %}
+          {% if '（' in _desc_text and ('÷' in _desc_text or '×' in _desc_text) %}
+          {% set _before_formula = _desc_text.split('（', 1)[0] %}
+          {% set _formula_and_rest = _desc_text.split('（', 1)[1] %}
+          {% set _formula = '（' + _formula_and_rest.split('）', 1)[0] + '）' %}
+          {% set _after_formula = _formula_and_rest.split('）', 1)[1] if '）' in _formula_and_rest else '' %}
+          <div class="m8-metric-item__desc">{{ _before_formula }}{% if _before_formula %}<br>{% endif %}<span class="m8-formula-line">{{ _formula }}</span>{{ _after_formula }}</div>
+          {% else %}
+          <div class="m8-metric-item__desc">{{ _desc_text }}</div>
+          {% endif %}
+          {% endif %}
         </div>
         {% endfor %}
       </div>

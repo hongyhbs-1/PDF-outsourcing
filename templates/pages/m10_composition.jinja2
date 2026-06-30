@@ -94,9 +94,13 @@
   {% set reference_essay = a_round.corrected_version %}
 {% endif %}
 {% set highlights_and_issues = comp.highlights_and_issues | default([], true) %}
-{% set has_comp_analysis_data = comp.score_overview | default({}, true) or comp.topic_analysis | default('', true) or comp.data_ready | default(false) %}
-{% set has_selected_essay_data = selected_essay.question_text | default('', true) or selected_essay.student_answer | default('', true) or a_round.encouragement | default('', true) %}
-{% set has_composition_data = has_comp_analysis_data or m10_data.visible | default(false) or has_selected_essay_data or (comp_items | length > 0) %}
+{% set has_comp_analysis_data = (comp.score_overview | default({}, false) | length > 0) or (comp.topic_analysis | default('', false) | length > 0) or comp.data_ready | default(false) %}
+{% set has_selected_essay_data = (selected_essay.question_text | default('', false) | length > 0) or (selected_essay.student_answer | default('', false) | length > 0) or (a_round.encouragement | default('', false) | length > 0) %}
+{# composition_rules.selected_essay.selected == false 表示明确无数据，不渲染 #}
+{% set _selected_explicitly_off = (composition_rules | default({}, true)).get('selected_essay', {}) | default({}, true) %}
+{% set _has_selected_flag = _selected_explicitly_off.get('selected', none) %}
+{% set _essay_selection_active = (_has_selected_flag is none) or (_has_selected_flag == true) %}
+{% set has_composition_data = _essay_selection_active and (has_comp_analysis_data or m10_data.visible | default(false) or has_selected_essay_data or (comp_items | length > 0)) %}
 {% if has_composition_data %}
 {% set has_score = total_score not in ['--', '', none] %}
 <div class="m10-page">

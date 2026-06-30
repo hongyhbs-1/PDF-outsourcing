@@ -313,7 +313,7 @@
   padding: 10px 12px;
   overflow: hidden;
   position: relative;
-  /* ★ 共享几何变量，所有子元素引用 */
+  /* [star] 共享几何变量，所有子元素引用 */
   --m4-label-col: 90px;
   --m4-value-col: 48px;
   --m4-grid-gap: 10px;

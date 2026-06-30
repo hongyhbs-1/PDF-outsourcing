@@ -145,7 +145,7 @@
       </div>
       <div class="ai-core-strip">
         <div class="ai-core-badge"><strong>AI</strong><span>分析引擎</span></div>
-        <div class="ai-core-meta"><strong>数据可信度 {{ bp.confidence.level }}</strong><span>{% for i in range(bp.confidence.stars) %}★{% endfor %}</span></div>
+        <div class="ai-core-meta"><strong>数据可信度 {{ bp.confidence.level }}</strong><span>{{ bp.confidence.stars }}/{{ bp.confidence.max_stars | default(5, true) }}</span></div>
       </div>
       <div class="expanded-line">{{ lb_icon('question', 'expanded-line-icon') }}<div><strong>展开 {{ bp.evidence.expanded_questions }} 道子题</strong><span>深入分析每一道题的得分点与失分点</span></div></div>
       <p class="table-note">数据周期：{{ bp.evidence.test_period }} · 共分析 {{ bp.evidence.paper_count }} 套试卷，覆盖 {{ bp.evidence.valid_questions }} 道有效大题</p>

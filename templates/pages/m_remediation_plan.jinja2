@@ -8,7 +8,7 @@
    difficulty_upgrade{ intro, stages[]{ name, detail } },
    stage_one_steps[]{ step, detail }
 }
-铁律: 无分数; 重要度用文本星级(非 ★ glyph); 不出现具体时间/周期, 用 阶段/步骤 表达
+铁律: 无分数; 重要度用文本星级(非 star glyph); 不出现具体时间/周期, 用 阶段/步骤 表达
 关联CSS: m_remediation_plan.css
 ================================================================================
 #}
@@ -32,7 +32,7 @@
     <div class="rp-item">
       <div class="rp-item-top">
         <span class="rp-kp">{{ it.knowledge_name }}</span>
-        {% if it.importance_level %}<span class="rp-star">{{ it.importance_level }}</span>{% endif %}
+        {% if it.importance_level %}<span class="rp-star">{{ it.importance_level }}</span>{% else %}<span class="rp-star rp-star--neutral">关注项</span>{% endif %}
       </div>
       <div class="rp-action">{{ it.action }}</div>
     </div>

@@ -1,0 +1,121 @@
+{#
+================================================================================
+英语进阶挑战建议 (English Progression FR2) — 英语专属
+数据源: facts.extensions.english_progression_fr2
+渲染字段:
+  english_progression_fr2 {
+    title,
+    rows[]{
+      knowledge_code,
+      accuracy_ratio,           # 0-1 浮点
+      scored_count,             # 样本量
+      source_difficulty_rating, # 当前难度档位
+      recommended_difficulty_rating  # 建议难度档位
+    }
+  }
+铁律: 无分数; 难度档位用文本描述（非 ★ glyph）; 不展示百分比数值
+位置: 英语报告专属，M11 之后
+================================================================================
+#}
+{% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
+
+{# 数据源（兼容两种路径：顶层 english_progression_fr2 或 facts.extensions.english_progression_fr2） #}
+{% set _fr2 = english_progression_fr2 | default({}, true) %}
+{% if not _fr2 and facts is defined %}
+  {% set _ext = facts.extensions | default({}, true) %}
+  {% set _fr2 = _ext.english_progression_fr2 | default({}, true) %}
+{% endif %}
+
+{% set _rows = _fr2.rows | default([], true) %}
+
+{# 难度档位文本化（铁律：非 glyph） #}
+{% macro difficulty_band_label(rating) -%}
+{%- set r = rating | int -%}
+{%- if r >= 5 -%}挑战级{%- elif r == 4 -%}拔高级{%- elif r == 3 -%}标准级{%- elif r == 2 -%}基础级{%- elif r <= 1 -%}入门级{%- else -%}--{%- endif -%}
+{%- endmacro %}
+
+{# accuracy_ratio 文本化（铁律：不展示百分比数值） #}
+{% macro mastery_label(ratio) -%}
+{%- set pct = (ratio | float) * 100 -%}
+{%- if pct >= 95 -%}稳定掌握{%- elif pct >= 80 -%}扎实掌握{%- elif pct >= 60 -%}基本掌握{%- else -%}初步掌握{%- endif -%}
+{%- endmacro %}
+
+{% if _rows | length > 0 %}
+<div class="mep-page">
+  <section class="mep-title-section">
+    <h1 class="report-page-title mep-title">{{ lb_icon('growth', 'frame-title-icon') }}{{ _fr2.title | default('进阶挑战建议', true) }}</h1>
+    <div class="mep-title__underline"></div>
+  </section>
+
+  <section class="mep-core-conclusion">
+    <div class="mep-core-conclusion__label">{{ lb_icon('target', 'frame-conclusion-icon') }}本页核心结论</div>
+    <div class="mep-core-conclusion__text">
+      以下知识点已具备扎实基础，建议在阶段二/集中冲刺阶段提升训练难度，向更高层级突破。
+    </div>
+  </section>
+
+  <div class="module-content-card mep-content-card">
+    <div class="mep-body">
+
+      {# === 表格：逐项进阶建议 === #}
+      <div class="mep-section">
+        <div class="mep-section-title">{{ lb_icon('list', 'frame-section-icon') }}进阶清单</div>
+        <table class="mep-table">
+          <thead>
+            <tr>
+              <th class="mep-col-kp">知识点</th>
+              <th class="mep-col-mastery">当前掌握</th>
+              <th class="mep-col-sample">样本量</th>
+              <th class="mep-col-source">当前难度</th>
+              <th class="mep-col-target">建议难度</th>
+              <th class="mep-col-action">训练建议</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in _rows %}
+            {% set kp_code = row.knowledge_code | default('--', true) %}
+            {% set mastery = mastery_label(row.accuracy_ratio | default(0, true)) %}
+            {% set samples = row.scored_count | default(0, true) %}
+            {% set src_band = difficulty_band_label(row.source_difficulty_rating | default(0, true)) %}
+            {% set rec_band = difficulty_band_label(row.recommended_difficulty_rating | default(0, true)) %}
+            {% set gap = (row.recommended_difficulty_rating | int) - (row.source_difficulty_rating | int) %}
+            <tr>
+              <td class="mep-col-kp">{{ kp_code }}</td>
+              <td class="mep-col-mastery">
+                <span class="mep-mastery-tag mep-mastery-tag--{{ 'high' if (row.accuracy_ratio | float) >= 0.8 else 'solid' }}">{{ mastery }}</span>
+              </td>
+              <td class="mep-col-sample">{{ samples }} 题</td>
+              <td class="mep-col-source">{{ src_band }}</td>
+              <td class="mep-col-target"><strong class="mep-target-band">{{ rec_band }}</strong></td>
+              <td class="mep-col-action">
+                {% if gap >= 2 %}
+                  建议直接挑战{{ rec_band }}题目，突破能力上限
+                {% elif gap == 1 %}
+                  逐步过渡到{{ rec_band }}题目，巩固后再加难
+                {% else %}
+                  维持当前难度，注重速度与稳定性
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {# === 整体训练建议 === #}
+      <div class="mep-section mep-section--advice">
+        <div class="mep-section-title">{{ lb_icon('teacher', 'frame-section-icon') }}整体训练建议</div>
+        <div class="mep-advice-card">
+          <p>以上知识点已达成稳定掌握，继续在原难度刷题边际收益递减。建议：</p>
+          <ul class="mep-advice-list">
+            <li>在阶段二训练中加入<span class="mep-advice-hl">拔高级/挑战级</span>题目，每次训练不少于 3 道；</li>
+            <li>用历年真题中的高难度题型验证掌握深度；</li>
+            <li>若正确率出现回落，回到标准级题目巩固一周再进阶。</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endif %}

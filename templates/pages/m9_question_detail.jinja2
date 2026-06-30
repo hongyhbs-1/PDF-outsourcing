@@ -12,6 +12,12 @@ M9: 逐题分析明细 (Question Detail Analysis)
 
 {% from 'macros/learning_blueprint_icons.jinja2' import lb_icon %}
 
+{# 难度文本化（避免 star glyph，遵守 dida985 铁律：非 glyph 星级） #}
+{% macro difficulty_text(level) -%}
+{%- set lvl = level | int -%}
+{%- if lvl >= 5 -%}5星{%- elif lvl == 4 -%}4星{%- elif lvl == 3 -%}3星{%- elif lvl == 2 -%}2星{%- elif lvl <= 1 -%}1星{%- else -%}--{%- endif -%}
+{%- endmacro %}
+
 {% set qd = question_detail | default({}, true) %}
 {% set papers = qd.papers | default([], true) %}
 {% set total_count = qd.total_count | default(0) %}
@@ -38,7 +44,7 @@ M9: 逐题分析明细 (Question Detail Analysis)
       {% for q in block.questions %}
       <tr>
         <td>{{ q.no }}</td>
-        <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
+        <td class="m9-stars">{{ difficulty_text(q.difficulty) }}</td>
         <td>{{ q.kp_name }}</td>
         {% if block.has_weakness %}<td>{{ q.weakness_tags | default([], true) | join('、') }}</td>{% endif %}
         {% if block.has_analysis %}
@@ -74,7 +80,7 @@ M9: 逐题分析明细 (Question Detail Analysis)
       {% for q in block.questions %}
       <tr>
         <td>{{ q.no }}</td>
-        <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
+        <td class="m9-stars">{{ difficulty_text(q.difficulty) }}</td>
         <td>{{ q.kp_name }}</td>
         <td>{{ q.key_points }}</td>
       </tr>
@@ -223,7 +229,7 @@ M9: 逐题分析明细 (Question Detail Analysis)
             {% for q in paper.wrong_questions %}
             <tr>
               <td>{{ q.no }}</td>
-              <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
+              <td class="m9-stars">{{ difficulty_text(q.difficulty) }}</td>
               <td>{{ q.kp_name }}</td>
               {% if wrong_meta.has_weakness %}<td>{{ q.weakness_tags | default([], true) | join('、') }}</td>{% endif %}
               {% if wrong_meta.has_analysis %}
@@ -263,7 +269,7 @@ M9: 逐题分析明细 (Question Detail Analysis)
             {% for q in paper.correct_questions %}
             <tr>
               <td>{{ q.no }}</td>
-              <td class="m9-stars">{{ '★' * q.difficulty }}{{ '☆' * (5 - q.difficulty) }}</td>
+              <td class="m9-stars">{{ difficulty_text(q.difficulty) }}</td>
               <td>{{ q.kp_name }}</td>
               <td>{{ q.key_points }}</td>
             </tr>

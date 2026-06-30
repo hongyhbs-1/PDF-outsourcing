@@ -67,7 +67,7 @@
         <div>{{ lb_icon('paper', 'data-card-icon') }}<strong>{{ bp.data_engine.paper_count }}</strong><span>分析试卷</span></div>
         <div>{{ lb_icon('question', 'data-card-icon') }}<strong>{{ bp.data_engine.valid_questions }}</strong><span>有效大题</span></div>
         <div>{{ lb_icon('module', 'data-card-icon') }}<strong>{{ bp.data_engine.domain_modules }}</strong><span>领域模块</span></div>
-        <div>{{ lb_icon('shield', 'data-card-icon data-card-icon--success') }}<strong>{{ bp.data_engine.reliability_level }}</strong><span>数据可信度</span><em>{% for i in range(bp.data_engine.stars) %}★{% endfor %}</em></div>
+        <div>{{ lb_icon('shield', 'data-card-icon data-card-icon--success') }}<strong>{{ bp.data_engine.reliability_level }}</strong><span>数据可信度</span><em>{{ bp.data_engine.stars }}/{{ bp.data_engine.max_stars | default(5, true) }}</em></div>
       </div>
       <div class="pipeline-flow">
         {% for step in bp.data_engine.pipeline %}

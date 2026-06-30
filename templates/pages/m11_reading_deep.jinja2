@@ -71,7 +71,7 @@
     {% set core_strategy_summary.items = core_strategy_summary.items + [strategy_label] %}
   {% endif %}
 {% endfor %}
-{% set has_reading_deep_data = rd.status | default('', true) == 'success' or rd.content | default({}, true) or rd.result | default({}, true) %}
+{% set has_reading_deep_data = (rd.status | default('', false) | length > 0 and rd.status == 'success') or (rd.content | default({}, false) | length > 0) or (rd.result | default({}, false) | length > 0) %}
 {% set has_reading_data = has_reading_deep_data or m11_data.visible | default(false) or (question_analyses | length > 0) or (reading_passages | length > 0) %}
 {% set single_page_fit_class = ' m11-page--single-page-fit' if question_analyses | length <= 5 else '' %}
 {% if has_reading_data %}

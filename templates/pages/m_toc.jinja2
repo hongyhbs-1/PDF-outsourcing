@@ -24,12 +24,16 @@
   {% set _m10_toc = m10 | default({}, true) %}
   {% set _comp_facts_toc = composition_facts | default({}, true) %}
   {% set _comp_items_toc = _comp_facts_toc.get('items', []) if _comp_facts_toc is mapping else [] %}
+  {% set _comp_rules_toc = composition_rules | default({}, true) %}
+  {% set _sel_essay_toc = _comp_rules_toc.get('selected_essay', {}) | default({}, true) %}
+  {% set _sel_flag_toc = _sel_essay_toc.get('selected', none) %}
+  {% set _essay_active_toc = (_sel_flag_toc is none) or (_sel_flag_toc == true) %}
   {% set _rd_toc = reading_deep | default({}, true) %}
   {% set _m11_toc = m11 | default({}, true) %}
   {% set _reading_facts_toc = reading_passage_facts | default({}, true) %}
   {% set _reading_passages_toc = _reading_facts_toc.passages | default([], true) %}
-  {% set _has_m10_toc_data = _m10_toc.visible | default(false) or _comp_toc.score_overview | default({}, true) or _comp_toc.topic_analysis | default('', true) or _comp_toc.data_ready | default(false) or (_comp_items_toc | length > 0) %}
-  {% set _has_m11_toc_data = _m11_toc.visible | default(false) or _rd_toc.status | default('', true) == 'success' or _rd_toc.content | default({}, true) or _rd_toc.result | default({}, true) or (_reading_passages_toc | length > 0) %}
+  {% set _has_m10_toc_data = _essay_active_toc and (_m10_toc.visible | default(false) or (_comp_toc.score_overview | default({}, false) | length > 0) or (_comp_toc.topic_analysis | default('', false) | length > 0) or _comp_toc.data_ready | default(false) or (_comp_items_toc | length > 0)) %}
+  {% set _has_m11_toc_data = _m11_toc.visible | default(false) or (_rd_toc.status | default('', false) == 'success') or (_rd_toc.content | default({}, false) | length > 0) or (_rd_toc.result | default({}, false) | length > 0) or (_reading_passages_toc | length > 0) %}
   {% if _show_m10_toc is none %}
     {% set _show_m10_toc = _pv_toc.m10_composition | default(false) %}
   {% endif %}
@@ -38,6 +42,13 @@
   {% endif %}
 {% endif %}
 {% set _has_english_deep_toc = _show_m10_toc or _show_m11_toc %}
+
+{# 英语进阶挑战建议 (FR2) 目录判断 #}
+{% set _meta_subject_toc = meta.subject | default('', true) | lower %}
+{% set _is_english_report_toc = _meta_subject_toc == 'english' or '英语' in (meta.subject_name | default('', true)) %}
+{% set _fr2_ext_toc = facts.extensions | default({}, true) if facts is defined else {} %}
+{% set _fr2_data_toc = english_progression_fr2 | default(_fr2_ext_toc.english_progression_fr2 | default({}, true), true) %}
+{% set _has_english_progression_toc = _is_english_report_toc and (_fr2_data_toc.rows | default([], true) | length > 0) %}
 
 {# dida985 新段存在性 #}
 {% set _has_remediation_plan = remediation_plan | default({}, true) %}
@@ -158,6 +169,15 @@
     </li>
     {% endif %}
 
+    {% if _has_english_progression_toc %}
+    <li class="mtoc-item mtoc-item--supplement">
+      <span class="mtoc-item__number">·</span>
+      <span class="mtoc-item__title">进阶挑战建议</span>
+      <span class="mtoc-item__dots"></span>
+      <span class="mtoc-item__page" data-toc-key="english_progression">{{ _pages.get('english_progression', '') }}</span>
+    </li>
+    {% endif %}
+
   </ul>
 
   {# --- 阅读建议 --- #}
@@ -182,6 +202,12 @@
       <div class="mtoc-reading-guide__item">
         <span class="mtoc-reading-guide__num">4</span>
         <span>英语专项页可直接查看<strong>作文精讲</strong>与<strong>阅读精讲</strong>。</span>
+      </div>
+      {% endif %}
+      {% if _has_english_progression_toc %}
+      <div class="mtoc-reading-guide__item">
+        <span class="mtoc-reading-guide__num">{{ 5 if _has_english_deep_toc else 4 }}</span>
+        <span>已扎实的知识点可参考<strong>进阶挑战建议</strong>提升训练难度。</span>
       </div>
       {% endif %}
     </div>

@@ -212,8 +212,9 @@ _TOC_SEARCH_MAP: list[tuple[str, str]] = [
     ("m8", "分析范围"),
     ("m10", "十、"),
     ("m11", "十一、"),
+    ("english_progression", "进阶挑战建议"),
 ]
-_TOC_DISPLAY_KEYS = {"m1", "m4", "m2", "m3", "m5", "m6", "m9", "m7", "m8", "m10", "m11"}
+_TOC_DISPLAY_KEYS = {"m1", "m4", "m2", "m3", "m5", "m6", "m9", "m7", "m8", "m10", "m11", "english_progression"}
 
 _TOC_INJECT_JS = """
 (toc_pages) => {
@@ -261,6 +262,7 @@ def _extract_toc_pages(pdf_bytes: bytes) -> dict[str, int]:
         "m8": ("八、附录", "九、附录", "十、附录", "十一、附录", "附录", "分析范围"),
         "m10": ("十、", "十一、", "十二、"),
         "m11": ("十一、", "十二、", "十三、"),
+        "english_progression": ("进阶挑战建议",),
     }
 
     # m7 需要额外验证：标题行必须很短（< 30 字符），排除正文中的偶然匹配
